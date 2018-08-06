@@ -15,12 +15,10 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from orbital_evolution.initial_condition_solver import InitialConditionSolver
-from basic_utils import Structure
 import numpy
 from astropy import units, constants
 
-wsun = 2.0 * numpy.pi / 25.34
+wsun = 0.24795522138
 
 def create_planet(mass = (constants.M_jup / constants.M_sun).to('')) :
     """Return a configured planet to use in the evolution."""
@@ -31,13 +29,13 @@ def create_planet(mass = (constants.M_jup / constants.M_sun).to('')) :
     )
     return planet
 
-def create_star(interpolator, convective_phase_lag, wind = True) :
+def create_star(mass, interpolator, convective_phase_lag, wind=True) :
     
-    star = EvolvingStar(mass = 1.0,
-                        metallicity = 0.0,
-                        wind_strength = 0.17 if wind else 0.0,
-                        wind_saturation_frequency = 2.78,
-                        diff_rot_coupling_timescale = 5.0e-3,
+    star = EvolvingStar(mass=mass,
+                        metallicity=0.3,
+                        wind_strength=0.17 if wind else 0.0,
+                        wind_saturation_frequency=2.78,
+                        diff_rot_coupling_timescale=5.0e-3,
                         interpolator = interpolator)
         
     star.set_dissipation(zone_index = 0,
@@ -55,37 +53,39 @@ def create_star(interpolator, convective_phase_lag, wind = True) :
                          reference_phase_lag = 0.0)
     return star
 
-
 def create_binary_system(primary,
                          secondary,
                          disk_lock_frequency,
                          initial_semimajor,
                          disk_dissipation_age,
                          secondary_angmom = None) :
+
     """Create a binary system to evolve from the given objects."""
 
+    if isinstance(secondary, LockedPlanet) :
+        secondary_config = dict(spin_angmom = numpy.array([0.0]),
+                                inclination = None,
+                                periapsis = None)
+    else :
+        secondary.select_interpolation_region(disk_dissipation_age)
+        secondary_config = dict(spin_angmom = secondary_angmom,
+                                inclination = numpy.array([0.0]),
+                                periapsis = numpy.array([0.0]))
 
-    primary.detect_stellar_wind_saturation();
+    secondary.configure(age = disk_dissipation_age,
+                        companion_mass = primary.mass,
+                        semimajor = initial_semimajor,
+                        eccentricity = 0.0,
+                        locked_surface = False,
+                        zero_outer_inclination = True,
+                        zero_outer_periapsis = True,
+                        **secondary_config)
+
+    if isinstance(secondary, EvolvingStar) :
+        secondary.detect_stellar_wind_saturation()
+
     primary.select_interpolation_region(primary.core_formation_age())
-
-    if (secondary=="star"):
-
-    	secondary.detect_stellar_wind_saturation();
-    	secondary.select_interpolation_region(disk_dissipation_age)
-    
-    	secondary_config = dict(spin_angmom = secondary_angmom,
-        	                    inclination = numpy.array([0.0]),
-                	            periapsis = numpy.array([0.0]))
-                            
-    	secondary.configure(age = disk_dissipation_age,
-        	                companion_mass = primary.mass,
-                	        semimajor = initial_semimajor,
-                        	eccentricity = 0.0,
-                        	locked_surface = False,
-                        	zero_outer_inclination = True,
-                        	zero_outer_periapsis = True,
-                        	**secondary_config)
-        
+    primary.detect_stellar_wind_saturation()
 
 
     binary = Binary(primary = primary,
@@ -96,7 +96,7 @@ def create_binary_system(primary,
                     disk_lock_frequency = disk_lock_frequency,
                     disk_dissipation_age = disk_dissipation_age,
                     secondary_formation_age = disk_dissipation_age)
-        
+
     binary.configure(age = primary.core_formation_age(),
                      semimajor = float('nan'),
                      eccentricity = float('nan'),
@@ -111,35 +111,63 @@ def plot_evolution(binary, wsat,style = dict(orb = '-r', core = '-b', env = '-g'
     
     """Calculate and plot the evolution of a properly constructed binary."""
     
-    wsun = 2.0 * numpy.pi / 25.34
+    wsun = 0.24795522138          #2*pi/25.34
     
     binary.evolve(10.0, 1e-3, 1e-6, None)
     
     evolution = binary.get_evolution()
-    
+
+    print("wsun = ", wsun)
+    print("==   ", binary.secondary.core_inertia(evolution.age))
+
     wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
     wcore = (evolution.secondary_core_angmom /binary.secondary.core_inertia(evolution.age)) / wsun
+
         
     pyplot.loglog(evolution.age, wenv, style['sec_env'])
     pyplot.loglog(evolution.age, wcore, style['sec_core'])
     
     return evolution
 
+
+def output_evolution(evolution):
+
+    """Write the given evolution to stdout organized in columns."""
+
+    quantities = list(
+        filter(lambda q: q[0] != '_' and q != 'format', dir(evolution))
+    )
+    print(' '.join(['%25s' % q for q in quantities]))
+    for i in range(len(evolution.age)):
+        print(' '.join(['%25s' % repr(getattr(evolution, q)[i])
+                        for q in quantities]))
+
+
 def test_evolution(interpolator,convective_phase_lag,wind) :
 
-    tdisk = 5e-3;
+    """run evolution for binary system """
 
-    star = create_star(interpolator = interpolator,
-                   convective_phase_lag = 0.0,
-                   wind = wind)
+    tdisk = 5e-3
+
+
+    star = create_star(1.0, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
     planet = create_planet(1.0)
+
+
     binary = create_binary_system(star,
                                   planet,
                                   2.0 * numpy.pi / 3.0,
                                   10.0,
                                   tdisk)
+
     binary.evolve(10.0, 1e-3, 1e-6, None)
-    evolution = binary.get_evolution()	
+
+
+
+    evolution = binary.get_evolution()
+
+    print("FINISHED PLANET-STAR EVOLUTION")
+
 
     planet.delete()
     star.delete()
@@ -147,18 +175,20 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
                                   
     tdisk_index = evolution.age.searchsorted(tdisk)
 
+    print("tdisk_index = ", tdisk)
 
-    primary = create_star(interpolator, convective_phase_lag, wind = wind)
-    secondary = create_star(interpolator, convective_phase_lag, wind = wind)
-    
-    binary = create_binary_system(
-                                  primary,
+    primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
+    secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
+
+    binary = create_binary_system(primary,
                                   secondary,
                                   2.0 * numpy.pi / 3.0,
                                   10.0,
                                   tdisk,
                                   secondary_angmom =numpy.array([evolution.envelope_angmom[tdisk_index],evolution.core_angmom[tdisk_index]]))
                                   
+    print("BINARY STAR SYSTEM CREATED")
+
     evolution = plot_evolution(binary,
                                wsat = 2.78,
                                style = dict(orb = 'xr',
@@ -167,9 +197,9 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
                                             sec_env = ':c',
                                             sec_core = ':m'))
 
-                                            
-    output_evolution(evolution)
+    print("FINISHED BINARY STAR EVOLUTION")
 
+    output_evolution(evolution)
 
     primary.delete()
     secondary.delete()
@@ -183,6 +213,7 @@ if __name__ == '__main__' :
     serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
+
 
     test_evolution(interpolator,phase_lag(6.0),True)
 
