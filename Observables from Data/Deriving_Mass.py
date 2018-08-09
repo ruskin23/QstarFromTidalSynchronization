@@ -4,15 +4,13 @@ sys.path.append('..')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
-from stellar_evolution.derived_stellar_quantities import\
-    TeffK,\
-    LogGCGS,\
-    RhoCGS
-from basic_utils import Structure
+from stellar_evolution.derived_stellar_quantities import TeffK
 import scipy
 import scipy.interpolate
 import scipy.linalg
 import scipy.optimize
+
+G=6.67e-11
 
 class DerivePrimnaryMass:
 
@@ -73,13 +71,50 @@ class DerivePrimnaryMass:
         return solution
 
 
+class DeriveSecondaryMass:
 
+    def __init__(self, p_orb, v_r, i, mass_primary):
+	
+        self.p_orb = p_orb
+        self.v_r = v_r
+        self.i = i
+        self.mass_primary = mass_primary
+	
+    def mass_function(self,mass_secondary):
+
+        return (mass_secondary**3 * scipy.sin(self.i)**3 )/(mass_secondary + self.mass_primary)**2
+
+    def difference_function(self, mass_secondary):
+
+        return self.mass_function(mass_secondary) - (self.p_orb * (self.v_r * scipy.sin(self.i))**3)/2*scipy.pi*G
+
+    def find_solution(self):
+
+        mass_array = scipy.linspace(0.4,1.2,100)
+        differnece_array = scipy.empty(len(mass_array))
+
+        for m_index, m_value in enumerate(mass_array):
+            differnece_array[m_index] = self.difference_function(m_value)
+
+        mass_solutions = []
+
+        for i in range(differnece_array.size):
+
+            x = differnece_array[i]*differnece_array[i+1]
+            if x<0:
+                mass_solutions.append(mass_array[i])
+                mass_solutions.append(mass_array[i+1])
+                break
+
+        solution = scipy.optimize.brentq(self.difference_function, mass_solutions[0], mass_solutions[1])
+
+        return solution
 
 serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
-x=DerivePrimnaryMass(interpolator,0,4.56,5870)
+x=DerivePrimnaryMass(interpolator, 0, 4.56, 5870)
 print(x.find_solution())
 
 
