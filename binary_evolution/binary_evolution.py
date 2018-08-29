@@ -32,7 +32,7 @@ def create_planet(mass = (constants.M_jup / constants.M_sun).to('')) :
 def create_star(mass, interpolator, convective_phase_lag, wind=True) :
     
     star = EvolvingStar(mass=mass,
-                        metallicity=0.3,
+                        metallicity=0.0,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.78,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -107,7 +107,7 @@ def create_binary_system(primary,
 
     return binary
 
-def plot_evolution(binary, wsat,style = dict(orb = '-r', core = '-b', env = '-g')) :
+def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
     
     """Calculate and plot the evolution of a properly constructed binary."""
     
@@ -121,11 +121,23 @@ def plot_evolution(binary, wsat,style = dict(orb = '-r', core = '-b', env = '-g'
     print("==   ", binary.secondary.core_inertia(evolution.age))
 
     wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore = (evolution.secondary_core_angmom /binary.secondary.core_inertia(evolution.age)) / wsun
+    wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
 
-        
-    pyplot.loglog(evolution.age, wenv, style['sec_env'])
-    pyplot.loglog(evolution.age, wcore, style['sec_core'])
+    #wenv_p = (evolution.primary_envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
+    #wcore_p = (evolution.primary_core_angmom /binary.primary.core_inertia(evolution.age)) / wsun
+
+
+    pyplot.semilogx(evolution.age, wenv, style['env'])
+    pyplot.semilogx(evolution.age, wcore, style['core'])
+
+   #pyplot.semilogx(evolution.age, wenv_p, "-r")
+   #pyplot.semilogx(evolution.age, wcore_p, "-c")
+
+
+
+    pyplot.semilogx(evolution.age, binary.orbital_frequency(evolution.semimajor), "-k")
+
+    pyplot.show()
     
     return evolution
 
@@ -151,7 +163,7 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
 
     star = create_star(1.0, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
-    planet = create_planet(1.0)
+    planet = create_planet(0.8)
 
 
     binary = create_binary_system(star,

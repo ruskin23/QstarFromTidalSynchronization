@@ -10,7 +10,7 @@ import scipy.interpolate
 import scipy.linalg
 import scipy.optimize
 
-G=6.67e-11
+G=1534949.0910000005;
 
 class DerivePrimnaryMass:
 
@@ -73,6 +73,17 @@ class DerivePrimnaryMass:
 
 class DeriveSecondaryMass:
 
+
+    """Calculates the mass of secondary star
+
+        p_orb = orbital period in days
+
+        v_r = radial velocity in km/s
+
+        i = angle of inclination
+
+        mass_primary = primary star mass in solar mass"""
+
     def __init__(self, p_orb, v_r, i, mass_primary):
 	
         self.p_orb = p_orb
@@ -115,7 +126,7 @@ manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
 x=DerivePrimnaryMass(interpolator, 0, 4.56, 5870)
-print(x.find_solution())
+primary_mass = x.find_solution()
 
 
 
