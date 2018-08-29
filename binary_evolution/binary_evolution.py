@@ -142,17 +142,30 @@ def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
     return evolution
 
 
-def output_evolution(evolution):
+def output_evolution(evolution, binary):
 
     """Write the given evolution to stdout organized in columns."""
 
     quantities = list(
         filter(lambda q: q[0] != '_' and q != 'format', dir(evolution))
     )
-    print(' '.join(['%25s' % q for q in quantities]))
+    print(' '.join(['%30s' % q for q in quantities]), end=' ')
+    print(' '.join(['%30s' % q for q in ['primary_core_inertia',
+                                         'primary_env_inertia',
+                                         'secondary_core_inertia',
+                                         'secondary_env_inertia']]))
     for i in range(len(evolution.age)):
-        print(' '.join(['%25s' % repr(getattr(evolution, q)[i])
-                        for q in quantities]))
+        print(' '.join(['%30s' % repr(getattr(evolution, q)[i])
+                        for q in quantities]), end=' ')
+        age = evolution.age[i]
+        print(' '.join([
+            '%30.16e' % q for q in [
+                binary.primary.core_inertia(age),
+                binary.primary.envelope_inertia(age),
+                binary.secondary.core_inertia(age),
+                binary.secondary.envelope_inertia(age)
+            ]
+        ]))
 
 
 def test_evolution(interpolator,convective_phase_lag,wind) :
@@ -162,8 +175,13 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
     tdisk = 5e-3
 
 
+<<<<<<< HEAD
     star = create_star(1.0, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
     planet = create_planet(0.8)
+=======
+    star = create_star(0.8, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
+    planet = create_planet(1.0)
+>>>>>>> cf6b372cc8a374a6892f1046491df2d6909bab05
 
 
     binary = create_binary_system(star,
@@ -172,11 +190,11 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
                                   10.0,
                                   tdisk)
 
-    binary.evolve(10.0, 1e-3, 1e-6, None)
+    binary.evolve(tdisk, 1e-3, 1e-6, None)
 
 
 
-    evolution = binary.get_evolution()
+    disk_state = binary.final_state()
 
     print("FINISHED PLANET-STAR EVOLUTION")
 
@@ -185,19 +203,19 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
     star.delete()
     binary.delete()
                                   
-    tdisk_index = evolution.age.searchsorted(tdisk)
-
-    print("tdisk_index = ", tdisk)
 
     primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
     secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
 
-    binary = create_binary_system(primary,
-                                  secondary,
-                                  2.0 * numpy.pi / 3.0,
-                                  10.0,
-                                  tdisk,
-                                  secondary_angmom =numpy.array([evolution.envelope_angmom[tdisk_index],evolution.core_angmom[tdisk_index]]))
+    binary = create_binary_system(
+        primary,
+        secondary,
+        2.0 * numpy.pi / 3.0,
+        10.0,
+        tdisk,
+        secondary_angmom=numpy.array([disk_state.envelope_angmom,
+                                      disk_state.core_angmom])
+    )
                                   
     print("BINARY STAR SYSTEM CREATED")
 
@@ -211,7 +229,7 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
     print("FINISHED BINARY STAR EVOLUTION")
 
-    output_evolution(evolution)
+    output_evolution(evolution, binary)
 
     primary.delete()
     secondary.delete()
