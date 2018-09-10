@@ -174,14 +174,8 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
     tdisk = 5e-3
 
-
-<<<<<<< HEAD
-    star = create_star(1.0, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
-    planet = create_planet(0.8)
-=======
     star = create_star(0.8, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
     planet = create_planet(1.0)
->>>>>>> cf6b372cc8a374a6892f1046491df2d6909bab05
 
 
     binary = create_binary_system(star,
