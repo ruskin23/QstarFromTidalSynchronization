@@ -61,16 +61,18 @@ def test_ic_solver(interpolator) :
     initial_porb, initial_psurf = find_ic(target = target,
                                           star = primary,
                                           planet = secondary)
-    
+
     print('IC: Porb0 = %s, P*0 = %s' % (repr(initial_porb),
                                         repr(initial_psurf)))
 
 
 if __name__ == '__main__' :
+
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
     )
-    serialized_dir = '../stellar_evolution_interpolators'
+
+    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
