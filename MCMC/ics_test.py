@@ -19,9 +19,17 @@ import numpy
 from astropy import units, constants
 
 wsun = 2.0 * numpy.pi / 25.34
+class Structure :
+    """An empty class used only to hold user defined attributes."""
+
+    def __init__(self, **initial_attributes) :
+        """Create a class with (optionally) initial attributes."""
+
+        for attribute_name, attribute_value in initial_attributes.items() :
+            setattr(self, attribute_name, attribute_value)
 
 
-def create_star(mass, interpolator, convective_phase_lag, wind=True):
+def create_star(mass, interpolator, convective_phase_lag, wind):
     star = EvolvingStar(mass=mass,
                         metallicity=0.0,
                         wind_strength=0.17 if wind else 0.0,
@@ -48,13 +56,18 @@ def create_star(mass, interpolator, convective_phase_lag, wind=True):
 def test_ic_solver(interpolator) :
     """Find initial condition to reproduce some current state and plot."""
 
-    find_ic = InitialConditionSolver(disk_dissipation_age = 5e-3,
-                                     evolution_max_time_step = 1e-2)
+    
+    disk_dissipation_age = 5e-3;
+
+    find_ic = InitialConditionSolver(planet_formation_age=disk_dissipation_age,
+					disk_dissipation_age = disk_dissipation_age)
     target = Structure(age = 5.0,
                        Porb = 3.0,
                        Wdisk = 5.0,
                        planet_formation_age = 5e-3)
 
+    convective_phase_lag = phase_lag(6.0)
+    wind = True
     primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
     secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
 
