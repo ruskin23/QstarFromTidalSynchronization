@@ -63,14 +63,14 @@ def test_ic_solver(interpolator) :
 					disk_dissipation_age = disk_dissipation_age)
     target = Structure(age = 5.0,
                        Porb = 3.0,
-                       Wdisk = 5.0,
+                       Psurf = 10.0,
                        planet_formation_age = 5e-3)
 
     convective_phase_lag = phase_lag(6.0)
     wind = True
     primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
     secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
-
+    
     initial_porb, initial_psurf = find_ic(target = target,
                                           star = primary,
                                           planet = secondary)

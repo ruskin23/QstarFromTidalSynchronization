@@ -98,69 +98,14 @@ def create_binary_system(primary,
                     secondary_formation_age = disk_dissipation_age)
 
     binary.configure(age = primary.core_formation_age(),
-                     semimajor = float('nan'),
-                     eccentricity = float('nan'),
+                     semimajor = float("nan"),
+                     eccentricity = float("nan"),
                      spin_angmom = numpy.array([0.0]),
                      inclination = None,
                      periapsis = None,
                      evolution_mode = 'LOCKED_SURFACE_SPIN')
 
     return binary
-
-def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
-    
-    """Calculate and plot the evolution of a properly constructed binary."""
-    
-    wsun = 0.24795522138          #2*pi/25.34
-    
-    binary.evolve(10.0, 1e-3, 1e-6, None)
-    
-    evolution = binary.get_evolution()
-
-    print("wsun = ", wsun)
-    #print("==   ", binary.secondary.core_inertia(evolution.age))
-
-    wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
-
-
-
-    pyplot.semilogx(evolution.age, wenv, style['env'])
-    pyplot.semilogx(evolution.age, wcore, style['core'])
-
-   
-    
-    pyplot.semilogx(evolution.age, binary.orbital_frequency(evolution.semimajor), "-k")
-
-    pyplot.show()
-    
-    return evolution
-
-
-def output_evolution(evolution, binary):
-
-    """Write the given evolution to stdout organized in columns."""
-
-    quantities = list(
-        filter(lambda q: q[0] != '_' and q != 'format', dir(evolution))
-    )
-    print(' '.join(['%30s' % q for q in quantities]), end=' ')
-    print(' '.join(['%30s' % q for q in ['primary_core_inertia',
-                                         'primary_env_inertia',
-                                         'secondary_core_inertia',
-                                         'secondary_env_inertia']]))
-    for i in range(len(evolution.age)):
-        print(' '.join(['%30s' % repr(getattr(evolution, q)[i])
-                        for q in quantities]), end=' ')
-        age = evolution.age[i]
-        print(' '.join([
-            '%30.16e' % q for q in [
-                binary.primary.core_inertia(age),
-                binary.primary.envelope_inertia(age),
-                binary.secondary.core_inertia(age),
-                binary.secondary.envelope_inertia(age)
-            ]
-        ]))
 
 
 def test_evolution(interpolator,convective_phase_lag,wind) :
@@ -180,11 +125,8 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
                                   tdisk)
 
     binary.evolve(tdisk, 1e-3, 1e-6, None)
-
-
-
     disk_state = binary.final_state()
-   
+
     print("FINISHED PLANET-STAR EVOLUTION")
 
 
@@ -207,21 +149,20 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
     )
                                   
     print("BINARY STAR SYSTEM CREATED")
- 
-  
-
    
-    evolution = plot_evolution(binary,
-                               wsat = 2.78,
-                               style = dict(orb = 'xr',
-                                            core = 'xb',
-                                            env = 'xg',
-                                            sec_env = ':c',
-                                            sec_core = ':m'))
+    binary.evolve(5.0, 1e-3, 1e-6, None)
+   
+    print("BINARY STAR SYSTEM EVOLVED")
+     
+    evolution = binary.get_evolution()
+    
+    #final = binary.final_state()
+    print(evolution.semimajor)
+    #stellar_spin_period = (2.0 * pi * binary.primary.envelope_inertia(final.age) / final.envelope_angmom)
 
-    print("FINISHED BINARY STAR EVOLUTION")
-
-    output_evolution(evolution, binary)
+    #print(stellar_spin_period)
+    
+    #disk_st = binary.final_state()
 
     primary.delete()
     secondary.delete()
