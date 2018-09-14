@@ -127,6 +127,3 @@ interpolator = manager.get_interpolator_by_name('default')
 
 x=DerivePrimnaryMass(interpolator, 0, 4.56, 5870)
 primary_mass = x.find_solution()
-
-
-
