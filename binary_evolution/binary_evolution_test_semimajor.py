@@ -156,11 +156,13 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
      
     evolution = binary.get_evolution()
     
-    #final = binary.final_state()
-    print(evolution.semimajor)
+    final = binary.final_state()
+
+    print(final.age) 
+
     #stellar_spin_period = (2.0 * pi * binary.primary.envelope_inertia(final.age) / final.envelope_angmom)
 
-    #print(stellar_spin_period)
+    #print(list(evolution.semimajor))
     
     #disk_st = binary.final_state()
 
