@@ -61,17 +61,17 @@ class InitialConditionSolver :
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
-            secondary_config = dict(spin_angmom=self.secondary_angmom,
-                                    inclination=numpy.array([0.0]),
-                                    periapsis=numpy.array([0.0]))
+            spin_angmom=self.secondary_angmom
+            inclination=numpy.array([0.0])
+            periapsis=numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
             secondary_config_age = self.disk_dissipation_age
 
 
         else:
-            secondary_config = dict(spin_angmom=numpy.array([0.0]),
-                                    inclination=None,
-                                    periapsis=None)
+            spin_angmom=numpy.array([0.0])
+            inclination=None
+            periapsis=None
             secondary_formation_age = self.target.planet_formation_age
 
 
@@ -86,7 +86,7 @@ class InitialConditionSolver :
             initial_inclination = 0.0,
             disk_lock_frequency = 2.0 * numpy.pi / disk_period,
             disk_dissipation_age = self.disk_dissipation_age,
-            secondary_formation_age =self.target.planet_formation_age
+            secondary_formation_age =secondary_formation_age
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
@@ -108,9 +108,9 @@ class InitialConditionSolver :
             self.binary.primary.mass,
             self.binary.semimajor(initial_orbital_period),
             0.0,
-            numpy.array([0.0]),
-            None,
-            None,
+            spin_angmom,
+            inclination,
+            periapsis,
             False,
             True,
             True
@@ -137,7 +137,7 @@ class InitialConditionSolver :
             *
             self.binary.primary.envelope_inertia(final_state.age)
             /
-            final_state.envelope_angmom
+            final_state.primary_envelope_angmom
         )
         print('Got Porb = %s, P* = %s'
               %
@@ -574,31 +574,30 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     find_ic = InitialConditionSolver(disk_dissipation_age=5e-3,
                                     evolution_max_time_step=1e-2,
                                     secondary_angmom=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]),
-                                    is_secondary_star=False)
+                                    is_secondary_star=True)
 
     P_disk = [1.0]
     P_spin = []
 
 
     primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
-    #secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
-    secondary = create_planet(1.0)
+    secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
+    #secondary = create_planet()
 
 
-    for x in P_disk:
 
-        target = Structure( age=7.0,
-                            Porb=3.0, #initially 3.0
-                            Psurf=10.0, #initially Psurf=10.0
-                            planet_formation_age=5e-3)
+    target = Structure( age=7.0,
+                        Porb=10.0, #initially 3.0
+                        Wdisk=2*numpy.pi/7, #initially Psurf=10.0
+                        planet_formation_age=5e-3)
 
-        initial_porb, initial_psurf = find_ic(target=target,
+    initial_porb, initial_psurf = find_ic(target=target,
                                             primary=primary,
                                             secondary=secondary)
 
-        P_spin.append(initial_porb)
+    #    P_spin.append(initial_porb)
 
-    print (P_spin)
+    print (initial_psurf)
 
     primary.delete()
     secodnary.delete()
@@ -614,4 +613,4 @@ if __name__ == '__main__':
     interpolator = manager.get_interpolator_by_name('default')
 
     # test_evolution(interpolator, phase_lag(6.0))
-    test_ic_solver(interpolator,1e-6,True)
+    test_ic_solver(interpolator,1e-7,True)
