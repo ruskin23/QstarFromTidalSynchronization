@@ -4,8 +4,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 
 import sys
-sys.path.append('../PythonPackage')
-sys.path.append('../scripts')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 from matplotlib import pyplot
 from stellar_evolution.manager import StellarEvolutionManager
@@ -232,7 +232,11 @@ if __name__ == '__main__' :
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
        b"eccentricity_expansion_coef.txt"
     )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
+    #serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
+
+    serialized_dir = '/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators'
+
+
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
