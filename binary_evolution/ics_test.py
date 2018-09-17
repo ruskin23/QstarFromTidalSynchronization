@@ -6,9 +6,9 @@ matplotlib.use('TkAgg')
 
 import sys
 
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/QstarFromTidalSynchronization')
+sys.path.append('.../poet/PythonPackage')
+sys.path.append('.../poet/scripts')
+
 
 
 from matplotlib import pyplot
@@ -84,7 +84,7 @@ class InitialConditionSolver :
             initial_inclination = 0.0,
             disk_lock_frequency = 2.0 * numpy.pi / disk_period,
             disk_dissipation_age = self.disk_dissipation_age,
-            secondary_formation_age = secondary_formation_age
+            secondary_formation_age =self.target.planet_formation_age
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
@@ -305,7 +305,7 @@ class InitialConditionSolver :
             self._best_initial_conditions.disk_period = disk_period
         return result
 
-    def __call__(self, target, star, planet):
+    def __call__(self, target,primary , secondary):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -409,8 +409,8 @@ class InitialConditionSolver :
             return wdisk_grid, stellar_wsurf_residual_grid
 
         self.target = target
-        self.primary = star
-        self.secondary = planet
+        self.primary = secondary
+        self.secondary = secondary
 
         if not hasattr(self.target, 'disk_dissipation_age'):
             self.target.disk_dissipation_age = self.disk_dissipation_age
@@ -607,7 +607,7 @@ if __name__ == '__main__':
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
     )
-    serialized_dir = '/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators'
+    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
