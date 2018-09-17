@@ -4,10 +4,12 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
+#import sys
+#sys.path.append('.../poet/PythonPackage')
+#sys.path.append('.../poet/scripts')
 import sys
-
-sys.path.append('.../poet/PythonPackage')
-sys.path.append('.../poet/scripts')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 
 
@@ -190,7 +192,7 @@ class InitialConditionSolver :
     def __init__(self,
                  planet_formation_age = None,
                  disk_dissipation_age = None,
-                 evolution_max_time_step = 1e-3,
+                 evolution_max_time_step = 1.0,
                  evolution_precision = 1e-6,
                  orbital_period_tolerance = 1e-6,
                  spin_tolerance = 1e-6,
@@ -409,7 +411,7 @@ class InitialConditionSolver :
             return wdisk_grid, stellar_wsurf_residual_grid
 
         self.target = target
-        self.primary = secondary
+        self.primary = primary
         self.secondary = secondary
 
         if not hasattr(self.target, 'disk_dissipation_age'):
@@ -607,7 +609,7 @@ if __name__ == '__main__':
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
     )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
+    serialized_dir = '/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators'
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
