@@ -1,3 +1,8 @@
+import sys
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+
+
 from orbital_evolution.binary import Binary
 from basic_utils import Structure
 from math import pi
@@ -29,7 +34,35 @@ class InitialConditionSolver :
         print('Trying P0 = %s, Pdisk = %s'
               %
               (repr(initial_orbital_period), repr(disk_period)))
+
         if hasattr(self, 'binary') : self.binary.delete()
+
+        if self.is_secondary_star:
+            self.secondary.select_interpolation_region(self.taget.disk_dissipation_age)
+            secondary_config = dict(spin_angmom=self.secondary_angmom,
+                                    inclination=numpy.array([0.0]),
+                                    periapsis=numpy.array([0.0]))
+            secondary_formation_age = self.target.disk_dissipation_age
+
+
+        else:
+            secondary_config = dict(spin_angmom=numpy.array([0.0]),
+                                    inclination=None,
+                                    periapsis=None)
+            secondary_formation_age = self.target.planet_formation_age
+
+
+
+        self.secondary.configure(age=self.disk_dissipation_age,
+                            companion_mass=self.primary.mass,
+                            semimajor=self.initial_semimajor,
+                            eccentricity=0.0,
+                            locked_surface=False,
+                            zero_outer_inclination=True,
+                            zero_outer_periapsis=True,
+                            **secondary_config)
+
+
         self.binary = Binary(
             primary = self.primary,
             secondary = self.secondary,
@@ -38,12 +71,12 @@ class InitialConditionSolver :
             initial_inclination = 0.0,
             disk_lock_frequency = 2.0 * numpy.pi / disk_period,
             disk_dissipation_age = self.target.disk_dissipation_age,
-            secondary_formation_age = self.target.planet_formation_age
+            secondary_formation_age = secondary_formation_age
         )
 
-        self.binary.primary.select_interpolation_region(
-            self.primary.core_formation_age()
-        )
+        self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
+        self.binary.primary.detect_stellar_wind_saturation()
+
 
         self.binary.configure(self.primary.core_formation_age(),
                               float('nan'),
@@ -52,19 +85,7 @@ class InitialConditionSolver :
                               None,
                               None,
                               'LOCKED_SURFACE_SPIN')
-        self.binary.primary.detect_stellar_wind_saturation()
-        self.binary.secondary.configure(
-            self.target.planet_formation_age,
-            self.binary.primary.mass,
-            self.binary.semimajor(initial_orbital_period),
-            0.0,
-            numpy.array([0.0]),
-            None,
-            None,
-            False,
-            True,
-            True
-        )
+
         self.binary.evolve(
             self.target.age,
             self.evolution_max_time_step,
@@ -137,7 +158,9 @@ class InitialConditionSolver :
                  evolution_max_time_step = 1.0,
                  evolution_precision = 1e-6,
                  orbital_period_tolerance = 1e-6,
-                 spin_tolerance = 1e-6) :
+                 spin_tolerance = 1e-6,
+                 secondary_angmom,
+                 is_secondary_star = None) :
         """
         Initialize the object.
 
@@ -167,6 +190,8 @@ class InitialConditionSolver :
         self.evolution_precision = evolution_precision
         self.orbital_period_tolerance = orbital_period_tolerance
         self.spin_tolerance = spin_tolerance
+        self.secondary_angmom = secondary_angmom
+        self.is_secondary_star = is_secondary_star
 
     def stellar_wsurf(self,
                       wdisk,
@@ -245,7 +270,7 @@ class InitialConditionSolver :
             self._best_initial_conditions.disk_period = disk_period
         return result
 
-    def __call__(self, target, star, planet) :
+    def __call__(self, target, primary, secodnary) :
         """
         Find initial conditions which reproduce the given system now.
 
@@ -349,18 +374,21 @@ class InitialConditionSolver :
             return wdisk_grid, stellar_wsurf_residual_grid
 
         self.target = target
-        self.primary = star
-        self.secondary = planet
+        self.primary = primary
+        self.secondary = secondary
 
         if not hasattr(self.target, 'disk_dissipation_age') :
             self.target.disk_dissipation_age = self.disk_dissipation_age
-        if not hasattr(self.target, 'planet_formation_age') :
-            if hasattr(self.target, 'past_lifetime') :
-                self.target.planet_formation_age = (self.target.age
+
+        if isinstance(secodnary,LockedPlanet):
+
+            if not hasattr(self.target, 'planet_formation_age') :
+                if hasattr(self.target, 'past_lifetime') :
+                    self.target.planet_formation_age = (self.target.age
                                                     -
                                                     self.target.past_lifetime)
-            else :
-                self.target.planet_formation_age = self.planet_formation_age
+                else :
+                    self.target.planet_formation_age = self.planet_formation_age
 
         if not hasattr(target, 'Psurf') :
             Wdisk = (target.Wdisk if hasattr(target, 'Wdisk')
@@ -394,4 +422,6 @@ class InitialConditionSolver :
 
             return (self._best_initial_conditions.initial_orbital_period,
                     self._best_initial_conditions.disk_period)
+
+
 
