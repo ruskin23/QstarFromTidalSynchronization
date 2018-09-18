@@ -201,10 +201,11 @@ class MCMC:
         return p
 
 
-    def initialise_data(self):
+    def values_proposed(self):
 
+        for (name_obs,value_obs),(name_step,value_step) in zip(self.observation_data.items(),self.proposed_step.items()):
 
-
+            current_value =
 
     def metropolis_hasting(self):
 
@@ -212,7 +213,7 @@ class MCMC:
 
         iteration_step =0
 
-        parameter_set = []
+
 
 
 
@@ -227,6 +228,7 @@ class MCMC:
         while iteration_step < self.total_iterations:
 
             iteration_step = iteration_step + 1;
+
 
 
             # draw random value from the proposal funtion
@@ -284,7 +286,7 @@ class MCMC:
         self.convective_phase_lag = phase_lag(logQ)
         self.proposed_step = proposed_step
 
-        self.parameter_set = []
+        self.update_parameters = dict()
 
 
 
@@ -295,11 +297,18 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-observation_data = [Teff, feh, rvk, inclination]
+observation_data = dict(Teff = dict(vlaue = 1.0, sigma = 0.1),
+                        feh = dict(value = 1.0, sigma = 0.1),
+                        rvk = dict(value = 1.0, sigma = 0.1),
+                        inclination = dict(value = 1.0, sigma = 0.1)
+                    )
 
-fixed_parameters = [disk_dissipatoin_age]
+fixed_parameters = dict(disk_dissipation_age =  dict(value = 1.0, sigma = 0.1))
 
-proposed_step = [Teff_proposed_step,feh_proposed_step,rvk_proposed_step, inclination_step ]
+proposed_step = dict( Teff_step = 0.1,
+                      feh_step = 0.1,
+                      rvk_step = 0.1,
+                      inclination = 0.1)
 
 
 

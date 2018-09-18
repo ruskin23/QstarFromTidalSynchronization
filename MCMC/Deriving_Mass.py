@@ -73,16 +73,15 @@ class DerivePrimnaryMass:
 
 class DeriveSecondaryMass:
 
-
     def __init__(self, p_orb, v_r, i):
-	
+
         self.p_orb = p_orb
         self.v_r = v_r
         self.i = i
 
     def mass_function(self,mass_secondary,mass_primary):
 
-        return (mass_secondary**3 * scipy.sin(self.i)**3 )/(mass_secondary + self.mass_primary)**2
+        return (mass_secondary**3 * scipy.sin(self.i)**3 )/(mass_secondary + mass_primary)**2
 
     def difference_function(self, mass_secondary,mass_primary):
 
@@ -110,9 +109,4 @@ class DeriveSecondaryMass:
 
         return solution
 
-serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
-manager = StellarEvolutionManager(serialized_dir)
-interpolator = manager.get_interpolator_by_name('default')
 
-x=DerivePrimnaryMass(interpolator, 0, 4.56, 5870)
-primary_mass = x.find_solution()

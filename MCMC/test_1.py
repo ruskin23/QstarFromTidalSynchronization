@@ -1,3 +1,9 @@
+import random
+import scipy
+from scipy.stats import norm
+
+
+
 class struct :
 
     def __init__(self,**kwargs):
@@ -53,93 +59,57 @@ class test:
 
 
 
-p = [2,3,4,5]
-
-d = []
-
-for i in p:
-    print (i)
-    t = i**4
-    d.append(t)
+d = dict(a = dict(v = 1, s = 0.1),
+         b = dict(v = 2, s = 0.2),
+         c = dict(v = 3, s = 0.3))
 
 
-print (d)
+p = dict(psa = 0.2,
+         psb = 0.3,
+         psc = 0.4
+         )
 
 
+n = dict()
+
+check = p
+
+observation_data = dict(
+    Teff=dict(value=1, sigma=0.1),
+    feh=dict(value=1, sigma=0.2),
+    rvk=dict(value=4, sigma=0.3),
+    inclination=dict(value=1, sigma=0.1)
+)
+
+#for key,value in observation_data.items():
+
+    #print (value['value'],value['sigma'])
+
+#for (kd,vd),(kp,vp) in zip(d.items(),p.items()):
+    #print (vd['v'])
+    #print (vp)
+#    n[ kd] = vp*4
+
+#for x in check:
+#        print (x)#print (d[x]['v'])
+
+width = scipy.linspace(0,1,100)
+
+dist = norm.pdf(width,loc=0.5,scale=0.1)
+
+class test2:
+
+    def __init__(self,x,y):
+
+        self.a = x
+        self.b = y
+
+    def __call__(self):
+
+        z = self.a*self.b
+
+        return z
 
 
-ICS_TEST:
-
-
-wsun = 2.0 * numpy.pi / 25.34
-
-
-def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
-    """Return a configured planet to use in the evolution."""
-
-    planet = LockedPlanet(
-        mass=mass,
-        radius=(constants.R_jup / constants.R_sun).to('')
-    )
-    return planet
-
-
-def create_star(interpolator, convective_phase_lag):
-    """Create the star to use in the evolution."""
-
-    star = EvolvingStar(mass=1.0,
-                        metallicity=0.0,
-                        wind_strength=0.17,
-                        wind_saturation_frequency=2.45,
-                        diff_rot_coupling_timescale=5.0e-3,
-                        interpolator=interpolator)
-    star.select_interpolation_region(star.core_formation_age())
-    star.set_dissipation(zone_index=0,
-                         tidal_frequency_breaks=None,
-                         spin_frequency_breaks=None,
-                         tidal_frequency_powers=numpy.array([0.0]),
-                         spin_frequency_powers=numpy.array([0.0]),
-                         reference_phase_lag=convective_phase_lag)
-    star.set_dissipation(zone_index=1,
-                         tidal_frequency_breaks=None,
-                         spin_frequency_breaks=None,
-                         tidal_frequency_powers=numpy.array([0.0]),
-                         spin_frequency_powers=numpy.array([0.0]),
-                         reference_phase_lag=0.0)
-    return star
-
-
-def create_system(star, planet, disk_lock_frequency):
-    """Create the system which to evolve from the given star and planet."""
-
-    porb_initial = 3.5
-    disk_dissipation_age = 4e-3
-    binary = Binary(primary=star,
-                    secondary=planet,
-                    initial_orbital_period=porb_initial,
-                    initial_eccentricity=0.0,
-                    initial_inclination=0.0,
-                    disk_lock_frequency=disk_lock_frequency,
-                    disk_dissipation_age=disk_dissipation_age,
-                    secondary_formation_age=disk_dissipation_age)
-    binary.configure(age=star.core_formation_age(),
-                     semimajor=float('nan'),
-                     eccentricity=float('nan'),
-                     spin_angmom=numpy.array([0.0]),
-                     inclination=None,
-                     periapsis=None,
-                     evolution_mode='LOCKED_SURFACE_SPIN')
-    planet.configure(age=disk_dissipation_age,
-                     companion_mass=star.mass,
-                     semimajor=binary.semimajor(porb_initial),
-                     eccentricity=0.0,
-                     spin_angmom=numpy.array([0.0]),
-                     inclination=None,
-                     periapsis=None,
-                     locked_surface=False,
-                     zero_outer_inclination=True,
-                     zero_outer_periapsis=True)
-    star.detect_stellar_wind_saturation()
-    return binary
-
-
+w = test2(2,3)
+print ()
