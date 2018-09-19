@@ -111,5 +111,8 @@ class test2:
         return z
 
 
-w = test2(2,3)
-print ()
+arr = []
+
+for i in range(10):
+    arr.append(i)
+

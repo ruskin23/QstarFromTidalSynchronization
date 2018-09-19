@@ -15,6 +15,8 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
+from Calculate_Mass.Deriving_Mass import DerivePrimnaryMass
+from Calculate_Mass.Deriving_Mass import DeriveDeriveSecondaryMassMass
 import numpy
 from astropy import units, constants
 
@@ -54,7 +56,6 @@ class binary_evolution:
     def create_binary_system(self,
                              primary,
                              secondary,
-                             disk_lock_frequency,
                              initial_semimajor,
                              disk_dissipation_age,
                              secondary_angmom=None):
@@ -122,14 +123,16 @@ class binary_evolution:
 
 
 
-    def __init__(self,interpolator,parameters,fixed_parameters):
+    def __init__(self,interpolator,observational_parameters,fixed_parameters):
 
         self.interpolator = interpolator
-        self.age = parameters['age']
-        self.convective_phase_lag = parameters['convective_phase_lag']
-        self.teff = parameters['teff']
-        self.Porb = parameters['Porb']
-        self.rvk = parameters['rvk']
+
+        self.age = observational_parameters['age']
+        self.convective_phase_lag = observational_parameters['convective_phase_lag']
+        self.teff = observational_parameters['teff']
+        self.Porb = observational_parameters['Porb']
+        self.rvk = observational_parameters['rvk']
+
         self.inlination = fixed_parameters['inclination']
         self.disk_dissipation_age = fixed_parameters['disk_dissipation_age']
         self.wind = fixed_parameters['wind']
@@ -154,7 +157,6 @@ class binary_evolution:
 
         binary = create_binary_system(star,
                                       planet,
-                                      2.0 * numpy.pi / 3.0,
                                       10.0,
                                       tdisk)
 
