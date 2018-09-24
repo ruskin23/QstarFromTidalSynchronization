@@ -185,7 +185,7 @@ class evolution:
         secondary = self.create_star(SecondaryMass)
 
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
-                                         evolution_max_time_step=1e-2,
+                                         evolution_max_time_step=1.0,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True)
@@ -193,9 +193,7 @@ class evolution:
         print ('Target parameters: ')
         print ('age = ', self.age)
         print ('Porb = ', self.Porb)
-        print ('feh = ', self.feh)
         print ('convective phase lag = ', self.convective_phase_lag)
-        print ('teff = ', self.teff)
 
 
         target = Structure(age=self.age,

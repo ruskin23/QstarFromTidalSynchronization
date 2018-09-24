@@ -117,6 +117,7 @@ class InitialConditionSolver:
         )
 
         print ("BINARY EVOLUTION COMPLETE")
+
         final_state = self.binary.final_state()
         assert (final_state.age == self.target.age)
         orbital_period = self.binary.orbital_period(final_state.semimajor)
@@ -183,7 +184,7 @@ class InitialConditionSolver:
     def __init__(self,
                  planet_formation_age=None,
                  disk_dissipation_age=None,
-                 evolution_max_time_step=1.0,
+                 evolution_max_time_step=None,
                  evolution_precision=1e-6,
                  orbital_period_tolerance=1e-6,
                  spin_tolerance=1e-6,
