@@ -174,7 +174,7 @@ if __name__ == '__main__':
                         teff = dict(value = 5777.0, sigma = 50),
                         feh = dict(value = 0.0, sigma = 0.1),
                         rvk = dict(value = 615, sigma = 10),
-                        Porb = dict(value=8.0, sigma=1e-5),
+                        Porb = dict(value=5.0, sigma=1e-5),
                         Pdisk = dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
