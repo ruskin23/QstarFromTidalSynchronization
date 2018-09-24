@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
-import matplotlib
-matplotlib.use('TkAgg')
 
 import sys
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
-from matplotlib import pyplot
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
@@ -15,14 +12,16 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from Calculate_Mass.Deriving_Mass import DerivePrimnaryMass
-from Calculate_Mass.Deriving_Mass import DeriveDeriveSecondaryMassMass
+from mass_calculations import DerivePrimnaryMass
+from mass_calculations import DeriveSecondaryMass
+from inital_condition_solver import  InitialConditionSolver
+from basic_utils import Structure
 import numpy
 from astropy import units, constants
 
 
 
-class binary_evolution:
+class evolution:
 
     def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')):
         """Return a configured planet to use in the evolution."""
@@ -33,7 +32,7 @@ class binary_evolution:
     def create_star(self,mass):
         star = EvolvingStar(mass=mass,
                             metallicity=0.0,
-                            wind_strength=0.17 if self.wind else 0.0,
+                            wind_strength=self.wind_strength if self.wind else 0.0,
                             wind_saturation_frequency=self.wind_saturation_frequency,
                             diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
                             interpolator=self.interpolator)
@@ -88,7 +87,7 @@ class binary_evolution:
 
         binary = Binary(primary=primary,
                         secondary=secondary,
-                        initial_orbital_period=initial_orbital_period,
+                        initial_orbital_period=5.0,
                         initial_eccentricity=0.0,
                         initial_inclination=0.0,
                         disk_lock_frequency=self.disk_lock_frequency,
@@ -110,11 +109,21 @@ class binary_evolution:
 
         star_masses = []
 
-        mass1 = DerivePrimnaryMass(self.interpolator, self.feh, self.age, self.teff)
-        mass2 = DeriveSecondaryMass(self.Porb,self.rvk,self.inclination)
-
+        mass1 = DerivePrimnaryMass(
+                                    self.interpolator,
+                                    self.feh,
+                                    self.age,
+                                    self.teff)
         PrimaryMass = mass1()
-        SecondaryMass = mass2(PrimaryMass)
+
+
+        mass2 = DeriveSecondaryMass(
+                                    self.Porb,
+                                    self.rvk,
+                                    self.inclination,
+                                    PrimaryMass)
+
+        SecondaryMass = mass2()
 
         star_masses.append(PrimaryMass)
         star_masses.append(SecondaryMass)
@@ -128,18 +137,20 @@ class binary_evolution:
         self.interpolator = interpolator
 
         self.age = observational_parameters['age']
-        self.convective_phase_lag = observational_parameters['convective_phase_lag']
+        self.feh = observational_parameters['feh']
+        self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
         self.teff = observational_parameters['teff']
         self.Porb = observational_parameters['Porb']
         self.rvk = observational_parameters['rvk']
+        self.disk_lock_frequency = observational_parameters['Pdisk']
 
-        self.inlination = fixed_parameters['inclination']
+        self.inclination = fixed_parameters['inclination']
         self.disk_dissipation_age = fixed_parameters['disk_dissipation_age']
         self.wind = fixed_parameters['wind']
         self.planet_formation_age = fixed_parameters['planet_formation_age']
-        self.disk_lock_frequency = fixed_parameters['disk_lock_frequency']
         self.wind_saturation_frequency = fixed_parameters['wind_saturation_frequency']
         self.diff_rot_coupling_timescale = fixed_parameters['diff_rot_coupling_timescale']
+        self.wind_strength = fixed_parameters['wind_strength']
 
 
 
@@ -155,7 +166,7 @@ class binary_evolution:
         star = self.create_star(SecondaryMass)
         planet = self.create_planet(1.0)
 
-        binary = create_binary_system(star,
+        binary = self.create_binary_system(star,
                                       planet,
                                       10.0,
                                       tdisk)
@@ -167,6 +178,8 @@ class binary_evolution:
         planet.delete()
         star.delete()
         binary.delete()
+
+        print ('star-planet evolution completed')
 
         primary = self.create_star(PrimaryMass)
         secondary = self.create_star(SecondaryMass)

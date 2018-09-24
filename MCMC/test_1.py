@@ -59,9 +59,25 @@ class test:
 
 
 
+
+class test2:
+
+    def __init__(self,p):
+
+        for name,value in p.items():
+            setattr(self,name,value)
+
+    def printing(self):
+
+
+        print (self.b['s'])
+
+
+
 d = dict(a = dict(v = 1, s = 0.1),
          b = dict(v = 2, s = 0.2),
          c = dict(v = 3, s = 0.3))
+
 
 
 p = dict(psa = 0.2,
@@ -69,7 +85,8 @@ p = dict(psa = 0.2,
          psc = 0.4
          )
 
-
+instance = test2(d)
+#instance.printing()
 n = dict()
 
 check = p
@@ -115,4 +132,12 @@ arr = []
 
 for i in range(10):
     arr.append(i)
+
+with open('test_3.txt','w') as file:
+    for x in arr:
+        file.write('%s ' %x)
+
+
+from mass_calculations import DeriveSecondaryMass
+from inital_condition_solver import  InitialConditionSolver
 

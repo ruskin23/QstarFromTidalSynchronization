@@ -21,10 +21,7 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-#from orbital_evolution.initial_condition_solver import InitialConditionSolver
 from basic_utils import Structure
-#from binary_evolution.test_initial_condition_solver import InitialConditionSolver
-#import numpy
 from astropy import units, constants
 from basic_utils import Structure
 from math import pi
@@ -576,28 +573,49 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
                                     secondary_angmom=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]),
                                     is_secondary_star=True)
 
-    P_disk = [1.0]
-    P_spin = []
-
 
     primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
     secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
-    #secondary = create_planet()
+
+    case = False
+
+    if case==True:
+        Pdisk = numpy.linspace(5.0,10.0,20)
+        Psurf_I = []
+        Porb_I = []
 
 
+        for period in Pdisk:
 
-    target = Structure( age=7.0,
-                        Porb=10.0, #initially 3.0
-                        Wdisk=2*numpy.pi/7, #initially Psurf=10.0
-                        planet_formation_age=5e-3)
+            target = Structure( age=7.0,
+                            Porb=10.0,
+                            Wdisk=2*numpy.pi/period,
+                            planet_formation_age=5e-3)
 
-    initial_porb, initial_psurf = find_ic(target=target,
-                                            primary=primary,
-                                            secondary=secondary)
+            initial_porb, initial_psurf = find_ic(target=target,
+                                                primary=primary,
+                                                secondary=secondary)
 
-    #    P_spin.append(initial_porb)
+            Psurf_I.append(initial_psurf)
+            Porb_I.append(initial_porb)
 
-    print (initial_psurf)
+        print (Psurf_I)
+        print (Porb_I)
+
+    else:
+
+
+        target = Structure(age=7.0,
+                           Porb=10.0,
+                           Wdisk=2 * numpy.pi / 7.0,
+                           planet_formation_age=5e-3)
+
+        initial_porb, initial_psurf = find_ic(target=target,
+                                              primary=primary,
+                                              secondary=secondary)
+
+        print (initial_psurf)
+
 
     primary.delete()
     secondary.delete()
