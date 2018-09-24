@@ -6,6 +6,8 @@ sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 from binary_evolution_class import evolution
 from stellar_evolution.manager import StellarEvolutionManager
+from orbital_evolution.evolve_interface import library as\
+    orbital_evolution_library
 
 
 import scipy
@@ -78,8 +80,12 @@ class MetropolisHastings:
 
         if self.iteration_step==0: write_header()
 
-        if self.isAccepted == True: filename = 'accepted_aparemters.txt'
-        else: filename = 'rejected_parameters.txt'
+        if self.isAccepted == True:
+            print ('ACCEPTED')
+            filename = 'accepted_aparemters.txt'
+        else:
+            print ('REJECTED')
+            filename = 'rejected_parameters.txt'
 
         with open(filename, 'w') as file:
             for key, value in self.updated_parameters.items():
@@ -102,9 +108,9 @@ class MetropolisHastings:
             print ('new values proposed')
 
             # calculate acceptance probablity
-            print ('calculating accepatanece probability')
+            print ('calculating acceptance probability')
             p_acceptance = self.acceptance_probability()
-            print ('calculated accepatanece probability')
+            print ('calculated acceptance probability')
 
 
             if p_acceptance > 1:
@@ -158,12 +164,17 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
+    orbital_evolution_library.read_eccentricity_expansion_coefficients(
+        b"eccentricity_expansion_coef.txt"
+    )
+
+
     observation_data = dict(
                         age = dict(value = 5.0, sigma = 0.1),
                         teff = dict(value = 5777.0, sigma = 50),
                         feh = dict(value = 0.0, sigma = 0.1),
                         rvk = dict(value = 615, sigma = 10),
-                        Porb = dict(value=5.0, sigma=1e-5),
+                        Porb = dict(value=8.0, sigma=1e-5),
                         Pdisk = dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 

@@ -190,6 +190,14 @@ class evolution:
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True)
 
+        print ('Target parameters: ')
+        print ('age = ', self.age)
+        print ('Porb = ', self.Porb)
+        print ('feh = ', self.feh)
+        print ('convective phase lag = ', self.convective_phase_lag)
+        print ('teff = ', self.teff)
+
+
         target = Structure(age=self.age,
                            Porb=self.Porb,  # current Porb to match
                            Wdisk=self.disk_lock_frequency,  # initial disk locking frequency
