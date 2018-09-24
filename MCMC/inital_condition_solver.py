@@ -20,10 +20,7 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-# from orbital_evolution.initial_condition_solver import InitialConditionSolver
 from basic_utils import Structure
-# from binary_evolution.test_initial_condition_solver import InitialConditionSolver
-# import numpy
 from astropy import units, constants
 from basic_utils import Structure
 from math import pi
@@ -424,6 +421,7 @@ class InitialConditionSolver:
             Wstar, Porb_initial, Porb_now = self.stellar_wsurf(Wdisk,
                                                                target.Porb)
             return Porb_initial, 2.0 * pi / Wstar
+
         else:
             wdisk_grid, stellar_wsurf_residual_grid = get_initial_grid()
 
