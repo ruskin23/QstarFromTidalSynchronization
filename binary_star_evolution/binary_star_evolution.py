@@ -218,6 +218,10 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
     print("FINISHED BINARY STAR EVOLUTION")
 
+    disk_state = binary.final_state()
+
+    print (disk_state.envelope_angmom)
+
     output_evolution(evolution, binary)
 
     primary.delete()

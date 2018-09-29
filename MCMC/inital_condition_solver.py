@@ -7,8 +7,8 @@ matplotlib.use('TkAgg')
 # import sys
 # sys.path.append('.../poet/PythonPackage')
 # sys.path.append('.../poet/scripts')
-import sys
 
+import sys
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
@@ -26,7 +26,6 @@ from basic_utils import Structure
 from math import pi
 from scipy.optimize import brentq
 import numpy
-
 
 class InitialConditionSolver:
     """Find initial conditions which reproduce a given system now."""
@@ -62,7 +61,6 @@ class InitialConditionSolver:
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
-            secondary_config_age = self.disk_dissipation_age
 
 
         else:
@@ -449,5 +447,7 @@ class InitialConditionSolver:
 
             return (self._best_initial_conditions.initial_orbital_period,
                     self._best_initial_conditions.disk_period)
+
+
 
 
