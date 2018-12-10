@@ -170,11 +170,11 @@ if __name__ == '__main__':
 
 
     observation_data = dict(
-                        age = dict(value = 6.0, sigma = 0.1),
+                        age = dict(value = 2.0, sigma = 0.1),
                         teff = dict(value = 5777.0, sigma = 50),
                         feh = dict(value = 0.0, sigma = 0.1),
-                        rvk = dict(value = 815, sigma = 10),
-                        Porb = dict(value=5.0, sigma=1e-5),
+                        rvk = dict(value = 615, sigma = 10),
+                        Porb = dict(value=8.9, sigma=1e-5),
                         Pdisk = dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
