@@ -540,10 +540,8 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-
     TeffK = 5922.00
     feh = -0.060
     logg = 4.296
-
 
     interpolator.change_variables(feh,logg=logg, teff= TeffK)
