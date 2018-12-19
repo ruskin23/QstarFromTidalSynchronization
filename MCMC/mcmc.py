@@ -217,3 +217,6 @@ mcmc.iterations()
 #flush()
 #buffer_size =0 to write at the moment
 #
+
+
+## run evolution of the star without companion(or Q=infinity) to check!
