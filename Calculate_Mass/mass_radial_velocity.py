@@ -1,17 +1,17 @@
-"""Allows finding mass given other age at fixed [Fe/H]."""
+"""Calculate primary and secondary mass if the age, [Fe/H] and radial velocity are known """
+
 import sys
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 
-from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
 import scipy
 import scipy.interpolate
 import scipy.linalg
 import scipy.optimize
 
-G=1534949.0910000005;
+G=1543438000.0000002;
 
 class DerivePrimnaryMass:
 
@@ -69,29 +69,30 @@ class DerivePrimnaryMass:
 
         solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
 
+        print ('PRIMARY MASS = ', solution)
+
         return solution
 
 
 class DeriveSecondaryMass:
 
+    def __init__(self, p_orb, vkr, i,mass_primary):
 
-    def __init__(self, period, semimajor, mass_primary ):
-	
-        self.period = period
-        self.semimajor = semimajor
+        self.p_orb = p_orb
+        self.vkr = vkr
+        self.i = i
         self.mass_primary = mass_primary
 
-    def mass_function(self,mass_secondary):
-
-        return (mass_secondary**3)/(mass_secondary + self.mass_primary)**2
 
     def difference_function(self, mass_secondary):
 
-        return self.mass_function(mass_secondary) - (((4*scipy.pi)**2)*(self.semimajor**3))/((self.period**2)*G)
+        mass_function = (mass_secondary*scipy.sin(self.i))**3 /(mass_secondary + self.mass_primary)**2
+
+        return mass_function - (self.p_orb * (self.vkr)**3)/(2*scipy.pi*G)
 
     def __call__(self):
 
-        mass_array = scipy.linspace(0.4,1.2,100)
+        mass_array = scipy.linspace(0.1,1.4,100)
         differnece_array = scipy.empty(len(mass_array))
 
         for m_index, m_value in enumerate(mass_array):
@@ -99,7 +100,7 @@ class DeriveSecondaryMass:
 
         mass_solutions = []
 
-        for i in range(differnece_array.size):
+        for i in range(differnece_array.size ):
 
             x = differnece_array[i]*differnece_array[i+1]
             if x<0:
@@ -109,12 +110,8 @@ class DeriveSecondaryMass:
 
         solution = scipy.optimize.brentq(self.difference_function, mass_solutions[0], mass_solutions[1])
 
+        print ('SECONDARY MASS = ', solution)
+
         return solution
 
 
-serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
-manager = StellarEvolutionManager(serialized_dir)
-interpolator = manager.get_interpolator_by_name('default')
-
-x=DerivePrimnaryMass(interpolator, -0.06, 4.6, 5922)
-print(x())
