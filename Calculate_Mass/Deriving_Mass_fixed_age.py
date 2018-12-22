@@ -1,7 +1,7 @@
 """Allows finding mass given other age at fixed [Fe/H]."""
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -111,9 +111,9 @@ class DeriveSecondaryMass:
 
         return solution
 
-serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+serialized_dir = "//home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
-x=DerivePrimnaryMass(interpolator, 0, 4.56, 5870)
-primary_mass = x.find_solution()
+x=DerivePrimnaryMass(interpolator, -0.06, 4.6, 5922)
+print(x())

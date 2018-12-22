@@ -3,8 +3,8 @@
 
 
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from binary_evolution_class import evolution
@@ -163,7 +163,7 @@ class MetropolisHastings:
 
 if __name__ == '__main__':
 
-    serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+    serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -173,9 +173,9 @@ if __name__ == '__main__':
 
 
     observation_data = dict(
-                        age = dict(value = 2.0, sigma = 0.1),
-                        teff = dict(value = 5777.0, sigma = 50),
-                        feh = dict(value = 0.0, sigma = 0.1),
+                        age = dict(value = 4.6, sigma = 3.0),
+                        teff = dict(value = 5922.0, sigma = 200.0),
+                        feh = dict(value = -0.06, sigma = 0.11),
                         rvk = dict(value = 615, sigma = 10),
                         Porb = dict(value=8.9, sigma=1e-5),
                         Pdisk = dict(value=2*scipy.pi / 1.4, sigma=0.1)
