@@ -1,3 +1,6 @@
+"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+
+
 
 import sys
 sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
