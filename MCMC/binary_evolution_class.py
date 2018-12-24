@@ -119,8 +119,7 @@ class evolution:
 
         mass2 = DeriveSecondaryMass(
                                     self.Porb,
-                                    self.rvk,
-                                    self.inclination,
+                                    self.semimajor,
                                     PrimaryMass)
 
         SecondaryMass = mass2()
@@ -141,7 +140,7 @@ class evolution:
         self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
         self.teff = observational_parameters['teff']
         self.Porb = observational_parameters['Porb']
-        self.rvk = observational_parameters['rvk']
+        self.semimajor = observational_parameters['semimajor']
         self.disk_lock_frequency = observational_parameters['Pdisk']
 
         self.inclination = fixed_parameters['inclination']
