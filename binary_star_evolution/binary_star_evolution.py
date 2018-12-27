@@ -113,7 +113,7 @@ def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
     
     wsun = 0.24795522138          #2*pi/25.34
     
-    binary.evolve(10.0, 1e-3, 1e-6, None)
+    binary.evolve(8.2, 1e-3, 1e-6, None)
     
     evolution = binary.get_evolution()
 
