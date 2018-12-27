@@ -186,5 +186,5 @@ if __name__ == '__main__' :
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    #test_evolution(interpolator, phase_lag(6.0))
-    test_ic_solver(interpolator)
+    test_evolution(interpolator, phase_lag(6.0))
+    #test_ic_solver(interpolator)
