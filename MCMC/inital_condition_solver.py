@@ -82,6 +82,8 @@ class InitialConditionSolver:
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
 
+        print ("binary.configure_started")
+
         self.binary.configure(self.primary.core_formation_age(),
                               float('nan'),
                               float('nan'),
@@ -89,6 +91,9 @@ class InitialConditionSolver:
                               None,
                               None,
                               'LOCKED_SURFACE_SPIN')
+
+        print ("binary_.configure_ended")
+
 
         self.binary.primary.detect_stellar_wind_saturation()
 

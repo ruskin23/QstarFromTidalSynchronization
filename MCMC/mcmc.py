@@ -56,6 +56,8 @@ class MetropolisHastings:
         for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
 
+        print ("semimajor_proposed = ", proposed["semimajor"])
+
         return proposed
 
 
@@ -180,8 +182,8 @@ if __name__ == '__main__':
                     )
 
     observed_Pspin = dict(
-                        value = 5.0,
-                        sigma = 0.5
+                        value = 7.2,
+                        sigma = 0.1
                     )
 
     fixed_parameters = dict(
@@ -196,11 +198,11 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        age_step = 0.1,
-                        teff_step = 50,
+                        age_step = 2,
+                        teff_step = 100,
                         feh_step = 0.1,
-                        semimajor_step = 10,
-                        Porb_step=0.1,
+                        semimajor_step = 0.001,
+                        Porb_step=0.001,
                         Pdisk_step = 0.1,
                         logQ_step = 0.5
                     )
