@@ -86,6 +86,10 @@ class DeriveSecondaryMass:
 
         solution = (constant * ((self.semimajor) ** 3)) / ((self.period) ** 2) - self.mass_primary
 
+        print ("period = ", self.period)
+        print ("semimajor = ", self.semimajor)
+        print ("mass_primary = ", self.mass_primary)
+
         print ('SECONDARY MASS = ', solution)
 
         return solution

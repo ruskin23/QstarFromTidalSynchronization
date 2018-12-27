@@ -109,6 +109,8 @@ class evolution:
 
         star_masses = []
 
+        print ("Calculating Masses\n")
+
         mass1 = DerivePrimnaryMass(
                                     self.interpolator,
                                     self.feh,
@@ -123,6 +125,9 @@ class evolution:
                                     PrimaryMass)
 
         SecondaryMass = mass2()
+
+        print ("Primary_Mass = ", PrimaryMass)
+        print ("Seconday_Mass = ", SecondaryMass)
 
         star_masses.append(PrimaryMass)
         star_masses.append(SecondaryMass)
@@ -173,6 +178,7 @@ class evolution:
         binary.evolve(tdisk, 1e-3, 1e-6, None)
 
         disk_state = binary.final_state()
+
 
         planet.delete()
         star.delete()
