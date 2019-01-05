@@ -35,7 +35,7 @@ def create_planet(mass = (constants.M_jup / constants.M_sun).to('')) :
     )
     return planet
 
-def create_star(mass, interpolator, convective_phase_lag, wind=True) :
+def create_star(mass, dissipation, interpolator, convective_phase_lag,wind=True) :
     
     star = EvolvingStar(mass=mass,
                         metallicity=0.0,
@@ -43,20 +43,24 @@ def create_star(mass, interpolator, convective_phase_lag, wind=True) :
                         wind_saturation_frequency=2.78,
                         diff_rot_coupling_timescale=5.0e-3,
                         interpolator = interpolator)
+
+    if dissipation == 1:
         
-    star.set_dissipation(zone_index = 0,
+     star.set_dissipation(zone_index = 0,
                          tidal_frequency_breaks = None,
                          spin_frequency_breaks = None,
                          tidal_frequency_powers = numpy.array([0.0]),
                          spin_frequency_powers = numpy.array([0.0]),
                          reference_phase_lag = convective_phase_lag)
-                         
-    star.set_dissipation(zone_index = 1,
-                         tidal_frequency_breaks = None,
-                         spin_frequency_breaks = None,
-                         tidal_frequency_powers = numpy.array([0.0]),
-                         spin_frequency_powers = numpy.array([0.0]),
-                         reference_phase_lag = 0.0)
+
+
+   # if dissipation == 1:
+   #     star.set_dissipation(zone_index = 1,
+   #                      tidal_frequency_breaks = None,
+   #                      spin_frequency_breaks = None,
+   #                      tidal_frequency_powers = numpy.array([0.0]),
+   #                      spin_frequency_powers = numpy.array([0.0]),
+   #                      reference_phase_lag = 0.0)
     return star
 
 def create_binary_system(primary,
@@ -119,16 +123,17 @@ def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
     
     wsun = 0.24795522138          #2*pi/25.34
     
-    binary.evolve(5.2, 1e-3, 1e-6, None)
+    binary.evolve(6.2, 1e-3, 1e-6, None)
     
     evolution = binary.get_evolution()
 
     print("wsun = ", wsun)
     #print("==   ", binary.secondary.core_inertia(evolution.age))
 
-    wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
-
+   # wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
+    #wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
+    wenv = (evolution.envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
+    wcore = (evolution.core_angmom/binary.primary.core_inertia(evolution.age)) / wsun
 
 
     pyplot.semilogx(evolution.age, wenv, style['env'])
@@ -175,7 +180,7 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
     tdisk = 5e-3
 
-    star = create_star(0.8, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
+    star = create_star(0.8, 0, interpolator=interpolator, convective_phase_lag=0,  wind=wind)
     planet = create_planet(1.0)
 
 
@@ -199,9 +204,9 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
     binary.delete()
                                   
 
-    primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
-    secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
-
+    primary = create_star(1.0, 1, interpolator, convective_phase_lag,wind = wind)
+    #secondary = create_star(0.8, 0, interpolator, convective_phase_lag,wind = wind)
+    secondary = create_planet(1.0)
     binary = create_binary_system(
         primary,
         secondary,
