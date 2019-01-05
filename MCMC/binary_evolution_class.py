@@ -39,7 +39,7 @@ class evolution:
         planet = LockedPlanet(mass=mass, radius=(constants.R_jup / constants.R_sun).to(''))
         return planet
 
-    def create_star(self,mass):
+    def create_star(self,mass,dissipation):
         star = EvolvingStar(mass=mass,
                             metallicity=0.0,
                             wind_strength=self.wind_strength if self.wind else 0.0,
@@ -47,19 +47,20 @@ class evolution:
                             diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
                             interpolator=self.interpolator)
 
-        star.set_dissipation(zone_index=0,
+        if dissipation == 1:
+            star.set_dissipation(zone_index=0,
                              tidal_frequency_breaks=None,
                              spin_frequency_breaks=None,
                              tidal_frequency_powers=numpy.array([0.0]),
                              spin_frequency_powers=numpy.array([0.0]),
                              reference_phase_lag=self.convective_phase_lag)
 
-        star.set_dissipation(zone_index=1,
-                             tidal_frequency_breaks=None,
-                             spin_frequency_breaks=None,
-                             tidal_frequency_powers=numpy.array([0.0]),
-                             spin_frequency_powers=numpy.array([0.0]),
-                             reference_phase_lag=0.0)
+        #star.set_dissipation(zone_index=1,
+        #                     tidal_frequency_breaks=None,
+        #                     spin_frequency_breaks=None,
+        #                     tidal_frequency_powers=numpy.array([0.0]),
+        #                     spin_frequency_powers=numpy.array([0.0]),
+        #                     reference_phase_lag=0.0)
         return star
 
     def create_binary_system(self,
@@ -196,8 +197,8 @@ class evolution:
 
         print ('star-planet evolution completed')
 
-        primary = self.create_star(PrimaryMass)
-        secondary = self.create_star(SecondaryMass)
+        primary = self.create_star(PrimaryMass,1)
+        secondary = self.create_star(SecondaryMass,0)
 
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1.0,
