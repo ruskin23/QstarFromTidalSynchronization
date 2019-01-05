@@ -1,8 +1,12 @@
-"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+#"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+
+#import sys
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from binary_evolution_class import evolution
@@ -163,7 +167,7 @@ class MetropolisHastings:
 
 if __name__ == '__main__':
 
-    serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+    serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 

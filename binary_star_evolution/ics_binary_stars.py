@@ -4,12 +4,12 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-#import sys
-#sys.path.append('.../poet/PythonPackage')
-#sys.path.append('.../poet/scripts')
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+sys.path.append('.../poet/PythonPackage')
+sys.path.append('.../poet/scripts')
+#import sys
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 
 
@@ -89,29 +89,33 @@ class InitialConditionSolver :
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
 
 
-        self.binary.configure(self.primary.core_formation_age(),
-                              float('nan'),
-                              float('nan'),
-                              numpy.array([0.0]),
-                              None,
-                              None,
-                              'LOCKED_SURFACE_SPIN')
+        self.binary.configure(  age =  self.primary.core_formation_age(),
+                                semimajor=float('nan'),
+                                eccentricity=float('nan'),
+                                spin_angmom=numpy.array([0.0]),
+                                inclination = None,
+                                periapsis = None,
+                                evolution_mode='LOCKED_SURFACE_SPIN'
+
+                                )
+                            
 
         self.binary.primary.detect_stellar_wind_saturation()
 
 
         self.binary.secondary.configure(
-            self.target.planet_formation_age,
-            self.binary.primary.mass,
-            self.binary.semimajor(initial_orbital_period),
-            0.0,
-            spin_angmom,
-            inclination,
-            periapsis,
-            False,
-            True,
-            True
-        )
+            age = self.target.planet_formation_age,
+            companion_mass = self.binary.primary.mass,
+            semimajor = self.binary.semimajor(initial_orbital_period),
+            eccentricity = 0.0,
+            spin_angmom = spin_angmom,
+            inclination = inclination,
+            periapsis = periapsis,
+            locked_surface = False,
+            zero_outer_inclination = True,
+            zero_outer_periapsis = True
+        
+                 ) 
 
         print ("BINARY CONFIGURATION COMPLETE")
 
@@ -190,7 +194,7 @@ class InitialConditionSolver :
                  planet_formation_age = None,
                  disk_dissipation_age = None,
                  evolution_max_time_step = 1.0,
-                 evolution_precision = 1e-6,
+                 evolution_precision = 1e-4,
                  orbital_period_tolerance = 1e-6,
                  spin_tolerance = 1e-6,
                  secondary_angmom=None,
@@ -626,7 +630,7 @@ if __name__ == '__main__':
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
     )
-    serialized_dir = '/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators'
+    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
