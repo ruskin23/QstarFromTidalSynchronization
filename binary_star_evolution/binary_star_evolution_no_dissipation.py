@@ -123,15 +123,15 @@ def plot_evolution(binary, wsat,style = dict(core = '-b', env = '-g')) :
     
     wsun = 0.24795522138          #2*pi/25.34
     
-    binary.evolve(6.2, 1e-3, 1e-6, None)
+    binary.evolve(5.2, 1e-3, 1e-6, None)
     
     evolution = binary.get_evolution()
 
     print("wsun = ", wsun)
     #print("==   ", binary.secondary.core_inertia(evolution.age))
 
-   # wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
-    #wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
+    wenv = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
+    wcore = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
     wenv = (evolution.envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
     wcore = (evolution.core_angmom/binary.primary.core_inertia(evolution.age)) / wsun
 
@@ -205,8 +205,8 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
                                   
 
     primary = create_star(1.0, 1, interpolator, convective_phase_lag,wind = wind)
-    #secondary = create_star(0.8, 0, interpolator, convective_phase_lag,wind = wind)
-    secondary = create_planet(1.0)
+    secondary = create_star(0.8, 0, interpolator, convective_phase_lag,wind = wind)
+    #secondary = create_planet(1.0)
     binary = create_binary_system(
         primary,
         secondary,

@@ -178,7 +178,7 @@ class evolution:
         PrimaryMass = star_masses[0]
         SecondaryMass = star_masses[1]
 
-        star = self.create_star(SecondaryMass)
+        star = self.create_star(SecondaryMass,0)
         planet = self.create_planet(1.0)
 
         binary = self.create_binary_system(star,
@@ -198,13 +198,13 @@ class evolution:
         print ('star-planet evolution completed')
 
         primary = self.create_star(PrimaryMass,1)
-        secondary = self.create_star(SecondaryMass,0)
-
+        #secondary = self.create_star(SecondaryMass,0)
+        secondary = self.create_planet(SecondaryMass)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1.0,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
+                                         is_secondary_star=False)
 
         print ('Target parameters: ')
         print ('age = ', self.age)

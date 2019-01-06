@@ -202,7 +202,7 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        age_step = 2,
+                        age_step = 3,
                         teff_step = 100,
                         feh_step = 0.1,
                         semimajor_step = 0.001,
