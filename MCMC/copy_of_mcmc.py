@@ -33,9 +33,6 @@ class MetropolisHastings:
 
         Pspin_given_model = find_spin()
 
-        print ("\nSPIN FROM MODEL = ",Pspin_given_model)
-
-
         prior = 1.0
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
