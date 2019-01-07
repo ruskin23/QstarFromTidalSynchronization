@@ -71,6 +71,8 @@ class DerivePrimnaryMass:
 
         solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
 
+        print ('PRIMARY MASS = ', solution)
+
 
         return solution
 
@@ -90,6 +92,8 @@ class DeriveSecondaryMass:
 
         print ("period = ", self.period)
         print ("semimajor = ", self.semimajor)
+        print ("mass_primary = ", self.mass_primary)
 
+        print ('SECONDARY MASS = ', solution)
 
         return solution
