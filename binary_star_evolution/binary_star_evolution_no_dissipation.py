@@ -138,6 +138,8 @@ def plot_evolution(binary, wsat,style = dict(pcore = '-b', penv = '-g', score = 
     wenv_secondary = (evolution.primary_envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
     wcore_secondary = (evolution.primary_core_angmom/binary.primary.core_inertia(evolution.age)) / wsun
 
+    quantities = ['primary_envelope', 'primary_core', 'secondary_envelope', 'secondary_core']
+
 
     pyplot.semilogx(evolution.age, wenv_primary, "-b", label = 'primary_envelope')
     pyplot.semilogx(evolution.age, wcore_primary, "-g",label = 'primary_core')
