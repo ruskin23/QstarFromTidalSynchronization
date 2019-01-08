@@ -40,8 +40,12 @@ class MetropolisHastings:
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
             prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
+            print("obs_prior_name =%s, obs_prior_value = %s ", (repr(key_obs),repr(value_obs)))
+            print("par_prior_name =%s, par_prior_value = %s ", (repr(key_parameter),repr(value_parameter)))
+
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(Pspin_given_model)
+        print("likelihood = ", likelihood)
 
         posterior = prior*likelihood
 
@@ -53,6 +57,10 @@ class MetropolisHastings:
         posterior_proposed = self.posterior_probability(parameter_set=self.proposed_parameters)
         posterior_previous = self.posterior_probability(parameter_set=self.updated_parameters)
         p = posterior_proposed/posterior_previous
+        
+        print("POsterior_proposed = ",posterior_proposed)
+        print("Poster_previous = ", posterior_previous)
+        print("acceptance_probabilty = ", p)
 
         return p
 
