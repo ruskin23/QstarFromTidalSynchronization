@@ -4,18 +4,13 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-# import sys
-# sys.path.append('.../poet/PythonPackage')
-# sys.path.append('.../poet/scripts')
+import sys
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
-
-#import sys
-#sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-#sys.path.append('/home/kpenev/projects/git/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from matplotlib import pyplot
@@ -69,6 +64,7 @@ class InitialConditionSolver:
             secondary_formation_age = self.disk_dissipation_age
 
 
+
         else:
             spin_angmom = numpy.array([0.0])
             inclination = None
@@ -87,6 +83,7 @@ class InitialConditionSolver:
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
+        if self.is_secondary_star is True: self.binary.secondary.detect_stellar_wind_saturation()
 
 
         self.binary.configure(  age =  self.primary.core_formation_age(),
@@ -98,7 +95,6 @@ class InitialConditionSolver:
                                 evolution_mode='LOCKED_SURFACE_SPIN'
 
                                 )
-
         self.binary.primary.detect_stellar_wind_saturation()
 
         self.binary.secondary.configure(

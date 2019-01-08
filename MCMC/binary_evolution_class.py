@@ -2,12 +2,11 @@
 
 
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
-# import sys
-# sys.path.append('.../poet/PythonPackage')
-# sys.path.append('.../poet/scripts')
+sys.path.append('.../poet/PythonPackage')
+sys.path.append('.../poet/scripts')
 
 
 #import sys
@@ -76,7 +75,7 @@ class evolution:
                                     inclination=None,
                                     periapsis=None)
         else:
-           #secondary.select_interpolation_region(disk_dissipation_age)
+            secondary.select_interpolation_region(disk_dissipation_age)
             secondary_config = dict(spin_angmom=secondary_angmom,
                                     inclination=numpy.array([0.0]),
                                     periapsis=numpy.array([0.0]))
@@ -90,8 +89,13 @@ class evolution:
                             zero_outer_periapsis=True,
                             **secondary_config)
 
-        #if isinstance(secondary, EvolvingStar):
-            #secondary.detect_stellar_wind_saturation()
+        print ("BEGINSAT")
+
+        if isinstance(secondary, EvolvingStar):
+            secondary.detect_stellar_wind_saturation()
+            print ("DETECTED SECONDARY WIND SAT")
+
+
 
         primary.select_interpolation_region(primary.core_formation_age())
         primary.detect_stellar_wind_saturation()
@@ -122,18 +126,23 @@ class evolution:
 
         print ("Calculating Masses\n")
 
+        print ("AGE = ", self.age)
+
         mass1 = DerivePrimnaryMass(
                                     self.interpolator,
                                     self.feh,
                                     self.age,
-                                    self.teff)
+                                    self.teff_primary)
         PrimaryMass = mass1()
 
+        temp_ratio = 0.83740   #temperature ratio is T2/T1
+        teff_secondary = temp_ratio*self.teff_primary
 
         mass2 = DeriveSecondaryMass(
-                                    self.Porb,
-                                    self.semimajor,
-                                    PrimaryMass)
+                                    self.interpolator,
+                                    self.feh,
+                                    self.age,
+                                    teff_secondary)
 
         SecondaryMass = mass2()
 
@@ -154,9 +163,8 @@ class evolution:
         self.age = observational_parameters['age']
         self.feh = observational_parameters['feh']
         self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
-        self.teff = observational_parameters['teff']
+        self.teff_primary = observational_parameters['teff_primary']
         self.Porb = observational_parameters['Porb']
-        self.semimajor = observational_parameters['semimajor']
         self.disk_lock_frequency = observational_parameters['Pdisk']
 
         self.inclination = fixed_parameters['inclination']
@@ -201,7 +209,7 @@ class evolution:
         secondary = self.create_star(SecondaryMass, 0)
         #secondary = self.create_planet(SecondaryMass)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
-                                         evolution_max_time_step=1.0,
+                                         evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True)

@@ -1,12 +1,11 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
-#import sys
-#sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-#sys.path.append('/home/kpenev/projects/git/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from binary_evolution_class import evolution
@@ -71,7 +70,6 @@ class MetropolisHastings:
         for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
 
-        print ("semimajor_proposed = ", proposed["semimajor"])
 
         return proposed
 
@@ -178,8 +176,8 @@ class MetropolisHastings:
 
 if __name__ == '__main__':
 
-    #serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
-    serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+    serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+    #serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -190,9 +188,8 @@ if __name__ == '__main__':
 
     observation_data = dict(
                         age=dict(value=4.6, sigma=3.0),
-                        teff=dict(value=5922.0, sigma=200.0),
+                        teff_primary=dict(value=5922.0, sigma=200.0),
                         feh=dict(value=-0.06, sigma=0.11),
-                        semimajor=dict(value=0.05917, sigma=5.576e-09),
                         Porb=dict(value=5.2663825, sigma=3.7e-06),
                         Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
@@ -217,7 +214,6 @@ if __name__ == '__main__':
                         age_step=3.0,
                         teff_step=100.0,
                         feh_step=0.1,
-                        semimajor_step=5.576e-09,
                         Porb_step=7e-6,
                         Pdisk_step=0.1,
                         logQ_step=0.5
