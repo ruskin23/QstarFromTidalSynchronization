@@ -1,12 +1,12 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 
-#import sys
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
 import sys
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+
+#import sys
+#sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+#sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from binary_evolution_class import evolution
@@ -40,8 +40,8 @@ class MetropolisHastings:
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
             prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-            print("obs_prior_name =%s, obs_prior_value = %s ", (repr(key_obs),repr(value_obs)))
-            print("par_prior_name =%s, par_prior_value = %s ", (repr(key_parameter),repr(value_parameter)))
+            #print("obs_prior_name =%s, obs_prior_value = %s ", (repr(key_obs),repr(value_obs)))
+            #print("par_prior_name =%s, par_prior_value = %s ", (repr(key_parameter),repr(value_parameter)))
 
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(Pspin_given_model)
@@ -178,7 +178,8 @@ class MetropolisHastings:
 
 if __name__ == '__main__':
 
-    serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+    #serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+    serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -216,8 +217,8 @@ if __name__ == '__main__':
                         age_step=3.0,
                         teff_step=100.0,
                         feh_step=0.1,
-                        semimajor_step=0.00001,
-                        Porb_step=0.00001,
+                        semimajor_step=5.576e-09,
+                        Porb_step=7e-6,
                         Pdisk_step=0.1,
                         logQ_step=0.5
                     )
