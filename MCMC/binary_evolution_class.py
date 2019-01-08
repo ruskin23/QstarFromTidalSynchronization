@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
 
-#import sys
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+import sys
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 # import sys
 # sys.path.append('.../poet/PythonPackage')
 # sys.path.append('.../poet/scripts')
 
 
-import sys
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+#import sys
+#sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+#sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager

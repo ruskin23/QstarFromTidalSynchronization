@@ -1,14 +1,14 @@
 """Calculate primary and secondary mass if the age, [Fe/H] and semimajor axis are known """
 
 
-#import sys
-
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
 import sys
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+
+#import sys
+#sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+#sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
