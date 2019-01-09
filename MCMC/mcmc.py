@@ -69,6 +69,10 @@ class MetropolisHastings:
         proposed = dict()
         for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
+            print("NAME AND VALUE",name_obs,proposed[name_obs] )
+            if proposed[name_obs]<0: return scipy.nan
+
+
 
 
         return proposed
@@ -122,6 +126,7 @@ class MetropolisHastings:
             #draw a random value from proposal function
             self.proposed_parameters = self.values_proposed()
             print ('new values proposed')
+            if self.proposed_parameters == scipy.nan : continue
 
             # calculate acceptance probablity
             print ('calculating acceptance probability')
@@ -226,7 +231,7 @@ if __name__ == '__main__':
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,1,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,10,observed_Pspin)
 
 mcmc.iterations()
 #flush()
