@@ -70,7 +70,7 @@ class MetropolisHastings:
         for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
             print("NAME AND VALUE",name_obs,proposed[name_obs] )
-            if proposed[name_obs]<0: return scipy.nan
+            if proposed['age']<0: return scipy.nan
 
 
 
@@ -165,15 +165,17 @@ class MetropolisHastings:
         self.proposed_step = proposed_step
         self.iteration_step = 0
         self.total_iterations= total_iterations
+        
+      
         self.updated_parameters = dict()
         self.proposed_parameters = dict()
-
-
-
+        
+        #setting up initial parameters
         self.initial_parameters = dict()
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+        print(self.initial_parameters)
 
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin
@@ -200,7 +202,7 @@ if __name__ == '__main__':
                     )
 
     observed_Pspin = dict(
-                        value=7.2,
+                        value=7.713253717543052,
                         sigma=0.1
                     )
 
