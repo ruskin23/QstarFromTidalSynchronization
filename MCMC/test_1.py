@@ -1,7 +1,7 @@
 import random
 import scipy
 from scipy.stats import norm
-
+import numpy
 
 
 class struct :
@@ -210,3 +210,9 @@ if __name__ == '__main__':
 
     check_prior = scipy.stats.norm(0.05917,5.576e-09).pdf(propose_value)
     print (check_prior)
+
+
+    parameter_set = scipy.nan
+    print("NANSET = ", parameter_set)
+
+    print(numpy.isnan(parameter_set))
