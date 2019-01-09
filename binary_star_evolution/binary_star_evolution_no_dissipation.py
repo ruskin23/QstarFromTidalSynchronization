@@ -133,13 +133,14 @@ def plot_evolution(binary, wsat,style = dict(pcore = '-b', penv = '-g', score = 
     #print("wsun = ", wsun)
     #print("==   ", binary.secondary.core_inertia(evolution.age))
 
-    wenv_primary = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore_primary = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
-    wenv_secondary = (evolution.primary_envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
-    wcore_secondary = (evolution.primary_core_angmom/binary.primary.core_inertia(evolution.age)) / wsun
+    wenv_secondary = (evolution.secondary_envelope_angmom/binary.secondary.envelope_inertia(evolution.age)) / wsun
+    wcore_secondary = (evolution.secondary_core_angmom/binary.secondary.core_inertia(evolution.age)) / wsun
+    wenv_primary = (evolution.primary_envelope_angmom/binary.primary.envelope_inertia(evolution.age)) / wsun
+    wcore_primary = (evolution.primary_core_angmom/binary.primary.core_inertia(evolution.age)) / wsun
 
     quantities = ['primary_envelope', 'primary_core', 'secondary_envelope', 'secondary_core']
 
+    orbitalfrequncy = binary.orbital_frequency(evolution.semimajor)/wsun
 
     pyplot.semilogx(evolution.age, wenv_primary, "-b", label = 'primary_envelope')
     pyplot.semilogx(evolution.age, wcore_primary, "-g",label = 'primary_core')
@@ -149,7 +150,7 @@ def plot_evolution(binary, wsat,style = dict(pcore = '-b', penv = '-g', score = 
 
    
     
-    pyplot.semilogx(evolution.age, binary.orbital_frequency(evolution.semimajor), "-k", label = 'orbital_frequency')
+    pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label = 'orbital_frequency')
     pyplot.legend(loc = 'upper right')
     pyplot.ylim(top = 30)
     pyplot.ylim(bottom = -20)
