@@ -101,6 +101,7 @@ class InitialConditionSolver :
                             
 
         self.binary.primary.detect_stellar_wind_saturation()
+        if self.is_secondary_star is  True:  self.binary.secondary.detect_stellar_wind_saturation()
 
 
         self.binary.secondary.configure(
@@ -553,7 +554,7 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     tdisk = 5e-3
 
 
-    star = create_star(0.8, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
+    star = create_star(0.7199187712878362, interpolator=interpolator, convective_phase_lag=0.0, wind=wind)
     planet = create_planet(1.0)
 
     binary = create_binary_system(star,
@@ -572,14 +573,10 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     star.delete()
     binary.delete()
 
-    find_ic = InitialConditionSolver(disk_dissipation_age=5e-3,
-                                    evolution_max_time_step=1e-2,
-                                    secondary_angmom=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]),
-                                    is_secondary_star=True)
 
 
-    primary = create_star(1.0, interpolator, convective_phase_lag, wind = wind)
-    secondary = create_star(0.8, interpolator, convective_phase_lag, wind = wind)
+    primary = create_star(0.9069270492020846, interpolator, convective_phase_lag, wind = wind)
+    secondary = create_star(0.7199187712878362, interpolator, convective_phase_lag, wind = wind)
 
     case = False
 
@@ -609,9 +606,18 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     else:
 
 
-        target = Structure(age=7.0,
-                           Porb=10.0,
-                           Wdisk=2 * numpy.pi / 7.0,
+        find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
+                                         evolution_max_time_step=1e-3,
+                                         secondary_angmom=numpy.array(
+                                             [disk_state.envelope_angmom, disk_state.core_angmom]),
+                                         is_secondary_star=True)
+
+
+
+
+        target = Structure(age=10.722792450594072,
+                           Porb=5.2663825,
+                           Wdisk=2 * numpy.pi / 4.464772304191935,
                            planet_formation_age=5e-3)
 
         initial_porb, initial_psurf = find_ic(target=target,
@@ -635,4 +641,4 @@ if __name__ == '__main__':
     interpolator = manager.get_interpolator_by_name('default')
 
     # test_evolution(interpolator, phase_lag(6.0))
-    test_ic_solver(interpolator,1e-7,True)
+    test_ic_solver(interpolator,8.595131103910246e-06,True)
