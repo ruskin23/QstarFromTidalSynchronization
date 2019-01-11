@@ -485,12 +485,6 @@ def create_star(mass, interpolator, convective_phase_lag, wind=True):
                             spin_frequency_powers=numpy.array([0.0]),
                             reference_phase_lag=convective_phase_lag)
 
-    star.set_dissipation(zone_index=1,
-                            tidal_frequency_breaks=None,
-                            spin_frequency_breaks=None,
-                            tidal_frequency_powers=numpy.array([0.0]),
-                            spin_frequency_powers=numpy.array([0.0]),
-                            reference_phase_lag=0.0)
     return star
 
 
