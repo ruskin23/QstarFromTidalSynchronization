@@ -82,7 +82,7 @@ def create_binary_system(primary,
 
     binary = Binary(primary=primary,
                     secondary=secondary,
-                    initial_orbital_period=5.175816494103704,
+                    initial_orbital_period=5.266384958553655,
                     initial_eccentricity=0.0,
                     initial_inclination=0.0,
                     disk_lock_frequency=disk_lock_frequency,
@@ -114,7 +114,7 @@ def plot_evolution(binary, wsat, style=dict(pcore='-b', penv='-g', score='m', se
 
     wsun = 0.24795522138  # 2*pi/25.34
 
-    binary.evolve(3.892258846087225, 1e-3, 1e-6, None)
+    binary.evolve(7.040749005418253, 1e-3, 1e-6, None)
 
     evolution = binary.get_evolution()
 
@@ -176,7 +176,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
     tdisk = 5e-3
 
-    star = create_star(0.781325045452563, 1, interpolator=interpolator, convective_phase_lag=0, wind=wind)
+    star = create_star(0.7962217150318495, 1, interpolator=interpolator, convective_phase_lag=0, wind=wind)
     planet = create_planet(1.0)
 
     binary = create_binary_system(star,
@@ -195,8 +195,8 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     star.delete()
     binary.delete()
 
-    primary = create_star(0.9913616532856468, 1, interpolator, convective_phase_lag, wind=wind)
-    secondary = create_star(0.781325045452563, 1, interpolator, convective_phase_lag, wind=wind)
+    primary = create_star(1.041758407208152, 1, interpolator, convective_phase_lag, wind=wind)
+    secondary = create_star(0.7962217150318495, 1, interpolator, convective_phase_lag, wind=wind)
     # secondary = create_planet(1.0)
     binary = create_binary_system(
         primary,
@@ -241,6 +241,6 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    test_evolution(interpolator, 5.022414533893362e-07, True)
+    test_evolution(interpolator,  7.347937935590104e-07, True)
 
 

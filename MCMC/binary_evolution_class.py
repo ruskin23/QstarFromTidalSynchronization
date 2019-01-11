@@ -97,7 +97,7 @@ class evolution:
 
         binary = Binary(primary=primary,
                         secondary=secondary,
-                        initial_orbital_period=5.0,
+                        initial_orbital_period=5.2663825,
                         initial_eccentricity=0.0,
                         initial_inclination=0.0,
                         disk_lock_frequency=self.disk_lock_frequency,
@@ -159,8 +159,8 @@ class evolution:
         self.feh = observational_parameters['feh']
         self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
         self.teff_primary = observational_parameters['teff_primary']
-        self.Porb = observational_parameters['Porb']
         self.disk_lock_frequency = observational_parameters['Pdisk']
+        self.Porb = 5.2663825
 
         self.inclination = fixed_parameters['inclination']
         self.disk_dissipation_age = fixed_parameters['disk_dissipation_age']
