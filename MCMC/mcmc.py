@@ -118,6 +118,7 @@ class MetropolisHastings:
         """runs the metropolis hastrings algorithm for number of iterations given"""
         if self.iteration_step==0: self.updated_parameters = self.initial_parameters
         print ('\nINITIAL PARAMETERS SET')
+        print(self.updated_parameters)
 
         while self.iteration_step<self.total_iterations:
 
@@ -126,6 +127,7 @@ class MetropolisHastings:
             #draw a random value from proposal function
             self.proposed_parameters = self.values_proposed()
             print ('new values proposed')
+            print (self.proposed_parameters)
             if self.proposed_parameters == scipy.nan : continue
 
             # calculate acceptance probablity
@@ -197,7 +199,7 @@ if __name__ == '__main__':
                         age=dict(value=4.6, sigma=3.0),
                         teff_primary=dict(value=5922.0, sigma=200.0),
                         feh=dict(value=-0.06, sigma=0.11),
-                        Porb=dict(value=5.2663825, sigma=3.7e-06),
+                     
                         Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
@@ -221,7 +223,7 @@ if __name__ == '__main__':
                         age_step=3.0,
                         teff_step=100.0,
                         feh_step=0.1,
-                        Porb_step=7e-6,
+                        
                         Pdisk_step=0.1,
                         logQ_step=0.5
                     )
