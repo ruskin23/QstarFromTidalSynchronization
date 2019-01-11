@@ -114,17 +114,6 @@ def create_binary_system(primary,
     return binary
 
 
-def plot_evolution(binary, wsat, style=dict(core='-b', env='-g')):
-    """Calculate and plot the evolution of a properly constructed binary."""
-
-    wsun = 0.24795522138  # 2*pi/25.34
-
-    binary.evolve(10.0, 1e-3, 1e-6, None)
-
-    evolution = binary.get_evolution()
-
-    print("wsun = ", wsun)
-    # print("==   ", binary.secondary.core_inertia(evolution.age))
 
     wenv = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
     wcore = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
@@ -137,32 +126,6 @@ def plot_evolution(binary, wsat, style=dict(core='-b', env='-g')):
     pyplot.show()
 
     return evolution
-
-
-def output_evolution(evolution, binary):
-    """Write the given evolution to stdout organized in columns."""
-
-    quantities = list(
-        filter(lambda q: q[0] != '_' and q != 'format', dir(evolution))
-    )
-    print(' '.join(['%30s' % q for q in quantities]), end=' ')
-    print(' '.join(['%30s' % q for q in ['primary_core_inertia',
-                                         'primary_env_inertia',
-                                         'secondary_core_inertia',
-                                         'secondary_env_inertia']]))
-    for i in range(len(evolution.age)):
-        print(' '.join(['%30s' % repr(getattr(evolution, q)[i])
-                        for q in quantities]), end=' ')
-        age = evolution.age[i]
-        print(' '.join([
-            '%30.16e' % q for q in [
-                binary.primary.core_inertia(age),
-                binary.primary.envelope_inertia(age),
-                binary.secondary.core_inertia(age),
-                binary.secondary.envelope_inertia(age)
-            ]
-        ]))
-
 
 def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
