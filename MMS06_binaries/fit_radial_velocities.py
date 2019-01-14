@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Fit or the amplitude, offset and shift describing an RV orbit."""
 
 from argparse import ArgumentParser
 
@@ -44,11 +45,17 @@ def residuals(params, rv_data):
         rv_data[:, 1]
     )
 
-if __name__ == '__main__':
-    cmdline_args = parse_command_line()
-    rv_data = scipy.genfromtxt(cmdline_args.rv_fname)
+def fit_rv_data(rv_data_fname):
+    """Fit or the amplitude, offset and shift describing an RV orbit."""
+
+    rv_data = scipy.genfromtxt(rv_data_fname)
     (amplitude, phase, offset), flag = scipy.optimize.leastsq(residuals,
                                                               [1.0, 0.0, 0.0],
-                                                              args = (rv_data,))
+                                                              args=(rv_data,))
     assert(flag in [1, 2, 3, 4])
-    print('Amplitude: ' + repr(amplitude))
+    return amplitude, phase, offset
+
+if __name__ == '__main__':
+    cmdline_args = parse_command_line()
+    fit_results = fit_rv_data(cmdline_args.rv_fname)
+    print('Amplitude: ' + repr(fit_results[0]))
