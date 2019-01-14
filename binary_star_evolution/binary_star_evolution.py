@@ -114,7 +114,7 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     wsun = 0.24795522138  # 2*pi/25.34
 
-    binary.evolve(age, 1e-3, 1e-6, None)
+    binary.evolve(age, 1e-3, 1e-6, None,True)
 
     evolution = binary.get_evolution()
 
@@ -179,7 +179,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     primary_mass = 0.9735205066895405
     secondary_mass = 0.7522396868226867
     initial_disk_period =  1.4064967495370835 
-    initial_orbital_period = 5.2663825
+    initial_orbital_period =5.2663825# 5.2663825
     
 
 
