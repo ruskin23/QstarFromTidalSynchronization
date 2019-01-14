@@ -127,7 +127,8 @@ class InitialConditionSolver :
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None
+            None,
+            True
         )
 
         print ("BINARY EVOLUTION COMPLETE")
@@ -583,35 +584,8 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     primary = create_star(primary_mass, interpolator, convective_phase_lag, wind = wind)
     secondary = create_star(secondary_mass, interpolator, convective_phase_lag, wind = wind)
 
-    case = False
 
-    if case==True:
-        Pdisk = numpy.linspace(5.0,10.0,20)
-        Psurf_I = []
-        Porb_I = []
-
-
-        for period in Pdisk:
-
-            target = Structure( age=7.0,
-                            Porb=10.0,
-                            Wdisk=2*numpy.pi/period,
-                            planet_formation_age=5e-3)
-
-            initial_porb, initial_psurf = find_ic(target=target,
-                                                primary=primary,
-                                                secondary=secondary)
-
-            Psurf_I.append(initial_psurf)
-            Porb_I.append(initial_porb)
-
-        print (Psurf_I)
-        print (Porb_I)
-
-    else:
-
-
-        find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
+    find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
@@ -620,20 +594,21 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
 
 
 
-        target = Structure(age=age,
+    target = Structure(age=age,
                            Porb=initial_orbital_period,
                            Wdisk=2 * numpy.pi / initial_disk_period,
                            planet_formation_age=5e-3)
 
-        initial_porb, initial_psurf = find_ic(target=target,
+    initial_porb, initial_psurf = find_ic(target=target,
                                               primary=primary,
                                               secondary=secondary)
-
-        print (initial_psurf)
-
+    
 
     primary.delete()
     secondary.delete()
+
+    return initial_psurf
+
     
 
 
@@ -646,4 +621,13 @@ if __name__ == '__main__':
     interpolator = manager.get_interpolator_by_name('default')
 
     # test_evolution(interpolator, phase_lag(6.0))
-    test_ic_solver(interpolator,1.6799410609204806e-05,True)
+    logQ = numpy.linspace(5.0,5.5,10)
+    #logQ = [5.5]
+
+
+    with open('Psurf_values.txt','w') as f:
+
+        for q in logQ:
+            print( "calculatingforthevalues = " + repr(q) + "\t"+ repr(phase_lag(q)) + "\n")
+            Pspin = test_ic_solver(interpolator,phase_lag(q),True)
+            f.write(repr(q) + "\t" + repr(phase_lag(q)) + "\t" + repr(Pspin) + "\n" )
