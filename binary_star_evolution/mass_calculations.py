@@ -142,7 +142,28 @@ class DeriveSecondaryMass:
         return solution
 
 
+if __name__ == '__main__':
 
+    serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+    #serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+    manager = StellarEvolutionManager(serialized_dir)
+    interpolator = manager.get_interpolator_by_name('default')
+
+
+    primary_temp = 5922.0
+    feh = -0.06
+    age = 4.6
+
+
+    M1 = DerivePrimnaryMass(interpolator,feh,age,primary_temp)
+    print("Primary_Mass = ", M1())
+
+
+    T_ratio =  0.83740
+    secondary_temp = T_ratio*primary_temp
+
+    M2 = DerivePrimnaryMass(interpolator,feh,age,secondary_temp)
+    print ("Secondary_Mass = ", M2())
 
 
 
