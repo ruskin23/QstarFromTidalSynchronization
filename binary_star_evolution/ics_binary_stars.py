@@ -621,11 +621,11 @@ if __name__ == '__main__':
     interpolator = manager.get_interpolator_by_name('default')
 
     # test_evolution(interpolator, phase_lag(6.0))
-    logQ = numpy.linspace(6.5,7.0,10)
-    #logQ = [5.777777777777778]
+    #logQ = numpy.linspace(6.5,7.0,10)
+    logQ = [6.0]
 
 
-    with open('Psurf_values_6570.txt','w') as f:
+    with open('Psurf_values_test_60.txt','w') as f:
 
         for q in logQ:
             print( "calculatingforthevalues = " + repr(q) + "\t"+ repr(phase_lag(q)) + "\n")
