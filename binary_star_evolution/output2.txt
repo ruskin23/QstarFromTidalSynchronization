@@ -1,0 +1,158 @@
+nohup: ignoring input
+2019-01-11 16:36:39,677 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+2019-01-11 16:36:39,677 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,677 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+2019-01-11 16:36:39,677 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,678 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolators")
+2019-01-11 16:36:39,678 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("model_suites")
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("quantities")
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_variables")
+2019-01-11 16:36:39,679 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,680 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolation_parameters")
+2019-01-11 16:36:39,680 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,680 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("tracks")
+2019-01-11 16:36:39,680 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,680 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_grids")
+2019-01-11 16:36:39,681 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,681 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolator_tracks")
+2019-01-11 16:36:39,681 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,681 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_age_nodes")
+2019-01-11 16:36:39,681 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_feh_nodes")
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_mass_nodes")
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_values")
+2019-01-11 16:36:39,682 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,691 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-11 16:36:39,691 INFO sqlalchemy.engine.base.Engine SELECT quantities.id AS quantities_id, quantities.name AS quantities_name 
+FROM quantities
+2019-01-11 16:36:39,691 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,692 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites
+2019-01-11 16:36:39,692 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,694 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+FROM (SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks) AS anon_1
+2019-01-11 16:36:39,695 INFO sqlalchemy.engine.base.Engine ()
+2019-01-11 16:36:39,695 INFO sqlalchemy.engine.base.Engine COMMIT
+2019-01-11 16:36:39,695 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-11 16:36:39,696 INFO sqlalchemy.engine.base.Engine SELECT interpolators.id AS interpolators_id, interpolators.name AS interpolators_name, interpolators.filename AS interpolators_filename, interpolators.checksum AS interpolators_checksum 
+FROM interpolators 
+WHERE interpolators.name = ?
+2019-01-11 16:36:39,696 INFO sqlalchemy.engine.base.Engine ('default',)
+2019-01-11 16:36:39,822 INFO sqlalchemy.engine.base.Engine SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks, interpolator_tracks 
+WHERE ? = interpolator_tracks.interpolator_id AND tracks.id = interpolator_tracks.track_id
+2019-01-11 16:36:39,822 INFO sqlalchemy.engine.base.Engine (1,)
+/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
+  'storage.' % (dialect.name, dialect.driver))
+2019-01-11 16:36:39,824 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites 
+WHERE model_suites.id = ?
+2019-01-11 16:36:39,824 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-11 16:36:39,826 INFO sqlalchemy.engine.base.Engine SELECT interpolation_parameters.interpolator_id AS interpolation_parameters_interpolator_id, interpolation_parameters.quantity_id AS interpolation_parameters_quantity_id, interpolation_parameters.nodes AS interpolation_parameters_nodes, interpolation_parameters.smoothing AS interpolation_parameters_smoothing, interpolation_parameters.vs_log_age AS interpolation_parameters_vs_log_age, interpolation_parameters.log_quantity AS interpolation_parameters_log_quantity 
+FROM interpolation_parameters 
+WHERE ? = interpolation_parameters.interpolator_id
+2019-01-11 16:36:39,826 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-11 16:36:42,741 INFO sqlalchemy.engine.base.Engine SELECT varchange_grids.id AS varchange_grids_id 
+FROM varchange_grids 
+WHERE varchange_grids.name = ? AND varchange_grids.interpolator_id = ?
+2019-01-11 16:36:42,741 INFO sqlalchemy.engine.base.Engine ('default', 1)
+2019-01-11 16:36:42,744 INFO sqlalchemy.engine.base.Engine SELECT varchange_feh_nodes.value AS varchange_feh_nodes_value 
+FROM varchange_feh_nodes 
+WHERE varchange_feh_nodes.grid_id = ? ORDER BY varchange_feh_nodes."index"
+2019-01-11 16:36:42,744 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-11 16:36:42,745 INFO sqlalchemy.engine.base.Engine SELECT varchange_mass_nodes.value AS varchange_mass_nodes_value 
+FROM varchange_mass_nodes 
+WHERE varchange_mass_nodes.grid_id = ? ORDER BY varchange_mass_nodes."index"
+2019-01-11 16:36:42,745 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-11 16:36:42,746 INFO sqlalchemy.engine.base.Engine SELECT varchange_age_nodes.value AS varchange_age_nodes_value 
+FROM varchange_age_nodes 
+WHERE varchange_age_nodes.grid_id = ? ORDER BY varchange_age_nodes."index"
+2019-01-11 16:36:42,746 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-11 16:36:42,747 INFO sqlalchemy.engine.base.Engine COMMIT
+FINISHED PLANET-STAR EVOLUTION
+Trying P0 = 5.2663825, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.43414415637336, P* = 5.43122644144416
+Trying P0 = 2.63319125, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 1.578123546334769, P* = 1.5772762161023048
+For Pdisk = 1.4064967495370835, orbital period range: 2.63319125 < Porb < 5.2663825
+Trying P0 = 2.63319125, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 1.5781319310554136, P* = 1.577284596321003
+Trying P0 = 5.2663825, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.43414415637336, P* = 5.43122644144416
+Trying P0 = 5.151821523572749, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.304615969180288, P* = 5.3017678008649884
+Trying P0 = 5.118352944220003, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.26665077732939, P* = 5.263822993384446
+Trying P0 = 5.118117013745591, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382869154269, P* = 5.263555229055283
+Trying P0 = 5.118113954687084, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266379404445333, P* = 5.263551766206629
+Trying P0 = 5.118117013745591, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382869154269, P* = 5.263555229055283
+Obtained Pspin =  1.6608066974926623
+FINISHED PLANET-STAR EVOLUTION
+Trying P0 = 5.2663825, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.432913279499403, P* = 5.429996225455841
+Trying P0 = 2.63319125, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 1.5780847596800813, P* = 1.577237450273049
+For Pdisk = 1.4064967495370835, orbital period range: 2.63319125 < Porb < 5.2663825
+Trying P0 = 2.63319125, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 1.5781062988593515, P* = 1.5772589778874466
+Trying P0 = 5.2663825, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.433257432235631, P* = 5.4303401934086795
+Trying P0 = 5.15240159595633, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.304280365021136, P* = 5.301432376899301
+Trying P0 = 5.119250747970376, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.26671084883166, P* = 5.263883032632966
+Trying P0 = 5.118961713242185, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382964533226, P* = 5.26355532438303
+Trying P0 = 5.118958653761329, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.2663794962475, P* = 5.263551857959504
+Trying P0 = 5.118961713242185, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382964533226, P* = 5.26355532438303
+Obtained Pspin =  1.6608067156035669
+FINISHED PLANET-STAR EVOLUTION
+Trying P0 = 5.2663825, Pdisk = 1.4064967495370835
+BINARY CONFIGURATION COMPLETE
