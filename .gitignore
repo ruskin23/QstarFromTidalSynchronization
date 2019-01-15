@@ -3,6 +3,7 @@
 
 #vim swap files
 .*.swp
+/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/output_data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
