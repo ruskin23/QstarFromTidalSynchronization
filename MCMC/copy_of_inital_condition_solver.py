@@ -4,13 +4,18 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-import sys
-sys.path.append('.../poet/PythonPackage')
-sys.path.append('.../poet/scripts')
+# import sys
+# sys.path.append('.../poet/PythonPackage')
+# sys.path.append('.../poet/scripts')
+#
 #import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
+
+import sys
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
 from matplotlib import pyplot
@@ -28,10 +33,10 @@ from math import pi
 from scipy.optimize import brentq
 import numpy
 
-class InitialConditionSolver :
+class InitialConditionSolver:
     """Find initial conditions which reproduce a given system now."""
 
-    def _try_initial_conditions(self, initial_orbital_period, disk_period) :
+    def _try_initial_conditions(self, initial_orbital_period, disk_period):
         """
         Get present orbital and stellar spin periods for initial conditions.
 
@@ -54,101 +59,100 @@ class InitialConditionSolver :
               %
               (repr(initial_orbital_period), repr(disk_period)))
 
-        if hasattr(self, 'binary') : self.binary.delete()
+        if hasattr(self, 'binary'): self.binary.delete()
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
-            spin_angmom=self.secondary_angmom
-            inclination=numpy.array([0.0])
-            periapsis=numpy.array([0.0])
+            spin_angmom = self.secondary_angmom
+            inclination = numpy.array([0.0])
+            periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
-            secondary_config_age = self.disk_dissipation_age
 
 
         else:
-            spin_angmom=numpy.array([0.0])
-            inclination=None
-            periapsis=None
+            spin_angmom = numpy.array([0.0])
+            inclination = None
+            periapsis = None
             secondary_formation_age = self.target.planet_formation_age
 
-
-
-
-
         self.binary = Binary(
-            primary = self.primary,
-            secondary = self.secondary,
-            initial_orbital_period = initial_orbital_period,
-            initial_eccentricity = 0.0,
-            initial_inclination = 0.0,
-            disk_lock_frequency = 2.0 * numpy.pi / disk_period,
-            disk_dissipation_age = self.disk_dissipation_age,
-            secondary_formation_age =secondary_formation_age
+            primary=self.primary,
+            secondary=self.secondary,
+            initial_orbital_period=initial_orbital_period,
+            initial_eccentricity=0.0,
+            initial_inclination=0.0,
+            disk_lock_frequency=2.0 * numpy.pi / disk_period,
+            disk_dissipation_age=self.disk_dissipation_age,
+            secondary_formation_age=secondary_formation_age
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
+
+        print ("binary.configure_started")
+
+
+
 
 
         self.binary.configure(  age =  self.primary.core_formation_age(),
                                 semimajor=float('nan'),
                                 eccentricity=float('nan'),
                                 spin_angmom=numpy.array([0.0]),
-                                inclination = None,
-                                periapsis = None,
+                                inclination=None,
+                                periapsis=None,
                                 evolution_mode='LOCKED_SURFACE_SPIN'
 
                                 )
-                            
+
+        print ("binary_.configure_ended")
+
 
         self.binary.primary.detect_stellar_wind_saturation()
-        if self.is_secondary_star is  True:  self.binary.secondary.detect_stellar_wind_saturation()
-
 
         self.binary.secondary.configure(
-            age = self.target.planet_formation_age,
-            companion_mass = self.binary.primary.mass,
-            semimajor = self.binary.semimajor(initial_orbital_period),
-            eccentricity = 0.0,
-            spin_angmom = spin_angmom,
-            inclination = inclination,
-            periapsis = periapsis,
-            locked_surface = False,
-            zero_outer_inclination = True,
-            zero_outer_periapsis = True
-        
-                 ) 
+            age=self.target.planet_formation_age,
+            companion_mass=self.binary.primary.mass,
+            semimajor=self.binary.semimajor(initial_orbital_period),
+            eccentricity=0.0,
+            spin_angmom=spin_angmom,
+            inclination=inclination,
+            periapsis=periapsis,
+            locked_surface=False,
+            zero_outer_inclination=True,
+            zero_outer_periapsis=True
+        )
 
         print ("BINARY CONFIGURATION COMPLETE")
-
-
-
 
         self.binary.evolve(
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None,
-            True
+            None
         )
 
         print ("BINARY EVOLUTION COMPLETE")
+
         final_state = self.binary.final_state()
-        assert(final_state.age == self.target.age)
+
+        assert (final_state.age == self.target.age)
+
         orbital_period = self.binary.orbital_period(final_state.semimajor)
+
         stellar_spin_period = (
-            2.0 * pi
-            *
-            self.binary.primary.envelope_inertia(final_state.age)
-            /
-            final_state.primary_envelope_angmom
+                2.0 * pi
+                *
+                self.binary.primary.envelope_inertia(final_state.age)
+                /
+                final_state.primary_envelope_angmom
         )
         print('Got Porb = %s, P* = %s'
               %
               (repr(orbital_period), repr(stellar_spin_period)))
-        if(numpy.isnan(orbital_period)) : orbital_period = 0.0
+        if (numpy.isnan(orbital_period)): orbital_period = 0.0
         return orbital_period, stellar_spin_period
 
-    def _find_porb_range(self, guess_porb_initial, disk_period) :
+    def _find_porb_range(self, guess_porb_initial, disk_period):
         """
         Find initial orbital period range where final porb error flips sign.
 
@@ -171,21 +175,24 @@ class InitialConditionSolver :
         guess_porb_error = porb_error
         step = 2.0 if guess_porb_error < 0 else 0.5
 
-        while porb_error * guess_porb_error > 0 and porb_initial < 100.0 :
-            if porb_error < 0 : porb_min = porb_initial
-            else : porb_max = porb_initial
+        while porb_error * guess_porb_error > 0 and porb_initial < 100.0:
+            if porb_error < 0:
+                porb_min = porb_initial
+            else:
+                porb_max = porb_initial
             porb_initial *= step
             porb, psurf = self._try_initial_conditions(porb_initial,
                                                        disk_period)
-            if not numpy.isnan(porb) :
+            if not numpy.isnan(porb):
                 porb_error = porb - self.target.Porb
 
-        if numpy.isnan(porb_error) : return numpy.nan, numpy.nan
+        if numpy.isnan(porb_error): return numpy.nan, numpy.nan
 
-        if porb_error < 0 : porb_min = porb_initial
-        else :
+        if porb_error < 0:
+            porb_min = porb_initial
+        else:
             porb_max = porb_initial
-            if porb_error == 0 : porb_min = porb_initial
+            if porb_error == 0: porb_min = porb_initial
 
         print('For Pdisk = %s, orbital period range: %s < Porb < %s'
               %
@@ -193,14 +200,14 @@ class InitialConditionSolver :
         return porb_min, porb_max
 
     def __init__(self,
-                 planet_formation_age = None,
-                 disk_dissipation_age = None,
-                 evolution_max_time_step = 1.0,
-                 evolution_precision = 1e-4,
-                 orbital_period_tolerance = 1e-6,
-                 spin_tolerance = 1e-6,
+                 planet_formation_age=None,
+                 disk_dissipation_age=None,
+                 evolution_max_time_step=None,
+                 evolution_precision=1e-6,
+                 orbital_period_tolerance=1e-6,
+                 spin_tolerance=1e-6,
                  secondary_angmom=None,
-                 is_secondary_star = None) :
+                 is_secondary_star=None):
         """
         Initialize the object.
 
@@ -222,9 +229,9 @@ class InitialConditionSolver :
         Returns: None.
         """
 
-        if planet_formation_age :
+        if planet_formation_age:
             self.planet_formation_age = planet_formation_age
-        if disk_dissipation_age is not None :
+        if disk_dissipation_age is not None:
             self.disk_dissipation_age = disk_dissipation_age
         self.evolution_max_time_step = evolution_max_time_step
         self.evolution_precision = evolution_precision
@@ -236,7 +243,7 @@ class InitialConditionSolver :
     def stellar_wsurf(self,
                       wdisk,
                       orbital_period_guess,
-                      return_difference=False) :
+                      return_difference=False):
         """
         The stellar spin frquency when reproducing current porb.
 
@@ -270,20 +277,20 @@ class InitialConditionSolver :
         porb_min, porb_max = self._find_porb_range(orbital_period_guess,
                                                    disk_period)
 
-        if numpy.isnan(porb_min) :
-            assert(numpy.isnan(porb_max))
+        if numpy.isnan(porb_min):
+            assert (numpy.isnan(porb_max))
             return (numpy.nan if return_difference else (numpy.nan,
                                                          numpy.nan,
                                                          numpy.nan))
         porb_initial = brentq(
-            lambda porb_initial : self._try_initial_conditions(
+            lambda porb_initial: self._try_initial_conditions(
                 porb_initial,
                 disk_period,
             )[0] - self.target.Porb,
             porb_min,
             porb_max,
-            xtol = self.orbital_period_tolerance,
-            rtol = self.orbital_period_tolerance
+            xtol=self.orbital_period_tolerance,
+            rtol=self.orbital_period_tolerance
         )
 
         porb_final, spin_period = self._try_initial_conditions(
@@ -293,7 +300,7 @@ class InitialConditionSolver :
 
         spin_frequency = 2.0 * pi / spin_period
 
-        if not return_difference :
+        if not return_difference:
             return spin_frequency, porb_initial, porb_final
 
         result = spin_frequency - 2.0 * pi / self.target.Psurf
@@ -303,14 +310,14 @@ class InitialConditionSolver :
                 abs(self._best_initial_conditions.spin_frequency
                     -
                     2.0 * pi / self.target.Psurf)
-        ) :
+        ):
             self._best_initial_conditions.spin_frequency = spin_frequency
             self._best_initial_conditions.orbital_period = porb_final
             self._best_initial_conditions.initial_orbital_period = porb_initial
             self._best_initial_conditions.disk_period = disk_period
         return result
 
-    def __call__(self, target,primary , secondary):
+    def __call__(self, target, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -433,6 +440,7 @@ class InitialConditionSolver :
             Wstar, Porb_initial, Porb_now = self.stellar_wsurf(Wdisk,
                                                                target.Porb)
             return Porb_initial, 2.0 * pi / Wstar
+
         else:
             wdisk_grid, stellar_wsurf_residual_grid = get_initial_grid()
 
@@ -460,177 +468,6 @@ class InitialConditionSolver :
             return (self._best_initial_conditions.initial_orbital_period,
                     self._best_initial_conditions.disk_period)
 
-
-
-
-
-def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
-    """Return a configured planet to use in the evolution."""
-
-    planet = LockedPlanet( mass=mass,radius=(constants.R_jup / constants.R_sun).to('') )
-    return planet
-
-
-def create_star(mass, interpolator, convective_phase_lag, wind=True):
-    star = EvolvingStar(mass=mass,
-                            metallicity=  -0.06,
-                            wind_strength=0.17 if wind else 0.0,
-                            wind_saturation_frequency=2.78,
-                            diff_rot_coupling_timescale=5.0e-3,
-                            interpolator=interpolator)
-
-    star.set_dissipation(zone_index=0,
-                            tidal_frequency_breaks=None,
-                            spin_frequency_breaks=None,
-                            tidal_frequency_powers=numpy.array([0.0]),
-                            spin_frequency_powers=numpy.array([0.0]),
-                            reference_phase_lag=convective_phase_lag)
-
-    return star
-
-
-def create_binary_system(primary,
-                         secondary,
-                         disk_lock_frequency,
-                         initial_orbital_period,
-                         disk_dissipation_age,
-                         secondary_angmom=None):
-    """Create a binary system to evolve from the given objects."""
-
-    if isinstance(secondary, LockedPlanet):
-        secondary_config = dict(spin_angmom=numpy.array([0.0]),
-                                inclination=None,
-                                periapsis=None)
-    else:
-        secondary.select_interpolation_region(disk_dissipation_age)
-        secondary_config = dict(spin_angmom=secondary_angmom,
-                                inclination=numpy.array([0.0]),
-                                periapsis=numpy.array([0.0]))
-
-
-    if isinstance(secondary, EvolvingStar):
-        secondary.detect_stellar_wind_saturation()
-
-    primary.select_interpolation_region(primary.core_formation_age())
-    primary.detect_stellar_wind_saturation()
-
-    binary = Binary(primary=primary,
-                    secondary=secondary,
-                    initial_orbital_period=initial_orbital_period,
-                    initial_eccentricity=0.0,
-                    initial_inclination=0.0,
-                    disk_lock_frequency=disk_lock_frequency,
-                    disk_dissipation_age=disk_dissipation_age,
-                    secondary_formation_age=disk_dissipation_age)
-
-    secondary.configure(age=disk_dissipation_age,
-                        companion_mass=primary.mass,
-                        semimajor=binary.semimajor(initial_orbital_period),
-                        eccentricity=0.0,
-                        locked_surface=False,
-                        zero_outer_inclination=True,
-                        zero_outer_periapsis=True,
-                        **secondary_config)
-
-
-
-    binary.configure(age=primary.core_formation_age(),
-                     semimajor=float('nan'),
-                     eccentricity=float('nan'),
-                     spin_angmom=numpy.array([0.0]),
-                     inclination=None,
-                     periapsis=None,
-                     evolution_mode='LOCKED_SURFACE_SPIN')
-
-    return binary
-
-
-
-def test_ic_solver(interpolator,convective_phase_lag,wind):
-    """Find initial condition to reproduce some current state and plot."""
-
-
-
-    tdisk = 5e-3
-    age = 4.60 
-    primary_mass = 1.0232841210154926 
-    secondary_mass =0.7932453911599053 
-    initial_disk_period =1.4064967495370835
-    initial_orbital_period = 5.2663825 #this is the final orbital period quoted in lit.
-
-
-
-    star = create_star(secondary_mass, interpolator=interpolator, convective_phase_lag=convective_phase_lag, wind=wind)
-    planet = create_planet(1.0)
-
-    binary = create_binary_system(star,
-                                  planet,
-                                  2.0 * numpy.pi / initial_disk_period,
-                                  initial_orbital_period,
-                                  tdisk)
-
-    binary.evolve(tdisk, 1e-3, 1e-6, None)
-
-    disk_state = binary.final_state()
-
-    print("FINISHED PLANET-STAR EVOLUTION")
-
-    planet.delete()
-    star.delete()
-    binary.delete()
-
-
-
-    primary = create_star(primary_mass, interpolator, convective_phase_lag, wind = wind)
-    secondary = create_star(secondary_mass, interpolator, convective_phase_lag, wind = wind)
-
-
-    find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
-                                         evolution_max_time_step=1e-3,
-                                         secondary_angmom=numpy.array(
-                                             [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
-
-
-
-
-    target = Structure(age=age,
-                           Porb=initial_orbital_period,
-                           Wdisk=2 * numpy.pi / initial_disk_period,
-                           planet_formation_age=5e-3)
-
-    initial_porb, initial_psurf = find_ic(target=target,
-                                              primary=primary,
-                                              secondary=secondary)
-    
-
-    primary.delete()
-    secondary.delete()
-
-    return initial_psurf
-
-    
-
-
-if __name__ == '__main__':
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
-
-    # test_evolution(interpolator, phase_lag(6.0))
-    #logQ = [6.0]
-
-    logQ = float(sys.argv[1])
-    name = 'Psurf_values_' + str(logQ)
-    with open(name,'w') as f:
-
-        lag = phase_lag(logQ)
-        print( "calculatingforthevalues = " + repr(lag) + "\t"+ repr(logQ) + "\n")
-        Pspin = test_ic_solver(interpolator,lag,True)
-        f.write(repr(lag) + "\t" + repr(logQ) + "\t" + repr(Pspin) + "\n" )
 
 
 
