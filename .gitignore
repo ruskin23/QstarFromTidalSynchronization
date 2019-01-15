@@ -1,6 +1,6 @@
 #ignoring large output files
-/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/output_data/
-
+/binary_star_evolution/output_data/
+/binary_star_evolution/output_data/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
