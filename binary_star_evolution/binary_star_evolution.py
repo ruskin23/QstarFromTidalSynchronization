@@ -39,7 +39,7 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
 
 def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                        metallicity=  -0.317892129759198,
+                        metallicity=  -0.06,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.78,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -175,9 +175,9 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 2.6361887829110797
-    primary_mass = 0.9735205066895405
-    secondary_mass = 0.7522396868226867
+    age =4.60 
+    primary_mass =0.9933137087491567 
+    secondary_mass = 0.7772014414635009 
     initial_disk_period =  1.4064967495370835 
     initial_orbital_period =5.2663825# 5.2663825
     
@@ -251,7 +251,7 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-
-    test_evolution(interpolator,  1.6799410609204806e-05, True)
+    logQ = 6.0
+    test_evolution(interpolator,  phase_lag(logQ), True)
 
 
