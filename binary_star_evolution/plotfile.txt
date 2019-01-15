@@ -1,3 +1,5 @@
+set terminal jpeg 
+set output 'figure.jpeg'
 set xlabel "logQ"
 set ylabel "Roation Period(Days)"
 plot "spin_values_1.txt" u 2:3 title '5922K', \
