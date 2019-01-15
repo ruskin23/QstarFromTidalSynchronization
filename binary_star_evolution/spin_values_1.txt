@@ -1,3 +1,11 @@
+#logQ vs Spin Values for following parameters:
+
+# primary_temp = 5922.0
+# feh = -0.06
+# age = 4.6
+# initial_disk_period =1.4064967495370835
+# initial_orbital_period = 5.2663825
+
 2.984155182973038e-06	5.0	5.263555026101541
 1.6781137801667068e-06	5.25	5.263555105480653
 2.984155182973038e-09	8.0	5.263554939593744
