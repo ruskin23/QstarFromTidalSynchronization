@@ -10,8 +10,13 @@ import numpy
 import astropy
 
 from planetary_system_io import read_hatsouth_info
+from reproduce_system import find_evolution
 from stellar_evolution.library_interface import MESAInterpolator
 from stellar_evolution.manager import StellarEvolutionManager
+from stellar_evolution import __path__ as poet_stellar_evolution_path
+
+from orbital_evolution.evolve_interface import library as\
+    orbital_evolution_library
 
 from fit_radial_velocities import fit_rv_data
 
@@ -31,19 +36,40 @@ def parse_command_line():
         'secondary. Default: %(default)s.'
     )
     parser.add_argument(
-        '--stellar-evolution-interpolators', '--interpolators',
+        '--primary-stellar-evolution-interpolators',
+        '--primary-interpolators',
+        type=str,
+        default=os.path.join(
+            os.path.dirname(os.path.dirname(poet_stellar_evolution_path[0])),
+            'stellar_evolution_interpolators'
+        ),
+        help='The path to a repository if stellar evolution interpolators.'
+        ' Default: %(default)s'
+    )
+    parser.add_argument(
+        '--secondary-stellar-evolution-interpolators',
+        '--secondary-interpolators',
         type=str,
         default='stellar_evolution_interpolators',
         help='The path to a repository if stellar evolution interpolators.'
         ' Default: %(default)s'
     )
     parser.add_argument(
-        '--track-path', '--tracks', '-t',
+        '--secondary-track-path', '--secondary-tracks', '-t',
         type=str,
         default='MESA_like_tracks/binary6211',
         help='The directory containing the stellar evolution tracks to '
         'interpolate. Should have the same structure as the MESA tracks '
         'shipped with POET. Default: %(default)s'
+    )
+    parser.add_argument(
+        '--eccentricity-expansion-coefficients', '--eccentricity-coefficients',
+        type=str,
+        default=os.path.join(
+            os.path.dirname(os.path.dirname(poet_stellar_evolution_path[0])),
+            'eccentricity_expansion_coef_O200.txt'
+        ),
+        help='The file with eccentricity expansion coefficients to use.'
     )
     return parser.parse_args()
 
@@ -123,6 +149,11 @@ def get_interpolator(stellar_evolution_interpolator_dir,
 
 if __name__ == '__main__':
     cmdline_args = parse_command_line()
+
+    orbital_evolution_library.read_eccentricity_expansion_coefficients(
+        cmdline_args.eccentricity_expansion_coefficients.encode('ascii')
+    )
+
     info = read_hatsouth_info(cmdline_args.binary_info)
     #False positive
     #pylint: disable=no-member
@@ -139,7 +170,18 @@ if __name__ == '__main__':
 
     print(info.format())
 
-    interpolator = get_interpolator(
-        cmdline_args.stellar_evolution_interpolators,
-        cmdline_args.track_path
+    interpolator = (
+        StellarEvolutionManager(
+            cmdline_args.primary_stellar_evolution_interpolators
+        ).get_interpolator_by_name('default'),
+        get_interpolator(
+            cmdline_args.secondary_stellar_evolution_interpolators,
+            cmdline_args.secondary_track_path
+        )
     )
+
+    evolution = find_evolution(info,
+                               interpolator,
+                               primary_lgq=cmdline_args.lgQ,
+                               secondary_lgq=cmdline_args.lgQ,
+                               initial_eccentricity=0.3)
