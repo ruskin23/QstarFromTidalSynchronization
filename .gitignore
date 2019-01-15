@@ -1,7 +1,8 @@
 #ignoring large output files
 /binary_star_evolution/unwanted_data/
 
-
+#vim swap files
+.*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
