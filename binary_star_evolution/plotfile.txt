@@ -1,0 +1,7 @@
+set xlabel "logQ"
+set ylabel "Roation Period(Days)"
+plot "spin_values_1.txt" u 2:3 title '5922K', \
+"spin_values_2.txt" u 2:3 title '5822K', \
+"spin_values_3.txt" u 2:3 title '5722K', \
+"spin_values_4.txt" u 2:3 title '6022K', \
+"spin_values_5.txt" u 2:3 title '6122K'
