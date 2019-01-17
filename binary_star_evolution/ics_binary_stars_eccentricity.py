@@ -79,7 +79,7 @@ class InitialConditionSolver :
             primary = self.primary,
             secondary = self.secondary,
             initial_orbital_period = initial_orbital_period,
-            initial_eccentricity = 0.3,
+            initial_eccentricity = 0.4,
             initial_inclination = 0.0,
             disk_lock_frequency = 2.0 * numpy.pi / disk_period,
             disk_dissipation_age = self.disk_dissipation_age,
@@ -295,8 +295,10 @@ class InitialConditionSolver :
 
         if not return_difference :
 
-            print("E_F = ", self.binary.final_state().eccentricity)
-            return spin_frequency, porb_initial, porb_final
+            final_ecc = self.binary.final_state().eccentricity
+
+            print("E_F = ",final_ecc )
+            return spin_frequency, porb_initial, porb_final, final_ecc
 
         result = spin_frequency - 2.0 * pi / self.target.Psurf
         if (
@@ -434,9 +436,9 @@ class InitialConditionSolver :
         if not hasattr(target, 'Psurf'):
             Wdisk = (target.Wdisk if hasattr(target, 'Wdisk')
                      else 2.0 * pi / target.Pdisk)
-            Wstar, Porb_initial, Porb_now = self.stellar_wsurf(Wdisk,
+            Wstar, Porb_initial, Porb_now, final_ecc = self.stellar_wsurf(Wdisk,
                                                                target.Porb)
-            return Porb_initial, 2.0 * pi / Wstar
+            return Porb_initial, 2.0 * pi / Wstar, final_ecc
         else:
             wdisk_grid, stellar_wsurf_residual_grid = get_initial_grid()
 
@@ -602,7 +604,7 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
                            Wdisk=2 * numpy.pi / initial_disk_period,
                            planet_formation_age=5e-3)
 
-    initial_porb, initial_psurf = find_ic(target=target,
+    initial_porb, initial_psurf, final_ecc = find_ic(target=target,
                                               primary=primary,
                                               secondary=secondary)
     
@@ -610,7 +612,7 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
     primary.delete()
     secondary.delete()
 
-    return initial_psurf
+    return initial_psurf, final_ecc
 
     
 
@@ -627,13 +629,14 @@ if __name__ == '__main__':
     #logQ = [6.0]
 
     logQ = float(sys.argv[1])
-    name = 'Psurf_values_' + str(logQ)
+    #name = 'Psurf_values_' + str(logQ)
+    name = 'testing_with_e0.4' + str(logQ)
     with open(name,'w') as f:
 
         lag = phase_lag(logQ)
         print( "calculatingforthevalues = " + repr(lag) + "\t"+ repr(logQ) + "\n")
-        Pspin = test_ic_solver(interpolator,lag,True)
-        f.write(repr(lag) + "\t" + repr(logQ) + "\t" + repr(Pspin) + "\n" )
+        Pspin, final_ecc = test_ic_solver(interpolator,lag,True)
+        f.write(repr(lag) + "\t" + repr(logQ) + "\t" + repr(Pspin)+ "\t" + repr(final_ecc) + "\n" )
 
 
 
