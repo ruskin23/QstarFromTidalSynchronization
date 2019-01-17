@@ -552,8 +552,8 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
 
     tdisk = 5e-3
     age = 4.60 
-    primary_mass = 1.0943124828794022 
-    secondary_mass = 0.8266661262872534 
+    primary_mass = 1.0943124828794022
+    secondary_mass = 0.8266661262872534
     initial_disk_period =1.4064967495370835
     initial_orbital_period = 5.2663825 #this is the final orbital period quoted in lit.
 

@@ -118,6 +118,8 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     evolution = binary.get_evolution()
 
+    print("E = ", evolution.eccentricity)
+
     # print("wsun = ", wsun)
     # print("==   ", binary.secondary.core_inertia(evolution.age))
 
@@ -232,10 +234,10 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
     # print (disk_state.envelope_angmom)
 
-    output_evolution(evolution, binary)
+    #output_evolution(evolution, binary)
 
     print("ORBITAL_FREUQNCY = ", binary.orbital_frequency(evolution.semimajor))
-
+    print("ECC = ", disk_state.eccentricity)
     primary.delete()
     secondary.delete()
     binary.delete()
@@ -251,7 +253,7 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 6.0
+    logQ = 8.0
     test_evolution(interpolator,  phase_lag(logQ), True)
 
 
