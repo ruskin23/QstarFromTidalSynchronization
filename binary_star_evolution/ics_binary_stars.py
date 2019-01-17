@@ -623,7 +623,8 @@ if __name__ == '__main__':
     #logQ = [6.0]
 
     logQ = float(sys.argv[1])
-    name = 'Psurf_values_' + str(logQ)
+    #name = 'Psurf_values_' + str(logQ)
+    name = 'test_Pspin_' + str(logQ)
     with open(name,'w') as f:
 
         lag = phase_lag(logQ)
