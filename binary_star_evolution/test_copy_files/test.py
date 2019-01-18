@@ -24,21 +24,14 @@ import numpy
 
 
 if __name__ == '__main__':
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
-
-    # test_evolution(interpolator, phase_lag(6.0))
     logQ = numpy.linspace(5.5,6.0,10)
+    x = numpy.linspace(0,12,1000)
+    p_value = 7.713253717543052
+    with open ('current_psin.txt', 'a') as f:
 
-    with open ('test.txt', 'a') as f:
 
-
-        for q in logQ:
+        for q in x:
         
-            f.write("Q = " + "\t" +  repr(phase_lag(q)) + "\tlogvalue" + repr(q) + "\n")
+            f.write(repr(q) + "\t" + repr(p_value) + "\n")
 
 
