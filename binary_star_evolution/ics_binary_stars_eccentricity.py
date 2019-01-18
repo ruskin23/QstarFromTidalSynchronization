@@ -79,7 +79,7 @@ class InitialConditionSolver :
             primary = self.primary,
             secondary = self.secondary,
             initial_orbital_period = initial_orbital_period,
-            initial_eccentricity = 0.4,
+            initial_eccentricity = 0.2,
             initial_inclination = 0.0,
             disk_lock_frequency = 2.0 * numpy.pi / disk_period,
             disk_dissipation_age = self.disk_dissipation_age,
@@ -630,7 +630,7 @@ if __name__ == '__main__':
 
     logQ = float(sys.argv[1])
     #name = 'Psurf_values_' + str(logQ)
-    name = 'testing_with_e0.4' + str(logQ)
+    name = 'running_e0.2_9.0_again' + str(logQ)
     with open(name,'w') as f:
 
         lag = phase_lag(logQ)
