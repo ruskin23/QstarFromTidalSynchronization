@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 from glob import glob
 import os.path
 
+from matplotlib import pyplot
 import numpy
 import astropy
 
@@ -185,3 +186,32 @@ if __name__ == '__main__':
                                primary_lgq=cmdline_args.lgQ,
                                secondary_lgq=cmdline_args.lgQ,
                                initial_eccentricity=0.3)
+
+    print('Evolution: ' + evolution.format())
+
+    pyplot.semilogx(
+        evolution.age,
+        2.0 * numpy.pi / evolution.orbital_period,
+        label='$\Omega_{orb}$'
+    )
+    for component in ['primary', 'secondary']:
+        pyplot.semilogx(
+            evolution.age,
+            (
+                getattr(evolution, component + '_envelope_angmom')
+                /
+                getattr(evolution, component + '_iconv')
+            ),
+            label=component + ' $\Omega_{conv}$'
+        )
+        pyplot.semilogx(
+            evolution.age,
+            (
+                getattr(evolution, component + '_core_angmom')
+                /
+                getattr(evolution, component + '_irad')
+            ),
+            label=component + ' $\Omega_{rad}$'
+        )
+    pyplot.legend()
+    pyplot.show()
