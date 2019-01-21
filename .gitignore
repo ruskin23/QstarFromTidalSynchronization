@@ -1,4 +1,6 @@
 #ignoring large output files
+/binary_star_evolution/output_data/
+/binary_star_evolution/output_data/*.txt
 /binary_star_evolution/unwanted_data/
 
 #vim swap files
