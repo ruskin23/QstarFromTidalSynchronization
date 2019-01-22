@@ -2,7 +2,7 @@
 
 """Calculate orbital evolution of one of the MMS06 binaries."""
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentError
 from glob import glob
 import os.path
 
@@ -30,11 +30,82 @@ def parse_command_line():
         help='The info file for the binary to evolve.'
     )
     parser.add_argument(
-        '--lgQ',
+        '--lgQ-primary',
         type=float,
         default='6.0',
-        help='The value of log10(Q*) to assume for both the primary and the '
-        'secondary. Default: %(default)s.'
+        help='The value of log10(Q*) to assume for the primary, at the '
+        'reference tidal and spin periods if --lgQ-primary-wtide-dependence '
+        'and/or --lgQ-primary-wspin-dependence is specified. '
+        'Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary',
+        type=float,
+        default='6.0',
+        help='The value of log10(Q*) to assume for the secondary, at the '
+        'reference tidal and spin periods if --lgQ-secondary-wtide-dependence '
+        'and/or --lgQ-secondary-wspin-dependence is specified. '
+        'Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--lgQ-primary-wtide-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the primary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary-wtide-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the secondary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-primary-wspin-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the primary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary-wspin-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the secondary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
     )
     parser.add_argument(
         '--primary-stellar-evolution-interpolators',
@@ -72,7 +143,20 @@ def parse_command_line():
         ),
         help='The file with eccentricity expansion coefficients to use.'
     )
-    return parser.parse_args()
+    result = parser.parse_args()
+    for component in ['primary', 'secondary']:
+        for lgq_dependence in ['wtide', 'wspin']:
+            num_args = len(
+                getattr(result, '_'.join(('lgQ',
+                                          component,
+                                          lgq_dependence,
+                                          'dependence')))
+            )
+            if num_args != 0 and (num_args < 3 or num_args % 2 == 0):
+                parser.print_help()
+                raise RuntimeError('--lgQ-ptide-dependence option requires a number of '
+                                   'argument that is at least 3 and odd!')
+    return result
 
 def calculate_secondary_mass(primary_mass,
                              orbital_period,
@@ -183,9 +267,9 @@ if __name__ == '__main__':
 
     evolution = find_evolution(info,
                                interpolator,
-                               primary_lgq=cmdline_args.lgQ,
-                               secondary_lgq=cmdline_args.lgQ,
-                               initial_eccentricity=0.3)
+                               primary_lgq=cmdline_args.lgQ_primary,
+                               secondary_lgq=cmdline_args.lgQ_secondary,
+                               initial_eccentricity=0.0)
 
     print('Evolution: ' + evolution.format())
 
