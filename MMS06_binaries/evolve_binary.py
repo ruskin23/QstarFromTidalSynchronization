@@ -5,7 +5,9 @@
 from argparse import ArgumentParser
 from glob import glob
 import os.path
+import pickle
 
+from matplotlib import pyplot
 import numpy
 import astropy
 
@@ -29,11 +31,82 @@ def parse_command_line():
         help='The info file for the binary to evolve.'
     )
     parser.add_argument(
-        '--lgQ',
+        '--lgQ-primary',
         type=float,
         default='6.0',
-        help='The value of log10(Q*) to assume for both the primary and the '
-        'secondary. Default: %(default)s.'
+        help='The value of log10(Q*) to assume for the primary, at the '
+        'reference tidal and spin periods if --lgQ-primary-wtide-dependence '
+        'and/or --lgQ-primary-wspin-dependence is specified. '
+        'Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary',
+        type=float,
+        default='6.0',
+        help='The value of log10(Q*) to assume for the secondary, at the '
+        'reference tidal and spin periods if --lgQ-secondary-wtide-dependence '
+        'and/or --lgQ-secondary-wspin-dependence is specified. '
+        'Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--lgQ-primary-wtide-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the primary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary-wtide-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the secondary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-primary-wspin-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the primary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
+    )
+    parser.add_argument(
+        '--lgQ-secondary-wspin-dependence',
+        nargs='+',
+        type=float,
+        default=[],
+        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
+                 '<break frequency> <powerlaw index>'),
+        help='Pass this argument to make lgQ of the secondary depend on tidal '
+        'period. At least three arguments must be passed: 1) the powerlaw index'
+        ' for tidal frequencies below the first break, 2) the frequency '
+        '[rad/day] where the first break occurs and 3) the powerlaw index after'
+        ' the first break. Additional arguments must come in pairs, specifying '
+        'more frequencies where breaks occur and the powerlaw indices for '
+        'frequencies higher than the break.'
     )
     parser.add_argument(
         '--primary-stellar-evolution-interpolators',
@@ -71,7 +144,32 @@ def parse_command_line():
         ),
         help='The file with eccentricity expansion coefficients to use.'
     )
-    return parser.parse_args()
+    parser.add_argument(
+        '--initial-eccentricity', '--e0',
+        type=float,
+        default=0.0,
+        help='The initial eccentricity to star the system with.'
+    )
+    parser.add_argument(
+        '--pickles',
+        default='evolutions.pkl',
+        help='A file containing pickles of past evolutions along with the '
+        'configuration used to calculate them. Default: %(default)s.'
+    )
+    result = parser.parse_args()
+    for component in ['primary', 'secondary']:
+        for lgq_dependence in ['wtide', 'wspin']:
+            num_args = len(
+                getattr(result, '_'.join(('lgQ',
+                                          component,
+                                          lgq_dependence,
+                                          'dependence')))
+            )
+            if num_args != 0 and (num_args < 3 or num_args % 2 == 0):
+                parser.print_help()
+                raise RuntimeError('--lgQ-ptide-dependence option requires a number of '
+                                   'argument that is at least 3 and odd!')
+    return result
 
 def calculate_secondary_mass(primary_mass,
                              orbital_period,
@@ -147,14 +245,14 @@ def get_interpolator(stellar_evolution_interpolator_dir,
     }
     return manager.get_interpolator(**interpolator_args)
 
-if __name__ == '__main__':
-    cmdline_args = parse_command_line()
+def calculate_evolution(cmdline_config):
+    """Calculate the evolution for a given command line configuration."""
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        cmdline_args.eccentricity_expansion_coefficients.encode('ascii')
+        cmdline_config.eccentricity_expansion_coefficients.encode('ascii')
     )
 
-    info = read_hatsouth_info(cmdline_args.binary_info)
+    info = read_hatsouth_info(cmdline_config.binary_info)
     #False positive
     #pylint: disable=no-member
     info.rv_semi_amplitude = (fit_rv_data(info.RVdata)[0]
@@ -172,16 +270,79 @@ if __name__ == '__main__':
 
     interpolator = (
         StellarEvolutionManager(
-            cmdline_args.primary_stellar_evolution_interpolators
+            cmdline_config.primary_stellar_evolution_interpolators
         ).get_interpolator_by_name('default'),
         get_interpolator(
-            cmdline_args.secondary_stellar_evolution_interpolators,
-            cmdline_args.secondary_track_path
+            cmdline_config.secondary_stellar_evolution_interpolators,
+            cmdline_config.secondary_track_path
         )
     )
 
-    evolution = find_evolution(info,
-                               interpolator,
-                               primary_lgq=cmdline_args.lgQ,
-                               secondary_lgq=cmdline_args.lgQ,
-                               initial_eccentricity=0.3)
+    return find_evolution(
+        info,
+        interpolator,
+        primary_lgq=cmdline_config.lgQ_primary,
+        secondary_lgq=cmdline_config.lgQ_secondary,
+        initial_eccentricity=cmdline_config.initial_eccentricity,
+        orbital_period_tolerance=1e-3
+    )
+
+if __name__ == '__main__':
+    cmdline_args = parse_command_line()
+
+
+    evolution = None
+    if os.path.exists(cmdline_args.pickles):
+        with open(cmdline_args.pickles, 'rb') as pickle_file:
+            while evolution is None:
+                try:
+                    if vars(pickle.load(pickle_file)) == vars(cmdline_args):
+                        print('Found existing evolution with specified '
+                              'configuration')
+                        evolution = pickle.load(pickle_file)
+                except EOFError:
+                    break
+
+    if evolution is None:
+        evolution = calculate_evolution(cmdline_args)
+        with open(cmdline_args.pickles, 'ab') as pickle_file:
+            pickle.dump(cmdline_args, pickle_file)
+            pickle.dump(evolution, pickle_file)
+
+    print('Evolution: ' + evolution.format())
+
+    pyplot.semilogx(
+        #False positive
+        #pylint: disable=no-member
+        evolution.age,
+        2.0 * numpy.pi / evolution.orbital_period,
+        #pylint: enable=no-member
+        label=r'$\Omega_{orb}$'
+    )
+    for component in ['primary', 'secondary']:
+        pyplot.semilogx(
+            #False positive
+            #pylint: disable=no-member
+            evolution.age,
+            #pylint: enable=no-member
+            (
+                getattr(evolution, component + '_envelope_angmom')
+                /
+                getattr(evolution, component + '_iconv_star')
+            ),
+            label=component + r' $\Omega_{conv}$'
+        )
+        pyplot.semilogx(
+            evolution.age,
+            (
+                getattr(evolution, component + '_core_angmom')
+                /
+                getattr(evolution, component + '_irad_star')
+            ),
+            label=component + r' $\Omega_{rad}$'
+        )
+    pyplot.twinx().semilogx(evolution.age,
+                            evolution.eccentricity,
+                            label='e')
+    pyplot.legend()
+    pyplot.show()
