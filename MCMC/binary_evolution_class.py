@@ -123,22 +123,22 @@ class evolution:
 
         print ("AGE = ", self.age)
 
-        mass1 = DerivePrimnaryMass(
-                                    self.interpolator,
-                                    self.feh,
-                                    self.age,
-                                    self.teff_primary)
+        temp_ratio = 0.83740  # temperature ratio is T2/T1
+        teff_secondary = temp_ratio * self.teff_primary
+
+        mass1 = DeriveMass(
+                            self.interpolator,
+                            self.feh,
+                            self.age,
+                            self.teff_primary)
+
+        mass2 = DeriveMass(
+                            self.interpolator,
+                            self.feh,
+                            self.age,
+                            teff_secondary)
+
         PrimaryMass = mass1()
-
-        temp_ratio = 0.83740   #temperature ratio is T2/T1
-        teff_secondary = temp_ratio*self.teff_primary
-
-        mass2 = DeriveSecondaryMass(
-                                    self.interpolator,
-                                    self.feh,
-                                    self.age,
-                                    teff_secondary)
-
         SecondaryMass = mass2()
 
         print ("Primary_Mass = ", PrimaryMass)
@@ -181,6 +181,8 @@ class evolution:
         PrimaryMass = star_masses[0]
         SecondaryMass = star_masses[1]
 
+        if PrimaryMass == 0 or SecondaryMass == 0: return 0
+
         star = self.create_star(SecondaryMass,1)
         planet = self.create_planet(1.0)
 
@@ -202,7 +204,6 @@ class evolution:
 
         primary = self.create_star(PrimaryMass, 1)
         secondary = self.create_star(SecondaryMass, 1)
-        #secondary = self.create_planet(SecondaryMass)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
