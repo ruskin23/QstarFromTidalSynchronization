@@ -28,7 +28,8 @@ class MetropolisHastings:
         find_spin = evolution(
                                     self.interpolator,
                                     parameter_set,
-                                    self.fixed_parameters)
+                                    self.fixed_parameters,
+                                    )
 
         Pspin_given_model = find_spin()
 
@@ -54,7 +55,7 @@ class MetropolisHastings:
 
 
         posterior_proposed = self.posterior_probability(parameter_set=self.proposed_parameters)
-        posterior_previous = self.posterior_probability(parameter_set=self.updated_parameters)
+        posterior_previous = self.posterior_probability(parameter_set=self.current_parameters)
         p = posterior_proposed/posterior_previous
         
         print("POsterior_proposed = ",posterior_proposed)
@@ -67,7 +68,7 @@ class MetropolisHastings:
     def values_proposed(self):
 
         proposed = dict()
-        for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
+        for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
             print("NAME AND VALUE",name_obs,proposed[name_obs] )
             if proposed['age']<0: return scipy.nan
@@ -87,15 +88,16 @@ class MetropolisHastings:
             filename = ['accepted_aparemters.txt', 'rejected_parameters.txt']
 
             header = []
-            header.append('Iteration_step')
+            header.append('Iteration_step\t')
 
-            for key in self.updated_parameters.keys():
+            for key in self.current_parameters.keys():
                 header.append(key)
 
             for i in range(0, 1):
-                with open(filename[i], 'w') as file:
+                with open(filename[i], 'w', 0) as file:
                     for name in header:
-                        file.write('%s ' % name)
+                        file.write('%s\t' % name)
+                    file.write('\tResult\n')
                 file.close()
 
         if self.iteration_step==0: write_header()
@@ -103,32 +105,37 @@ class MetropolisHastings:
         if self.isAccepted == True:
             print ('ACCEPTED')
             filename = 'accepted_aparemters.txt'
+            result = 'A'
         else:
             print ('REJECTED')
             filename = 'rejected_parameters.txt'
+            result = 'R'
 
-        with open(filename, 'w') as file:
-            for key, value in self.updated_parameters.items():
-                file.write('%s ' % value)
+        with open(filename, 'a',0) as file:
+            file.write('%s\t' %self.iteration_step)
+            for key, value in self.current_parameters.items():
+                file.write('%s\t' % value)
+            file.write('\t' + result + '\n')
         file.close()
 
 
     def iterations(self):
 
         """runs the metropolis hastrings algorithm for number of iterations given"""
-        if self.iteration_step==0: self.updated_parameters = self.initial_parameters
-        print ('\nINITIAL PARAMETERS SET')
-        print(self.updated_parameters)
 
         while self.iteration_step<self.total_iterations:
-
+            
+            self.write_on_file()            
+            self.iteration_step =  self.iteration_step + 1 
             print ('ITERATION STEP = ',self.iteration_step)
 
             #draw a random value from proposal function
             self.proposed_parameters = self.values_proposed()
             print ('new values proposed')
             print (self.proposed_parameters)
-            if self.proposed_parameters == scipy.nan : continue
+            if self.proposed_parameters == scipy.nan : 
+                self.proposed_parameters = []
+                continue
 
             # calculate acceptance probablity
             print ('calculating acceptance probability')
@@ -137,15 +144,13 @@ class MetropolisHastings:
 
 
             if p_acceptance > 1:
-                self.updated_parameters = self.proposed_parameters
+                self.current_parameters= self.proposed_parameters
                 self.isAccepted = True
             else:
                 rand = scipy.stats.norm.rvs()
                 if p_acceptance>rand : self.isAccepted=True
                 else : self.isAccepted=False
 
-            self.write_on_file()
-            self.iteration_step = self.iteration_step + 1
 
 
     def __init__(
@@ -169,7 +174,7 @@ class MetropolisHastings:
         self.total_iterations= total_iterations
         
       
-        self.updated_parameters = dict()
+        self.current_parameters= dict()
         self.proposed_parameters = dict()
         
         #setting up initial parameters
@@ -177,7 +182,11 @@ class MetropolisHastings:
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+        print ('\nINITIAL PARAMETERS SET')
         print(self.initial_parameters)
+        self.current_parameters = self.initial_parameters 
+        print ('\ninitialised current parameters')
+        print(self.current_parameters)
 
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin
@@ -198,8 +207,7 @@ if __name__ == '__main__':
     observation_data = dict(
                         age=dict(value=4.6, sigma=3.0),
                         teff_primary=dict(value=5922.0, sigma=200.0),
-                        feh=dict(value=-0.06, sigma=0.11),
-                     
+                        feh=dict(value=-0.06, sigma=0.11),                  
                         Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
@@ -230,12 +238,12 @@ if __name__ == '__main__':
 
 
     logQ = dict(
-                min=4,
-                max=6
+                min=7,
+                max=10
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,10,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,20,observed_Pspin)
 
 mcmc.iterations()
 #flush()
