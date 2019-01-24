@@ -47,7 +47,7 @@ class MetropolisHastings:
         
         
         if likelihood== 0 : 
-            print('likelihood is coming nan')
+            print('likelihood is 0.0')
             return scipy.nan
         else :
             print('likehood = ', likelihood)
@@ -57,12 +57,17 @@ class MetropolisHastings:
     def acceptance_probability(self):
 
 
-        posterior_proposed = self.posterior_probability(parameter_set=self.proposed_parameters)
-        posterior_previous = self.posterior_probability(parameter_set=self.current_parameters)
-        self.p_acceptance = posterior_proposed/posterior_previous
+        if self.iteration_step==1:
+            self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
+            self.current_posterior = self.posterior_probability(parameter_set=self.current_parameters)
+
+        else:
+            self.proposed_posterior =  self.posterior_probability(parameter_set=self.proposed_parameters)
+
+        self.p_acceptance = self.proposed_posterior/self.current_posterior
         
-        print("POsterior_proposed = ",posterior_proposed)
-        print("Poster_previous = ", posterior_previous)
+        print("POsterior_proposed = ",self.proposed_posterior)
+        print("Poster_previous = ", self.current_posterior)
         print("acceptance_probabilty = ", self.p_acceptance)
 
         
@@ -168,17 +173,19 @@ class MetropolisHastings:
             print ('calculated acceptance probability')
 
             if numpy.isnan(self.p_acceptance) or numpy.isinf(self.p_acceptance): 
-                print('Either mass cannot be calculated or step gives 0i or inf posterior for current values. Skipping Step')
+                print('Either mass cannot be calculated or step gives 0 or inf posterior for current values. Skipping Step')
                 if self.iteration_step == 1:  self.initialise_parameters()
                 continue
 
             if self.p_acceptance> 1:
                 self.current_parameters= self.proposed_parameters
+                self.current_posterior = self.proposed_posterior
                 self.isAccepted = True
             else:
                 rand = scipy.stats.norm.rvs()
                 if self.p_acceptance>rand : 
                     self.current_parameters= self.proposed_parameters
+                    self.current_posterior = self.proposed_posterior
                     self.isAccepted=True
                 else : self.isAccepted=False
 
@@ -214,7 +221,11 @@ class MetropolisHastings:
         self.observed_Pspin = observed_Pspin
 
         self.check_age_neg = None
+
+        self.proposed_posterior = 0.0
+        self.current_posterior = 0.0
         self.p_acceptance = 0.0
+
         self.filename = ['accepted_parameters.txt', 'rejected_parameters.txt']
 
 
