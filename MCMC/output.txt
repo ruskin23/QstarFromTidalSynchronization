@@ -1,87 +1,112 @@
 nohup: ignoring input
-2019-01-23 18:46:33,262 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
-2019-01-23 18:46:33,262 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,263 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
-2019-01-23 18:46:33,263 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,263 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolators")
-2019-01-23 18:46:33,263 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,264 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("model_suites")
-2019-01-23 18:46:33,264 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,264 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("quantities")
-2019-01-23 18:46:33,264 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_variables")
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolation_parameters")
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("tracks")
-2019-01-23 18:46:33,265 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,266 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_grids")
-2019-01-23 18:46:33,266 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,266 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolator_tracks")
-2019-01-23 18:46:33,266 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,266 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_age_nodes")
-2019-01-23 18:46:33,267 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,267 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_feh_nodes")
-2019-01-23 18:46:33,267 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,267 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_mass_nodes")
-2019-01-23 18:46:33,267 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,268 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_values")
-2019-01-23 18:46:33,268 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,276 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
-2019-01-23 18:46:33,276 INFO sqlalchemy.engine.base.Engine SELECT quantities.id AS quantities_id, quantities.name AS quantities_name 
+2019-01-23 20:21:35,320 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+2019-01-23 20:21:35,320 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,320 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+2019-01-23 20:21:35,321 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,321 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolators")
+2019-01-23 20:21:35,321 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("model_suites")
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("quantities")
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_variables")
+2019-01-23 20:21:35,322 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolation_parameters")
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("tracks")
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_grids")
+2019-01-23 20:21:35,323 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,324 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolator_tracks")
+2019-01-23 20:21:35,324 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,324 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_age_nodes")
+2019-01-23 20:21:35,324 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_feh_nodes")
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_mass_nodes")
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_values")
+2019-01-23 20:21:35,325 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,333 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-23 20:21:35,334 INFO sqlalchemy.engine.base.Engine SELECT quantities.id AS quantities_id, quantities.name AS quantities_name 
 FROM quantities
-2019-01-23 18:46:33,276 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,277 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+2019-01-23 20:21:35,334 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,335 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
 FROM model_suites
-2019-01-23 18:46:33,277 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,279 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+2019-01-23 20:21:35,335 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,337 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
 FROM (SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
 FROM tracks) AS anon_1
-2019-01-23 18:46:33,279 INFO sqlalchemy.engine.base.Engine ()
-2019-01-23 18:46:33,280 INFO sqlalchemy.engine.base.Engine COMMIT
-2019-01-23 18:46:33,280 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
-2019-01-23 18:46:33,281 INFO sqlalchemy.engine.base.Engine SELECT interpolators.id AS interpolators_id, interpolators.name AS interpolators_name, interpolators.filename AS interpolators_filename, interpolators.checksum AS interpolators_checksum 
+2019-01-23 20:21:35,337 INFO sqlalchemy.engine.base.Engine ()
+2019-01-23 20:21:35,337 INFO sqlalchemy.engine.base.Engine COMMIT
+2019-01-23 20:21:35,338 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-23 20:21:35,338 INFO sqlalchemy.engine.base.Engine SELECT interpolators.id AS interpolators_id, interpolators.name AS interpolators_name, interpolators.filename AS interpolators_filename, interpolators.checksum AS interpolators_checksum 
 FROM interpolators 
 WHERE interpolators.name = ?
-2019-01-23 18:46:33,281 INFO sqlalchemy.engine.base.Engine ('default',)
-2019-01-23 18:46:33,394 INFO sqlalchemy.engine.base.Engine SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+2019-01-23 20:21:35,338 INFO sqlalchemy.engine.base.Engine ('default',)
+2019-01-23 20:21:35,445 INFO sqlalchemy.engine.base.Engine SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
 FROM tracks, interpolator_tracks 
 WHERE ? = interpolator_tracks.interpolator_id AND tracks.id = interpolator_tracks.track_id
-2019-01-23 18:46:33,394 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:35,445 INFO sqlalchemy.engine.base.Engine (1,)
 /usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
   'storage.' % (dialect.name, dialect.driver))
-2019-01-23 18:46:33,396 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+2019-01-23 20:21:35,448 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
 FROM model_suites 
 WHERE model_suites.id = ?
-2019-01-23 18:46:33,396 INFO sqlalchemy.engine.base.Engine (1,)
-2019-01-23 18:46:33,398 INFO sqlalchemy.engine.base.Engine SELECT interpolation_parameters.interpolator_id AS interpolation_parameters_interpolator_id, interpolation_parameters.quantity_id AS interpolation_parameters_quantity_id, interpolation_parameters.nodes AS interpolation_parameters_nodes, interpolation_parameters.smoothing AS interpolation_parameters_smoothing, interpolation_parameters.vs_log_age AS interpolation_parameters_vs_log_age, interpolation_parameters.log_quantity AS interpolation_parameters_log_quantity 
+2019-01-23 20:21:35,448 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:35,449 INFO sqlalchemy.engine.base.Engine SELECT interpolation_parameters.interpolator_id AS interpolation_parameters_interpolator_id, interpolation_parameters.quantity_id AS interpolation_parameters_quantity_id, interpolation_parameters.nodes AS interpolation_parameters_nodes, interpolation_parameters.smoothing AS interpolation_parameters_smoothing, interpolation_parameters.vs_log_age AS interpolation_parameters_vs_log_age, interpolation_parameters.log_quantity AS interpolation_parameters_log_quantity 
 FROM interpolation_parameters 
 WHERE ? = interpolation_parameters.interpolator_id
-2019-01-23 18:46:33,398 INFO sqlalchemy.engine.base.Engine (1,)
-2019-01-23 18:46:36,362 INFO sqlalchemy.engine.base.Engine SELECT varchange_grids.id AS varchange_grids_id 
+2019-01-23 20:21:35,449 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:38,422 INFO sqlalchemy.engine.base.Engine SELECT varchange_grids.id AS varchange_grids_id 
 FROM varchange_grids 
 WHERE varchange_grids.name = ? AND varchange_grids.interpolator_id = ?
-2019-01-23 18:46:36,362 INFO sqlalchemy.engine.base.Engine ('default', 1)
-2019-01-23 18:46:36,363 INFO sqlalchemy.engine.base.Engine SELECT varchange_feh_nodes.value AS varchange_feh_nodes_value 
+2019-01-23 20:21:38,422 INFO sqlalchemy.engine.base.Engine ('default', 1)
+2019-01-23 20:21:38,423 INFO sqlalchemy.engine.base.Engine SELECT varchange_feh_nodes.value AS varchange_feh_nodes_value 
 FROM varchange_feh_nodes 
 WHERE varchange_feh_nodes.grid_id = ? ORDER BY varchange_feh_nodes."index"
-2019-01-23 18:46:36,363 INFO sqlalchemy.engine.base.Engine (1,)
-2019-01-23 18:46:36,364 INFO sqlalchemy.engine.base.Engine SELECT varchange_mass_nodes.value AS varchange_mass_nodes_value 
+2019-01-23 20:21:38,423 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:38,423 INFO sqlalchemy.engine.base.Engine SELECT varchange_mass_nodes.value AS varchange_mass_nodes_value 
 FROM varchange_mass_nodes 
 WHERE varchange_mass_nodes.grid_id = ? ORDER BY varchange_mass_nodes."index"
-2019-01-23 18:46:36,364 INFO sqlalchemy.engine.base.Engine (1,)
-2019-01-23 18:46:36,365 INFO sqlalchemy.engine.base.Engine SELECT varchange_age_nodes.value AS varchange_age_nodes_value 
+2019-01-23 20:21:38,423 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:38,424 INFO sqlalchemy.engine.base.Engine SELECT varchange_age_nodes.value AS varchange_age_nodes_value 
 FROM varchange_age_nodes 
 WHERE varchange_age_nodes.grid_id = ? ORDER BY varchange_age_nodes."index"
-2019-01-23 18:46:36,365 INFO sqlalchemy.engine.base.Engine (1,)
-2019-01-23 18:46:36,366 INFO sqlalchemy.engine.base.Engine COMMIT
-
-INITIAL PARAMETERS SET
-{'age': 0.6727269076057021, 'teff_primary': 5889.897074950928, 'feh': 0.027130330659255672, 'Pdisk': 4.544048876041708, 'logQ': 8.280311391686416}
-
-initialised current parameters
-{'age': 0.6727269076057021, 'teff_primary': 5889.897074950928, 'feh': 0.027130330659255672, 'Pdisk': 4.544048876041708, 'logQ': 8.280311391686416}
+2019-01-23 20:21:38,424 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-23 20:21:38,426 INFO sqlalchemy.engine.base.Engine COMMIT
 accepted_parameters.txt
 rejected_parameters.txt
-4.30user 2.53system 0:04.03elapsed 169%CPU (0avgtext+0avgdata 215648maxresident)k
-0inputs+24outputs (0major+75393minor)pagefaults 0swaps
+
+INITIAL PARAMETERS SET
+{'age': 7.1802549500938895, 'teff_primary': 5555.739210078505, 'feh': -0.14087809656021186, 'Pdisk': 4.578766457518203, 'logQ': 9.291270114857559}
+
+initialised current parameters
+{'age': 7.1802549500938895, 'teff_primary': 5555.739210078505, 'feh': -0.14087809656021186, 'Pdisk': 4.578766457518203, 'logQ': 9.291270114857559}
+accepted_parameters.txt
+rejected_parameters.txt
+ITERATION STEP =  1
+NAME AND VALUE age 11.19331508871457
+NAME AND VALUE teff_primary 5714.356572862065
+NAME AND VALUE feh -0.45786086502828593
+NAME AND VALUE Pdisk 4.575052276081144
+NAME AND VALUE logQ 9.381228497050076
+new values proposed
+{'age': 11.19331508871457, 'teff_primary': 5714.356572862065, 'feh': -0.45786086502828593, 'Pdisk': 4.575052276081144, 'logQ': 9.381228497050076}
+calculating acceptance probability
+Calculating Masses
+
+AGE =  11.19331508871457
+solution found
+[0.7878787878787878, 0.795959595959596]
+solution found
+[0.6424242424242425, 0.6505050505050505]
+BEGINSAT
+star-planet evolution completed
+Target parameters: 
+age =  11.19331508871457
+Porb =  5.2663825
+convective phase lag =  1.2404889689342143e-10
+
+Trying P0 = 5.2663825, Pdisk = 1.3733581450049746
+BINARY CONFIGURATION COMPLETE
