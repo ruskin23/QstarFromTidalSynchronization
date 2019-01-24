@@ -12,6 +12,7 @@ sys.path.append('/home/kpenev/projects/git/poet/scripts')
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
 import scipy
+import numpy
 import scipy.interpolate
 import scipy.linalg
 import scipy.optimize
@@ -78,7 +79,7 @@ class DeriveMass:
         solution = 0
         mass_solutions = self.possible_solution()
 
-        if mumpy.isnan(mass_solutions) is False: 
+        if numpy.isnan(mass_solutions) is False: 
             solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
        
         return solution
