@@ -1,5 +1,7 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 
+import os
+
 import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
@@ -71,51 +73,54 @@ class MetropolisHastings:
         for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
             print("NAME AND VALUE",name_obs,proposed[name_obs] )
-            if proposed['age']<0: return scipy.nan
+        if proposed['age']<0: proposed = scipy.nan
+
+        self.proposed_parameters = proposed
 
 
+    def write_header(self):
 
+        f = os.getcwd()
+        file_list = os.listdir(f)
+        for name in self.filename:
+            if name in file_list:
+                os.remove(name)
 
-        return proposed
+        header = []
+        header.append('Iteration_step')
+
+        for key in self.current_parameters.keys():
+            header.append(key)
+
+        for f_name in self.filename:
+            with open(f_name, 'w', 1) as file:
+                for name in header:
+                    file.write('%s\t' % name)
+                file.write('Result\n')
+            file.close()
+
+        print(self.filename[0])
+        print(self.filename[1])
 
 
     def write_on_file(self):
 
         # writes all the parameter names in the file
-
-        def write_header():
-
-            filename = ['accepted_aparemters.txt', 'rejected_parameters.txt']
-
-            header = []
-            header.append('Iteration_step\t')
-
-            for key in self.current_parameters.keys():
-                header.append(key)
-
-            for i in range(0, 1):
-                with open(filename[i], 'w', 0) as file:
-                    for name in header:
-                        file.write('%s\t' % name)
-                    file.write('\tResult\n')
-                file.close()
-
-        if self.iteration_step==0: write_header()
-
+        
         if self.isAccepted == True:
             print ('ACCEPTED')
-            filename = 'accepted_aparemters.txt'
+            filename = self.filename[0]
             result = 'A'
         else:
             print ('REJECTED')
-            filename = 'rejected_parameters.txt'
+            filename = self.filename[1] 
             result = 'R'
 
-        with open(filename, 'a',0) as file:
-            file.write('%s\t' %self.iteration_step)
+        with open(filename, 'a', 1) as file:
+            file.write('%s' %self.iteration_step)
             for key, value in self.current_parameters.items():
                 file.write('%s\t' % value)
-            file.write('\t' + result + '\n')
+            file.write(result + '\n')
         file.close()
 
 
@@ -123,18 +128,19 @@ class MetropolisHastings:
 
         """runs the metropolis hastrings algorithm for number of iterations given"""
 
-        while self.iteration_step<self.total_iterations:
+        if self.iteration_step==0:   self.write_header()
+
+        while self.iteration_step<=self.total_iterations:
             
-            self.write_on_file()            
             self.iteration_step =  self.iteration_step + 1 
             print ('ITERATION STEP = ',self.iteration_step)
 
             #draw a random value from proposal function
-            self.proposed_parameters = self.values_proposed()
+            self.values_proposed()
             print ('new values proposed')
             print (self.proposed_parameters)
-            if self.proposed_parameters == scipy.nan : 
-                self.proposed_parameters = []
+            if numpy.isnan(self.proposed_parameters): 
+                print("Age is negative. Skipping Step")
                 continue
 
             # calculate acceptance probablity
@@ -151,6 +157,7 @@ class MetropolisHastings:
                 if p_acceptance>rand : self.isAccepted=True
                 else : self.isAccepted=False
 
+        self.write_on_file()
 
 
     def __init__(
@@ -191,6 +198,9 @@ class MetropolisHastings:
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin
 
+        self.filename = ['accepted_parameters.txt', 'rejected_parameters.txt']
+
+
 
 if __name__ == '__main__':
 
@@ -228,7 +238,7 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        age_step=3.0,
+                        age_step=2.0,
                         teff_step=100.0,
                         feh_step=0.1,
                         
@@ -243,7 +253,7 @@ if __name__ == '__main__':
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,20,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,-1,observed_Pspin)
 
 mcmc.iterations()
 #flush()

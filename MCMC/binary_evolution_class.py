@@ -21,8 +21,7 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from mass_calculations import DerivePrimnaryMass
-from mass_calculations import DeriveSecondaryMass
+from mass_calculations import DeriveMass
 from inital_condition_solver import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
