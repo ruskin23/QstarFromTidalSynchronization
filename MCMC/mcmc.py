@@ -46,31 +46,19 @@ class MetropolisHastings:
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(spin_value)
         
         
-        if likelihood== 0 : 
-            print('likelihood is 0.0')
-            return scipy.nan
-        else :
-            print('likehood = ', likelihood)
-            posterior = prior*likelihood
-            return posterior
+        print('likehood = ', likelihood)
+        posterior = prior*likelihood
+        return posterior
 
-    def acceptance_probability(self):
-
-
-        if self.iteration_step==1:
-            self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
-            self.current_posterior = self.posterior_probability(parameter_set=self.current_parameters)
-
-        else:
-            self.proposed_posterior =  self.posterior_probability(parameter_set=self.proposed_parameters)
-
+    
+    def check_acceptance(self):
         self.p_acceptance = self.proposed_posterior/self.current_posterior
-        
-        print("POsterior_proposed = ",self.proposed_posterior)
-        print("Poster_previous = ", self.current_posterior)
-        print("acceptance_probabilty = ", self.p_acceptance)
-
-        
+        if self.p_acceptance > 1: self.isAccepted = True
+        else:
+            rand = scipy.stats.norm.rvs()
+            if self.p_acceptance > rand : self.isAccepted = True
+            else: self.isAccepted = False
+        print('Acceptance_probability', = self.p_acceptance)
 
 
     def values_proposed(self):
@@ -80,6 +68,7 @@ class MetropolisHastings:
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
             print("NAME AND VALUE",name_obs,proposed[name_obs] )
         if proposed['age']<0: self.check_age_neg = True
+        else: self.check_age_neg = False
 
         self.proposed_parameters = proposed
 
@@ -107,29 +96,40 @@ class MetropolisHastings:
 
 
 
-    def write_on_file(self):
-
-        # writes all the parameter names in the file
+    
+    def accepted_parameters(self):
         
-        if self.isAccepted == True:
-            print ('ACCEPTED')
-            filename = self.filename[0]
-            result = 'A'
-        else:
-            print ('REJECTED')
-            filename = self.filename[1] 
-            result = 'R'
+        print("ACCEPTED")
+        self.current_parameters = self.proposed_parameters
+        self.current_posterior = self.proposed_posterior
 
+        f_name = self.filename[0]
         with open(filename, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.current_parameters.items():
                 file.write('%s\t' % value)
-            file.write(result + '\n')
         file.close()
+    
+       
+    def rejected_parameters(self):
+        
+        print("REJECTED")
+
+        f_name = self.filename[1]
+        with open(filename, 'a', 1) as file:
+            file.write('%s\t' %self.iteration_step)
+            for key, value in self.proposed_parameters.items():
+                file.write('%s\t' % value)
+        file.close()
+        
+    
 
 
     def initialise_parameters(self):
-
+    
+        """Initial values are drawn randomly from the given observable data set"""
+        
+        
         self.write_header()
 
 
@@ -138,59 +138,61 @@ class MetropolisHastings:
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
         
         print ('\nINITIAL PARAMETERS SET')
-        print(self.initial_parameters)
         
         self.current_parameters = self.initial_parameters
         
         print(self.current_parameters)
 
+    
+    
+    def first_iteration(self):
+       
+        """Calculates first set of parameters and its corresponding posterior probability. The process will run until a non-zero or non-nan value of posterior probability is calculated"""
+        self.write_header()
+        
+        while True:
+            self.initialise_parameters()
+            if self.current_parameters['age'] < 0: continue
+            self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters) 
+            if self.current_posterior == 0 or numpy.isnan(self.current_posterior): continue
+            else: break
+
 
 
     def iterations(self):
 
-        """runs the metropolis hastrings algorithm for number of iterations given"""
+        """runs the specified number of iteration for the mcmc"""
 
-        if self.iteration_step==0:   
-            self.initialise_parameters()
-            self.write_header()
-
+            
         while self.iteration_step<=self.total_iterations:
             
-            self.iteration_step =  self.iteration_step + 1 
-            print ('ITERATION STEP = ',self.iteration_step)
-
-            #draw a random value from proposal function
-            self.values_proposed()
+            self.isAccepted = None
+            self.check_age_neg = True
+            
+            #initialising the set of parameters
+            if self.iteration_step == 1: self.first_iteration() 
+            
+            
+            #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
+            while self.check_age_neg is True: self.values_proposed()
             print ('new values proposed')
             print (self.proposed_parameters)
-            if self.check_age_neg is True: 
-                print("Age is negative. Skipping Step")
+            
+            #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
+            self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
+            if numpy.isnan(self.proposed_posterior):
+                print("mass out of range for current values. proposing new values")
                 continue
 
-            # calculate acceptance probablity
-            print ('calculating acceptance probability')
-            self.acceptance_probability()
-            print ('calculated acceptance probability')
+            # calculate acceptance probablity and check if proposed parameter is accepted or not
+            print ('checking acceptance')
+            self.check_acceptance()
+            print ('isAccepted = ', self.isAccepted)
 
-            if numpy.isnan(self.p_acceptance) or numpy.isinf(self.p_acceptance): 
-                print('Either mass cannot be calculated or step gives 0 or inf posterior for current values. Skipping Step')
-                if self.iteration_step == 1:  self.initialise_parameters()
-                continue
-
-            if self.p_acceptance> 1:
-                self.current_parameters= self.proposed_parameters
-                self.current_posterior = self.proposed_posterior
-                self.isAccepted = True
-            else:
-                rand = scipy.stats.norm.rvs()
-                if self.p_acceptance>rand : 
-                    self.current_parameters= self.proposed_parameters
-                    self.current_posterior = self.proposed_posterior
-                    self.isAccepted=True
-                else : self.isAccepted=False
-
-            self.write_on_file()
-
+            if self.isAccepted is True: self.accepted_parameters()
+            else: self.rejected_parameters()
+            
+            self.iteration_step = self.iteration_step + 1
 
     def __init__(
                 self,
@@ -209,7 +211,7 @@ class MetropolisHastings:
         self.observation_data = observation_data
         self.logQ = logQ
         self.proposed_step = proposed_step
-        self.iteration_step = 0
+        self.iteration_step = 1
         self.total_iterations= total_iterations
         
       
@@ -281,7 +283,7 @@ if __name__ == '__main__':
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,5,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,2,observed_Pspin)
 
 mcmc.iterations()
 #flush()

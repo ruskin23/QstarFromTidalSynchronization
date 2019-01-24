@@ -25,6 +25,7 @@ from mass_calculations import DeriveMass
 from inital_condition_solver import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
+import scipy
 from astropy import units, constants
 
 
