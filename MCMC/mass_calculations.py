@@ -31,6 +31,8 @@ class DeriveMass:
         self.age = age
         self.teff_value = teff_value
 
+        self.mass_bound_check = False
+
     def teff_diff(self, mass):
 
         """Return the effective temperature for the given stellar mass."""
@@ -66,10 +68,13 @@ class DeriveMass:
             if x < 0:
                 mass_solutions.append(mass_array[i])
                 mass_solutions.append(mass_array[i + 1])
-                return mass_solutions
+                print('solution found')
+                print(mass_solutions)            
+                break
             if i == teff_array_diff.size - 1:
-                return scipy.nan
-
+                self.mass_bound_check = True
+    
+        return mass_solutions
 
 
     def __call__(self):
@@ -79,8 +84,9 @@ class DeriveMass:
         solution = 0
         mass_solutions = self.possible_solution()
 
-        if numpy.isnan(mass_solutions) is False: 
+        if (self.mass_bound_check) is False: 
             solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
+            return solution
+        else: return scipy.nan
        
-        return solution
             

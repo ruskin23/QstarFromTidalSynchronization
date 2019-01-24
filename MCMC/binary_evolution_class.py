@@ -137,17 +137,8 @@ class evolution:
                             self.age,
                             teff_secondary)
 
-        PrimaryMass = mass1()
-        SecondaryMass = mass2()
-
-        print ("Primary_Mass = ", PrimaryMass)
-        print ("Seconday_Mass = ", SecondaryMass)
-
-        star_masses.append(PrimaryMass)
-        star_masses.append(SecondaryMass)
-
-        return star_masses
-
+        self.primary_mass = mass1()
+        self.secondary_mass = mass2()
 
 
     def __init__(self,interpolator,observational_parameters,fixed_parameters):
@@ -168,21 +159,21 @@ class evolution:
         self.wind_saturation_frequency = fixed_parameters['wind_saturation_frequency']
         self.diff_rot_coupling_timescale = fixed_parameters['diff_rot_coupling_timescale']
         self.wind_strength = fixed_parameters['wind_strength']
-
+        
+        self.primary_mass = 0.0
+        self.secondary_mass = 0.0 
 
 
     def __call__(self):
 
         tdisk = self.disk_dissipation_age
+        
+        self.calculate_star_masses()
+        if numpy.isnan(self.primary_mass) or numpy.isnan(self.secondary_mass): 
+            print('mass out of rangfe') 
+            return scipy.nan
 
-        star_masses = self.calculate_star_masses()
-
-        PrimaryMass = star_masses[0]
-        SecondaryMass = star_masses[1]
-
-        if PrimaryMass == 0 or SecondaryMass == 0: return 0
-
-        star = self.create_star(SecondaryMass,1)
+        star = self.create_star(self.secondary_mass,1)
         planet = self.create_planet(1.0)
 
         binary = self.create_binary_system(star,
@@ -201,8 +192,8 @@ class evolution:
 
         print ('star-planet evolution completed')
 
-        primary = self.create_star(PrimaryMass, 1)
-        secondary = self.create_star(SecondaryMass, 1)
+        primary = self.create_star(self.primary_mass, 1)
+        secondary = self.create_star(self.secondary_mass, 1)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
