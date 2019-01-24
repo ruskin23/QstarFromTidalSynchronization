@@ -71,7 +71,7 @@ class DeriveMass:
                 print('solution found')
                 print(mass_solutions)            
                 break
-            if i == teff_array_diff.size - 1:
+            if i >= teff_array_diff.size - 1:
                 self.mass_bound_check = True
     
         return mass_solutions
