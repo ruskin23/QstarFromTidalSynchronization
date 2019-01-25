@@ -1,1 +1,1 @@
-Iteration_step	Result
+Iteration_step	age	teff_primary	feh	Pdisk	logQ	

@@ -2,6 +2,7 @@
 
 
 import sys
+import os
 
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
@@ -62,9 +63,11 @@ class DeriveMass:
 
 
         mass_solutions = []
-
+        os.remove('mass_test.txt')
         for i in range(teff_array_diff.size - 1):
             x = teff_array_diff[i] * teff_array_diff[i + 1]
+            with open('mass_test.txt', 'a') as f:
+                f.write(repr(i) + '\t' + repr(x) + '\n')
             if x < 0:
                 mass_solutions.append(mass_array[i])
                 mass_solutions.append(mass_array[i + 1])
@@ -80,6 +83,7 @@ class DeriveMass:
 
         solution = 0
         mass_solutions = self.possible_solution()
+        print(mass_solutions)
 
         if (self.mass_bound_check) is False: 
             solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
