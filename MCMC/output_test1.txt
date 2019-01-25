@@ -1,0 +1,437 @@
+nohup: ignoring input
+2019-01-20 16:16:26,569 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+2019-01-20 16:16:26,569 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,570 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+2019-01-20 16:16:26,570 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,570 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolators")
+2019-01-20 16:16:26,570 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("model_suites")
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("quantities")
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_variables")
+2019-01-20 16:16:26,571 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,572 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolation_parameters")
+2019-01-20 16:16:26,572 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,572 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("tracks")
+2019-01-20 16:16:26,572 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_grids")
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolator_tracks")
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_age_nodes")
+2019-01-20 16:16:26,573 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_feh_nodes")
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_mass_nodes")
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_values")
+2019-01-20 16:16:26,574 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,582 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-20 16:16:26,582 INFO sqlalchemy.engine.base.Engine SELECT quantities.id AS quantities_id, quantities.name AS quantities_name 
+FROM quantities
+2019-01-20 16:16:26,582 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,583 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites
+2019-01-20 16:16:26,583 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,585 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+FROM (SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks) AS anon_1
+2019-01-20 16:16:26,586 INFO sqlalchemy.engine.base.Engine ()
+2019-01-20 16:16:26,586 INFO sqlalchemy.engine.base.Engine COMMIT
+2019-01-20 16:16:26,586 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-01-20 16:16:26,587 INFO sqlalchemy.engine.base.Engine SELECT interpolators.id AS interpolators_id, interpolators.name AS interpolators_name, interpolators.filename AS interpolators_filename, interpolators.checksum AS interpolators_checksum 
+FROM interpolators 
+WHERE interpolators.name = ?
+2019-01-20 16:16:26,587 INFO sqlalchemy.engine.base.Engine ('default',)
+2019-01-20 16:16:26,714 INFO sqlalchemy.engine.base.Engine SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks, interpolator_tracks 
+WHERE ? = interpolator_tracks.interpolator_id AND tracks.id = interpolator_tracks.track_id
+2019-01-20 16:16:26,714 INFO sqlalchemy.engine.base.Engine (1,)
+/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
+  'storage.' % (dialect.name, dialect.driver))
+2019-01-20 16:16:26,716 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites 
+WHERE model_suites.id = ?
+2019-01-20 16:16:26,716 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-20 16:16:26,718 INFO sqlalchemy.engine.base.Engine SELECT interpolation_parameters.interpolator_id AS interpolation_parameters_interpolator_id, interpolation_parameters.quantity_id AS interpolation_parameters_quantity_id, interpolation_parameters.nodes AS interpolation_parameters_nodes, interpolation_parameters.smoothing AS interpolation_parameters_smoothing, interpolation_parameters.vs_log_age AS interpolation_parameters_vs_log_age, interpolation_parameters.log_quantity AS interpolation_parameters_log_quantity 
+FROM interpolation_parameters 
+WHERE ? = interpolation_parameters.interpolator_id
+2019-01-20 16:16:26,718 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-20 16:16:29,572 INFO sqlalchemy.engine.base.Engine SELECT varchange_grids.id AS varchange_grids_id 
+FROM varchange_grids 
+WHERE varchange_grids.name = ? AND varchange_grids.interpolator_id = ?
+2019-01-20 16:16:29,572 INFO sqlalchemy.engine.base.Engine ('default', 1)
+2019-01-20 16:16:29,573 INFO sqlalchemy.engine.base.Engine SELECT varchange_feh_nodes.value AS varchange_feh_nodes_value 
+FROM varchange_feh_nodes 
+WHERE varchange_feh_nodes.grid_id = ? ORDER BY varchange_feh_nodes."index"
+2019-01-20 16:16:29,573 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-20 16:16:29,574 INFO sqlalchemy.engine.base.Engine SELECT varchange_mass_nodes.value AS varchange_mass_nodes_value 
+FROM varchange_mass_nodes 
+WHERE varchange_mass_nodes.grid_id = ? ORDER BY varchange_mass_nodes."index"
+2019-01-20 16:16:29,574 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-20 16:16:29,574 INFO sqlalchemy.engine.base.Engine SELECT varchange_age_nodes.value AS varchange_age_nodes_value 
+FROM varchange_age_nodes 
+WHERE varchange_age_nodes.grid_id = ? ORDER BY varchange_age_nodes."index"
+2019-01-20 16:16:29,574 INFO sqlalchemy.engine.base.Engine (1,)
+2019-01-20 16:16:29,576 INFO sqlalchemy.engine.base.Engine COMMIT
+{'age': 4.934681919602857, 'teff_primary': 5888.485263562787, 'feh': -0.048018840487385035, 'Pdisk': 4.43598860423641, 'logQ': 7.588675792438474}
+
+INITIAL PARAMETERS SET
+{'age': 4.934681919602857, 'teff_primary': 5888.485263562787, 'feh': -0.048018840487385035, 'Pdisk': 4.43598860423641, 'logQ': 7.588675792438474}
+ITERATION STEP =  0
+NAME AND VALUE age 0.023996301081671056
+NAME AND VALUE teff_primary 5818.217555888682
+NAME AND VALUE feh 0.0600310744177126
+NAME AND VALUE Pdisk 4.4437479635860395
+NAME AND VALUE logQ 7.074054530858558
+new values proposed
+{'age': 0.023996301081671056, 'teff_primary': 5818.217555888682, 'feh': 0.0600310744177126, 'Pdisk': 4.4437479635860395, 'logQ': 7.074054530858558}
+calculating acceptance probability
+Calculating Masses
+
+AGE =  0.023996301081671056
+Primary_Mass =  1.1240761879383618
+Seconday_Mass =  0.9801665635271414
+BEGINSAT
+star-planet evolution completed
+Target parameters: 
+age =  0.023996301081671056
+Porb =  5.2663825
+convective phase lag =  2.5163258137708537e-08
+
+Trying P0 = 5.2663825, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.322309499917009, P* = 0.6745770536725515
+
+Trying P0 = 2.63319125, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 2.8171303659350886, P* = 2.815617784912269
+
+FOR Pdisk = 1.4139382698268845, ORBITAL PERIOD RANGE: 2.63319125 < Porb < 5.2663825
+
+Trying P0 = 2.63319125, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 2.8166389910069345, P* = 2.8151266738144303
+
+Trying P0 = 5.2663825, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.322309499917009, P* = 0.6745770536725515
+
+Trying P0 = 5.207609215046314, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.265617845669939, P* = 0.6896565179235294
+
+Trying P0 = 5.208401946312116, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266381847942326, P* = 0.6894431684056254
+
+Trying P0 = 5.208405050513089, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266384839681135, P* = 0.6894423335248634
+
+Initial orbital period root found
+
+Trying P0 = 5.208401946312116, Pdisk = 1.4139382698268845
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266381847942326, P* = 0.6894431684056254
+
+TEST1
+
+TEST2
+
+TEST3
+
+TEST4
+
+ Results Wstar = 9.113420213749876, Porb_initial = 5.208401946312116, Porb_now = 5.266381847942326
+
+TEST5
+
+TEST6
+
+SPIN FROM MODEL =  0.6894431684056254
+likelihood =  0.0
+Calculating Masses
+
+AGE =  4.934681919602857
+Primary_Mass =  1.0162022065548961
+Seconday_Mass =  0.79004589010317
+BEGINSAT
+star-planet evolution completed
+Target parameters: 
+age =  4.934681919602857
+Porb =  5.2663825
+convective phase lag =  7.693883593705331e-09
+
+Trying P0 = 5.2663825, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 4.9753953035971525, P* = 4.972723901304862
+
+Trying P0 = 10.532765, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.488651611316765, P* = 10.483020016991535
+
+FOR Pdisk = 1.4164115077254902, ORBITAL PERIOD RANGE: 5.2663825 < Porb < 10.532765
+
+Trying P0 = 5.2663825, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 4.9753953035971525, P* = 4.972723901304862
+
+Trying P0 = 10.532765, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.488651611316765, P* = 10.483020016991535
+
+Trying P0 = 5.544339807501611, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.290028023258935, P* = 5.28718768754181
+
+Trying P0 = 5.523450543388885, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266628575238222, P* = 5.263800803214083
+
+Trying P0 = 5.523231051571952, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382512723612, P* = 5.263554872816004
+
+Trying P0 = 5.523227789956426, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266378856003594, P* = 5.26355121805936
+
+Initial orbital period root found
+
+Trying P0 = 5.523231051571952, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382512723612, P* = 5.263554872816004
+
+TEST1
+
+TEST2
+
+TEST3
+
+TEST4
+
+ Results Wstar = 1.1937151714005176, Porb_initial = 5.523231051571952, Porb_now = 5.266382512723612
+
+TEST5
+
+TEST6
+
+SPIN FROM MODEL =  5.263554872816004
+likelihood =  1.9512830999517205e-130
+POsterior_proposed =  0.0
+Poster_previous =  6.37267212720585e-133
+acceptance_probabilty =  0.0
+calculated acceptance probability
+ACCEPTED
+ITERATION STEP =  1
+NAME AND VALUE age 3.814516557492539
+NAME AND VALUE teff_primary 5886.58490720875
+NAME AND VALUE feh -0.11587444440088382
+NAME AND VALUE Pdisk 4.478901901068948
+NAME AND VALUE logQ 8.481769218024406
+new values proposed
+{'age': 3.814516557492539, 'teff_primary': 5886.58490720875, 'feh': -0.11587444440088382, 'Pdisk': 4.478901901068948, 'logQ': 8.481769218024406}
+calculating acceptance probability
+Calculating Masses
+
+AGE =  3.814516557492539
+Primary_Mass =  0.9940489880693888
+Seconday_Mass =  0.7744724303892649
+BEGINSAT
+star-planet evolution completed
+Target parameters: 
+age =  3.814516557492539
+Porb =  5.2663825
+convective phase lag =  9.841293535800193e-10
+
+Trying P0 = 5.2663825, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.193547914754456, P* = 6.455833949863275
+
+Trying P0 = 10.532765, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.527380196839639, P* = 16.610528862581408
+
+FOR Pdisk = 1.4028405725251591, ORBITAL PERIOD RANGE: 5.2663825 < Porb < 10.532765
+
+Trying P0 = 5.2663825, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.193547914754456, P* = 6.455833949863275
+
+Trying P0 = 10.532765, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.527380196839639, P* = 16.610528862581408
+
+Trying P0 = 5.338296044492242, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.268948142686479, P* = 6.58293647733544
+
+Trying P0 = 5.335849043142967, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266383919975415, P* = 6.578602069959085
+
+Trying P0 = 5.335845875218445, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266381340711542, P* = 6.578597710547955
+
+Initial orbital period root found
+
+Trying P0 = 5.335845875218445, Pdisk = 1.4028405725251591
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266381340711542, P* = 6.578597710547955
+
+TEST1
+
+TEST2
+
+TEST3
+
+TEST4
+
+ Results Wstar = 0.9550949280733929, Porb_initial = 5.335845875218445, Porb_now = 5.266381340711542
+
+TEST5
+
+TEST6
+
+SPIN FROM MODEL =  6.578597710547955
+likelihood =  4.4097431852233285e-28
+Calculating Masses
+
+AGE =  4.934681919602857
+Primary_Mass =  1.0162022065548961
+Seconday_Mass =  0.79004589010317
+BEGINSAT
+star-planet evolution completed
+Target parameters: 
+age =  4.934681919602857
+Porb =  5.2663825
+convective phase lag =  7.693883593705331e-09
+
+Trying P0 = 5.2663825, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 4.9753953035971525, P* = 4.972723901304862
+
+Trying P0 = 10.532765, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.488651611316765, P* = 10.483020016991535
+
+FOR Pdisk = 1.4164115077254902, ORBITAL PERIOD RANGE: 5.2663825 < Porb < 10.532765
+
+Trying P0 = 5.2663825, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 4.9753953035971525, P* = 4.972723901304862
+
+Trying P0 = 10.532765, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 10.488651611316765, P* = 10.483020016991535
+
+Trying P0 = 5.544339807501611, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.290028023258935, P* = 5.28718768754181
+
+Trying P0 = 5.523450543388885, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266628575238222, P* = 5.263800803214083
+
+Trying P0 = 5.523231051571952, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382512723612, P* = 5.263554872816004
+
+Trying P0 = 5.523227789956426, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266378856003594, P* = 5.26355121805936
+
+Initial orbital period root found
+
+Trying P0 = 5.523231051571952, Pdisk = 1.4164115077254902
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Got Porb = 5.266382512723612, P* = 5.263554872816004
+
+TEST1
+
+TEST2
+
+TEST3
+
+TEST4
+
+ Results Wstar = 1.1937151714005176, Porb_initial = 5.523231051571952, Porb_now = 5.266382512723612
+
+TEST5
+
+TEST6
+
+SPIN FROM MODEL =  5.263554872816004
+likelihood =  1.9512830999517205e-130
+POsterior_proposed =  1.4092709631552517e-30
+Poster_previous =  6.37267212720585e-133
+acceptance_probabilty =  2.2114286362527145e+102
+calculated acceptance probability
+ACCEPTED
+ITERATION STEP =  2
+NAME AND VALUE age 9.353634381755262
+NAME AND VALUE teff_primary 6001.600383380488
+NAME AND VALUE feh -0.265531857692065
+NAME AND VALUE Pdisk 4.543225872157211
+NAME AND VALUE logQ 8.933807188421163
+new values proposed
+{'age': 9.353634381755262, 'teff_primary': 6001.600383380488, 'feh': -0.265531857692065, 'Pdisk': 4.543225872157211, 'logQ': 8.933807188421163}
+calculating acceptance probability
+Calculating Masses
+
+AGE =  9.353634381755262
+Traceback (most recent call last):
+  File "mcmc.py", line 241, in <module>
+    mcmc.iterations()
+  File "mcmc.py", line 137, in iterations
+    p_acceptance = self.acceptance_probability()
+  File "mcmc.py", line 56, in acceptance_probability
+    posterior_proposed = self.posterior_probability(parameter_set=self.proposed_parameters)
+  File "mcmc.py", line 33, in posterior_probability
+    Pspin_given_model = find_spin()
+  File "/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/binary_evolution_class.py", line 179, in __call__
+    star_masses = self.calculate_star_masses()
+  File "/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/binary_evolution_class.py", line 131, in calculate_star_masses
+    PrimaryMass = mass1()
+  File "/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mass_calculations.py", line 77, in __call__
+    mass_solutions = self.possible_solution()
+  File "/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mass_calculations.py", line 64, in possible_solution
+    x = teff_array_diff[i] * teff_array_diff[i + 1]
+IndexError: index 100 is out of bounds for axis 0 with size 100

@@ -1,1 +1,0 @@
-Iteration_step age teff_primary feh Porb Pdisk logQ 

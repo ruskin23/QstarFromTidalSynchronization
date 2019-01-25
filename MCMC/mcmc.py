@@ -1,5 +1,8 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 
+import os
+import argparse
+
 import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
@@ -7,12 +10,10 @@ import sys
 sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
 sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
-
 from binary_evolution_class import evolution
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
-
 
 import scipy
 from scipy.stats import norm
@@ -24,129 +25,202 @@ class MetropolisHastings:
 
     def posterior_probability(self,parameter_set=None):
         """reutrns current surface spin of the star given the parameters"""
-
+        
         find_spin = evolution(
-                                    self.interpolator,
-                                    parameter_set,
-                                    self.fixed_parameters)
+                                self.interpolator,
+                                parameter_set,
+                                self.fixed_parameters,
+                               )   
 
-        Pspin_given_model = find_spin()
-
-        print ("\nSPIN FROM MODEL = ",Pspin_given_model)
-
+        spin_value = find_spin()
+        if numpy.isnan(spin_value): return scipy.nan
 
         prior = 1.0
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
             prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-            #print("obs_prior_name =%s, obs_prior_value = %s ", (repr(key_obs),repr(value_obs)))
-            #print("par_prior_name =%s, par_prior_value = %s ", (repr(key_parameter),repr(value_parameter)))
+            print(key_obs)
+            print(key_parameter)
 
-
-        likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(Pspin_given_model)
-        print("likelihood = ", likelihood)
-
+        likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(spin_value)
+        
+        
+        print('likehood = ', likelihood)
         posterior = prior*likelihood
-
         return posterior
 
-    def acceptance_probability(self):
-
-
-        posterior_proposed = self.posterior_probability(parameter_set=self.proposed_parameters)
-        posterior_previous = self.posterior_probability(parameter_set=self.updated_parameters)
-        p = posterior_proposed/posterior_previous
-        
-        print("POsterior_proposed = ",posterior_proposed)
-        print("Poster_previous = ", posterior_previous)
-        print("acceptance_probabilty = ", p)
-
-        return p
+    
+    def check_acceptance(self):
+        self.p_acceptance = self.proposed_posterior/self.current_posterior
+        if self.p_acceptance > 1: self.isAccepted = True
+        else:
+            rand = numpy.random.random_sample()
+            if self.p_acceptance > rand : self.isAccepted = True
+            else: self.isAccepted = False
+            print('Acceptance_probability', self.p_acceptance)
+            print('Random_number', rand)
 
 
     def values_proposed(self):
 
         proposed = dict()
-        for (name_obs,value_obs),(name_step,value_step) in zip(self.updated_parameters.items(),self.proposed_step.items()):
+        for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
             print("NAME AND VALUE",name_obs,proposed[name_obs] )
-            if proposed['age']<0: return scipy.nan
+        if proposed['age']<0: self.check_age_neg = True
+        else: self.check_age_neg = False
+
+        self.proposed_parameters = proposed
+
+
+    def write_header(self):
+
+        f = os.getcwd()
+        file_list = os.listdir(f)
+        for name in self.filename:
+            if name in file_list:
+                os.remove(name)
+
+        header = []
+        header.append('Iteration_step')
+
+        for key in self.current_parameters.keys():
+            header.append(key)
+
+        for f_name in self.filename:
+            with open(f_name, 'w', 1) as file:
+                for name in header:
+                    file.write('%s\t' % name)
+                file.write('\n')
+            file.close()
 
 
 
+    
+    def accepted_parameters(self):
+        
+        print("ACCEPTED")
+        self.current_parameters = self.proposed_parameters
+        self.current_posterior = self.proposed_posterior
 
-        return proposed
-
-
-    def write_on_file(self):
-
-        # writes all the parameter names in the file
-
-        def write_header():
-
-            filename = ['accepted_aparemters.txt', 'rejected_parameters.txt']
-
-            header = []
-            header.append('Iteration_step')
-
-            for key in self.updated_parameters.keys():
-                header.append(key)
-
-            for i in range(0, 1):
-                with open(filename[i], 'w') as file:
-                    for name in header:
-                        file.write('%s ' % name)
-                file.close()
-
-        if self.iteration_step==0: write_header()
-
-        if self.isAccepted == True:
-            print ('ACCEPTED')
-            filename = 'accepted_aparemters.txt'
-        else:
-            print ('REJECTED')
-            filename = 'rejected_parameters.txt'
-
-        with open(filename, 'w') as file:
-            for key, value in self.updated_parameters.items():
-                file.write('%s ' % value)
+        f_name = self.filename[0]
+        with open(f_name, 'a', 1) as file:
+            file.write('%s\t' %self.iteration_step)
+            for key, value in self.current_parameters.items():
+                file.write('%s\t' % value)
+            file.write('\n')
         file.close()
+    
+    
+       
+    def rejected_parameters(self):
+        
+        print("REJECTED")
+
+        f_name = self.filename[1]
+        with open(f_name, 'a', 1) as file:
+            file.write('%s\t' %self.iteration_step)
+            for key, value in self.proposed_parameters.items():
+                file.write('%s\t' % value)
+            file.write('\n')
+        file.close()
+    
+
+    def save_current_parameter(self):
+
+        name = 'current_parameter.txt'
+        with open(name, 'w') as f:
+            f.write(repr(self.iteration_step) + '\t')
+            for key, value in self.current_parameters.items():
+                f.write('%s\t' % value)
+            f.write('\n')
+        f.close()
+
+
+    def initialise_parameters(self):
+    
+        """Initial values are drawn randomly from the given observable data set"""
+        
+
+        for key, value in self.observation_data.items():
+            self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
+        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+        
+        print ('\nINITIAL PARAMETERS SET')
+        
+        self.current_parameters = self.initial_parameters
+        self.write_header()
+
+        print(self.current_parameters)
+
+    
+    
+    def first_iteration(self):
+       
+        """Calculates first set of parameters and its corresponding posterior probability. The process will run until a non-zero or non-nan value of posterior probability is calculated"""
+        
+        while True:
+            self.initialise_parameters()
+            if self.current_parameters['age'] < 0: continue
+            self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters) 
+            if self.current_posterior == 0 or numpy.isnan(self.current_posterior): continue
+            else: break
 
 
     def iterations(self):
 
-        """runs the metropolis hastrings algorithm for number of iterations given"""
-        if self.iteration_step==0: self.updated_parameters = self.initial_parameters
-        print ('\nINITIAL PARAMETERS SET')
-        print(self.updated_parameters)
+        """runs the specified number of iteration for the mcmc"""
 
-        while self.iteration_step<self.total_iterations:
-
-            print ('ITERATION STEP = ',self.iteration_step)
-
-            #draw a random value from proposal function
-            self.proposed_parameters = self.values_proposed()
+            
+        while self.iteration_step <= self.total_iterations:
+            
+            self.isAccepted = None
+            self.check_age_neg = True
+            
+            #initialising the set of parameters
+            if self.iteration_step == 1: self.first_iteration() 
+            
+            
+            #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
+            while self.check_age_neg is True: self.values_proposed()
             print ('new values proposed')
             print (self.proposed_parameters)
-            if self.proposed_parameters == scipy.nan : continue
+            
+            #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
+            self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
+            if numpy.isnan(self.proposed_posterior):
+                print("mass out of range for current values. proposing new values")
+                continue
 
-            # calculate acceptance probablity
-            print ('calculating acceptance probability')
-            p_acceptance = self.acceptance_probability()
-            print ('calculated acceptance probability')
+            # calculate acceptance probablity and check if proposed parameter is accepted or not
+            print ('checking acceptance')
+            self.check_acceptance()
+            print ('isAccepted = ', self.isAccepted)
 
+            if self.isAccepted is True: self.accepted_parameters()
+            else: self.rejected_parameters()
+            
+            self.save_current_parameter()
 
-            if p_acceptance > 1:
-                self.updated_parameters = self.proposed_parameters
-                self.isAccepted = True
-            else:
-                rand = scipy.stats.norm.rvs()
-                if p_acceptance>rand : self.isAccepted=True
-                else : self.isAccepted=False
-
-            self.write_on_file()
             self.iteration_step = self.iteration_step + 1
 
+
+    def continue_last(self):
+
+        name = 'current_parameter.txt'
+        with open(name, 'r') as f:
+            for row in reader:
+                array = row
+        f.close()
+
+        self.iteration_step = array[0]
+        self.current_parameter['age'] = array[1]
+        self.current_parameter['teff_primary'] = array[2]
+        self.current_parameter['feh'] = array[3]
+        self.current_parameter['Pdisk'] = array[4]
+        self.current_parameter['logQ'] = array[5]
+
+        self.iterations()
 
     def __init__(
                 self,
@@ -165,22 +239,25 @@ class MetropolisHastings:
         self.observation_data = observation_data
         self.logQ = logQ
         self.proposed_step = proposed_step
-        self.iteration_step = 0
+        self.iteration_step = 1
         self.total_iterations= total_iterations
         
       
-        self.updated_parameters = dict()
+        self.current_parameters= dict()
         self.proposed_parameters = dict()
-        
-        #setting up initial parameters
         self.initial_parameters = dict()
-        for key, value in self.observation_data.items():
-            self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
-        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
-        print(self.initial_parameters)
 
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin
+
+        self.check_age_neg = None
+
+        self.proposed_posterior = 0.0
+        self.current_posterior = 0.0
+        self.p_acceptance = 0.0
+
+        self.filename = ['accepted_parameters.txt', 'rejected_parameters.txt']
+
 
 
 if __name__ == '__main__':
@@ -198,8 +275,7 @@ if __name__ == '__main__':
     observation_data = dict(
                         age=dict(value=4.6, sigma=3.0),
                         teff_primary=dict(value=5922.0, sigma=200.0),
-                        feh=dict(value=-0.06, sigma=0.11),
-                     
+                        feh=dict(value=-0.06, sigma=0.11),                  
                         Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
@@ -220,7 +296,7 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        age_step=3.0,
+                        age_step=2.0,
                         teff_step=100.0,
                         feh_step=0.1,
                         
@@ -230,14 +306,24 @@ if __name__ == '__main__':
 
 
     logQ = dict(
-                min=4,
-                max=6
+                min=7,
+                max=10
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,10,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,5,observed_Pspin)
 
-mcmc.iterations()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("status", help = 'start or continue')
+args = parser.parse_args()
+
+if args.status == 'start':
+    mcmc.iterations()
+elif args.status == 'continue': 
+    mcmc.continue_last()
+else:
+    print('allowed arguments are "start" or "continue"')
 #flush()
 #buffer_size =0 to write at the moment
 #
