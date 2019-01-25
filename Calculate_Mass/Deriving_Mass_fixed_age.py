@@ -28,12 +28,14 @@ class DerivePrimnaryMass:
 
         """Return the effective temperature for the given stellar mass."""
 
+        
         T = TeffK(self.interp('radius', mass, self.feh),
                   self.interp('lum', mass, self.feh)
                  )
 
-        return (T(self.age)-self.teff_value)
-
+        
+        if self.age >T.min_age and self.age<T.max_age:return (T(self.age)-self.teff_value)
+        else : return scipy.nan
 
     def possible_solution(self):
 
@@ -49,17 +51,17 @@ class DerivePrimnaryMass:
 
         mass_solutions = []
 
-        for i in range(teff_array_diff.size):
+        for i in range(teff_array_diff.size-1):
 
             x = teff_array_diff[i]*teff_array_diff[i+1]
             if x<0:
                 mass_solutions.append(mass_array[i])
                 mass_solutions.append(mass_array[i+1])
+                return mass_solutions
                 break
+            
 
-
-        return mass_solutions
-
+        if i >= teff_array_diff.size-1 : return scipy.nan
 
     def __call__(self):
 
@@ -99,7 +101,7 @@ class DeriveSecondaryMass:
 
         mass_solutions = []
 
-        for i in range(differnece_array.size):
+        for i in range(differnece_array.size-1):
 
             x = differnece_array[i]*differnece_array[i+1]
             if x<0:
@@ -112,9 +114,9 @@ class DeriveSecondaryMass:
         return solution
 
 
-serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
-x=DerivePrimnaryMass(interpolator, -0.06, 4.6, 5922)
+x=DerivePrimnaryMass(interpolator,-0.0329537979168565, 12.918385368071597 ,  5643.472584167178)
 print(x())
