@@ -209,10 +209,10 @@ if __name__ == '__main__':
     print (propose_value)
 
     check_prior = scipy.stats.norm(0.05917,5.576e-09).pdf(propose_value)
-    print (check_prior)
+    #print (check_prior)
 
 
     parameter_set = scipy.nan
-    print("NANSET = ", parameter_set)
+    #print("NANSET = ", parameter_set)
 
-    print(numpy.isnan(parameter_set))
+    #print(numpy.isnan(parameter_set))
