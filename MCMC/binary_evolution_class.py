@@ -216,13 +216,13 @@ class evolution:
                                               primary=primary,
                                               secondary=secondary)
 
-        print ("\nTEST5")
+        #print ("\nTEST5")
 
 
         primary.delete()
         secondary.delete()
 
-        print ("\nTEST6")
+        #print ("\nTEST6")
 
 
         return final_Psurf

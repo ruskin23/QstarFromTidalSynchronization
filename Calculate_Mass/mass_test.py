@@ -1,5 +1,3 @@
-"""Calculate primary and secondary mass if the age, [Fe/H] and semimajor axis are known """
-
 
 import sys
 import os
@@ -38,8 +36,6 @@ class DeriveMass:
 
         """Return the effective temperature for the given stellar mass."""
 
-
-
         T = TeffK(self.interp('radius', mass, self.feh),
                   self.interp('lum', mass, self.feh)
                   )
@@ -63,19 +59,16 @@ class DeriveMass:
 
 
         mass_solutions = []
-        os.remove('mass_test.txt')
         for i in range(teff_array_diff.size - 1):
             x = teff_array_diff[i] * teff_array_diff[i + 1]
-            with open('mass_test.txt', 'a') as f:
-                f.write(repr(i) + '\t' + repr(x) + '\n')
             if x < 0:
                 mass_solutions.append(mass_array[i])
                 mass_solutions.append(mass_array[i + 1])
                 print('solution found')
-                print(mass_solutions)            
-                return mass_solutions 
-    
-        if i >=teff_array_diff.size - 2: self.mass_bound_check = True
+                print(mass_solutions)
+                return mass_solutions
+
+        if i >=teff_array_diff.size - 3: self.mass_bound_check = True
 
     def __call__(self):
 
@@ -85,10 +78,18 @@ class DeriveMass:
         mass_solutions = self.possible_solution()
         print(mass_solutions)
 
-        if (self.mass_bound_check) is False: 
+        if (self.mass_bound_check) is False:
             solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
             print("solution = ", solution)
             return solution
         else: return scipy.nan
-       
-            
+
+
+
+serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+manager = StellarEvolutionManager(serialized_dir)
+interpolator = manager.get_interpolator_by_name('default')
+
+x=DeriveMass(interpolator,-0.0329537979168565, 12.918385368071597 ,  5643.472584167178)
+mass = x()
+print(mass)
