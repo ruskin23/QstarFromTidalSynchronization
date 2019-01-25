@@ -1,45 +1,48 @@
 import numpy
 import os
 import re
+import csv
 
 filename = 'test_3.txt'
 
 
 result = 'A'
-x = numpy.linspace(10,20,10)
+x = numpy.linspace(1,100,5)
 
-for i in range(x.size):
-
-    with open(filename,'a') as file : 
-        
-        file.write(repr(i) + "\t" )
-        for j in x:
-            file.write('%s\t' % j)
-        file.write('\t'+result + '\n')
-
+os.remove('test_3.txt')
+for i in range(1,2):
+    with open('test_3.txt','a') as file:
+        for n in x:
+            file.write(repr(n*i) + '\t')
+        file.write('\n')
     file.close()
 
 
 
-f = os.getcwd()
-file_list = os.listdir(f)
-name = ["t1.txt" , "t2.txt"]
-for n in name:
-    if  n in file_list:
-        os.remove(n)
+with open('test_3.txt', 'r') as f:
+        
+    reader = csv.reader(f, dialect='excel-tab')
+    for row in reader:
+        array = row
+
+f.close()
 
 
 
-import scipy
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("a", nargs='?', default="check_string_for_empty")
+
+args = parser.parse_args()
+
+if args.a == 'check_string_for_empty':
+    print('default') 
+elif args.a == 'start':
+    print('begin') 
+else:
+    print (args.a)
 
 
-def return_nan():
-    return scipy.nan
 
-check_array = [2 , 3,5 , return_nan(), 12, 15]
-
-for x in check_array:
-    if numpy.isnan(x):    
-        print("\nnan found")
-        continue
-    print("\n", x)

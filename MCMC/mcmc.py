@@ -1,6 +1,7 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 
 import os
+import argparse
 
 import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
@@ -9,12 +10,10 @@ import sys
 sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
 sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
-
 from binary_evolution_class import evolution
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
-
 
 import scipy
 from scipy.stats import norm
@@ -55,10 +54,11 @@ class MetropolisHastings:
         self.p_acceptance = self.proposed_posterior/self.current_posterior
         if self.p_acceptance > 1: self.isAccepted = True
         else:
-            rand = scipy.stats.norm.rvs()
+            rand = numpy.random.random_sample()
             if self.p_acceptance > rand : self.isAccepted = True
             else: self.isAccepted = False
-        print('Acceptance_probability', = self.p_acceptance)
+            print('Acceptance_probability', self.p_acceptance)
+            print('Random_number', rand)
 
 
     def values_proposed(self):
@@ -91,7 +91,7 @@ class MetropolisHastings:
             with open(f_name, 'w', 1) as file:
                 for name in header:
                     file.write('%s\t' % name)
-                file.write('Result\n')
+                file.write('\n')
             file.close()
 
 
@@ -104,11 +104,13 @@ class MetropolisHastings:
         self.current_posterior = self.proposed_posterior
 
         f_name = self.filename[0]
-        with open(filename, 'a', 1) as file:
+        with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.current_parameters.items():
                 file.write('%s\t' % value)
+            file.write('\n')
         file.close()
+    
     
        
     def rejected_parameters(self):
@@ -116,22 +118,29 @@ class MetropolisHastings:
         print("REJECTED")
 
         f_name = self.filename[1]
-        with open(filename, 'a', 1) as file:
+        with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
+            file.write('\n')
         file.close()
-        
     
+
+    def save_current_parameter(self):
+
+        name = 'current_parameter.txt'
+        with open(name, 'w') as f:
+            f.write(repr(self.iteration_step) + '\t')
+            for key, value in self.current_parameters.items():
+                f.write('%s\t' % value)
+            f.write('\n')
+        f.close()
 
 
     def initialise_parameters(self):
     
         """Initial values are drawn randomly from the given observable data set"""
         
-        
-        self.write_header()
-
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
@@ -140,7 +149,8 @@ class MetropolisHastings:
         print ('\nINITIAL PARAMETERS SET')
         
         self.current_parameters = self.initial_parameters
-        
+        self.write_header()
+
         print(self.current_parameters)
 
     
@@ -148,7 +158,6 @@ class MetropolisHastings:
     def first_iteration(self):
        
         """Calculates first set of parameters and its corresponding posterior probability. The process will run until a non-zero or non-nan value of posterior probability is calculated"""
-        self.write_header()
         
         while True:
             self.initialise_parameters()
@@ -158,13 +167,12 @@ class MetropolisHastings:
             else: break
 
 
-
     def iterations(self):
 
         """runs the specified number of iteration for the mcmc"""
 
             
-        while self.iteration_step<=self.total_iterations:
+        while self.iteration_step <= self.total_iterations:
             
             self.isAccepted = None
             self.check_age_neg = True
@@ -192,7 +200,27 @@ class MetropolisHastings:
             if self.isAccepted is True: self.accepted_parameters()
             else: self.rejected_parameters()
             
+            self.save_current_parameter()
+
             self.iteration_step = self.iteration_step + 1
+
+
+    def continue_last(self):
+
+        name = 'current_parameter.txt'
+        with open(name, 'r') as f:
+            for row in reader:
+                array = row
+        f.close()
+
+        self.iteration_step = array[0]
+        self.current_parameter['age'] = array[1]
+        self.current_parameter['teff_primary'] = array[2]
+        self.current_parameter['feh'] = array[3]
+        self.current_parameter['Pdisk'] = array[4]
+        self.current_parameter['logQ'] = array[5]
+
+        self.iterations()
 
     def __init__(
                 self,
@@ -283,9 +311,19 @@ if __name__ == '__main__':
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,2,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,5,observed_Pspin)
 
-mcmc.iterations()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("status", help = 'start or continue')
+args = parser.parse_args()
+
+if args.status == 'start':
+    mcmc.iterations()
+elif args.status == 'continue': 
+    mcmc.continue_last()
+else:
+    print('allowed arguments are "start" or "continue"')
 #flush()
 #buffer_size =0 to write at the moment
 #
