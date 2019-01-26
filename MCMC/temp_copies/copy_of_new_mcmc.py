@@ -2,7 +2,6 @@
 
 import os
 import argparse
-import csv
 
 import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
@@ -58,8 +57,8 @@ class MetropolisHastings:
             rand = numpy.random.random_sample()
             if self.p_acceptance > rand : self.isAccepted = True
             else: self.isAccepted = False
-            print('Acceptance_probability = ', self.p_acceptance)
-            print('Random_numberi = ', rand)
+            print('Acceptance_probability', self.p_acceptance)
+            print('Random_number', rand)
 
 
     def values_proposed(self):
@@ -67,7 +66,7 @@ class MetropolisHastings:
         proposed = dict()
         for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
             proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
-            #print("NAME AND VALUE",name_obs,proposed[name_obs] )
+            print("NAME AND VALUE",name_obs,proposed[name_obs] )
         if proposed['age']<0: self.check_age_neg = True
         else: self.check_age_neg = False
 
@@ -134,7 +133,7 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
-            f.write(repr(self.current_posterior) + '\n')
+            f.write('\n')
         f.close()
 
 
@@ -184,7 +183,7 @@ class MetropolisHastings:
             
             #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
             while self.check_age_neg is True: self.values_proposed()
-            print ('PROPOSED VALUES')
+            print ('new values proposed')
             print (self.proposed_parameters)
             
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
@@ -210,18 +209,16 @@ class MetropolisHastings:
 
         name = 'current_parameter.txt'
         with open(name, 'r') as f:
-            reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
                 array = row
-            print(array)
-        self.iteration_step = int(array[0])
-        self.current_parameters['age'] = float(array[1])
-        self.current_parameters['teff_primary'] = float(array[2])
-        self.current_parameters['feh'] = float(array[3])
-        self.current_parameters['Pdisk'] = float(array[4])
-        self.current_parameters['logQ'] = float(array[5])
-        self.current_posterior = float(array[6])
         f.close()
+
+        self.iteration_step = array[0]
+        self.current_parameter['age'] = array[1]
+        self.current_parameter['teff_primary'] = array[2]
+        self.current_parameter['feh'] = array[3]
+        self.current_parameter['Pdisk'] = array[4]
+        self.current_parameter['logQ'] = array[5]
 
         self.iterations()
 
@@ -314,7 +311,7 @@ if __name__ == '__main__':
             )
 
 
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,10,observed_Pspin)
+mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,5,observed_Pspin)
 
 
 parser = argparse.ArgumentParser()
