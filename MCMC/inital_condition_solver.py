@@ -50,9 +50,7 @@ class InitialConditionSolver:
                 evolution is started with the input periods.
         """
 
-        print('\nTrying P0 = %s, Pdisk = %s'
-              %
-              (repr(initial_orbital_period), repr(disk_period)))
+        #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
 
         if hasattr(self, 'binary'): self.binary.delete()
 
@@ -110,7 +108,7 @@ class InitialConditionSolver:
             zero_outer_periapsis=True
         )
 
-        print ("BINARY CONFIGURATION COMPLETE")
+        #print ("BINARY CONFIGURATION COMPLETE")
 
         self.binary.evolve(
             self.target.age,
@@ -119,7 +117,7 @@ class InitialConditionSolver:
             None
         )
 
-        print ("BINARY EVOLUTION COMPLETE")
+        #print ("BINARY EVOLUTION COMPLETE")
 
         final_state = self.binary.final_state()
 
@@ -134,9 +132,7 @@ class InitialConditionSolver:
                 /
                 final_state.primary_envelope_angmom
         )
-        print('Got Porb = %s, P* = %s'
-              %
-              (repr(orbital_period), repr(stellar_spin_period)))
+        #print('Got Porb = %s, P* = %s'     % (repr(orbital_period), repr(stellar_spin_period)))
         if (numpy.isnan(orbital_period)): orbital_period = 0.0
         return orbital_period, stellar_spin_period
 
@@ -182,9 +178,7 @@ class InitialConditionSolver:
             porb_max = porb_initial
             if porb_error == 0: porb_min = porb_initial
 
-        print('\nFOR Pdisk = %s, ORBITAL PERIOD RANGE: %s < Porb < %s'
-              %
-              (repr(disk_period), repr(porb_min), repr(porb_max)))
+        #print('\nFOR Pdisk = %s, ORBITAL PERIOD RANGE: %s < Porb < %s'       % (repr(disk_period), repr(porb_min), repr(porb_max)))
         return porb_min, porb_max
 
     def __init__(self,
@@ -281,22 +275,22 @@ class InitialConditionSolver:
             rtol=self.orbital_period_tolerance
         )
 
-        print("\nInitial orbital period root found")
+        #print("\nInitial orbital period root found")
 
         porb_final, spin_period = self._try_initial_conditions(
             porb_initial,
             disk_period,
         )
 
-        print ("\nTEST1")
+        #print ("\nTEST1")
 
         spin_frequency = 2.0 * pi / spin_period
 
-        print ("\nTEST2")
+        #print ("\nTEST2")
 
 
         if not return_difference:
-            print ("\nTEST3")
+            #print ("\nTEST3")
 
             return spin_frequency, porb_initial, porb_final
 
@@ -437,7 +431,7 @@ class InitialConditionSolver:
             Wstar, Porb_initial, Porb_now = self.stellar_wsurf(Wdisk,
                                                                target.Porb)
 
-            print ("\nTEST4")
+            #print ("\nTEST4")
 
             print ("\n Results Wstar = %s, Porb_initial = %s, Porb_now = %s" % (repr(Wstar),repr(Porb_initial),repr(Porb_now)))
 
