@@ -29,20 +29,39 @@ f.close()
 
 
 
-import argparse
+#import argparse
 
-parser = argparse.ArgumentParser()
+#parser = argparse.ArgumentParser()
 
-parser.add_argument("a", nargs='?', default="check_string_for_empty")
+#parser.add_argument("a", nargs='?', default="check_string_for_empty")
 
-args = parser.parse_args()
+#args = parser.parse_args()
 
-if args.a == 'check_string_for_empty':
-    print('default') 
-elif args.a == 'start':
-    print('begin') 
-else:
-    print (args.a)
+#if args.a == 'check_string_for_empty':
+#    print('default')
+#elif args.a == 'start':
+#    print('begin')
+#else:
+#    print (args.a)
 
 
 
+def check_assert(x):
+    assert (x>5), "Error"
+    return x
+
+
+
+
+def check_try(p):
+
+    try:
+        y  = check_assert(p)
+    except:
+        raise
+
+        return 0
+
+    return y*44
+
+print (check_try(2))
