@@ -3,17 +3,18 @@
 """Calculate orbital evolution of one of the MMS06 binaries."""
 
 from argparse import ArgumentParser
-from glob import glob
 import os.path
 import pickle
 
-from matplotlib import pyplot
 import numpy
 import astropy
 
 from planetary_system_io import read_hatsouth_info
-from reproduce_system import find_evolution
-from stellar_evolution.library_interface import MESAInterpolator
+from reproduce_system import\
+    find_evolution,\
+    get_interpolator,\
+    add_dissipation_cmdline,\
+    get_poet_dissipation_from_cmdline
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution import __path__ as poet_stellar_evolution_path
 
@@ -30,84 +31,7 @@ def parse_command_line():
         'binary_info',
         help='The info file for the binary to evolve.'
     )
-    parser.add_argument(
-        '--lgQ-primary',
-        type=float,
-        default='6.0',
-        help='The value of log10(Q*) to assume for the primary, at the '
-        'reference tidal and spin periods if --lgQ-primary-wtide-dependence '
-        'and/or --lgQ-primary-wspin-dependence is specified. '
-        'Default: %(default)s.'
-    )
-    parser.add_argument(
-        '--lgQ-secondary',
-        type=float,
-        default='6.0',
-        help='The value of log10(Q*) to assume for the secondary, at the '
-        'reference tidal and spin periods if --lgQ-secondary-wtide-dependence '
-        'and/or --lgQ-secondary-wspin-dependence is specified. '
-        'Default: %(default)s.'
-    )
-    parser.add_argument(
-        '--lgQ-primary-wtide-dependence',
-        nargs='+',
-        type=float,
-        default=[],
-        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
-                 '<break frequency> <powerlaw index>'),
-        help='Pass this argument to make lgQ of the primary depend on tidal '
-        'period. At least three arguments must be passed: 1) the powerlaw index'
-        ' for tidal frequencies below the first break, 2) the frequency '
-        '[rad/day] where the first break occurs and 3) the powerlaw index after'
-        ' the first break. Additional arguments must come in pairs, specifying '
-        'more frequencies where breaks occur and the powerlaw indices for '
-        'frequencies higher than the break.'
-    )
-    parser.add_argument(
-        '--lgQ-secondary-wtide-dependence',
-        nargs='+',
-        type=float,
-        default=[],
-        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
-                 '<break frequency> <powerlaw index>'),
-        help='Pass this argument to make lgQ of the secondary depend on tidal '
-        'period. At least three arguments must be passed: 1) the powerlaw index'
-        ' for tidal frequencies below the first break, 2) the frequency '
-        '[rad/day] where the first break occurs and 3) the powerlaw index after'
-        ' the first break. Additional arguments must come in pairs, specifying '
-        'more frequencies where breaks occur and the powerlaw indices for '
-        'frequencies higher than the break.'
-    )
-    parser.add_argument(
-        '--lgQ-primary-wspin-dependence',
-        nargs='+',
-        type=float,
-        default=[],
-        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
-                 '<break frequency> <powerlaw index>'),
-        help='Pass this argument to make lgQ of the primary depend on tidal '
-        'period. At least three arguments must be passed: 1) the powerlaw index'
-        ' for tidal frequencies below the first break, 2) the frequency '
-        '[rad/day] where the first break occurs and 3) the powerlaw index after'
-        ' the first break. Additional arguments must come in pairs, specifying '
-        'more frequencies where breaks occur and the powerlaw indices for '
-        'frequencies higher than the break.'
-    )
-    parser.add_argument(
-        '--lgQ-secondary-wspin-dependence',
-        nargs='+',
-        type=float,
-        default=[],
-        metavar=('<powerlaw index> <break frequency> <powerlaw index>',
-                 '<break frequency> <powerlaw index>'),
-        help='Pass this argument to make lgQ of the secondary depend on tidal '
-        'period. At least three arguments must be passed: 1) the powerlaw index'
-        ' for tidal frequencies below the first break, 2) the frequency '
-        '[rad/day] where the first break occurs and 3) the powerlaw index after'
-        ' the first break. Additional arguments must come in pairs, specifying '
-        'more frequencies where breaks occur and the powerlaw indices for '
-        'frequencies higher than the break.'
-    )
+    add_dissipation_cmdline(parser)
     parser.add_argument(
         '--primary-stellar-evolution-interpolators',
         '--primary-interpolators',
@@ -151,10 +75,63 @@ def parse_command_line():
         help='The initial eccentricity to star the system with.'
     )
     parser.add_argument(
+        '--initial-obliquity', '--obliquity',
+        type=float,
+        default=0.0,
+        help='The initial obliquity between the orbit in which the secondary '
+        'first forms and both zones of the primary star. Default: %(default)s'
+    )
+    parser.add_argument(
+        '--disk-period', '--pdisk',
+        type=float,
+        default=10.0,
+        help='The disk lock period to assume for the primary in days. '
+        'Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--disk-lifetime',
+        type=float,
+        default=2e-3,
+        help='The age when the secondary appears and the primary\'s spin is '
+        'released in Gyr. Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--primary-angmom',
+        type=float,
+        nargs=3,
+        default=(0.17, 2.78, 0.005),
+        metavar=('<strength>',
+                 '<saturation frequency>',
+                 '<core-envelope copling timescale>'),
+        help='The wind strength and saturation frequency, and the core-envelope'
+        'coulping timescale defining the angular evolution for isolated stars '
+        'to assume for the primary. Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--secondary-angmom',
+        type=float,
+        nargs=3,
+        default=(0.01, 100, 0.005),
+        metavar=('<strength>',
+                 '<saturation frequency>',
+                 '<core-envelope copling timescale>'),
+        help='The wind strength and saturation frequency, and the core-envelope'
+        'coulping timescale defining the angular evolution for isolated stars '
+        'to assume for the secondary. Default: %(default)s.'
+    )
+    parser.add_argument(
         '--pickles',
         default='evolutions.pkl',
         help='A file containing pickles of past evolutions along with the '
         'configuration used to calculate them. Default: %(default)s.'
+    )
+    parser.add_argument(
+        '--do-not-solve',
+        action='store_true',
+        default=False,
+        help='If passed, no attempt is made to solve for the initial orbital '
+        'period and/or eccentricity, instead the system parameters are assumed '
+        'to be initial values.'
     )
     result = parser.parse_args()
     for component in ['primary', 'secondary']:
@@ -167,8 +144,10 @@ def parse_command_line():
             )
             if num_args != 0 and (num_args < 3 or num_args % 2 == 0):
                 parser.print_help()
-                raise RuntimeError('--lgQ-ptide-dependence option requires a number of '
-                                   'argument that is at least 3 and odd!')
+                raise RuntimeError(
+                    '--lgQ-ptide-dependence option requires a number of '
+                    'argument that is at least 3 and odd!'
+                )
     return result
 
 def calculate_secondary_mass(primary_mass,
@@ -221,43 +200,17 @@ def calculate_secondary_mass(primary_mass,
     assert mass_ratio is not None
     return mass_ratio * primary_mass
 
-def get_interpolator(stellar_evolution_interpolator_dir,
-                     track_path):
-    """Return the stellar evolution interpolator to use."""
+def get_system_info(info_fname):
+    """Return the system to evolve per the given info file."""
 
-    manager = StellarEvolutionManager(
-        stellar_evolution_interpolator_dir
-    )
-    if not list(manager.get_suite_tracks()):
-        manager.register_track_collection(
-            track_fnames=glob(
-                os.path.join(track_path, '*.csv')
-            )
-        )
-
-    interpolator_args = dict(num_threads=1)
-    interpolator_args['new_interp_name'] = 'custom'
-    interpolator_args['nodes'] = {
-        q: 0 for q in MESAInterpolator.quantity_list
-    }
-    interpolator_args['smoothing'] = {
-        q: float('nan') for q in MESAInterpolator.quantity_list
-    }
-    return manager.get_interpolator(**interpolator_args)
-
-def calculate_evolution(cmdline_config):
-    """Calculate the evolution for a given command line configuration."""
-
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        cmdline_config.eccentricity_expansion_coefficients.encode('ascii')
-    )
-
-    info = read_hatsouth_info(cmdline_config.binary_info)
+    info = read_hatsouth_info(info_fname)
     #False positive
     #pylint: disable=no-member
-    info.rv_semi_amplitude = (fit_rv_data(info.RVdata)[0]
+    orbital_parameters = fit_rv_data(info.RVdata)[0]
+    info.rv_semi_amplitude = (orbital_parameters[0]
                               *
                               astropy.units.Unit('km/s'))
+    info.eccentricity = orbital_parameters[1]
     info.Msecondary = calculate_secondary_mass(
         info.Mprimary,
         info.Porb,
@@ -268,81 +221,116 @@ def calculate_evolution(cmdline_config):
 
     print(info.format())
 
-    interpolator = (
-        StellarEvolutionManager(
-            cmdline_config.primary_stellar_evolution_interpolators
-        ).get_interpolator_by_name('default'),
-        get_interpolator(
-            cmdline_config.secondary_stellar_evolution_interpolators,
-            cmdline_config.secondary_track_path
-        )
+    return info
+
+def calculate_evolution(cmdline_args, info):
+    """Calculate the evolution for a given command line configuration."""
+
+    orbital_evolution_library.read_eccentricity_expansion_coefficients(
+        cmdline_args.eccentricity_expansion_coefficients.encode('ascii')
     )
+
+    primary_interpolator = StellarEvolutionManager(
+        cmdline_args.primary_stellar_evolution_interpolators
+    ).get_interpolator_by_name('default')
+
+    if (
+            cmdline_args.secondary_stellar_evolution_interpolators
+            ==
+            cmdline_args.primary_stellar_evolution_interpolators
+    ):
+        secondary_interpolator = primary_interpolator
+        #False positive
+        #pylint: disable=no-member
+        if (
+                info.Msecondary.to(astropy.units.M_sun).value
+                <
+                secondary_interpolator.track_masses[0]
+        ):
+            info.Msecondary = (secondary_interpolator.track_masses[0]
+                               *
+                               astropy.units.M_sun)
+        #pylint: enable=no-member
+    else:
+        secondary_interpolator = get_interpolator(
+            cmdline_args.secondary_stellar_evolution_interpolators,
+            cmdline_args.secondary_track_path
+        )
 
     return find_evolution(
         info,
-        interpolator,
-        primary_lgq=cmdline_config.lgQ_primary,
-        secondary_lgq=cmdline_config.lgQ_secondary,
-        initial_eccentricity=cmdline_config.initial_eccentricity,
-        orbital_period_tolerance=1e-3
+        (primary_interpolator, secondary_interpolator),
+        get_poet_dissipation_from_cmdline(cmdline_args),
+        initial_eccentricity=cmdline_args.initial_eccentricity,
+        initial_inclination=cmdline_args.initial_obliquity,
+        orbital_period_tolerance=1e-3,
+        primary_wind_strength=cmdline_args.primary_angmom[0],
+        primary_wind_saturation=cmdline_args.primary_angmom[1],
+        primary_core_envelope_coupling_timescale=cmdline_args.primary_angmom[2],
+        secondary_wind_strength=cmdline_args.secondary_angmom[0],
+        secondary_wind_saturation=cmdline_args.secondary_angmom[1],
+        secondary_core_envelope_coupling_timescale=(
+            cmdline_args.secondary_angmom[2]
+        ),
+        #False positive
+        #pylint: disable=no-member
+        disk_period=(cmdline_args.disk_period * astropy.units.d),
+        disk_dissipation_age=(cmdline_args.disk_lifetime
+                              *
+                              astropy.units.Gyr),
+        #pylint: enable=no-member
+        solve=(not cmdline_args.do_not_solve)
     )
 
-if __name__ == '__main__':
-    cmdline_args = parse_command_line()
+def main(cmdline_args):
+    """Calculate or use existing evolution per command line config."""
 
+    system_info = get_system_info(cmdline_args.binary_info)
 
     evolution = None
     if os.path.exists(cmdline_args.pickles):
         with open(cmdline_args.pickles, 'rb') as pickle_file:
             while evolution is None:
                 try:
-                    if vars(pickle.load(pickle_file)) == vars(cmdline_args):
+                    pickled_cmdline = pickle.load(pickle_file)
+                    if vars(pickled_cmdline) != vars(cmdline_args):
+                        print(
+                            '='*80
+                            +
+                            '\nCommand line mismatch:\n'
+                            +
+                            '\n'.join([
+                                '%s: %s' % (repr(key), repr(value))
+                                for key, value in vars(pickled_cmdline).items()
+                            ])
+                            +
+                            '\nvs\n'
+                            +
+                            '\n'.join([
+                                '%s: %s' % (repr(key), repr(value))
+                                for key, value in vars(cmdline_args).items()
+                            ])
+                        )
+                    pickled_info = pickle.load(pickle_file)
+                    pickled_evolution = pickle.load(pickle_file)
+                    if (
+                            vars(pickled_cmdline) == vars(cmdline_args)
+                            and
+                            vars(pickled_info) == vars(system_info)
+                    ):
                         print('Found existing evolution with specified '
                               'configuration')
-                        evolution = pickle.load(pickle_file)
+                        evolution = pickled_evolution
                 except EOFError:
                     break
 
     if evolution is None:
-        evolution = calculate_evolution(cmdline_args)
+        evolution = calculate_evolution(cmdline_args, system_info)
+        print('Evolution:\n' + evolution.format())
         with open(cmdline_args.pickles, 'ab') as pickle_file:
             pickle.dump(cmdline_args, pickle_file)
+            pickle.dump(system_info, pickle_file)
             pickle.dump(evolution, pickle_file)
 
-    print('Evolution: ' + evolution.format())
-
-    pyplot.semilogx(
-        #False positive
-        #pylint: disable=no-member
-        evolution.age,
-        2.0 * numpy.pi / evolution.orbital_period,
-        #pylint: enable=no-member
-        label=r'$\Omega_{orb}$'
-    )
-    for component in ['primary', 'secondary']:
-        pyplot.semilogx(
-            #False positive
-            #pylint: disable=no-member
-            evolution.age,
-            #pylint: enable=no-member
-            (
-                getattr(evolution, component + '_envelope_angmom')
-                /
-                getattr(evolution, component + '_iconv_star')
-            ),
-            label=component + r' $\Omega_{conv}$'
-        )
-        pyplot.semilogx(
-            evolution.age,
-            (
-                getattr(evolution, component + '_core_angmom')
-                /
-                getattr(evolution, component + '_irad_star')
-            ),
-            label=component + r' $\Omega_{rad}$'
-        )
-    pyplot.twinx().semilogx(evolution.age,
-                            evolution.eccentricity,
-                            label='e')
-    pyplot.legend()
-    pyplot.show()
+if __name__ == '__main__':
+    main(parse_command_line())
