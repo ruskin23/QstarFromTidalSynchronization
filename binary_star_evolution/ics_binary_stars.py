@@ -87,7 +87,7 @@ class InitialConditionSolver :
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
-
+        if self.is_secondary_star is  True:  self.binary.secondary.detect_stellar_wind_saturation()
 
         self.binary.configure(  age =  self.primary.core_formation_age(),
                                 semimajor=float('nan'),
@@ -98,10 +98,9 @@ class InitialConditionSolver :
                                 evolution_mode='LOCKED_SURFACE_SPIN'
 
                                 )
-                            
+
 
         self.binary.primary.detect_stellar_wind_saturation()
-        if self.is_secondary_star is  True:  self.binary.secondary.detect_stellar_wind_saturation()
 
 
         self.binary.secondary.configure(
@@ -115,8 +114,8 @@ class InitialConditionSolver :
             locked_surface = False,
             zero_outer_inclination = True,
             zero_outer_periapsis = True
-        
-                 ) 
+
+                 )
 
         print ("BINARY CONFIGURATION COMPLETE")
 
@@ -127,9 +126,8 @@ class InitialConditionSolver :
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None,
-            True
-        )
+            None
+            )
 
         print ("BINARY EVOLUTION COMPLETE")
         final_state = self.binary.final_state()
@@ -195,8 +193,8 @@ class InitialConditionSolver :
     def __init__(self,
                  planet_formation_age = None,
                  disk_dissipation_age = None,
-                 evolution_max_time_step = 1.0,
-                 evolution_precision = 1e-4,
+                 evolution_max_time_step = None,
+                 evolution_precision = 1e-6,
                  orbital_period_tolerance = 1e-6,
                  spin_tolerance = 1e-6,
                  secondary_angmom=None,
@@ -462,7 +460,7 @@ class InitialConditionSolver :
 
 
 
-
+#######################################################################################################################################################################################################################################################################################################################################################################################################################
 
 def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
     """Return a configured planet to use in the evolution."""
@@ -473,9 +471,9 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
 
 def create_star(mass, interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                            metallicity=  -0.06,
+                            metallicity=  -0.03697743788425576,
                             wind_strength=0.17 if wind else 0.0,
-                            wind_saturation_frequency=2.78,
+                            wind_saturation_frequency=2.54,
                             diff_rot_coupling_timescale=5.0e-3,
                             interpolator=interpolator)
 
@@ -508,6 +506,9 @@ def create_binary_system(primary,
                                 periapsis=numpy.array([0.0]))
 
 
+
+
+
     if isinstance(secondary, EvolvingStar):
         secondary.detect_stellar_wind_saturation()
 
@@ -526,6 +527,7 @@ def create_binary_system(primary,
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),
+                        #semimajor = 10.0,
                         eccentricity=0.0,
                         locked_surface=False,
                         zero_outer_inclination=True,
@@ -551,10 +553,10 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
 
 
     tdisk = 5e-3
-    age = 4.60 
-    primary_mass = 1.0943124828794022
-    secondary_mass = 0.8266661262872534
-    initial_disk_period =1.4064967495370835
+    age = 1.6835201199819239
+    primary_mass = 0.9505756197766326
+    secondary_mass = 0.7497829920195695
+    initial_disk_frequency = 4.570685778068612
     initial_orbital_period = 5.2663825 #this is the final orbital period quoted in lit.
 
 
@@ -564,7 +566,7 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
 
     binary = create_binary_system(star,
                                   planet,
-                                  2.0 * numpy.pi / initial_disk_period,
+                                  initial_disk_frequency,
                                   initial_orbital_period,
                                   tdisk)
 
@@ -592,23 +594,28 @@ def test_ic_solver(interpolator,convective_phase_lag,wind):
 
 
 
+    print('send_angmom = ', numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
+    print ('Target parameters: ')
+    print ('age = ', age)
+    print ('convective phase lag = ', convective_phase_lag)
+    print ('self.disk_lock_frequency  = ', initial_disk_frequency)
 
     target = Structure(age=age,
                            Porb=initial_orbital_period,
-                           Wdisk=2 * numpy.pi / initial_disk_period,
+                           Wdisk= initial_disk_frequency,
                            planet_formation_age=5e-3)
 
     initial_porb, initial_psurf = find_ic(target=target,
                                               primary=primary,
                                               secondary=secondary)
-    
+
 
     primary.delete()
     secondary.delete()
 
     return initial_psurf
 
-    
+
 
 
 if __name__ == '__main__':
@@ -622,7 +629,8 @@ if __name__ == '__main__':
     # test_evolution(interpolator, phase_lag(6.0))
     #logQ = [6.0]
 
-    logQ = float(sys.argv[1])
+    #logQ = float(sys.argv[1])
+    logQ = 6.850758421971131
     name = 'Psurf_values_' + str(logQ)
     #name = 'test_Pspin_' + str(logQ)
     with open(name,'w') as f:

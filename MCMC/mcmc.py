@@ -26,12 +26,12 @@ class MetropolisHastings:
 
     def posterior_probability(self,parameter_set=None):
         """reutrns current surface spin of the star given the parameters"""
-        
+
         find_spin = evolution(
                             self.interpolator,
                                 parameter_set,
                                 self.fixed_parameters,
-                               )   
+                               )
 
         try:
             self.spin_value = find_spin()
@@ -42,10 +42,11 @@ class MetropolisHastings:
             raise
 
 
-            
+
         #spin_value = 7.50
         if numpy.isnan(self.spin_value): return scipy.nan
 
+        print('Current Spin Value = ', self.spin_value )
         prior = 1.0
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
@@ -54,13 +55,13 @@ class MetropolisHastings:
             print(key_parameter)
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
-        
-        
+
+
         print('likehood = ', likelihood)
         posterior = prior*likelihood
         return posterior
 
-    
+
     def check_acceptance(self):
         self.p_acceptance = self.proposed_posterior/self.current_posterior
         if self.p_acceptance > 1: self.isAccepted = True
@@ -107,9 +108,9 @@ class MetropolisHastings:
 
 
 
-    
+
     def accepted_parameters(self):
-        
+
         print("ACCEPTED")
         self.current_parameters = self.proposed_parameters
         self.current_posterior = self.proposed_posterior
@@ -121,11 +122,11 @@ class MetropolisHastings:
                 file.write('%s\t' % value)
             file.write(repr(self.spin_value)+'\n')
         file.close()
-    
-    
-       
+
+
+
     def rejected_parameters(self):
-        
+
         print("REJECTED")
 
         f_name = self.filename[1]
@@ -135,7 +136,7 @@ class MetropolisHastings:
                 file.write('%s\t' % value)
             file.write(repr(self.spin_value)+'\n')
         file.close()
-    
+
 
     def save_current_parameter(self):
 
@@ -144,31 +145,32 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
-            f.write(repr(self.current_posterior)+ repr(self.spin_value) + '\n')
+            f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) + '\n')
         f.close()
 
 
     def initialise_parameters(self):
-    
+
         """Initial values are drawn randomly from the given observable data set"""
-        
+
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
-        
+
         print ('\nINITIAL PARAMETERS SET')
-        
+
         self.current_parameters = self.initial_parameters
+
+        if self.iteration_step==1:self.write_header()
 
         print(self.current_parameters)
 
-    
-    
+
+
     def first_iteration(self):
-       
+
         """Calculates first set of parameters and its corresponding posterior probability. The process will run until a non-zero or non-nan value of posterior probability is calculated"""
-        self.write_header()
 
         while True:
             self.initialise_parameters()
@@ -196,19 +198,20 @@ class MetropolisHastings:
 
         """runs the specified number of iteration for the mcmc"""
 
-            
+
         #while self.iteration_step <= self.total_iterations:
         while True:
 
             self.isAccepted = None
             self.check_age_neg = False
-            
+
             #initialising the set of parameters
-            if self.iteration_step == 1: self.first_iteration() 
-            
-            
+            if self.iteration_step == 1: self.first_iteration()
+
+
             #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
             #while self.check_age_neg is True: self.values_proposed()
+            self.values_proposed()
             if self.check_age_neg is True:
                 self.rejected_parameters()
                 self.iteration_step = self.iteration_step + 1
@@ -216,7 +219,7 @@ class MetropolisHastings:
 
             print ('PROPOSED VALUES')
             print (self.proposed_parameters)
-            
+
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
             self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
             if numpy.isnan(self.proposed_posterior):
@@ -232,7 +235,7 @@ class MetropolisHastings:
 
             if self.isAccepted is True: self.accepted_parameters()
             else: self.rejected_parameters()
-            
+
             self.save_current_parameter()
 
             self.iteration_step = self.iteration_step + 1
@@ -240,7 +243,7 @@ class MetropolisHastings:
 
     def continue_last(self):
 
-        name = 'current_parameter_2.txt'
+        name = 'current_parameters_2.txt'
         with open(name, 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
@@ -276,8 +279,8 @@ class MetropolisHastings:
         self.proposed_step = proposed_step
         self.iteration_step = 1
         self.total_iterations= total_iterations
-        
-      
+
+
         self.current_parameters= dict()
         self.proposed_parameters = dict()
         self.initial_parameters = dict()
@@ -290,7 +293,7 @@ class MetropolisHastings:
         self.proposed_posterior = 0.0
         self.current_posterior = 0.0
         self.p_acceptance = 0.0
-        self.spin_value = 0.0 
+        self.spin_value = 0.0
 
         #self.filename = ['accepted_test_1.txt', 'rejected_test_1.txt']
         self.filename = ['accepted_parameters_2.txt', 'rejected_parameters_2.txt']
@@ -312,7 +315,7 @@ if __name__ == '__main__':
     observation_data = dict(
                         age=dict(value=4.6, sigma=3.0),
                         teff_primary=dict(value=5922.0, sigma=200.0),
-                        feh=dict(value=-0.06, sigma=0.11),                  
+                        feh=dict(value=-0.06, sigma=0.11),
                         Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
@@ -336,7 +339,7 @@ if __name__ == '__main__':
                         age_step=2.0,
                         teff_step=100.0,
                         feh_step=0.1,
-                        
+
                         Pdisk_step=0.1,
                         logQ_step=0.2
                     )
@@ -357,7 +360,7 @@ args = parser.parse_args()
 
 if args.status == 'start':
     mcmc.iterations()
-elif args.status == 'continue': 
+elif args.status == 'continue':
     mcmc.continue_last()
 else:
     print('allowed arguments are "start" or "continue"')
