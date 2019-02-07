@@ -40,7 +40,7 @@ class evolution:
 
     def create_star(self, mass, dissipation):
         star = EvolvingStar(mass=mass,
-                            metallicity=0.0,
+                            metallicity=self.feh,
                             wind_strength=self.wind_strength if self.wind else 0.0,
                             wind_saturation_frequency=self.wind_saturation_frequency,
                             diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
@@ -54,7 +54,7 @@ class evolution:
                                 spin_frequency_powers=numpy.array([0.0]),
                                 reference_phase_lag=self.convective_phase_lag)
 
-      
+
         return star
 
     def create_binary_system(self,
@@ -160,18 +160,18 @@ class evolution:
         self.wind_saturation_frequency = fixed_parameters['wind_saturation_frequency']
         self.diff_rot_coupling_timescale = fixed_parameters['diff_rot_coupling_timescale']
         self.wind_strength = fixed_parameters['wind_strength']
-        
+
         self.primary_mass = 0.0
-        self.secondary_mass = 0.0 
+        self.secondary_mass = 0.0
 
 
     def __call__(self):
 
         tdisk = self.disk_dissipation_age
-        
+
         self.calculate_star_masses()
-        if numpy.isnan(self.primary_mass) or numpy.isnan(self.secondary_mass): 
-            print('mass out of rangfe') 
+        if numpy.isnan(self.primary_mass) or numpy.isnan(self.secondary_mass):
+            print('mass out of range')
             return scipy.nan
 
         star = self.create_star(self.secondary_mass,1)
@@ -201,10 +201,13 @@ class evolution:
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True)
 
+        print('send_angmom = ', numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
         print ('Target parameters: ')
         print ('age = ', self.age)
         print ('Porb = ', self.Porb)
         print ('convective phase lag = ', self.convective_phase_lag)
+        print ('self.disk_lock_frequency  = ', self.disk_lock_frequency)
+        print (' planet_formation_age = ', self.planet_formation_age)
 
 
         target = Structure(age=self.age,

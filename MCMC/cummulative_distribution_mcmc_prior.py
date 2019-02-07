@@ -11,7 +11,7 @@ with open('accepted_test_1.txt', 'r') as f:
     reader = csv.reader(f, dialect='excel-tab')
     for line in reader:
         iterations.append(line[0:1])
-        value.append(line[0:3])
+        value.append(line[0:4])
 
 
 size = len(iterations)
@@ -54,15 +54,19 @@ while True:
 
 value_array.sort()
 
+for x in value_array:
+    print(x)
+#yaxis = numpy.linspace(0,value_array[len(value_array) - 1 ],len(value_array) - 1 )
 
-dist = scipy.stats.norm.cdf(value_array)
 
-dist_norm = np.random.normal(5922,100)
+#dist = scipy.stats.norm.cdf(value_array)
+
+#dist_norm = np.random.normal(5922,100)
 
 
-mu, sigma = 0, 0.1 # mean and standard deviation
-s = np.random.normal(mu, sigma, 1000)
+#mu, sigma = 0, 0.1 # mean and standard deviation
+#s = np.random.normal(mu, sigma, 1000)
 
-plt.plot(s)
-plt.show()
+#plt.plot(s)
+#plt.show()
 
