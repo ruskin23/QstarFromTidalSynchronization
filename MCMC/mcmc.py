@@ -1,4 +1,5 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+import time
 
 import os
 import argparse
@@ -20,6 +21,7 @@ import scipy
 from scipy.stats import norm
 import numpy
 
+start_time = time.time()
 
 class MetropolisHastings:
 
@@ -38,6 +40,9 @@ class MetropolisHastings:
         except AssertionError:
             print ('Cannot find a final spin for current parameters')
             return scipy.nan
+        except ValueError:
+            print('Value Error')
+            return scipy.nan
         except:
             raise
 
@@ -51,8 +56,6 @@ class MetropolisHastings:
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
             prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-            print(key_obs)
-            print(key_parameter)
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
 
@@ -70,7 +73,7 @@ class MetropolisHastings:
             if self.p_acceptance > rand : self.isAccepted = True
             else: self.isAccepted = False
             print('Acceptance_probability = ', self.p_acceptance)
-            print('Random_numberi = ', rand)
+            print('Random_number = ', rand)
 
 
     def values_proposed(self):
@@ -120,7 +123,7 @@ class MetropolisHastings:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.current_parameters.items():
                 file.write('%s\t' % value)
-            file.write(repr(self.spin_value)+'\n')
+            file.write(repr(self.spin_value) +'\n')
         file.close()
 
 
@@ -129,23 +132,26 @@ class MetropolisHastings:
 
         print("REJECTED")
 
+        t_elapsed = time.time() - self.time_elapsed
+
+
         f_name = self.filename[1]
         with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
-            file.write(repr(self.spin_value)+'\n')
+            file.write(repr(self.spin_value) + '\n')
         file.close()
 
 
     def save_current_parameter(self):
 
-        name = 'current_parameters_2.txt'
+        name = 'current_parameters_6.txt'
         with open(name, 'w') as f:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
-            f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) + '\n')
+            f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
 
 
@@ -217,7 +223,7 @@ class MetropolisHastings:
                 self.iteration_step = self.iteration_step + 1
                 continue
 
-            print ('PROPOSED VALUES')
+            print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
 
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
@@ -233,17 +239,24 @@ class MetropolisHastings:
             self.check_acceptance()
             print ('isAccepted = ', self.isAccepted)
 
+
+            self.time_elapsed = time.time() - self.time_stamp
+            self.time_stamp = time.time()
+
             if self.isAccepted is True: self.accepted_parameters()
             else: self.rejected_parameters()
 
             self.save_current_parameter()
+
+            with open('time_stamp_6.txt', 'a') as f:
+                f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
             self.iteration_step = self.iteration_step + 1
 
 
     def continue_last(self):
 
-        name = 'current_parameters_2.txt'
+        name = 'current_parameters_6.txt'
         with open(name, 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
@@ -296,9 +309,10 @@ class MetropolisHastings:
         self.spin_value = 0.0
 
         #self.filename = ['accepted_test_1.txt', 'rejected_test_1.txt']
-        self.filename = ['accepted_parameters_2.txt', 'rejected_parameters_2.txt']
+        self.filename = ['accepted_parameters_6.txt', 'rejected_parameters_6.txt']
 
-
+        self.time_stamp = 0.0
+        self.time_elapsed = 0.0
 
 if __name__ == '__main__':
 
@@ -321,7 +335,7 @@ if __name__ == '__main__':
 
     observed_Pspin = dict(
                         value=7.713253717543052,
-                        sigma=0.1
+                        sigma=0.278
                     )
 
     fixed_parameters = dict(
