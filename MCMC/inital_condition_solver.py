@@ -50,7 +50,7 @@ class InitialConditionSolver:
                 evolution is started with the input periods.
         """
 
-        print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
+        #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
 
         if hasattr(self, 'binary'): self.binary.delete()
 
@@ -132,7 +132,7 @@ class InitialConditionSolver:
                 /
                 final_state.primary_envelope_angmom
         )
-        print('Got Porb = %s, P* = %s'     % (repr(orbital_period), repr(stellar_spin_period)))
+        #print('Got Porb = %s, P* = %s'     % (repr(orbital_period), repr(stellar_spin_period)))
         if (numpy.isnan(orbital_period)): orbital_period = 0.0
         return orbital_period, stellar_spin_period
 
@@ -178,7 +178,7 @@ class InitialConditionSolver:
             porb_max = porb_initial
             if porb_error == 0: porb_min = porb_initial
 
-        print('\nFOR Pdisk = %s, ORBITAL PERIOD RANGE: %s < Porb < %s'       % (repr(disk_period), repr(porb_min), repr(porb_max)))
+        #print('\nFOR Pdisk = %s, ORBITAL PERIOD RANGE: %s < Porb < %s'       % (repr(disk_period), repr(porb_min), repr(porb_max)))
         return porb_min, porb_max
 
     def __init__(self,

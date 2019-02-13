@@ -201,7 +201,6 @@ class evolution:
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True)
 
-        print('send_angmom = ', numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
         print ('Target parameters: ')
         print ('age = ', self.age)
         print ('Porb = ', self.Porb)
