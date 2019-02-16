@@ -37,18 +37,10 @@ class MetropolisHastings:
 
         try:
             self.spin_value = find_spin()
-        except AssertionError:
-            print ('Cannot find a final spin for current parameters')
+        except Exception as e:
+            print (str(e))
             return scipy.nan
-        except ValueError:
-            print('Value Error')
-            return scipy.nan
-        except:
-            raise
 
-
-
-        #spin_value = 7.50
         if numpy.isnan(self.spin_value): return scipy.nan
 
         print('Current Spin Value = ', self.spin_value )
@@ -146,7 +138,7 @@ class MetropolisHastings:
 
     def save_current_parameter(self):
 
-        name = 'current_parameters_6.txt'
+        name = 'current_parameters_2.txt'
         with open(name, 'w') as f:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
@@ -248,7 +240,7 @@ class MetropolisHastings:
 
             self.save_current_parameter()
 
-            with open('time_stamp_6.txt', 'a') as f:
+            with open('time_stamp_2.txt', 'a') as f:
                 f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
             self.iteration_step = self.iteration_step + 1
@@ -256,7 +248,7 @@ class MetropolisHastings:
 
     def continue_last(self):
 
-        name = 'current_parameters_6.txt'
+        name = 'current_parameters_2.txt'
         with open(name, 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
@@ -309,10 +301,11 @@ class MetropolisHastings:
         self.spin_value = 0.0
 
         #self.filename = ['accepted_test_1.txt', 'rejected_test_1.txt']
-        self.filename = ['accepted_parameters_6.txt', 'rejected_parameters_6.txt']
+        self.filename = ['accepted_parameters_2.txt', 'rejected_parameters_2.txt']
 
         self.time_stamp = 0.0
         self.time_elapsed = 0.0
+
 
 if __name__ == '__main__':
 
@@ -353,7 +346,6 @@ if __name__ == '__main__':
                         age_step=2.0,
                         teff_step=100.0,
                         feh_step=0.1,
-
                         Pdisk_step=0.1,
                         logQ_step=0.2
                     )
