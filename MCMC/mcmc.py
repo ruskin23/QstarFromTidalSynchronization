@@ -1,5 +1,6 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
 import time
+import pickle
 
 import os
 import argparse
@@ -79,12 +80,11 @@ class MetropolisHastings:
 
         self.proposed_parameters = proposed
 
-
     def write_header(self):
 
         f = os.getcwd()
         file_list = os.listdir(f)
-        for name in self.filename:
+        for name in self.save_filename:
             if name in file_list:
                 os.remove(name)
 
@@ -94,51 +94,64 @@ class MetropolisHastings:
         for key in self.current_parameters.keys():
             header.append(key)
 
-        for f_name in self.filename:
+        ext = 'current_spin' + '\t' +'intial_orbital_period' + '\t' + 'final_orbital_period' + '\t' + 'primary_mass'  + '\t' + 'secondary_mass' + '\t' + 'primary_envelope_angmom'  + '\t' + 'primary_core_envelope'  + '\t' + 'secondary_ennvelope_angmom'  + '\t' + 'secondary_core_envelope' + '\n'
+
+        for f_name in self.save_filename:
             with open(f_name, 'w', 1) as file:
                 for name in header:
                     file.write('%s\t' % name)
-                file.write('\n')
-            file.close()
+                file.write(ext)
+
+    def write_output(self):
 
 
+        if self.isAccepted == True:
+            print('ACCEPTED')
+            self.current_parameters = self.proposed_parameters
+            self.current_posterior = self.proposed_posterior
+            f_name = self.save_filename[0]
 
 
-    def accepted_parameters(self):
-
-        print("ACCEPTED")
-        self.current_parameters = self.proposed_parameters
-        self.current_posterior = self.proposed_posterior
-
-        f_name = self.filename[0]
-        with open(f_name, 'a', 1) as file:
-            file.write('%s\t' %self.iteration_step)
-            for key, value in self.current_parameters.items():
-                file.write('%s\t' % value)
-            file.write(repr(self.spin_value) +'\n')
-        file.close()
+        else:
+            print('REJECTED')
+            f_name = self.save_filename[1]
 
 
+        with open('ics_data.pickle', 'rb') as f1:
+            binary_data = pickle.load(f1)
+            porb_initial = pickle.load(f1)
+            porb_final = pickle.load(f1)
+            spin_value = pickle.load(f1)
 
-    def rejected_parameters(self):
 
-        print("REJECTED")
+        primary_envelope_angmom = binary_data['primary_envelope_angmom']
+        primary_core_angmom = binary_data['primary_core_angmom']
+        secondary_envelope_angmom = binary_data['secondary_envelope_angmom']
+        secondary_core_angmom = binary_data['secondary_core_angmom']
 
-        t_elapsed = time.time() - self.time_elapsed
+        with open('stellar_masses.pickle', 'rb') as f2:
+            primary_mass = pickle.load(f2)
+            secondary_mass = pickle.load(f2)
 
-
-        f_name = self.filename[1]
         with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
-            file.write(repr(self.spin_value) + '\n')
-        file.close()
+            file.write(repr(self.spin_value) + '\t' +
+                       repr(porb_initial) + '\t' +
+                       repr(porb_final) + '\t' +
+                       repr(primary_mass) + '\t' +
+                       repr(secondary_mass) + '\t' +
+                       repr(primary_envelope_angmom) + '\t' +
+                       repr(primary_core_angmom) + '\t' +
+                       repr(secondary_envelope_angmom) + '\t' +
+                       repr(secondary_core_angmom)  +
+                        '\n')
 
 
     def save_current_parameter(self):
 
-        name = 'current_parameters_2.txt'
+        name = self.current_filename
         with open(name, 'w') as f:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
@@ -175,7 +188,8 @@ class MetropolisHastings:
 
             if self.current_parameters['age'] < 0:
                 self.proposed_parameters = self.current_parameters
-                self.rejected_parameters()
+                self.isAccepted = False
+                self.write_output()
                 self.proposed_parameters = dict()
                 self.iteration_step = self.iteration_step + 1
                 continue
@@ -184,7 +198,8 @@ class MetropolisHastings:
 
             if self.current_posterior == 0 or numpy.isnan(self.current_posterior):
                 self.proposed_parameters = self.current_parameters
-                self.rejected_parameters()
+                self.isAccepted = False
+                self.write_output()
                 self.proposed_parameters = dict()
                 self.iteration_step = self.iteration_step + 1
                 continue
@@ -211,7 +226,8 @@ class MetropolisHastings:
             #while self.check_age_neg is True: self.values_proposed()
             self.values_proposed()
             if self.check_age_neg is True:
-                self.rejected_parameters()
+                self.isAccepted = False
+                self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 continue
 
@@ -221,7 +237,8 @@ class MetropolisHastings:
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
             self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
             if numpy.isnan(self.proposed_posterior):
-                self.rejected_parameters()
+                self.isAccepted = False
+                self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 print("mass out of range for current values. proposing new values")
                 continue
@@ -235,12 +252,10 @@ class MetropolisHastings:
             self.time_elapsed = time.time() - self.time_stamp
             self.time_stamp = time.time()
 
-            if self.isAccepted is True: self.accepted_parameters()
-            else: self.rejected_parameters()
-
+            self.write_output()
             self.save_current_parameter()
 
-            with open('time_stamp_2.txt', 'a') as f:
+            with open('time_stamp_' + self.instance +'.txt', 'a') as f:
                 f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
             self.iteration_step = self.iteration_step + 1
@@ -248,7 +263,7 @@ class MetropolisHastings:
 
     def continue_last(self):
 
-        name = 'current_parameters_2.txt'
+        name = self.current_filename
         with open(name, 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
@@ -258,10 +273,9 @@ class MetropolisHastings:
         self.current_parameters['age'] = float(array[1])
         self.current_parameters['teff_primary'] = float(array[2])
         self.current_parameters['feh'] = float(array[3])
-        self.current_parameters['Pdisk'] = float(array[4])
+        self.current_parameters['Wdisk'] = float(array[4])
         self.current_parameters['logQ'] = float(array[5])
         self.current_posterior = float(array[6])
-        f.close()
 
         self.iterations()
 
@@ -273,7 +287,8 @@ class MetropolisHastings:
                 logQ,
                 proposed_step,
                 total_iterations,
-                observed_Pspin
+                observed_Pspin,
+                instance
                 ):
 
 
@@ -300,12 +315,17 @@ class MetropolisHastings:
         self.p_acceptance = 0.0
         self.spin_value = 0.0
 
+        self.instance = instance
+
         #self.filename = ['accepted_test_1.txt', 'rejected_test_1.txt']
-        self.filename = ['accepted_parameters_2.txt', 'rejected_parameters_2.txt']
+        self.save_filename = ['accepted_parameters_' + self.instance + '.txt',
+                         'rejected_parameters_'+ self.instance +'.txt']
+
+
+        self.current_filename = 'current_parameters_'+ self.instance +'.txt'
 
         self.time_stamp = 0.0
         self.time_elapsed = 0.0
-
 
 if __name__ == '__main__':
 
@@ -323,7 +343,7 @@ if __name__ == '__main__':
                         age=dict(value=4.6, sigma=3.0),
                         teff_primary=dict(value=5922.0, sigma=200.0),
                         feh=dict(value=-0.06, sigma=0.11),
-                        Pdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
+                        Wdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                     )
 
     observed_Pspin = dict(
@@ -356,20 +376,35 @@ if __name__ == '__main__':
                 max=10
             )
 
-
-mcmc = MetropolisHastings(interpolator,fixed_parameters,observation_data,logQ,proposed_step,10,observed_Pspin)
-
-
 parser = argparse.ArgumentParser()
-parser.add_argument("status", help = 'start or continue')
+parser.add_argument('-s', action='store_const', dest='start',
+                    const='start',
+                    help='start mcmc from beginning')
+
+parser.add_argument('-c', action='store_const', dest='cont',
+                    const='continue',
+                    help='continue mcmc from last iteration')
+
+parser.add_argument('-i', action = 'store', dest = 'instance',
+                    help = 'define an instance of mcmc')
 args = parser.parse_args()
 
-if args.status == 'start':
-    mcmc.iterations()
-elif args.status == 'continue':
-    mcmc.continue_last()
-else:
-    print('allowed arguments are "start" or "continue"')
+
+instance = args.instance
+mcmc = MetropolisHastings(
+                            interpolator,
+                            fixed_parameters,
+                            observation_data,
+                            logQ,
+                            proposed_step,
+                            10,
+                            observed_Pspin,
+                            instance)
+
+
+if args.start: mcmc.iterations()
+elif args.cont: mcmc.continue_last()
+else: print('provide correct arguments')
 #flush()
 #buffer_size =0 to write at the moment
 #
