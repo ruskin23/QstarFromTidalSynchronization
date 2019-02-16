@@ -27,6 +27,7 @@ from basic_utils import Structure
 import numpy
 import scipy
 from astropy import units, constants
+import pickle
 
 
 
@@ -150,7 +151,7 @@ class evolution:
         self.feh = observational_parameters['feh']
         self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
         self.teff_primary = observational_parameters['teff_primary']
-        self.disk_lock_frequency = observational_parameters['Pdisk']
+        self.disk_lock_frequency = observational_parameters['Wdisk']
         self.Porb = 5.2663825
 
         self.inclination = fixed_parameters['inclination']
@@ -226,6 +227,9 @@ class evolution:
 
         #print ("\nTEST6")
 
+        with open('stellar_masses.pickle', 'wb') as f:
+            pickle.dump(self.primary_mass,f)
+            pickle.dump(self.secondary_mass,f)
 
         return final_Psurf
 
