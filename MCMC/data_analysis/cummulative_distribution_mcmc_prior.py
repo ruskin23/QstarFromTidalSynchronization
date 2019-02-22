@@ -7,12 +7,11 @@ import matplotlib.pyplot as plt
 
 iterations = []
 value =[]
-with open('accepted_test_1.txt', 'r') as f:
+with open('accepted_parameters_3.txt', 'r') as f:
     reader = csv.reader(f, dialect='excel-tab')
     for line in reader:
         iterations.append(line[0:1])
         value.append(line[0:4])
-
 
 size = len(iterations)
 
@@ -26,7 +25,7 @@ for index in range(size):
         value[index] = m
 
 
-
+print(value)
 total_iterations = iterations[size - 1]
 
 #check_total_iterations = iterations[10]
@@ -41,21 +40,21 @@ for i in range(size - 1):
     value_array[iterations[i]] = value[i]
 
 for i,v in  enumerate(value_array):
-    if v!=0: 
-        k = i 
+    if v!=0:
+        k = i
         break
 
 while True:
 
-    if k > len(value_array) - 1 : break    
+    if k > len(value_array) - 1 : break
     if value_array[k]==0: value_array[k] = value_array[k-1]
     k = k+1
 
 
 value_array.sort()
 
-for x in value_array:
-    print(x)
+#for x in value_array:
+#    print(x)
 #yaxis = numpy.linspace(0,value_array[len(value_array) - 1 ],len(value_array) - 1 )
 
 
