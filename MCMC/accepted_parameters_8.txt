@@ -1,3 +1,1 @@
-Iteration_step	age	teff_primary	feh	Pdisk	logQ	
-3	8.850849654333416	5466.722997391927	-0.053691234144314225	4.685136335664959	8.118603702289823	5.552670251157559
-5	8.381507179731388	5458.418167680556	-0.15847047754867213	4.685771730524206	8.251288241361884	6.74679452593679
+Iteration_step	age	teff_primary	feh	Wdisk	logQ	current_spin	intial_orbital_period	final_orbital_period	primary_mass	secondary_mass	primary_envelope_angmom	primary_core_envelope	secondary_ennvelope_angmom	secondary_core_envelope
