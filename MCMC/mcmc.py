@@ -3,6 +3,7 @@ import time
 import pickle
 
 import os
+import os.path
 import argparse
 import csv
 
@@ -26,7 +27,6 @@ start_time = time.time()
 
 class MetropolisHastings:
 
-
     def posterior_probability(self,parameter_set=None):
         """reutrns current surface spin of the star given the parameters"""
 
@@ -34,12 +34,14 @@ class MetropolisHastings:
                             self.interpolator,
                                 parameter_set,
                                 self.fixed_parameters,
+                                self.instance
                                )
 
         try:
             self.spin_value = find_spin()
         except Exception as e:
             print (str(e))
+            print('check1')
             return scipy.nan
 
         if numpy.isnan(self.spin_value): return scipy.nan
@@ -116,37 +118,42 @@ class MetropolisHastings:
             print('REJECTED')
             f_name = self.save_filename[1]
 
+        load_mass_file = 'stellar_masses_'+self.instance+'.pickle'
+        load_binary_file = 'ics_data_'+self.instance+'.pickle'
 
-        with open('ics_data.pickle', 'rb') as f1:
-            binary_data = pickle.load(f1)
-            porb_initial = pickle.load(f1)
-            porb_final = pickle.load(f1)
-            spin_value = pickle.load(f1)
+        if os.path.isfile(load_mass_file) == True and os.path.isfile(load_binary_file) == True:
+            with open(load_binary_file,'rb') as f1:
+                binary_data = pickle.load(f1)
+                porb_initial = pickle.load(f1)
+                porb_final = pickle.load(f1)
+                spin_value = pickle.load(f1)
 
 
-        primary_envelope_angmom = binary_data['primary_envelope_angmom']
-        primary_core_angmom = binary_data['primary_core_angmom']
-        secondary_envelope_angmom = binary_data['secondary_envelope_angmom']
-        secondary_core_angmom = binary_data['secondary_core_angmom']
+            primary_envelope_angmom = binary_data['primary_envelope_angmom']
+            primary_core_angmom = binary_data['primary_core_angmom']
+            secondary_envelope_angmom = binary_data['secondary_envelope_angmom']
+            secondary_core_angmom = binary_data['secondary_core_angmom']
 
-        with open('stellar_masses.pickle', 'rb') as f2:
-            primary_mass = pickle.load(f2)
-            secondary_mass = pickle.load(f2)
+            with open(load_mass_file,'rb') as f2:
+                primary_mass = pickle.load(f2)
+                secondary_mass = pickle.load(f2)
 
         with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
-            file.write(repr(self.spin_value) + '\t' +
-                       repr(porb_initial) + '\t' +
-                       repr(porb_final) + '\t' +
-                       repr(primary_mass) + '\t' +
-                       repr(secondary_mass) + '\t' +
-                       repr(primary_envelope_angmom) + '\t' +
-                       repr(primary_core_angmom) + '\t' +
-                       repr(secondary_envelope_angmom) + '\t' +
-                       repr(secondary_core_angmom)  +
-                        '\n')
+            if os.path.isfile(load_mass_file) == True and os.path.isfile(load_binary_file) == True:
+                file.write(
+                    repr(self.spin_value) + '\t' +
+                    repr(porb_initial) + '\t' +
+                    repr(porb_final) + '\t' +
+                    repr(primary_mass) + '\t' +
+                    repr(secondary_mass) + '\t' +
+                    repr(primary_envelope_angmom) + '\t' +
+                    repr(primary_core_angmom) + '\t' +
+                    repr(secondary_envelope_angmom) + '\t' +
+                    repr(secondary_core_angmom)  +
+                    '\n')
 
 
     def save_current_parameter(self):
@@ -186,6 +193,8 @@ class MetropolisHastings:
         while True:
             self.initialise_parameters()
 
+            self.current_file_exist = None
+
             if self.current_parameters['age'] < 0:
                 self.proposed_parameters = self.current_parameters
                 self.isAccepted = False
@@ -219,8 +228,7 @@ class MetropolisHastings:
             self.check_age_neg = False
 
             #initialising the set of parameters
-            if self.iteration_step == 1: self.first_iteration()
-
+            if self.iteration_step == 1 : self.first_iteration()
 
             #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
             #while self.check_age_neg is True: self.values_proposed()
@@ -260,22 +268,35 @@ class MetropolisHastings:
 
             self.iteration_step = self.iteration_step + 1
 
-
     def continue_last(self):
 
-        name = self.current_filename
+        if  os.path.isfile(self.current_filename) == False or os.stat(self.current_filename).st_size == 0:
+            name = self.save_filename[0]
+            self.current_file_exist = False
+        else :
+            name = self.current_filename
+            self.current_file_exist = True
+
         with open(name, 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:
                 array = row
             print(array)
-        self.iteration_step = int(array[0])
+
+        with open(self.save_filename[1], 'r') as f:
+            reader = csv.reader(f, dialect='excel-tab')
+            for row in reader:
+                step = row
+        self.iteration_step = int(step[0]) + 1
+
         self.current_parameters['age'] = float(array[1])
         self.current_parameters['teff_primary'] = float(array[2])
         self.current_parameters['feh'] = float(array[3])
         self.current_parameters['Wdisk'] = float(array[4])
         self.current_parameters['logQ'] = float(array[5])
-        self.current_posterior = float(array[6])
+
+        if self.current_file_exist: self.current_posterior = float(array[6])
+        else : self.current_posterior = self.posterior_probability(self.current_parameters)
 
         self.iterations()
 

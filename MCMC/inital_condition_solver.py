@@ -185,7 +185,8 @@ class InitialConditionSolver:
                  orbital_period_tolerance=1e-6,
                  spin_tolerance=1e-6,
                  secondary_angmom=None,
-                 is_secondary_star=None):
+                 is_secondary_star=None,
+                 instance=None):
         """
         Initialize the object.
 
@@ -217,6 +218,8 @@ class InitialConditionSolver:
         self.spin_tolerance = spin_tolerance
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
+        self.instance = instance
+
 
     def stellar_wsurf(self,
                       wdisk,
@@ -285,7 +288,9 @@ class InitialConditionSolver:
         binary_data['secondary_envelope_angmom'] = final_state.secondary_envelope_angmom
         binary_data['secondary_core_angmom'] = final_state.secondary_core_angmom
 
-        with open('ics_data.pickle','wb') as f:
+        dump_filename ='ics_data_'+self.instance+'.pickle'
+
+        with open(dump_filename,'wb') as f:
             print('pickle_dump_begin')
             pickle.dump(binary_data,f)
             pickle.dump(porb_initial,f)

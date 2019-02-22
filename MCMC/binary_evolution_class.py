@@ -143,7 +143,8 @@ class evolution:
         self.secondary_mass = mass2()
 
 
-    def __init__(self,interpolator,observational_parameters,fixed_parameters):
+    def __init__(self,interpolator,observational_parameters,fixed_parameters,instance):
+
 
         self.interpolator = interpolator
 
@@ -165,6 +166,7 @@ class evolution:
         self.primary_mass = 0.0
         self.secondary_mass = 0.0
 
+        self.instance = instance
 
     def __call__(self):
 
@@ -200,7 +202,8 @@ class evolution:
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
+                                         is_secondary_star=True,
+                                         instance = self.instance)
 
         print ('Target parameters: ')
         print ('age = ', self.age)
@@ -227,10 +230,13 @@ class evolution:
 
         #print ("\nTEST6")
 
-        with open('stellar_masses.pickle', 'wb') as f:
+        dump_filename ='stellar_masses_' + self.instance + '.pickle'
+        print('filename_declared')
+        with open(dump_filename,'wb') as f:
+            print('dumping_masses')
             pickle.dump(self.primary_mass,f)
             pickle.dump(self.secondary_mass,f)
-
+            print('mass_dump')
         return final_Psurf
 
 
