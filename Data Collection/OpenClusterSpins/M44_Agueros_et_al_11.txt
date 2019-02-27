@@ -1,0 +1,103 @@
+J/ApJ/740/110   Rotation Periods for Low-mass Stars in Praesepe (Agueros+, 2011)
+================================================================================
+The Factory and the Beehive. I. Rotation Periods for Low-mass Stars in Praesepe
+    Agüeros, Marcel A.; Covey, Kevin R.; Lemonias, Jenna J.; Law, Nicholas M.;
+    Kraus, Adam; Batalha, Natasha; Bloom, Joshua S.; Cenko, S. Bradley;
+    Kasliwal, Mansi M.; Kulkarni, Shrinivas R.; Nugent, Peter E.; Ofek, Eran O.;
+    Poznanski, Dovi; Quimby, Robert M.
+    =2011ApJ...740..110A
+================================================================================
+Mocked by hand.
+
+File Summary:
+--------------------------------------------------------------------------------
+ FileName   Lrecl  Records  Explanations
+--------------------------------------------------------------------------------
+table2.dat     35       21  High-confidence Rotators
+--------------------------------------------------------------------------------
+
+
+Byte-by-byte Description of file: table2.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1- 22  A22   ---     Name      Name of the star
+  24- 25  I2    h       RAh       Right ascension
+  27- 28  I2    min     RAm       Right ascension
+  30- 34  F5.2  s       RAs       Right ascension
+  36- 37  I2    deg     DEd       Declination
+  39- 40  I2    arcmin  DEm       Declination
+  42- 46  F5.2  arcsec  DEs       Declination
+  51- 54  A4    ---     SpT       Spectral type
+  59- 62  F4.1  ---     Pmem      Membership probability
+  67- 70  F4.2  mag     M_K       Absolute K-band magnitude
+  75- 78  F4.2  Msun    M1        Mass estimated using Delfosse et al. (2000)
+  83- 86  F4.2  Msun    M2        Mass estimated using Dotter et al. (2008)
+  91- 95  F5.2  mag     R_PTF     Average PTF R-band magnitude after outlier
+                                  rejection
+  97-100  F4.2  mag     eR_PTF    Error estimate for R_PTF
+ 102-104  I3    ---     Nobs      Number of observations
+ 106-110  F5.2  d       Prot      Rotation period
+ 114-119  F6.2  ---     Power     Periodogram power
+--------------------------------------------------------------------------------
+Notes. Spectral types and membership probabilities are taken from Kraus &
+Hillenbrand (2007); for the former, the formal uncertainty is 0.1 spectral
+classes. However, the systematic uncertainty in the underlying definition of
+spectral types is ~0.5 spectral classes for M dwarfs, and this systematic
+uncertainty will be reflected in the color-spectral type relations used for SED
+fits. MK is calculated assuming a distance of 181.5 pc (van Leeuwen 2009). M1 is
+estimated using the empirical Delfosse et al. (2000) relation, while M2 is
+estimated using the theoretical model of Dotter et al. (2008). Although the
+Delfosse et al. (2000) relation extends to stars with MK = 4.5 mag, the
+predicted mass values diverge by up to about 5% from those of Dotter et al.
+(2008) for stars brighter than MK = 5.5 mag. The number in bold is the mass we
+assigned for a given star. We provide the mean magnitude of each light curve
+after filtering on flags has been applied; the quoted error is the mean of the
+1sigma errors on the magnitudes used in calculating this mean magnitude.
+a Candidate binary system.
+b Pmem = 62.3%; all other stars have Pmem > 94% (Kraus & Hillenbrand 2007).
+c Listed as the variable V*AXCnc in SIMBAD.
+--------------------------------------------------------------------------------
+
+================================================================================
+(End)
+HSHJ 428               08 42 37.61 19 59 18.91    M3.5    99.5    7.10    0.27    0.31    17.90 0.05 358 1.69    69.60
+JS 687^a               08 35 59.44 20 04 40.54    M3.7    99.8    6.71    0.33    0.37    17.55 0.03 172 1.76    42.33
+JS 718^a               08 40 04.16 19 24 50.27    M3.4    99.7    6.68    0.33    0.37    17.37 0.03 448 2.62    113.45
+JS 667^a               08 33 17.98 19 16 32.75    M3.7    98.9    6.52    0.36    0.40    17.40 0.03 347 2.30    102.98
+HSHJ 87^a              08 35 47.22 18 08 29.97    M3.2    98.8    6.41    0.38    0.41    17.04 0.02 168 2.12    41.65
+2MASS 08505688+1936579 08 50 56.87 19 36 57.89    M2.5    97.1    6.40    0.38    0.41    16.76 0.02 320 11.95   49.70
+AD 3814^a              08 50 49.84 19 48 36.51    M3.4    97.9    6.36    0.39    0.42    17.01 0.02 363 7.43    65.47
+AD 2552                08 39 22.44 20 04 54.77    M1.9    99.9    6.22    0.41    0.44    16.33 0.01 530 25.36   127.43
+JS 241^a               08 38 37.47 19 15 28.67    M3.2    99.8    6.11    0.43    0.46    16.66 0.02 526 0.52    55.32
+JS 365                 08 40 30.58 19 55 58.80    M2.7    99.8    6.10    0.43    0.46    16.42 0.01 537 17.04   153.22
+JS 644                 08 47 09.10 18 11 37.30    M2.7    97.3    6.13    0.43    0.46    16.37 0.01 180 8.32    40.63
+JS 95^a                08 35 40.15 18 42 28.32    M3.3    99.4    6.07    0.44    0.46    16.74 0.02 168 1.98    46.04
+JS 250^a               08 38 51.03 19 51 02.03    M3.0    99.5    6.07    0.44    0.46    16.60 0.02 534 35.85   75.85
+JS 525                 08 43 12.92 18 31 50.83    M1.9    99.2    5.99    0.45    0.48    16.18 0.01 178 22.60   38.89
+JS 506^a               08 42 52.28 19 51 45.92    M2.5    99.4    5.92    0.47    0.49    16.27 0.01 364 3.97    101.18
+JS 283                 08 39 16.79 19 47 42.63    M1.4    99.8    5.79    0.49    0.51    15.71 0.01 534 19.62   116.87
+JS 110                 08 36 08.97 19 13 48.02    M1.3    99.7    5.75    0.50    0.51    15.68 0.01 170 18.21   40.71
+JS 237                 08 38 32.83 19 46 25.61    M1.2    99.9    5.72    0.51    0.52    15.59 0.01 535 18.57   88.75
+JS 148^a               08 36 48.95 19 18 59.30    M1.8    99.8    5.66    0.52    0.53    15.78 0.01 532 1.17    189.58
+JS 415                 08 41 10.52 18 16 07.05    M1.7    99.3    5.67    0.52    0.52    15.75 0.01 356 9.20    89.30
+JS 457                 08 41 50.05 19 39 34.68    M1.4    99.7    5.60    0.53    0.53    15.43 0.01 532 18.90   140.76
+JS 468                 08 41 59.35 19 44 45.11    M1.2    99.8    5.60    0.53    0.53    15.42 0.01 530 16.77   73.70
+JS 174^a               08 37 19.91 19 03 11.92    M3.0    99.7    5.54    0.54    0.54    15.80 0.01 347 2.03    61.36
+JS 187                 08 37 32.42 19 31 17.98    M1.9    99.0    5.50    0.55    0.55    15.42 0.01 372 1.81    113.91
+JS 46                  08 33 50.76 19 46 58.62    M0.5    99.5    5.44    0.57    0.56    14.98 0.00 347 17.00   80.65
+JS 364                 08 40 28.23 18 56 08.96    K7.8    99.2    5.42    0.57    0.56    15.08 0.00 356 17.33   60.84
+JS 489                 08 42 34.86 20 59 40.80    M1.0    95.9    5.46    0.56    0.56    15.18 0.00 183 17.33   61.77
+JS 505                 08 42 49.68 18 51 35.10    M1.5    94.4    5.45    0.56    0.56    15.33 0.00 176 13.50   49.98
+JS 430^a               08 41 24.46 20 07 49.52    M2.5    99.6    5.35    0.58    0.57    15.78 0.01 538 1.40    95.15
+JS 634^a,^b            08 46 38.21 19 52 44.78    M2.5    62.3    5.22    0.61    0.59    15.42 0.01 359 3.24    80.98
+JS 181                 08 37 28.45 20 36 28.54    M0.8    99.1    5.20    0.62    0.60    14.84 0.00 185 7.22    82.29
+JS 432                 08 41 24.18 18 14 02.69    M1.0    99.3    5.17    0.62    0.60    15.02 0.00 356 2.09    134.68
+JS 545                 08 43 44.73 21 12 34.32    M0.8    97.5    5.12    0.63    0.61    14.60 0.00 183 2.83    53.99
+2MASS 08492676+1831196 08 49 26.76 18 31 19.54    M0.5    97.8    5.10    0.64    0.61    14.65 0.00 178 9.20    64.69
+KW 563^a,^c            08 39 09.86 19 46 58.93    M2.0    99.8    5.06    0.65    0.62    15.30 0.01 539 4.33    132.19
+KW 570                 08 39 41.03 19 59 28.81    M0.4    99.9    5.03    0.65    0.62    14.59 0.00 465 4.18    189.34
+JS 497^a               08 42 42.07 19 17 32.26    K7.3    94.4    4.76    0.71    0.67    14.09 0.01 153 12.68   50.40
+HSHJ 15^a              08 31 40.45 19 47 54.19    M2.0    95.2    4.74    0.71    0.68    14.36 0.00 347 9.36    114.60
+JS 159^a               08 36 56.25 18 57 47.97    M0.9    99.6    4.62    0.74    0.70    14.36 0.00 275 4.81    95.55
+AD 1508^a              08 31 29.87 20 24 37.49    M0.1    98.3    4.48    0.77    0.74    14.07 0.00 142 1.55    63.48
