@@ -1,0 +1,241 @@
+J/ApJ/733/115       Rotation periods and membership in M34       (Meibom+, 2011)
+================================================================================
+The color-period diagram and stellar rotational Evolution - New rotation period
+measurements in the open cluster M34.
+    Meibom S., Mathieu R.D., Stassun K.G., Liebesny P., Saar S.H.
+   <Astrophys. J., 733, 115 (2011)>
+   =2011ApJ...733..115M
+================================================================================
+ADC_Keywords: Clusters, open ; Stars, late-type ; Radial velocities ; Photometry
+Keywords: open clusters and associations: individual (M34) - stars: activity -
+          stars: late-type - stars: rotation - starspots
+
+Abstract:
+    We present the results of a 5 month photometric time-series survey for
+    stellar rotation periods combined with a 4 year radial-velocity survey
+    for membership and binarity in the 220Myr open cluster M34. We report
+    surface rotation periods for 120 stars, 83 of which are kinematic and
+    photometric late-type cluster members. A comparison to previous work
+    serves to illustrate the importance of high-cadence long baseline
+    photometric observations and membership information. The new M34
+    periods are less biased against slow rotation and cleaned for
+    non-members. The rotation periods of the cluster members span over
+    more than an order of magnitude from 0.5 days up to 11.5 days, and
+    trace two distinct rotational sequences -fast (C) and moderate-to-slow
+    (I)- in the color-period diagram. The sequences represent two
+    different states (fast and slow) in the rotational evolution of the
+    late-type cluster members. We use the color-period diagrams for M34
+    and for younger and older clusters to estimate the timescale for the
+    transition from the C to the I sequence and find <~150Myr,
+    ~150-300Myr, and ~300-600 Myr for G, early-mid K, and late K dwarfs,
+    respectively. The small number of stars in the gap between C and I
+    suggests a quick transition. We determine a gyrochronology age of
+    240Myr for M34.
+
+Description:
+    We obtained time-series photometry over a time span of 143 days for a
+    40'x40' region centered on the open cluster M34. The photometric data
+    were obtained in the Johnson V band with the WIYN 0.9m telescope on
+    Kitt Peak. The data set presented is composed of images from
+    high-frequency (approximately once per hour for 5-6hr per night)
+    time-series photometric observations over 16 full nights from 2002
+    December 2-17, complemented with a queue-scheduled observing program
+    over 143 nights from 2002 October 22 to 2003 March 11. We obtain a
+    photometric precision of ~0.5% and light curves for 5656 stars with
+    12<~V<~20.8.
+
+    We observed M34 from 2001 to 2004 as part of the WIYN Open Cluster
+    Study (Mathieu 2000ASPC..198..517M). A total of 3320 spectra has been
+    obtained of 437 FGK stars within a 1{deg} field centered on the
+    cluster. Radial velocities with a precision of <~0.5km/s (Geller et
+    al. 2008, Cat. J/AJ/135/2264) were derived from the spectra via
+    cross-correlation with a high signal-to-noise sky spectrum. Of the 120
+    stars with rotation periods presented in this study, 74 have one or
+    more radial-velocity measurements (the remainder being below the faint
+    limit of the spectroscopic survey or photometric non-members).
+
+File Summary:
+--------------------------------------------------------------------------------
+ FileName   Lrecl  Records   Explanations
+--------------------------------------------------------------------------------
+ReadMe         80        .   This file
+table2.dat     71      120   Data for the 120 stars with measured rotation
+                             periods in the field of M34
+--------------------------------------------------------------------------------
+
+See also:
+   J/ApJ/695/679   : Stellar rotation in M35 (Meibom+, 2009)
+   J/AJ/135/2264   : Stellar radial velocities in NGC 188 (Geller+, 2008)
+   J/MNRAS/370/954 : VRIHalpha photometry of M34 (Irwin+, 2006)
+   J/ApJ/602/L117  : Oxygen in Pleiades and M34 dwarfs (Schuler+, 2004)
+   J/AJ/111/1193   : Proper motion in M34 (Jones+ 1996)
+
+Byte-by-byte Description of file: table2.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units    Label     Explanations
+--------------------------------------------------------------------------------
+   1-  3  I3    ---      Seq       [1/120] Running index number (1)
+       5  I1    h        RAh       Hour of Right Ascension (J2000)
+   7-  8  I2    min      RAm       Minute of Right Ascension (J2000)
+  10- 15  F6.3  s        RAs       Second of Right Ascension (J2000)
+      17  A1    ---      DE-       Sign of Declination (J2000)
+  18- 19  I2    deg      DEd       Degree of Declination (J2000)
+  21- 22  I2    arcmin   DEm       Arcminute of Declination (J2000)
+  24- 29  F6.3  arcsec   DEs       Arcsecond of Declination (J2000)
+  31- 35  F5.2  d        Prot      Rotation period
+  37- 41  F5.2  mag      V0mag     Extinction-corrected V band magnitude
+  43- 46  F4.2  mag      (B-V)0    ? Reddening corrected (B-V) color index
+  48- 49  I2    ---    o_RVel      ? Number of RV measurements
+  51- 55  F5.1  km/s     RVel      ? Mean radial velocity
+  57- 60  F4.1  km/s   e_RVel      ? Uncertainty in RVel
+  62- 63  I2    %        PRV       ? Membership probability from radial
+                                     velocity (2)
+  65- 66  I2    %        PPM       ? Membership probability from proper-motion;
+                                     Jones & Prosser 1996, Cat. J/AJ/111/1193;
+                                     <Cl* NGC 1039 JP NNN> in Simbad
+  68- 69  A2    ---      Mm        [PKNM] Membership code (3)
+      71  A1    ---      Rot       [icg-] Sequence code (4)
+--------------------------------------------------------------------------------
+Note (1): Assigned to 120 rotators after sorting by rotation period.
+Note (2): Using the formalism by Vasilevskis et al. (1958AJ.....63..387V).
+Note (3): Membership as follows:
+    PM = Photometric Member (described in Section 2.3);
+    KM = Kinematic (and Photometric) Member;
+    NM = Non-Member.
+     We have adopted P_RV_=40% as the threshold for assigning
+     radial-velocity cluster membership.
+Note (4): Sequence code as follows:
+   i = I sequence (moderate-to-slow rotational sequence in the color-period
+       diagram);
+   c = C sequence (fast rotational sequence in the color-period diagram);
+   g = gap.
+--------------------------------------------------------------------------------
+
+History:
+    From electronic version of the journal
+
+References:
+    Meibom et al. Paper I: M35. 2009ApJ...695..679M  Cat. J/ApJ/695/679
+
+================================================================================
+(End)                 Greg Schwarz [AAS], Emmanuelle Perret [CDS]    14-Nov-2012
+  1 2 40 54.560 +42 57 56.857  0.11 12.45 0.24  1   5.6  0.0  8    NM i
+  2 2 41 50.600 +43 01 26.819  0.13 19.43                          NM c
+  3 2 42 10.510 +42 46 33.219  0.16 18.42 0.48                     NM -
+  4 2 40 40.141 +42 46 32.244  0.19 18.94 0.30                     NM i
+  5 2 41 31.450 +42 59 05.837  0.21 16.08 0.53                     NM -
+  6 2 43 13.200 +42 50 25.223  0.36 15.83 0.12                     NM i
+  7 2 43 02.100 +42 46 53.969  0.49 17.67 1.44                     PM c
+  8 2 40 58.099 +42 49 44.409  0.51 16.92 0.79                     NM c
+  9 2 41 04.319 +42 35 11.462  0.51 17.42 1.42                     PM c
+ 10 2 41 43.970 +42 45 07.965  0.59 16.79 1.34                     PM c
+ 11 2 43 30.380 +42 53 02.286  0.72 14.74 0.84 13  -7.5  1.3 95  2 KM c
+ 12 2 43 00.049 +42 58 01.224  0.79 15.60 1.04 12 -13.4  3.0  6 47 NM c
+ 13 2 41 30.240 +42 27 54.934  0.79 17.93 1.40                     NM c
+ 14 2 43 32.040 +42 38 31.084  0.81 13.38 0.68  8  -7.8  0.1 96  8 KM c
+ 15 2 41 53.320 +42 35 25.800  0.88 16.08 1.16  6  -6.9  1.7 91    KM c
+ 16 2 42 17.510 +42 35 03.566  0.88 15.53 0.29                     NM i
+ 17 2 41 35.330 +42 41 01.995  0.90 14.33 0.79 15  -7.7  1.8 95 86 KM c
+ 18 2 42 50.869 +42 58 07.555  0.94 14.51 0.84 15 -10.0  1.6 72  0 KM c
+ 19 2 42 06.570 +42 39 36.755  0.96 17.66 1.41                     NM c
+ 20 2 42 31.619 +42 37 09.950  1.07 15.97 1.13  9  -9.9  1.8 74 46 KM c
+ 21 2 42 05.120 +42 25 26.509  1.09 15.01 0.85 12 -14.1  2.5  6    NM c
+ 22 2 43 23.870 +42 30 58.475  1.12 15.63 1.04 12  -6.9  1.6 91    KM c
+ 23 2 41 57.581 +43 00 26.353  1.13 15.29 0.99 11  -9.9  2.5 76 53 KM c
+ 24 2 42 26.029 +42 48 53.871  1.19 17.32 0.93                     NM c
+ 25 2 42 47.650 +42 45 46.596  1.19 16.45 1.20 11  -7.2  1.3 94    KM c
+ 26 2 42 49.180 +42 40 13.875  1.50 15.73 1.03  5  -7.7  0.3 95    KM c
+ 27 2 42 57.940 +42 58 03.559  1.55 14.78 0.86 13  -6.3  1.7 81  0 KM c
+ 28 2 42 47.890 +43 00 47.186  1.63 17.52 1.12                     NM c
+ 29 2 42 42.530 +42 40 30.835  1.97 12.62 0.52 10  -9.8  0.8 77 99 KM i
+ 30 2 41 33.661 +42 32 21.985  2.29 11.99 0.51 11  -8.4  0.9 95 99 KM i
+ 31 2 42 34.410 +42 36 21.679  2.36 12.15 0.55 10  -7.0  0.6 93 98 KM i
+ 32 2 41 58.850 +42 57 30.105  2.39 15.60 0.83                     NM g
+ 33 2 42 08.270 +42 38 41.535  2.71 12.90 0.54  3  -7.1  0.2 93 97 KM i
+ 34 2 41 48.100 +42 39 03.343  2.73 12.68 0.53 11  -7.5  0.8 95 99 KM i
+ 35 2 41 36.720 +42 50 20.018  2.80 14.44 0.82 11  -7.6  0.8 95 44 KM g
+ 36 2 41 40.911 +42 54 46.917  2.80 12.96 0.58  9  -8.6  0.5 95 99 KM i
+ 37 2 42 15.010 +42 54 33.376  3.10 13.04 0.62  8  -2.4  0.2  7  0 NM i
+ 38 2 42 36.410 +42 54 31.317  3.18 14.73 0.86 11  -7.3  0.5 94  0 KM g
+ 39 2 41 48.760 +42 27 58.477  3.39 14.70 0.96 15  -8.3  5.5 95    KM g
+ 40 2 43 15.420 +42 30 36.186  3.54 12.90 0.54 15  -8.5  1.7 95    KM i
+ 41 2 42 44.011 +42 26 39.733  3.67 17.59 0.89                     NM g
+ 42 2 42 51.481 +42 47 52.375  3.67 12.78 0.64 15  -8.2  1.1 95 99 KM i
+ 43 2 41 05.060 +42 46 51.566  3.78 13.29 0.60  8  -7.4  0.2 95  4 KM i
+ 44 2 42 57.960 +42 41 46.119  3.86 16.13 1.36                     NM g
+ 45 2 41 26.390 +42 48 12.934  3.99 13.21 0.59 10  -8.2  0.3 96 98 KM i
+ 46 2 41 59.641 +42 41 01.555  4.19 12.98 0.67 18  -6.5 12.2 87 87 KM i
+ 47 2 43 18.140 +42 46 36.968  4.29 13.76 0.69 16  -8.1 28.3 96 94 KM i
+ 48 2 41 38.540 +42 39 03.906  4.37 13.36 0.63  6  -7.9  0.2 96 95 KM i
+ 49 2 42 14.080 +42 55 47.974  4.65 13.89 0.77 10  -7.8  0.4 96 17 KM i
+ 50 2 41 49.060 +42 39 59.290  4.83 15.82 1.11                     PM g
+ 51 2 42 23.200 +42 27 28.444  4.88 14.65 0.68                     NM i
+ 52 2 42 00.530 +42 48 53.350  4.93 12.65 0.73 18 -17.2  8.3  6 99 NM i
+ 53 2 41 51.771 +42 38 22.913  5.35 16.57 1.28                     PM g
+ 54 2 41 37.561 +42 59 39.414  5.41 13.86 0.72 12  -9.4  0.6 88  3 KM i
+ 55 2 42 18.811 +42 28 58.422  5.41 16.72 1.07                     NM g
+ 56 2 42 41.849 +43 00 49.287  5.41 12.89 0.61 13  -0.5  0.4  7  0 NM i
+ 57 2 41 33.510 +42 42 11.360  5.47 13.74 0.70  7  -8.9  0.7 93  5 KM i
+ 58 2 41 48.579 +42 49 33.532  5.47 16.02 1.07 10  -0.6  1.3  7 17 NM g
+ 59 2 41 36.680 +42 40 03.438  5.59 17.91 1.49                     PM g
+ 60 2 41 32.840 +43 02 16.148  5.99 17.74 1.52                     PM g
+ 61 2 41 38.240 +42 44 04.231  5.99 13.87 0.73 10  -7.9  0.3 96 93 KM i
+ 62 2 40 44.530 +42 54 04.373  6.06 12.64 0.98  1 -55.8  0.0 15    NM g
+ 63 2 41 47.970 +42 41 18.076  6.06 11.97 0.55 10  -8.4  0.4 95  0 KM -
+ 64 2 42 06.660 +42 36 20.484  6.14 13.49 0.80  4  -6.8  0.1 90 95 KM i
+ 65 2 42 10.400 +42 59 35.885  6.37 17.77 1.50                     PM g
+ 66 2 42 56.980 +42 35 21.281  6.54 14.19 0.80  7  -8.2  0.2 96  0 KM i
+ 67 2 41 49.430 +42 36 37.046  6.71 14.19 0.81  9  -7.3  0.4 94 91 KM i
+ 68 2 42 11.430 +42 50 36.346  6.90 14.27 0.85  8  -8.1  0.3 96  0 KM i
+ 69 2 41 05.251 +42 56 43.029  7.00 14.37 0.81  8  -8.1  0.3 96    KM i
+ 70 2 40 42.850 +42 38 58.660  7.20 16.42 1.27                     PM g
+ 71 2 42 50.400 +42 34 19.882  7.30 17.76 1.41                     NM g
+ 72 2 41 01.090 +42 52 46.521  7.41 14.70 0.87 13  -7.5  0.9 95  0 KM i
+ 73 2 43 10.360 +42 54 32.621  7.41 14.57 0.90  5  -6.7  0.4 89 72 KM i
+ 74 2 40 45.000 +42 53 47.014  7.52 16.60 1.28                     PM g
+ 75 2 41 35.160 +42 33 30.539  7.52 13.92 0.86 10  -7.9  0.5 96  0 KM i
+ 76 2 42 11.080 +42 43 16.083  7.52 16.49 1.29                     PM g
+ 77 2 41 23.170 +42 40 15.523  7.75 14.74 0.90 12  -7.1  0.5 93 84 KM i
+ 78 2 42 47.840 +42 47 42.790  7.75 14.73 0.90 11  -8.8  0.6 94 67 KM i
+ 79 2 41 01.950 +42 42 31.163  8.00 14.85 0.91  9  -7.5  0.4 95 76 KM i
+ 80 2 41 06.299 +42 46 21.010  8.00 15.41 1.03 15  -7.3  5.9 94 26 KM i
+ 81 2 41 51.379 +42 34 24.372  8.00 14.72 0.89  8  -8.9  0.4 93  0 KM i
+ 82 2 42 26.400 +42 30 13.074  8.00 14.48 0.84 12  -7.1  0.7 94 85 KM i
+ 83 2 42 04.990 +42 37 46.905  8.13 17.58 1.52                     PM g
+ 84 2 40 49.760 +42 46 54.999  8.27 15.52 1.05 11  -8.7  0.8 94    KM i
+ 85 2 41 21.480 +42 35 43.996  8.27 14.98 0.94 11  -9.0  0.4 92 10 KM i
+ 86 2 42 05.880 +42 46 53.475  8.27 14.34 0.99  9  -8.5  0.5 95 71 KM i
+ 87 2 42 02.370 +43 01 13.320  8.40 14.73 0.98 15  -2.8  0.6  7    NM i
+ 88 2 41 44.269 +42 35 35.454  8.55 17.26 1.38                     PM g
+ 89 2 43 03.560 +43 03 01.563  8.55 15.61                          NM g
+ 90 2 41 30.691 +42 28 53.423  8.70 14.80 0.89 11  -7.7  0.6 95    KM i
+ 91 2 42 02.650 +42 51 51.411  8.70 15.02 0.95 12  -7.4  0.6 95 76 KM i
+ 92 2 41 24.320 +42 48 18.550  8.85 14.71 1.01 10  -6.9  0.6 92  0 KM i
+ 93 2 41 27.290 +42 43 41.970  8.85 14.89 0.83  9 -24.4  0.4  6  0 NM i
+ 94 2 43 21.230 +42 48 56.069  8.85 15.74 1.18 13 -10.5  0.8 44 24 KM i
+ 95 2 41 42.990 +42 33 13.277  9.01 15.43 1.09 13  -9.3  0.5 89  5 KM i
+ 96 2 42 25.920 +42 28 44.057  9.01 13.80 1.21                     NM i
+ 97 2 41 13.010 +42 50 19.112  9.35 15.71 0.89                     NM i
+ 98 2 41 56.050 +42 58 30.558  9.35 15.90 1.18  9  -8.3  0.7 95    KM i
+ 99 2 42 24.871 +42 27 39.595  9.52 15.84 1.14 12  -8.1  0.7 96    KM i
+100 2 41 37.671 +42 57 21.426  9.71 15.45 1.05                     PM i
+101 2 42 25.010 +42 53 25.824  9.71 17.18 1.42                     PM g
+102 2 41 19.321 +42 35 28.148  9.90 16.32 1.28  8  -8.0  1.1 96    KM i
+103 2 42 59.660 +42 33 13.991  9.90 15.45 1.06 14  -7.6 44.8 95  6 KM i
+104 2 41 46.440 +42 32 31.501 10.31 16.12 1.20                     PM i
+105 2 42 55.190 +42 45 50.249 10.31 15.69 1.13  9  -7.2  0.8 94 27 KM i
+106 2 41 38.340 +42 55 42.865 10.52 15.73 0.91                     NM i
+107 2 42 11.749 +42 31 17.440 10.52 16.70 1.31                     PM i
+108 2 42 59.650 +42 48 23.426 10.52 15.49 1.25 10  -6.7  0.9 90 43 KM i
+109 2 41 38.931 +42 43 00.963 10.75 17.44 1.43                     PM i
+110 2 41 45.020 +42 53 56.215 10.75 16.12 1.37                     PM i
+111 2 42 43.550 +42 52 30.027 10.75 15.59 1.18 12 -10.4  0.8 49 19 KM i
+112 2 42 20.410 +42 49 05.517 10.99 16.31 1.26                     PM i
+113 2 41 01.740 +42 37 34.573 11.23 16.23 1.22                     PM i
+114 2 41 31.200 +42 41 13.943 11.23 17.91 1.48                     NM i
+115 2 40 49.190 +42 48 20.432 11.49 16.39 1.28                     PM i
+116 2 40 38.520 +42 43 33.826 12.98 18.50 0.50                     NM i
+117 2 42 23.059 +42 57 28.814 14.08 14.37 0.79  8 -28.0  1.4  6  0 NM i
+118 2 43 13.039 +42 32 29.496 15.37 16.79 0.93                     NM i
+119 2 41 23.820 +42 30 55.811 18.85 14.62 0.94  5   6.0  0.2  8  0 NM i
+120 2 43 07.390 +42 47 46.772 23.22 12.36 1.25  1  -6.8  0.0 90  0 NM i
