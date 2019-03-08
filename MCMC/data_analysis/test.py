@@ -1,13 +1,35 @@
-import argparse
-import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
-key = {'a':['a','b','c'],
-       'b':[4,5,6],
-       'c':[7,8,9]}
+np.random.seed(19680801)
 
-import csv
-with open('text.csv', 'w') as f:
-    writer = csv.writer(f, delimiter='\t')
-#    for k,array in key.items():
-    writer.writerows(zip(*key.values()))
+mu = 200
+sigma = 25
+n_bins = 50
+x = np.random.normal(mu, sigma, size=100)
 
+fig, ax = plt.subplots(figsize=(8, 4))
+
+# plot the cumulative histogram
+n, bins, patches = ax.hist(x, n_bins, density=True, histtype='step',
+                           cumulative=True, label='Empirical')
+
+
+#Add a line showing the expected distribution.
+y = ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
+y = y.cumsum()
+y /= y[-1]
+
+ax.plot(bins, y, 'k--', linewidth=1.5, label='Theoretical')
+
+# Overlay a reversed cumulative histogram.
+#ax.hist(x, bins=bins, density=True, histtype='step', cumulative=-1, label='Reversed emp.')
+
+# tidy up the figure
+ax.grid(True)
+ax.legend(loc='right')
+ax.set_title('Cumulative step histograms')
+ax.set_xlabel('Annual rainfall (mm)')
+ax.set_ylabel('Likelihood of occurrence')
+
+plt.show()
