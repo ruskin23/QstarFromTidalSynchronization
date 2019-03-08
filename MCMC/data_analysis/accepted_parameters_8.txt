@@ -1,0 +1,1 @@
+Iteration_step	age	teff_primary	feh	Wdisk	logQ	current_spin	intial_orbital_period	final_orbital_period	primary_mass	secondary_mass	primary_envelope_angmom	primary_core_envelope	secondary_ennvelope_angmom	secondary_core_envelope
