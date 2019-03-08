@@ -133,7 +133,7 @@ def residuals(params, rv_data):
 def fit_rv_data(rv_data_fname):
     """Fit or the amplitude, offset and shift describing an RV orbit."""
 
-    rv_data = scipy.genfromtxt(rv_data_fname)
+    rv_data = scipy.genfromtxt(rv_data_fname,delimiter='\t')
     orbital_params, flag = scipy.optimize.leastsq(residuals,
                                                   [10.0, 0.1, 0.0, 0.0],
                                                   args=(rv_data,),

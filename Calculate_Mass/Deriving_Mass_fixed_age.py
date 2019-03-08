@@ -28,12 +28,12 @@ class DerivePrimnaryMass:
 
         """Return the effective temperature for the given stellar mass."""
 
-        
+
         T = TeffK(self.interp('radius', mass, self.feh),
                   self.interp('lum', mass, self.feh)
                  )
 
-        
+
         if self.age >T.min_age and self.age<T.max_age:return (T(self.age)-self.teff_value)
         else : return scipy.nan
 
@@ -59,7 +59,7 @@ class DerivePrimnaryMass:
                 mass_solutions.append(mass_array[i+1])
                 return mass_solutions
                 break
-            
+
 
         if i >= teff_array_diff.size-1 : return scipy.nan
 
@@ -70,46 +70,6 @@ class DerivePrimnaryMass:
         mass_solutions = self.possible_solution()
 
         solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
-
-        return solution
-
-
-class DeriveSecondaryMass:
-
-
-    def __init__(self, period, semimajor, mass_primary ):
-	
-        self.period = period
-        self.semimajor = semimajor
-        self.mass_primary = mass_primary
-
-    def mass_function(self,mass_secondary):
-
-        return (mass_secondary**3)/(mass_secondary + self.mass_primary)**2
-
-    def difference_function(self, mass_secondary):
-
-        return self.mass_function(mass_secondary) - (((4*scipy.pi)**2)*(self.semimajor**3))/((self.period**2)*G)
-
-    def __call__(self):
-
-        mass_array = scipy.linspace(0.4,1.2,100)
-        differnece_array = scipy.empty(len(mass_array))
-
-        for m_index, m_value in enumerate(mass_array):
-            differnece_array[m_index] = self.difference_function(m_value)
-
-        mass_solutions = []
-
-        for i in range(differnece_array.size-1):
-
-            x = differnece_array[i]*differnece_array[i+1]
-            if x<0:
-                mass_solutions.append(mass_array[i])
-                mass_solutions.append(mass_array[i+1])
-                break
-
-        solution = scipy.optimize.brentq(self.difference_function, mass_solutions[0], mass_solutions[1])
 
         return solution
 

@@ -2,70 +2,57 @@ import csv
 import numpy as np
 import scipy
 from scipy.stats import norm
+import argparse
 
 import matplotlib.pyplot as plt
 
-iterations = []
+
+parser = argparse.ArgumentParser()
+parser.add_argument('fname',help='enter name of the file')
+parser.add_argument('pname',help='enter the name of parameter')
+args = parser.parse_args()
+
+parameter = ['age', 'teff', 'feh', 'wdisk', 'logQ', 'pspin']
+try: p = parameter.index(args.pname)
+except: print('give correct parameter name')
+
 value =[]
-with open('accepted_parameters_3.txt', 'r') as f:
+
+with open(args.fname,'r') as f:
     reader = csv.reader(f, dialect='excel-tab')
     for line in reader:
-        iterations.append(line[0:1])
-        value.append(line[0:4])
+        value.append(float(line[p+1]))
 
-size = len(iterations)
+value.sort()
 
-for index in range(size):
-    for i in iterations[index]:
-        l = int(i)
-        iterations[index] = l
+fig, ax = plt.subplots(figsize=(8, 4))
 
-    for j in value[index]:
-        m = float(j)
-        value[index] = m
+#histogram of data
+n_bins = 100
+n, bins, patches = ax.hist(value, bins=n_bins, density=True, cumulative=True, histtype='step',
+        label='empirical')
 
+#cummulative distribution from array
+mu = np.mean(value)
+sigma = np.std(value)
 
-print(value)
-total_iterations = iterations[size - 1]
+textstr = '\n'.join( ('$\mu = %f$'%mu,'$\sigma = %f$'%sigma ))
+ax.text(0.05,0.95,textstr,transform=ax.transAxes, fontsize=14,
+        verticalalignment='top')
 
-#check_total_iterations = iterations[10]
+y = ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
+y = y.cumsum()
+y /= y[-1]
 
-check = np.zeros(total_iterations)
-value_array = np.zeros(total_iterations)
-
-print(total_iterations)
-print(len(value_array))
-
-for i in range(size - 1):
-    value_array[iterations[i]] = value[i]
-
-for i,v in  enumerate(value_array):
-    if v!=0:
-        k = i
-        break
-
-while True:
-
-    if k > len(value_array) - 1 : break
-    if value_array[k]==0: value_array[k] = value_array[k-1]
-    k = k+1
+ax.plot(bins, y, 'k--', linewidth=1.5, label='Theoretical')
 
 
-value_array.sort()
 
-#for x in value_array:
-#    print(x)
-#yaxis = numpy.linspace(0,value_array[len(value_array) - 1 ],len(value_array) - 1 )
+ax.grid(True)
+ax.legend(loc='right')
+ax.set_title('Cumulative step histograms')
+ax.set_xlabel(args.pname)
+ax.set_ylabel('Likelihood of occurrence')
 
-
-#dist = scipy.stats.norm.cdf(value_array)
-
-#dist_norm = np.random.normal(5922,100)
-
-
-#mu, sigma = 0, 0.1 # mean and standard deviation
-#s = np.random.normal(mu, sigma, 1000)
-
-#plt.plot(s)
-#plt.show()
+plt.show()
 
