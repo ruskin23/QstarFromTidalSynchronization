@@ -87,7 +87,7 @@ class VarChangingInterpolator(MESAInterpolator):
 
     Instances have the following attributes:
         - grid:
-            A structure with attributes: 
+            A structure with attributes:
                 - masses:
                     Stellar masses of the grid nodes at which the dependent
                     variables are known.
@@ -253,7 +253,7 @@ class VarChangingInterpolator(MESAInterpolator):
                 The [Fe/H] value to inteprolate to.
 
         Returns: A 2-D scipy array contaning the interepolated variable at
-        the grid masses and ages. 
+        the grid masses and ages.
         """
 
         result = scipy.empty((self.grid.masses.size, self.grid.ages.size))
@@ -349,7 +349,7 @@ class VarChangingInterpolator(MESAInterpolator):
             - rho:
                 The density to match.
 
-        Returns: 
+        Returns:
             The mass and age at which the keyword arguments are matched
             as list of tuplse of (mass, age).
         """
@@ -445,7 +445,7 @@ class VarChangingInterpolator(MESAInterpolator):
             Return the simultaneous roots of two bilinear functions.
 
             Args:
-                - coef: 
+                - coef:
                     The coefficients of the two bilinear functions. Should be
                     a 2-D scipy array with the outer index iterating over the
                     function and the inner indices iterating over the

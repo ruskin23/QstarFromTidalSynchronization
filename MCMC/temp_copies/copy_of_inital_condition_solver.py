@@ -4,14 +4,9 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-# import sys
-# sys.path.append('.../poet/PythonPackage')
-# sys.path.append('.../poet/scripts')
-#
-#import sys
+import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
 
 import sys
 sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
@@ -55,9 +50,7 @@ class InitialConditionSolver:
                 evolution is started with the input periods.
         """
 
-        print('Trying P0 = %s, Pdisk = %s'
-              %
-              (repr(initial_orbital_period), repr(disk_period)))
+        #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
 
         if hasattr(self, 'binary'): self.binary.delete()
 
@@ -67,6 +60,7 @@ class InitialConditionSolver:
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
+            secondary_config_age = self.disk_dissipation_age
 
 
         else:
@@ -87,11 +81,7 @@ class InitialConditionSolver:
         )
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
-
-        print ("binary.configure_started")
-
-
-
+        if self.is_secondary_star is True: self.binary.secondary.detect_stellar_wind_saturation()
 
 
         self.binary.configure(  age =  self.primary.core_formation_age(),
@@ -103,10 +93,6 @@ class InitialConditionSolver:
                                 evolution_mode='LOCKED_SURFACE_SPIN'
 
                                 )
-
-        print ("binary_.configure_ended")
-
-
         self.binary.primary.detect_stellar_wind_saturation()
 
         self.binary.secondary.configure(
@@ -122,7 +108,7 @@ class InitialConditionSolver:
             zero_outer_periapsis=True
         )
 
-        print ("BINARY CONFIGURATION COMPLETE")
+        #print ("BINARY CONFIGURATION COMPLETE")
 
         self.binary.evolve(
             self.target.age,
@@ -131,7 +117,7 @@ class InitialConditionSolver:
             None
         )
 
-        print ("BINARY EVOLUTION COMPLETE")
+        #print ("BINARY EVOLUTION COMPLETE")
 
         final_state = self.binary.final_state()
 
@@ -146,9 +132,7 @@ class InitialConditionSolver:
                 /
                 final_state.primary_envelope_angmom
         )
-        print('Got Porb = %s, P* = %s'
-              %
-              (repr(orbital_period), repr(stellar_spin_period)))
+        #print('Got Porb = %s, P* = %s'     % (repr(orbital_period), repr(stellar_spin_period)))
         if (numpy.isnan(orbital_period)): orbital_period = 0.0
         return orbital_period, stellar_spin_period
 
@@ -194,9 +178,7 @@ class InitialConditionSolver:
             porb_max = porb_initial
             if porb_error == 0: porb_min = porb_initial
 
-        print('For Pdisk = %s, orbital period range: %s < Porb < %s'
-              %
-              (repr(disk_period), repr(porb_min), repr(porb_max)))
+        #print('\nFOR Pdisk = %s, ORBITAL PERIOD RANGE: %s < Porb < %s'       % (repr(disk_period), repr(porb_min), repr(porb_max)))
         return porb_min, porb_max
 
     def __init__(self,
@@ -293,14 +275,23 @@ class InitialConditionSolver:
             rtol=self.orbital_period_tolerance
         )
 
+        #print("\nInitial orbital period root found")
+
         porb_final, spin_period = self._try_initial_conditions(
             porb_initial,
             disk_period,
         )
 
+        #print ("\nTEST1")
+
         spin_frequency = 2.0 * pi / spin_period
 
+        #print ("\nTEST2")
+
+
         if not return_difference:
+            #print ("\nTEST3")
+
             return spin_frequency, porb_initial, porb_final
 
         result = spin_frequency - 2.0 * pi / self.target.Psurf
@@ -439,7 +430,14 @@ class InitialConditionSolver:
                      else 2.0 * pi / target.Pdisk)
             Wstar, Porb_initial, Porb_now = self.stellar_wsurf(Wdisk,
                                                                target.Porb)
-            return Porb_initial, 2.0 * pi / Wstar
+
+            #print ("\nTEST4")
+
+            print ("\n Results Wstar = %s, Porb_initial = %s, Porb_now = %s" % (repr(Wstar),repr(Porb_initial),repr(Porb_now)))
+
+            finalPsurf = 2*numpy.pi/Wstar
+
+            return Porb_initial, finalPsurf
 
         else:
             wdisk_grid, stellar_wsurf_residual_grid = get_initial_grid()

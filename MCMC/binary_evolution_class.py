@@ -27,6 +27,7 @@ from basic_utils import Structure
 import numpy
 import scipy
 from astropy import units, constants
+import pickle
 
 
 
@@ -40,7 +41,7 @@ class evolution:
 
     def create_star(self, mass, dissipation):
         star = EvolvingStar(mass=mass,
-                            metallicity=0.0,
+                            metallicity=self.feh,
                             wind_strength=self.wind_strength if self.wind else 0.0,
                             wind_saturation_frequency=self.wind_saturation_frequency,
                             diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
@@ -54,7 +55,7 @@ class evolution:
                                 spin_frequency_powers=numpy.array([0.0]),
                                 reference_phase_lag=self.convective_phase_lag)
 
-      
+
         return star
 
     def create_binary_system(self,
@@ -142,7 +143,8 @@ class evolution:
         self.secondary_mass = mass2()
 
 
-    def __init__(self,interpolator,observational_parameters,fixed_parameters):
+    def __init__(self,interpolator,observational_parameters,fixed_parameters,instance):
+
 
         self.interpolator = interpolator
 
@@ -150,7 +152,7 @@ class evolution:
         self.feh = observational_parameters['feh']
         self.convective_phase_lag = phase_lag(observational_parameters['logQ'])
         self.teff_primary = observational_parameters['teff_primary']
-        self.disk_lock_frequency = observational_parameters['Pdisk']
+        self.disk_lock_frequency = observational_parameters['Wdisk']
         self.Porb = 5.2663825
 
         self.inclination = fixed_parameters['inclination']
@@ -160,18 +162,19 @@ class evolution:
         self.wind_saturation_frequency = fixed_parameters['wind_saturation_frequency']
         self.diff_rot_coupling_timescale = fixed_parameters['diff_rot_coupling_timescale']
         self.wind_strength = fixed_parameters['wind_strength']
-        
-        self.primary_mass = 0.0
-        self.secondary_mass = 0.0 
 
+        self.primary_mass = 0.0
+        self.secondary_mass = 0.0
+
+        self.instance = instance
 
     def __call__(self):
 
         tdisk = self.disk_dissipation_age
-        
+
         self.calculate_star_masses()
-        if numpy.isnan(self.primary_mass) or numpy.isnan(self.secondary_mass): 
-            print('mass out of rangfe') 
+        if numpy.isnan(self.primary_mass) or numpy.isnan(self.secondary_mass):
+            print('mass out of range')
             return scipy.nan
 
         star = self.create_star(self.secondary_mass,1)
@@ -199,12 +202,15 @@ class evolution:
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
+                                         is_secondary_star=True,
+                                         instance = self.instance)
 
         print ('Target parameters: ')
         print ('age = ', self.age)
         print ('Porb = ', self.Porb)
         print ('convective phase lag = ', self.convective_phase_lag)
+        print ('self.disk_lock_frequency  = ', self.disk_lock_frequency)
+        print (' planet_formation_age = ', self.planet_formation_age)
 
 
         target = Structure(age=self.age,
@@ -224,7 +230,13 @@ class evolution:
 
         #print ("\nTEST6")
 
-
+        dump_filename ='stellar_masses_' + self.instance + '.pickle'
+        print('filename_declared')
+        with open(dump_filename,'wb') as f:
+            print('dumping_masses')
+            pickle.dump(self.primary_mass,f)
+            pickle.dump(self.secondary_mass,f)
+            print('mass_dump')
         return final_Psurf
 
 

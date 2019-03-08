@@ -177,12 +177,12 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age =4.60 
-    primary_mass =0.9933137087491567 
-    secondary_mass = 0.7772014414635009 
-    initial_disk_period =  1.4064967495370835 
+    age =4.60
+    primary_mass =0.9933137087491567
+    secondary_mass = 0.7772014414635009
+    initial_disk_period =  1.4064967495370835
     initial_orbital_period =5.2663825# 5.2663825
-    
+
 
 
     star = create_star(secondary_mass, 1, interpolator=interpolator, convective_phase_lag=convective_phase_lag, wind=wind)
@@ -214,7 +214,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     binary = create_binary_system(
         primary,
         secondary,
-        2.0 * numpy.pi /initial_disk_period, 
+        2.0 * numpy.pi /initial_disk_period,
         initial_orbital_period,
         tdisk,
         secondary_angmom=numpy.array([disk_state.envelope_angmom,
