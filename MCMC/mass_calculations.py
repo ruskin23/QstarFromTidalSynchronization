@@ -71,10 +71,8 @@ class DeriveMass:
             if x < 0:
                 mass_solutions.append(mass_array[i])
                 mass_solutions.append(mass_array[i + 1])
-                print('solution found')
-                print(mass_solutions)            
-                return mass_solutions 
-    
+                return mass_solutions
+
         if i >=teff_array_diff.size - 2: self.mass_bound_check = True
 
     def __call__(self):
@@ -85,10 +83,10 @@ class DeriveMass:
         mass_solutions = self.possible_solution()
         print(mass_solutions)
 
-        if (self.mass_bound_check) is False: 
+        if (self.mass_bound_check) is False:
             solution = scipy.optimize.brentq(self.teff_diff, mass_solutions[0], mass_solutions[1])
             print("solution = ", solution)
             return solution
         else: return scipy.nan
-       
-            
+
+

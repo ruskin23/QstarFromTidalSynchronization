@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 
-import matplotlib
-
-matplotlib.use('TkAgg')
+import pickle
 
 import sys
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
 #sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
-import sys
 sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
 sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 
-from matplotlib import pyplot
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
@@ -60,7 +56,7 @@ class InitialConditionSolver:
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
-
+            secondary_config_age = self.disk_dissipation_age
 
 
         else:
@@ -189,7 +185,8 @@ class InitialConditionSolver:
                  orbital_period_tolerance=1e-6,
                  spin_tolerance=1e-6,
                  secondary_angmom=None,
-                 is_secondary_star=None):
+                 is_secondary_star=None,
+                 instance=None):
         """
         Initialize the object.
 
@@ -221,6 +218,8 @@ class InitialConditionSolver:
         self.spin_tolerance = spin_tolerance
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
+        self.instance = instance
+
 
     def stellar_wsurf(self,
                       wdisk,
@@ -282,6 +281,22 @@ class InitialConditionSolver:
             disk_period,
         )
 
+        final_state = self.binary.final_state()
+        binary_data = {}
+        binary_data['primary_envelope_angmom'] = final_state.primary_envelope_angmom
+        binary_data['primary_core_angmom'] = final_state.primary_core_angmom
+        binary_data['secondary_envelope_angmom'] = final_state.secondary_envelope_angmom
+        binary_data['secondary_core_angmom'] = final_state.secondary_core_angmom
+
+        dump_filename ='ics_data_'+self.instance+'.pickle'
+
+        with open(dump_filename,'wb') as f:
+            print('pickle_dump_begin')
+            pickle.dump(binary_data,f)
+            pickle.dump(porb_initial,f)
+            pickle.dump(porb_final,f)
+            pickle.dump(spin_period,f)
+            print('pickle_dump_end')
         #print ("\nTEST1")
 
         spin_frequency = 2.0 * pi / spin_period
