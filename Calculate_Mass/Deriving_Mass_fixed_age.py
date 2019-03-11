@@ -79,4 +79,6 @@ manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
 x=DerivePrimnaryMass(interpolator,-0.0329537979168565, 12.918385368071597 ,  5643.472584167178)
-print(x())
+
+print(interpolator('radius', 1.0, -0.1))
+#print(x())

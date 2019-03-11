@@ -179,7 +179,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     tdisk = 5e-3
     age =4.60
     primary_mass =0.9933137087491567
-    secondary_mass = 0.7772014414635009
+    secondary_mass = 0.02772014414635009
     initial_disk_period =  1.4064967495370835
     initial_orbital_period =5.2663825# 5.2663825
 

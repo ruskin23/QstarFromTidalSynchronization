@@ -42,7 +42,7 @@ class QuantityEvaluator :
 
         if mass < self.min_mass or mass > self.max_mass : return scipy.nan
         return self._evaluate(
-            TeffK(self.interp('radius', mass, self.feh), 
+            TeffK(self.interp('radius', mass, self.feh),
                   self.interp('lum', mass, self.feh)),
             age
         ) - self.reference_values['teff']
@@ -52,7 +52,7 @@ class QuantityEvaluator :
 
         if mass < self.min_mass or mass > self.max_mass : return scipy.nan
         return self._evaluate(
-            RhoCGS(mass, self.interp('radius', mass, self.feh)), 
+            RhoCGS(mass, self.interp('radius', mass, self.feh)),
             age
         ) - self.reference_values['rho']
 
@@ -61,7 +61,7 @@ class QuantityEvaluator :
 
         if mass < self.min_mass or mass > self.max_mass : return scipy.nan
         return self._evaluate(
-            LogGCGS(mass, self.interp('radius', mass, self.feh)), 
+            LogGCGS(mass, self.interp('radius', mass, self.feh)),
             age
         ) - self.reference_values['logg']
 
@@ -70,7 +70,7 @@ class QuantityEvaluator :
 
         if mass < self.min_mass or mass > self.max_mass : return scipy.nan
         return self._evaluate(
-            self.interp('lum', mass, self.feh), 
+            self.interp('lum', mass, self.feh),
             age
         ) - self.reference_values['lum']
 
@@ -80,7 +80,7 @@ class VarChangingInterpolator(MESAInterpolator) :
 
     Instances have the following attributes:
         - grid:
-            A structure with attributes: 
+            A structure with attributes:
                 - masses:
                     Stellar masses of the grid nodes at which the dependent
                     variables are known.
@@ -225,7 +225,7 @@ class VarChangingInterpolator(MESAInterpolator) :
                     self.grid.weights[mass_index,
                                       :,
                                       feh_index] = age_in_range
-                else : 
+                else :
                     assert(
                         (self.grid.weights[mass_index, :, feh_index]
                          ==
@@ -244,7 +244,7 @@ class VarChangingInterpolator(MESAInterpolator) :
                 The [Fe/H] value to inteprolate to.
 
         Returns: A 2-D scipy array contaning the interepolated variable at
-        the grid masses and ages. 
+        the grid masses and ages.
         """
 
         result = scipy.empty((self.grid.masses.size, self.grid.ages.size))
@@ -254,7 +254,7 @@ class VarChangingInterpolator(MESAInterpolator) :
                                                         age_index,
                                                         :]
                 weights = self.grid.weights[mass_index, age_index, :]
-                if weights.sum() < 2 : 
+                if weights.sum() < 2 :
                     result[mass_index, age_index] = scipy.nan
                 else :
                     result[
@@ -283,7 +283,7 @@ class VarChangingInterpolator(MESAInterpolator) :
             - ages:
                 The ages (in Gyrs) at which to tabulate the dependent
                 variables.
- 
+
         Returns:
             None, but creates self.grid with all arguments as same-name
             members and an additional weight member containing an empty array
@@ -300,8 +300,8 @@ class VarChangingInterpolator(MESAInterpolator) :
                                          self.grid.feh.size),
                                         dtype = bool)
         self._defined_weights = False
-                             
-    def __init__(self, 
+
+    def __init__(self,
                  grid_feh,
                  grid_masses,
                  grid_ages,
@@ -340,7 +340,7 @@ class VarChangingInterpolator(MESAInterpolator) :
             - rho:
                 The density to match.
 
-        Returns: 
+        Returns:
             The mass and age at which the keyword arguments are matched
             as list of tuplse of (mass, age).
         """
@@ -436,12 +436,12 @@ class VarChangingInterpolator(MESAInterpolator) :
             Return the simultaneous roots of two bilinear functions.
 
             Args:
-                - coef: 
+                - coef:
                     The coefficients of the two bilinear functions. Should be
                     a 2-D scipy array with the outer index iterating over the
                     function and the inner indices iterating over the
                     coefficients of the corresponding bilinear function.
-            
+
             Returns: A list of 2-tuples contaning the simultaneous zeros
             of the two functions.
             """
@@ -449,7 +449,7 @@ class VarChangingInterpolator(MESAInterpolator) :
             a = scipy.linalg.det(coef[:,2:])
             b = (scipy.linalg.det(coef[:,::3])
                  -
-                 scipy.linalg.det(coef[:,1:3])) 
+                 scipy.linalg.det(coef[:,1:3]))
             c = scipy.linalg.det(coef[:,:2])
             det = b * b - 4.0 * a * c
             if det < 0 : return []
@@ -478,8 +478,8 @@ class VarChangingInterpolator(MESAInterpolator) :
                                 (ref_solution - target_solution)
                                 /
                                 (ref_solution + target_solution)
-                            ) 
-                            < 
+                            )
+                            <
                             tolerance
                     ) :
                         del solutions[target_ind]
@@ -501,7 +501,7 @@ class VarChangingInterpolator(MESAInterpolator) :
             coef = scipy.empty((2, 4))
             for var_index in range(2) :
                 coef[var_index] = scipy.linalg.solve(
-                    coef_equations, 
+                    coef_equations,
                     var_diff[var_index,
                              mass_index : mass_index + 2,
                              age_index : age_index + 2].flatten()
@@ -509,7 +509,7 @@ class VarChangingInterpolator(MESAInterpolator) :
             candidate_solutions = find_roots(coef)
             for mass, age in candidate_solutions :
                 if (
-                        mass >= m0 and mass <= m1 
+                        mass >= m0 and mass <= m1
                         and
                         age >= t0 and age <= t1
                 ) :
@@ -517,6 +517,6 @@ class VarChangingInterpolator(MESAInterpolator) :
                                                 age = age,
                                                 feh = feh,
                                                 **kwargs)
-                    if solution is not None : 
+                    if solution is not None :
                         result.append(solution)
         return result

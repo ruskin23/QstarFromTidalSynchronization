@@ -89,7 +89,7 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    teff_value = [5722, 5822, 5922, 6022, 6122]
+    teff_value = [4722, 4822, 4922, 5022, 5122]
     feh = -0.06
     age = 4.6
     T_ratio =  0.83740
