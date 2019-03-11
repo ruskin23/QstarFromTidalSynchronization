@@ -66,11 +66,11 @@ class DeriveSecondaryMass:
 
 if __name__ == '__main__':
 
-    porb = 10.28
-    vkr = 31.299813904899526
+    porb = 10.33
+    vkr = 40.576729695185165
     i = scipy.pi/2
 
-    mass_primary = 0.9
+    mass_primary = 1.1
 
     a = porb*vkr*vkr*vkr
     b = 2*scipy.pi*G

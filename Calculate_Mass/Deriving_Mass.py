@@ -1,8 +1,9 @@
 """Allows finding mass and age given other properties at fixed [Fe/H]."""
 import sys
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
+#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
+sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
@@ -536,7 +537,7 @@ class VarChangingInterpolator(MESAInterpolator):
 
 if __name__ == '__main__':
 
-    serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
+    serialized_dir ="/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 

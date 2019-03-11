@@ -149,13 +149,17 @@ if __name__ == '__main__':
     print('arg of pericenter: ' + repr(fit_results[2]))
     print('gamma: ' + repr(fit_results[3]))
 
+
+    print(fit_results)
     pyplot.plot(measured_rvs[:, 0], measured_rvs[:, 1], 'ok')
     plot_x = scipy.linspace(0.0, 1.0, 100.0)
     best_fit_orbit = EccentricOrbit(rv_semi_amplitude=fit_results[0],
                                     eccentricity=fit_results[1],
                                     argument_of_pericenter=fit_results[2],
                                     systemic_rv=fit_results[3])
+
     calc_rv = scipy.vectorize(best_fit_orbit.calc_radial_velocity)
+
 
     pyplot.plot(plot_x, calc_rv(2.0 * scipy.pi * plot_x), '-', linewidth=3)
     pyplot.show()
