@@ -3,7 +3,7 @@ import numpy as np
 import scipy
 from scipy.stats import norm
 import argparse
-
+import sys
 import matplotlib.pyplot as plt
 
 
@@ -11,6 +11,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('fname',help='enter name of the file')
 parser.add_argument('pname',help='enter the name of parameter')
 args = parser.parse_args()
+
+
 
 parameter = ['age', 'teff', 'feh', 'wdisk', 'logQ', 'pspin']
 try: p = parameter.index(args.pname)
@@ -29,8 +31,7 @@ fig, ax = plt.subplots(figsize=(8, 4))
 
 #histogram of data
 n_bins = 100
-n, bins, patches = ax.hist(value, bins=n_bins, density=True, cumulative=True, histtype='step',
-        label='empirical')
+n, bins, patches = ax.hist(value, bins=n_bins, density=True, cumulative=True, histtype='step')
 
 #cummulative distribution from array
 mu = np.mean(value)
@@ -44,7 +45,7 @@ y = ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu)
 y = y.cumsum()
 y /= y[-1]
 
-ax.plot(bins, y, 'k--', linewidth=1.5, label='Theoretical')
+ax.plot(bins, y, 'k--', linewidth=1.5)
 
 
 
@@ -55,4 +56,7 @@ ax.set_xlabel(args.pname)
 ax.set_ylabel('Likelihood of occurrence')
 
 plt.show()
+
+
+
 
