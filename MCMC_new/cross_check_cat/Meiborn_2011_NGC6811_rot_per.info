@@ -1,0 +1,37 @@
+Title: The Kepler Cluster Study: Stellar Rotation In NGC 6811
+Authors: Meibom S., Barnes S.A., Latham D.W., Batalha N., Borucki W.J.,
+         Koch D.G., Basri G., Walkowicz L.M., Janes K.A., Jenkins J.,
+         Van Cleve J., Haas M.R., Bryson S.T., Dupree A.K., Furesz G.,
+         Szentgyorgyi A.H., Buchhave L.A., Clarke B.D., Twicken J.D.,
+         Quintana E.V.
+Table: Data for the 71 members of NGC 6811 with measured rotation periods
+================================================================================
+Byte-by-byte Description of file: apjl390631t1_mrt.txt
+--------------------------------------------------------------------------------
+   Bytes Format Units    Label   Explanations
+--------------------------------------------------------------------------------
+   1-  7 I7     ---      ID      Kepler identification number (1)
+   9- 10 I2     h        RAh     Hour of Right Ascension (J2000)
+  12- 13 I2     min      RAm     Minute of Right Ascension (J2000)
+  15- 19 F5.2   s        RAs     Second of Right Ascension (J2000)
+  21- 22 I2     deg      DEd     Degree of Declination (J2000)
+  24- 25 I2     arcmin   DEm     Arcminute of Declination (J2000)
+  27- 31 F5.2   arcsec   DEs     Arcsecond of Declination (J2000)
+  33- 37 F5.2   mag      gmag    SDSS g band magnitude
+  39- 43 F5.2   mag      rmag    SDSS r band magnitude
+  45- 49 F5.2   d        Period  Rotation period
+  51- 54 F4.2   d      e_Period  RMS in Period
+      56 I1     ---    o_Period  Number of Period measurements over Q1-Q4
+  58- 60 A3     ---      Class   Radial-velocity membership class (2)
+--------------------------------------------------------------------------------
+Note (1): From the Kepler Input Catalog; http://archive.stsci.edu/kepler
+          (Brown et al. 2011).
+Note (2): Single Member (SM), Candidate Single Member (CSM), or Candidate
+          Member (CM). The distinction between classes is made based on the
+          number of radial-velocity measurements (N_RV_). SM stars have
+          N_RV_ {>=} 4, CSM stars have 2 {<=} N_RV_ < 4, and CM stars have
+          N_RV_ = 1. All SM and CSM stars have radial-velocity standard
+          deviation {<=} 1.5 km/s. All 71 stars have radial-velocity
+          membership probabilities above 50%.
+--------------------------------------------------------------------------------
+
