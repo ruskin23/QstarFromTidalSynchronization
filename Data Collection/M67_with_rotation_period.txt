@@ -1,0 +1,33 @@
+Table 1
+Data Table for M67 Member Stars with Rotation Periods
+
+EPIC	IDW	B - V	V	P	P_err	Groups	Member	Comment	
+			(mag)	(days)	(days)				
+211388204	8056	0.79	15.05	31.8	1.6	2	SM	15."6, +3.01	
+211394185	16032	1.04	15.69	30.4	1.8	2	SM	cdots	
+211395620	27038	1.02	16.35	30.7	3.6	1	SM	16."5, -2.6; Not in K2	
+211397319	18028	0.67	14.57	25.1	1.3	2	SM	13."5, -0.43 = 211397127	
+211397512	26026	1.00	16.18	34.5	2.2	2	SM	11."6, +4.99	
+211398025	13047	0.78	15.25	28.8	1.6	2	SM	11."8, -1.34 = 211398328	
+211398541	19034	0.98	16.20	30.3	6.8	2	SM	08."4, +2.52	
+211399458	25036	1.02	16.21	30.2	1.9	2	SM	cdots	
+211399819	24022	0.79	15.21	28.4	2.0	2	SM	cdots	
+211400500	13021	0.67	14.53	26.9	1.5	cdots	SM	cdots	
+211406596	21035	0.82	15.16	26.9	2.2	2	SM	cdots	
+211410757	8052	0.56	13.67	18.9	0.8	1	SM	cdots	
+211411477	12030	0.70	14.66	31.2	1.9	2	SM	14."8, +0.27 = 211411722	
+211411621	9041	0.82	14.66	30.5	1.0	2	SM	cdots	
+211413212	8031	0.66	14.52	24.4	2.5	1	SM	cdots	
+211413961	17033	0.79	15.04	31.4	1.5	2	SM	16."2, +3.83	
+211414799	4034	0.58	13.71	18.1	0.5	2	BM	SB1	
+211423010	9037	0.77	15.05	24.9	1.9	2	SM	cdots	
+211428580	12031	0.74	14.74	26.9	2.3	1	SM	cdots	
+211430274	28035	0.93	15.74	31.1	2.7	cdots	SM	cdots	
+
+Note. IDW is the identification number from GLM15. The Member column indicates whether the star is a GLM15 single cluster member (SM) or a binary cluster member (BM). The Groups column indicates the number of large spot groups on the stellar surface. Stars with brighter (-) or fainter (+) neighbors within 20" are noted, along with their magnitude difference.
+
+ROTATION PERIODS FOR COOL STARS IN THE 4 Gyr OLD OPEN CLUSTER M67, THE SOLAR–STELLAR CONNECTION, AND THE APPLICABILITY OF GYROCHRONOLOGY TO AT LEAST SOLAR AGE
+Sydney A. Barnes1,3, Joerg Weingrill1, Dario Fritzewski1, Klaus G. Strassmeier1, and Imants Platais2
+
+Published 2016 May 16 • © 2016. The American Astronomical Society. All rights reserved. 
+The Astrophysical Journal, Volume 823, Number 1
