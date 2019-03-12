@@ -3,7 +3,9 @@
 /binary_star_evolution/output_data/*.txt
 /binary_star_evolution/unwanted_data/
 /MCMC/output*
-*.txt
+/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/*.txt
+/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/*.pickle
+
 #vim swap files
 .*.swp
 /home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/output_data/
