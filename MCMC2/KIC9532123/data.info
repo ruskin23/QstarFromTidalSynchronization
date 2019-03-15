@@ -1,0 +1,6 @@
+teff_primary = 5654 +178 -198 #Mathur_2017
+Period = 8.215 +/-0.0001952 #Kepler Input Catalog #Kj_2017
+feh = -.380 +/- 0.3 #Mathur 2017
+logg = 4.590 +0.036 -0.144 #Mathur_2017
+q = 0.6640 #Kj_2017
+
