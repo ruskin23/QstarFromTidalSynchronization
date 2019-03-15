@@ -6,7 +6,6 @@ sys.path.append('/home/kpenev/projects/git/poet/scripts')
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
 
@@ -533,22 +532,40 @@ class VarChangingInterpolator(MESAInterpolator):
 
         return result
 
-if __name__ == '__main__':
 
-    serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
+class Derive_mass:
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
+    def __init__(self,
+                 interp,
+                 teff,
+                 logg,
+                 feh):
 
+        self.interp = interp
+        self.teff = teff
+        self.logg = logg
+        self.feh = feh
+
+    def __call__(self):
+
+        print(self.feh,self.teff,self.logg)
+
+        m = self.interp.change_variables(self.feh,logg=self.logg,teff=self.teff)
+        print(m)
+        return(m[0])
+
+
+#if __name__ == '__main__':
+
+#    serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
+#    manager = StellarEvolutionManager(serialized_dir)
+#    interpolator = manager.get_interpolator_by_name('default')
 
     #TeffK = 5654*0.9300264481948799
-    TeffK = 5654
+#    TeffK = 5654
 
-    feh = -0.38
-    logg = 4.6
+#    feh = -0.38
+#    logg = 4.6
 
-    m = interpolator.change_variables(feh,logg=logg, teff= TeffK)
-    print(m[0][0])
+#    m = Derive_mass(interpolator,TeffK,logg,feh)
+#   print(m())
