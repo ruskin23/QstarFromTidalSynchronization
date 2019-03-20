@@ -49,9 +49,9 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         if hasattr(self, 'binary'): self.binary.delete()
-
-        self.p_initial=initial_condition[0]
-        self.e_initial=initial_condition[1]
+        if initial_condition[1]>0.45:
+            print('Cannot accept eccentricity>0.45')
+            raise AssertionError
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
@@ -130,7 +130,7 @@ class InitialConditionSolver:
         self.delta_p = self.orbital_period-self.target.Porb
         self.detla_e = self.eccentricity-self.target.eccentricity
 
-        print(self.delta_p,self.detla_e)
+        print(self.orbital_period,self.eccentricity)
 
         self.spin =  (
                 2.0 * pi
@@ -140,9 +140,6 @@ class InitialConditionSolver:
                 self.final_state.primary_envelope_angmom
         )
 
-        print(self.spin)
-
-        return self.delta_p,self.detla_e
 
     def __init__(self,
                  planet_formation_age=None,
@@ -179,32 +176,8 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
         self.instance = instance
-        self.synchronization_check=None
 
-
-    def test_synchronoization(self):
-
-        p=self.target.Porb+2.0
-        e=0.42
-
-        initial_condition = [p,e]
-
-        while True:
-            initial_condition = [p,e]
-            try:
-                check_deltas = self._try_initial_conditions(initial_condition)
-                break
-            except AssertionError:
-                e=e+0.0001
-                continue
-        print(self.spin)
-        if abs(self.spin-self.orbital_period)<1e-5:
-            self.synchronization_check=True
-
-        self.e_initial=self.target.eccentricity
-        self.p_initial=self.target.Porb
-
-    def __call__(self, target, primary, secondary):
+    def __call__(self, p, e, target, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -247,42 +220,6 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
-
-        self.test_synchronoization()
-
-        if self.synchronization_check==True:
-            print('system will always synchronize for this logQ, no solution exist')
-            return ([self.target.Porb,self.target.eccentricity],
-                    self.orbital_period,
-                    self.eccentricity,
-                    numpy.nan,
-                    self.delta_p,
-                    self.detla_e)
-        else:
-            e=self.target.eccentricity
-            p=self.target.Porb
-            while True:
-                try:
-                    sol = optimize.root(
-                                self._try_initial_conditions,
-                                [p,e],
-                                method='lm'
-                                )
-                    break
-                except AssertionError:
-                    if self.e_initial:e=self.e_initial+0.001
-                    else:e=e+0.001
-                    if self.p_initial:p=self.p_initial
-                    continue
-
-            print(self.spin)
-            print(sol.x)
-            return (sol.x,
-                    self.orbital_period,
-                    self.eccentricity,
-                    self.spin,
-                    self.delta_p,
-                    self.detla_e)
-
-
-
+        check_initial_condition = [p,e]
+        self._try_initial_conditions(check_initial_condition)
+        print(self.spin)

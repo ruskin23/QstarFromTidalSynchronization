@@ -1,67 +1,19 @@
+import matplotlib.pyplot as plt
 import numpy
-import os
-import re
-import csv
-
-filename = 'test_3.txt'
 
 
-result = 'A'
-x = numpy.linspace(1,100,5)
+values = ['4.6','4.7','4.8','4.9','5.0','5.1','5.2','5.3','5.4','5.5']
 
-os.remove('test_3.txt')
-for i in range(1,2):
-    with open('test_3.txt','a') as file:
-        for n in x:
-            file.write(repr(n*i) + '\t')
-        file.write('\n')
-    file.close()
-
-
-
-with open('test_3.txt', 'r') as f:
-        
-    reader = csv.reader(f, dialect='excel-tab')
-    for row in reader:
-        array = row
-
-f.close()
-
-
-
-#import argparse
-
-#parser = argparse.ArgumentParser()
-
-#parser.add_argument("a", nargs='?', default="check_string_for_empty")
-
-#args = parser.parse_args()
-
-#if args.a == 'check_string_for_empty':
-#    print('default')
-#elif args.a == 'start':
-#    print('begin')
-#else:
-#    print (args.a)
-
-
-
-def check_assert(x):
-    assert (x>5), "Error"
-    return x
-
-
-
-
-def check_try(p):
-
-    try:
-        y  = check_assert(p)
-    except:
-        raise
-
-        return 0
-
-    return y*44
-
-print (check_try(2))
+for v in values:
+    fname = 'spin_'+v+'.txt'
+    e_i=[]
+    e_f=[]
+    with open(fname,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            e_i.append(float(x[0]))
+            e_f.append(float(x[1]))
+    plt.scatter(e_i,e_f,label=fname,marker='x')
+plt.legend(loc='upper left')
+plt.show()

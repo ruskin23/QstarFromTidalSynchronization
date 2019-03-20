@@ -46,12 +46,19 @@ class InitialConditionSolver:
         """
 
         #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
+        print('here -1')
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
-        if hasattr(self, 'binary'): self.binary.delete()
-
-        self.p_initial=initial_condition[0]
-        self.e_initial=initial_condition[1]
+        print('here 0')
+        #if hasattr(self, 'binary'): self.binary.delete()
+        print('here 1')
+        if initial_condition[1]>0.45:
+            print('Cannot accept eccentricity>0.45')
+            print('here 2')
+            raise AssertionError
+        print('here 3')
+        print('am i going over here with: ', initial_condition[1])
+        print('and ', initial_condition[0])
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
@@ -116,6 +123,9 @@ class InitialConditionSolver:
             None
         )
 
+        self.p_initial = initial_condition[0]
+        self.e_inital = initial_condition[1]
+
         print ("BINARY EVOLUTION COMPLETE")
 
         self.final_state = self.binary.final_state()
@@ -139,8 +149,6 @@ class InitialConditionSolver:
                 /
                 self.final_state.primary_envelope_angmom
         )
-
-        print(self.spin)
 
         return self.delta_p,self.detla_e
 
@@ -179,30 +187,6 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
         self.instance = instance
-        self.synchronization_check=None
-
-
-    def test_synchronoization(self):
-
-        p=self.target.Porb+2.0
-        e=0.42
-
-        initial_condition = [p,e]
-
-        while True:
-            initial_condition = [p,e]
-            try:
-                check_deltas = self._try_initial_conditions(initial_condition)
-                break
-            except AssertionError:
-                e=e+0.0001
-                continue
-        print(self.spin)
-        if abs(self.spin-self.orbital_period)<1e-5:
-            self.synchronization_check=True
-
-        self.e_initial=self.target.eccentricity
-        self.p_initial=self.target.Porb
 
     def __call__(self, target, primary, secondary):
         """
@@ -247,42 +231,86 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
-
-        self.test_synchronoization()
-
-        if self.synchronization_check==True:
-            print('system will always synchronize for this logQ, no solution exist')
-            return ([self.target.Porb,self.target.eccentricity],
-                    self.orbital_period,
-                    self.eccentricity,
-                    numpy.nan,
-                    self.delta_p,
-                    self.detla_e)
-        else:
-            e=self.target.eccentricity
-            p=self.target.Porb
+        #Intesive check if the given logQ value is too low to give a solution
+        #for eccentricity
+        final_e=[]
+        ecc = [target.eccentricity,target.eccentricity+0.1]
+        for e in ecc:
             while True:
                 try:
-                    sol = optimize.root(
-                                self._try_initial_conditions,
-                                [p,e],
-                                method='lm'
-                                )
+                    check_initial_condition = [target.Porb,e]
+                    check = self._try_initial_conditions(check_initial_condition)
                     break
-                except AssertionError:
-                    if self.e_initial:e=self.e_initial+0.001
-                    else:e=e+0.001
-                    if self.p_initial:p=self.p_initial
-                    continue
 
-            print(self.spin)
-            print(sol.x)
-            return (sol.x,
+                except AssertionError:
+                    if not final_e:
+                        e=e-0.001
+                        if target.eccentricity-e<0.01:
+                            continue
+                        else:
+                            print('\nCANNOT SOLVE FOR CURRENT VALUES, ASSERTION ERROR AGE')
+                            self.eccentricity=e
+                            return ([target.age,target.eccentricity],
+                                    self.orbital_period,
+                                    self.eccentricity,
+                                    self.spin,
+                                    self.delta_p,
+                                    self.detla_e)
+
+                    else:
+                        e=e-0.001
+                        if e>target.eccentricity:
+                            continue
+                        else:
+                            print('\nNO SOLUTION FOUND FOR e>E, ASSERTION ERROR AGE')
+                            self.eccentricity=e
+                            return ([target.age,target.eccentricity],
+                                    self.orbital_period,
+                                    self.eccentricity,
+                                    self.spin,
+                                    self.delta_p,
+                                    self.detla_e)
+
+            final_e.append(float(self.eccentricity))
+
+        if  final_e[1] - final_e[0]<0:
+            print('\nLOGQ VALUE TOO SMALL TO GET MATCH ECCENTRICITY')
+
+            return ([target.age,target.eccentricity],
                     self.orbital_period,
                     self.eccentricity,
                     self.spin,
                     self.delta_p,
                     self.detla_e)
+
+        #Find solution if logQ value is appropriate
+        e=0.448
+        #e=0.20879476301350924
+        p=10.225
+        while True:
+            try:
+                print('trying next')
+                sol = optimize.root(
+                            self._try_initial_conditions,
+                            [p,e],
+                            method='lm'
+                            )
+                break
+            except:
+                print('incrementing')
+                if self.e_inital:e=self.e_inital+0.0001
+                else:e=e+0.0001
+                p=self.p_initial
+                continue
+
+        print(self.spin)
+        print(sol.x)
+        return (sol.x,
+                self.orbital_period,
+                self.eccentricity,
+                self.spin,
+                self.delta_p,
+                self.detla_e)
 
 
 
