@@ -13,7 +13,7 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from mass_calculation import Derive_mass
-from test_ics import  InitialConditionSolver
+from test_ics3 import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
@@ -207,7 +207,7 @@ class evolution:
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('logQ',help='logQ value')
+    parser.add_argument('logQ',help='enter logQ value')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -218,9 +218,8 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    fname = 'stellar_spin_vs_logQ_5.5_6.5.txt'
-    #fname = 'check_sol_'+args.logQ+'.txt'
-    q=numpy.arange(float(args.logQ),6.5,0.1)
+    #fname = 'stellar_spin_vs_logQ_4.5_5.5.txt'
+    fname = 'check_sol_'+args.logQ+'.txt'
 #    with open(fname,'w') as f:
 
 #        f.write('logQ' + '\t' + 'stellar_spin' + '\t' + 'initial_Porb' + '\t' +
@@ -229,7 +228,7 @@ if __name__ == '__main__':
 
 
     #logQ = numpy.arange(4.88,5.5,0.01)
-    logQ = q
+    logQ = [float(args.logQ)]
     for q in logQ:
         print('For logQ = ', q)
         parameters = dict(age=4.6,

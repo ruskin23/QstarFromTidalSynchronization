@@ -13,13 +13,14 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from mass_calculation import Derive_mass
-from test_ics import  InitialConditionSolver
+from new_ics import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
 from astropy import units, constants
 import pickle
 import argparse
+
 
 
 class evolution:
@@ -146,7 +147,7 @@ class evolution:
         self.instance=instance
 
 
-    def __call__(self,fname):
+    def __call__(self,fname,p,e):
 
         tdisk = self.disk_dissipation_age
 
@@ -189,16 +190,11 @@ class evolution:
                            Wdisk=self.Wdisk,
                            eccentricity=self.eccentricity)
 
-        ic,current_porb,current_e,spin,delta_p,delta_e =  find_ic(target=target,
-                       primary=primary,
-                       secondary=secondary)
+        find_ic(p,e,
+                target=target,
+                primary=primary,
+                secondary=secondary)
 
-
-        with open(fname,'a') as f:
-            f.write(repr(self.logQ) + '\t' + repr(spin) + '\t' + repr(ic[0]) + '\t'
-                    + repr(ic[1]) + '\t' + repr(current_porb) + '\t' +
-                    repr(current_e) + '\t' + repr(self.convective_phase_lag) +
-                    '\t' + repr(delta_p) + '\t' + repr(delta_e) + '\n')
 
         primary.delete()
         secondary.delete()
@@ -206,9 +202,14 @@ class evolution:
 
 if __name__ == '__main__':
 
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('logQ',help='logQ value')
+    parser.add_argument('q',help='logQ value')
+    parser.add_argument('p',help='porb initial')
+    parser.add_argument('e',help = 'e inital')
     args = parser.parse_args()
+
+
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -218,25 +219,15 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    fname = 'stellar_spin_vs_logQ_5.5_6.5.txt'
-    #fname = 'check_sol_'+args.logQ+'.txt'
-    q=numpy.arange(float(args.logQ),6.5,0.1)
-#    with open(fname,'w') as f:
-
-#        f.write('logQ' + '\t' + 'stellar_spin' + '\t' + 'initial_Porb' + '\t' +
-#                'initial_eccentricity' + '\t' + 'current_Porb' + '\t' +
-#                'current_e' + '\t' + 'delta_p' + '\t' + 'delta_e' + '\n' )
+    fname = 'new_sol_5.1.txt'
 
 
-    #logQ = numpy.arange(4.88,5.5,0.01)
-    logQ = q
-    for q in logQ:
-        print('For logQ = ', q)
-        parameters = dict(age=4.6,
+    print('For logQ = ', args.q)
+    parameters = dict(age=4.6,
                       teff_primary=5654,
                       feh=-0.38,
                       logg=4.6,
-                      logQ=q,
+                      logQ=float(args.q),
                       Wdisk=2*scipy.pi/1.4,
                       Porb=8.215,
                       incination=0.0,
@@ -249,8 +240,8 @@ if __name__ == '__main__':
                       eccentricity=0.207)
 
 
-        evolve = evolution(interpolator,parameters,1)
-        evolve(fname)
+    evolve = evolution(interpolator,parameters,1)
+    evolve(fname,float(args.p),float(args.e))
 
 
 

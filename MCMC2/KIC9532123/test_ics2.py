@@ -22,11 +22,12 @@ from math import pi
 from scipy import optimize
 from scipy.optimize import brentq
 import numpy
+import matplotlib.pyplot as plt
 
 class InitialConditionSolver:
     """Find initial conditions which reproduce a given system now."""
 
-    def _try_initial_conditions(self, initial_condition):
+    def try_initial_conditions(self, initial_condition):
         """
         Get present orbital and stellar spin periods for initial conditions.
 
@@ -49,9 +50,6 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         if hasattr(self, 'binary'): self.binary.delete()
-
-        self.p_initial=initial_condition[0]
-        self.e_initial=initial_condition[1]
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
@@ -124,7 +122,6 @@ class InitialConditionSolver:
         self.orbital_period = self.binary.orbital_period(self.final_state.semimajor)
         self.eccentricity = self.final_state.eccentricity
 
-
         if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
 
         self.delta_p = self.orbital_period-self.target.Porb
@@ -139,8 +136,6 @@ class InitialConditionSolver:
                 /
                 self.final_state.primary_envelope_angmom
         )
-
-        print(self.spin)
 
         return self.delta_p,self.detla_e
 
@@ -179,32 +174,8 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
         self.instance = instance
-        self.synchronization_check=None
 
-
-    def test_synchronoization(self):
-
-        p=self.target.Porb+2.0
-        e=0.42
-
-        initial_condition = [p,e]
-
-        while True:
-            initial_condition = [p,e]
-            try:
-                check_deltas = self._try_initial_conditions(initial_condition)
-                break
-            except AssertionError:
-                e=e+0.0001
-                continue
-        print(self.spin)
-        if abs(self.spin-self.orbital_period)<1e-5:
-            self.synchronization_check=True
-
-        self.e_initial=self.target.eccentricity
-        self.p_initial=self.target.Porb
-
-    def __call__(self, target, primary, secondary):
+    def __call__(self, f, target, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -238,7 +209,6 @@ class InitialConditionSolver:
             specified target configuration.
         """
 
-
         self.target = target
         self.primary = primary
         self.secondary = secondary
@@ -246,43 +216,32 @@ class InitialConditionSolver:
         self.disk_lock_frequency = (target.Wdisk if hasattr(target, 'Wdisk')
                                     else 2*pi/target.Pdisk)
 
+        ecc = numpy.arange(0.207,0.4,0.01)
+        final_e=[]
 
+#        porb = numpy.arange(7.2,10.2,0.05)
 
-        self.test_synchronoization()
+        #f =open('check.txt','a')
+        final_spin=[]
+        for e in ecc:
+        #for p in porb:
+            try:
+                check_intial_conditions = [target.Porb,e]
+                check = self.try_initial_conditions(check_intial_conditions)
+                print(self.eccentricity)
+                final_e.append(float(self.eccentricity))
+                final_spin.append(float(self.spin))
+                f.write(repr(e) + '\t' + repr(self.eccentricity) + '\t'  + repr(self.spin) + '\n')
+            except AssertionError:
+                final_e.append(numpy.nan)
+                final_spin.append(numpy.nan)
+                f.write(repr(e) + '\t' + repr(numpy.nan)  + '\t' + repr(numpy.nan) + '\n')
+                continue
+            except :
+                final_e.append(numpy.nan)
+                final_spin.append(numpy.nan)
+                f.write(repr(e) + '\t' + repr(numpy.nan)  + '\t' + repr(numpy.nan) + '\n')
+                continue
 
-        if self.synchronization_check==True:
-            print('system will always synchronize for this logQ, no solution exist')
-            return ([self.target.Porb,self.target.eccentricity],
-                    self.orbital_period,
-                    self.eccentricity,
-                    numpy.nan,
-                    self.delta_p,
-                    self.detla_e)
-        else:
-            e=self.target.eccentricity
-            p=self.target.Porb
-            while True:
-                try:
-                    sol = optimize.root(
-                                self._try_initial_conditions,
-                                [p,e],
-                                method='lm'
-                                )
-                    break
-                except AssertionError:
-                    if self.e_initial:e=self.e_initial+0.001
-                    else:e=e+0.001
-                    if self.p_initial:p=self.p_initial
-                    continue
-
-            print(self.spin)
-            print(sol.x)
-            return (sol.x,
-                    self.orbital_period,
-                    self.eccentricity,
-                    self.spin,
-                    self.delta_p,
-                    self.detla_e)
-
-
-
+        f.close()
+        return ecc,final_e,final_spin
