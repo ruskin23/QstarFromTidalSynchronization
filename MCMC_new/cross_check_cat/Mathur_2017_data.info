@@ -1,0 +1,46 @@
+Title: Revised Stellar Properties of Kepler Targets for 
+       the Q1-17 (DR25) Transit Detection Run 
+Authors: Mathur S., Huber D., Batalha N.M., Ciardi D.R., Bastien F.A., 
+         Bieryla A., Buchhave L.A., Cochran W.D., Endl M., Esquerdo G.A., 
+         Furlan E., Howard A., Howell S.B., Isaacson H., Latham D.W., 
+         MacQueen P.J., Silva D.R. 
+Table: Output values of the DR25 stellar properties catalog with the updated 
+       distances and extinctions
+================================================================================
+Byte-by-byte Description of file: apjsaa567bt4_mrt.txt
+--------------------------------------------------------------------------------
+   Bytes Format Units     Label   Explanations
+--------------------------------------------------------------------------------
+   1-  8 I8     ---       KIC     Kepler Input Catalog identifier
+  10- 14 I5     K         Teff    Effective temperature
+  16- 19 I4     K       E_Teff    Upper 1{sigma} confidence interval in Teff
+  21- 24 I4     K       e_Teff    Lower 1{sigma} confidence interval in Teff
+  26- 31 F6.3   [cm/s2]   log(g)  Log surface gravity
+  33- 37 F5.3   [cm/s2] E_log(g)  Upper 1{sigma} confidence interval in log(g)
+  39- 43 F5.3   [cm/s2] e_log(g)  Lower 1{sigma} confidence interval in log(g)
+  45- 50 F6.3   [Sun]     [Fe/H]  Metallicity
+  52- 56 F5.3   [Sun]   E_[Fe/H]  Upper 1{sigma} confidence interval in [Fe/H]
+  58- 62 F5.3   [Sun]   e_[Fe/H]  Lower 1{sigma} confidence interval in [Fe/H]
+  64- 70 F7.3   solRad    R       Radius  
+  72- 77 F6.3   solRad  E_R       Upper 1{sigma} confidence interval in R
+  79- 85 F7.3   solRad  e_R       Lower 1{sigma} confidence interval in R
+  87- 91 F5.3   solMass   M       Mass    
+  93- 97 F5.3   solMass E_M       Upper 1{sigma} confidence interval in M
+  99-103 F5.3   solMass e_M       Lower 1{sigma} confidence interval in M
+ 105-113 E9.3   ---       rho     Density  
+ 115-123 E9.3   ---     E_rho     Upper 1{sigma} confidence interval in rho
+ 125-133 E9.3   ---     e_rho     Lower 1{sigma} confidence interval in rho
+ 135-144 F10.3  kpc       D       Distance   
+ 146-154 F9.3   kpc     E_D       Upper 1{sigma} confidence interval in D
+ 156-164 F9.3   kpc     e_D       Lower 1{sigma} confidence interval in D
+ 166-170 F5.3   mag       AV      V band extinction
+ 172-176 F5.3   mag     E_AV      Upper 1{sigma} confidence interval in AV
+ 178-182 F5.3   mag     e_AV      Lower 1{sigma} confidence interval in AV
+ 184-189 A6     ---       Ref     Provenance of output values (1)
+--------------------------------------------------------------------------------
+Note (1): The provenance of the output parameters is comprised of the following
+          keywords: DSEP for results from the Dartmouth models, BTSL for 
+          results from the BT-Settl models, and MULT followed by the reference 
+          key of Table 5 for other published results.
+--------------------------------------------------------------------------------
+
