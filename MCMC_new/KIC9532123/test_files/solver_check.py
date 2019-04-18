@@ -22,11 +22,14 @@ from math import pi
 from scipy import optimize
 from scipy.optimize import brentq
 import numpy
+import matplotlib.pyplot as plt
+
+wsun = 0.24795522138
 
 class InitialConditionSolver:
     """Find initial conditions which reproduce a given system now."""
 
-    def _try_initial_conditions(self, initial_condition):
+    def try_initial_conditions(self, initial_condition):
         """
         Get present orbital and stellar spin periods for initial conditions.
 
@@ -49,9 +52,6 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         if hasattr(self, 'binary'): self.binary.delete()
-        if initial_condition[1]>0.45:
-            print('Cannot accept eccentricity>0.45')
-            raise AssertionError
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
@@ -78,6 +78,7 @@ class InitialConditionSolver:
             disk_dissipation_age=self.disk_dissipation_age,
             secondary_formation_age=secondary_formation_age
         )
+
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
         if self.is_secondary_star is True: self.binary.secondary.detect_stellar_wind_saturation()
@@ -107,6 +108,7 @@ class InitialConditionSolver:
             zero_outer_periapsis=True
         )
 
+
         print ("BINARY CONFIGURATION COMPLETE")
 
         self.binary.evolve(
@@ -121,16 +123,27 @@ class InitialConditionSolver:
         self.final_state = self.binary.final_state()
         assert (self.final_state.age == self.target.age)
 
+        self.evolution=self.binary.get_evolution()
+        self.evolution_age=self.evolution.age
+        self.wenv_primary=(self.evolution.primary_envelope_angmom / self.binary.primary.envelope_inertia(self.evolution.age)) / wsun
+
+        print('final semimajor = ', self.final_state.semimajor)
+        print('final age = ', self.final_state.age)
+        print('final primary envelope angular momentum = ', self.final_state.primary_envelope_angmom)
+        print('final primary core angular momentum', self.final_state.primary_core_angmom)
+        print('final secondary envelope angular momentum = ', self.final_state.secondary_envelope_angmom)
+        print('final secondary core angular momentum', self.final_state.secondary_core_angmom)
+
+
         self.orbital_period = self.binary.orbital_period(self.final_state.semimajor)
         self.eccentricity = self.final_state.eccentricity
-
 
         if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
 
         self.delta_p = self.orbital_period-self.target.Porb
         self.detla_e = self.eccentricity-self.target.eccentricity
 
-        print(self.orbital_period,self.eccentricity)
+        print(self.delta_p,self.detla_e)
 
         self.spin =  (
                 2.0 * pi
@@ -140,6 +153,7 @@ class InitialConditionSolver:
                 self.final_state.primary_envelope_angmom
         )
 
+        return self.delta_p,self.detla_e
 
     def __init__(self,
                  planet_formation_age=None,
@@ -147,37 +161,20 @@ class InitialConditionSolver:
                  evolution_max_time_step=None,
                  evolution_precision=1e-6,
                  secondary_angmom=None,
-                 is_secondary_star=None,
-                 instance=None):
-        """
-        Initialize the object.
+                 is_secondary_star=None):
 
-        Args:
-            - planet_formation_age:
-                If not None, the planet is assumed to form at the given age
-                (in Gyr). Otherwise, the starting age must be specified each
-                time this object is called.
-
-            - disk_dissipation_age:
-                The age at which the disk dissipates in Gyrs.
-
-            - evolution_max_time_step:
-                The maximum timestep the evolution is allowed to make.
-
-            - evolution_precision:
-                The precision to require of the evolution.
-
-        Returns: None.
-        """
-
+        self.final_state=None
         self.disk_dissipation_age = disk_dissipation_age
         self.evolution_max_time_step = evolution_max_time_step
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
-        self.instance = instance
 
-    def __call__(self, p, e, target, primary, secondary):
+        self.evolution = None
+        self.wenv_primary = None
+        self.evolution_age = None
+
+    def __call__(self, target, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -211,7 +208,6 @@ class InitialConditionSolver:
             specified target configuration.
         """
 
-
         self.target = target
         self.primary = primary
         self.secondary = secondary
@@ -220,6 +216,39 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
-        check_initial_condition = [p,e]
-        self._try_initial_conditions(check_initial_condition)
-        print(self.spin)
+        check_intial_condition=[target.Porb,target.eccentricity]
+
+        self.try_initial_conditions(check_intial_condition)
+        #plt.semilogx(self.evolution_age,self.wenv_primary,'-r')
+        age_1 = self.evolution_age
+        primary_envelope_angmom_1 = numpy.array(self.wenv_primary)
+
+        self.try_initial_conditions(check_intial_condition)
+        #plt.semilogx(self.evolution_age,self.wenv_primary,'-g')
+        age_2 = self.evolution_age
+        primary_envelope_angmom_2 = numpy.array(self.wenv_primary)
+
+        print(len(primary_envelope_angmom_1))
+        print(len(primary_envelope_angmom_2))
+
+        print(len(age_1))
+        print(len(age_2))
+
+        with open('evolve_1.txt','w') as f:
+            i=1
+            for age,env in zip(age_1,primary_envelope_angmom_1):
+                f.write(repr(i) + '\t' + repr(age) + '\t' + repr(env) + '\n')
+                i=i+1
+
+        with open('evolve_2.txt','w') as f:
+            i=1
+            for age,env in zip(age_2,primary_envelope_angmom_2):
+                f.write(repr(i) + '\t' + repr(age) + '\t' + repr(env) + '\n')
+                i=i+1
+
+        #difference_array = primary_envelope_angmom_1-primary_envelope_angmom_2
+
+
+        #plt.plot(self.evolution_age,difference_array)
+        #plt.show()
+

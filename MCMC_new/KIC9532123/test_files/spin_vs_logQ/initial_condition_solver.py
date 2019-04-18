@@ -229,63 +229,7 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
-        """
-        #Intesive check if the given logQ value is too low to give a solution
-        #for eccentricity
-        final_e=[]
-        ecc = [target.eccentricity,target.eccentricity+0.1]
-        for e in ecc:
-            while True:
-                try:
-                    check_initial_condition = [target.Porb,e]
-                    check = self._try_initial_conditions(check_initial_condition)
-                    break
-
-                except AssertionError:
-                    if not final_e:
-                        e=e-0.001
-                        if target.eccentricity-e<0.01:
-                            continue
-                        else:
-                            print('\nCANNOT SOLVE FOR CURRENT VALUES, ASSERTION ERROR AGE')
-                            self.eccentricity=e
-                            return ([target.age,target.eccentricity],
-                                    self.orbital_period,
-                                    self.eccentricity,
-                                    self.spin,
-                                    self.delta_p,
-                                    self.detla_e)
-
-                    else:
-                        e=e-0.001
-                        if e>target.eccentricity:
-                            continue
-                        else:
-                            print('\nNO SOLUTION FOUND FOR e>E, ASSERTION ERROR AGE')
-                            self.eccentricity=e
-                            return ([target.age,target.eccentricity],
-                                    self.orbital_period,
-                                    self.eccentricity,
-                                    self.spin,
-                                    self.delta_p,
-                                    self.detla_e)
-
-            final_e.append(float(self.eccentricity))
-
-        if  final_e[1] - final_e[0]<0:
-            print('\nLOGQ VALUE TOO SMALL TO GET MATCH ECCENTRICITY')
-
-            return ([target.age,target.eccentricity],
-                    self.orbital_period,
-                    self.eccentricity,
-                    self.spin,
-                    self.delta_p,
-                    self.detla_e)
-        """
-
-        #Find solution if logQ value is appropriate
         e=target.eccentricity
-        #e=0.20879476301350924
         p=target.Porb
 
         while True:

@@ -13,7 +13,7 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from mass_calculation import Derive_mass
-from new_ics import  InitialConditionSolver
+from evolution import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
@@ -147,7 +147,7 @@ class evolution:
         self.instance=instance
 
 
-    def __call__(self,fname,p,e):
+    def __call__(self,f):
 
         tdisk = self.disk_dissipation_age
 
@@ -188,13 +188,30 @@ class evolution:
         target = Structure(age=self.age,
                            Porb=self.Porb,  # current Porb to match
                            Wdisk=self.Wdisk,
-                           eccentricity=self.eccentricity)
+                           eccentricity=self.eccentricity,
+                           logQ=self.logQ)
 
-        find_ic(p,e,
+        e_i, e_f, s_f = find_ic(f,
                 target=target,
                 primary=primary,
-                secondary=secondary)
+                secondary=secondary
+                )
+#        for x,y,z in zip(e_i,e_f,s_f):
+#            f.write(repr(x) + '\t' + repr(y) + '\t' + repr(z) + '\n')
 
+
+        #ic,current_porb,current_e,spin,delta_p,delta_e =  find_ic(fname,
+        #                                                          target=target,
+        #                                                          primary=primary,
+        #                                                          secondary=secondary
+        #                                                          )
+
+
+        #with open(fname,'a') as f:
+        #    f.write(repr(self.logQ) + '\t' + repr(spin) + '\t' + repr(ic[0]) + '\t'
+        #            + repr(ic[1]) + '\t' + repr(current_porb) + '\t' +
+        #            repr(current_e) + '\t' + repr(self.convective_phase_lag) +
+        #            '\t' + repr(delta_p) + '\t' + repr(delta_e) + '\n')
 
         primary.delete()
         secondary.delete()
@@ -202,14 +219,9 @@ class evolution:
 
 if __name__ == '__main__':
 
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('q',help='logQ value')
-    parser.add_argument('p',help='porb initial')
-    parser.add_argument('e',help = 'e inital')
+    parser.add_argument('logQ',help='enter logQ value')
     args = parser.parse_args()
-
-
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -219,15 +231,18 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    fname = 'new_sol_5.1.txt'
-
-
-    print('For logQ = ', args.q)
-    parameters = dict(age=4.6,
+    fname = 'spin_'+args.logQ+'.txt'
+    with open(fname,'w',1) as f:
+        f.write('initial_eccentricity'
+                + '\t'
+                + 'final_eccentricity'
+                + '\t'
+                + 'final_spin' + '\n')
+        parameters = dict(age=4.6,
                       teff_primary=5654,
                       feh=-0.38,
                       logg=4.6,
-                      logQ=float(args.q),
+                      logQ=float(args.logQ),
                       Wdisk=2*scipy.pi/1.4,
                       Porb=8.215,
                       incination=0.0,
@@ -240,9 +255,8 @@ if __name__ == '__main__':
                       eccentricity=0.207)
 
 
-    evolve = evolution(interpolator,parameters,1)
-    evolve(fname,float(args.p),float(args.e))
-
+        evolve = evolution(interpolator,parameters,1)
+        evolve(f)
 
 
 
