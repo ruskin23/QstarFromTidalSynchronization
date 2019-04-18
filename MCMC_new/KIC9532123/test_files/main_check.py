@@ -13,7 +13,7 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from mass_calculation import Derive_mass
-from test_ics2 import  InitialConditionSolver
+from solver_check import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
@@ -132,7 +132,7 @@ class evolution:
         print(self.age)
 
 
-    def __init__(self,interpolator,observational_parameters,instance):
+    def __init__(self,interpolator,observational_parameters):
 
         self.interpolator=interpolator
 
@@ -144,10 +144,9 @@ class evolution:
         self.primary_mass=0.0
         self.secondary_mass=0.0
 
-        self.instance=instance
 
 
-    def __call__(self,f):
+    def __call__(self):
 
         tdisk = self.disk_dissipation_age
 
@@ -182,8 +181,7 @@ class evolution:
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True,
-                                         instance = self.instance)
+                                         is_secondary_star=True)
 
         target = Structure(age=self.age,
                            Porb=self.Porb,  # current Porb to match
@@ -191,27 +189,11 @@ class evolution:
                            eccentricity=self.eccentricity,
                            logQ=self.logQ)
 
-        e_i, e_f, s_f = find_ic(f,
+        find_ic(
                 target=target,
                 primary=primary,
                 secondary=secondary
                 )
-#        for x,y,z in zip(e_i,e_f,s_f):
-#            f.write(repr(x) + '\t' + repr(y) + '\t' + repr(z) + '\n')
-
-
-        #ic,current_porb,current_e,spin,delta_p,delta_e =  find_ic(fname,
-        #                                                          target=target,
-        #                                                          primary=primary,
-        #                                                          secondary=secondary
-        #                                                          )
-
-
-        #with open(fname,'a') as f:
-        #    f.write(repr(self.logQ) + '\t' + repr(spin) + '\t' + repr(ic[0]) + '\t'
-        #            + repr(ic[1]) + '\t' + repr(current_porb) + '\t' +
-        #            repr(current_e) + '\t' + repr(self.convective_phase_lag) +
-        #            '\t' + repr(delta_p) + '\t' + repr(delta_e) + '\n')
 
         primary.delete()
         secondary.delete()
@@ -219,32 +201,23 @@ class evolution:
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('logQ',help='enter logQ value')
-    args = parser.parse_args()
 
-    serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
+    for i in range(1):
+        serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
+        manager = StellarEvolutionManager(serialized_dir)
+        interpolator = manager.get_interpolator_by_name('default')
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
+        orbital_evolution_library.read_eccentricity_expansion_coefficients(
+            b"eccentricity_expansion_coef.txt"
+        )
 
-    fname = 'spin_'+args.logQ+'.txt'
-    with open(fname,'w',1) as f:
-        f.write('initial_eccentricity'
-                + '\t'
-                + 'final_eccentricity'
-                + '\t'
-                + 'final_spin' + '\n')
-        parameters = dict(age=4.6,
-                      teff_primary=5654,
-                      feh=-0.38,
-                      logg=4.6,
-                      logQ=float(args.logQ),
-                      Wdisk=2*scipy.pi/1.4,
-                      Porb=8.215,
+        parameters = dict(
+                      teff_primary=6143.418404381242,
+                      feh=-0.06343468212582376,
+                      logg=4.457665799499136,
+                      logQ=5.108511709508514,
+                      Wdisk=4.648707984307468,
+                      Porb=8.213895933139078,
                       incination=0.0,
                       disk_dissipation_age=5e-3,
                       wind=True,
@@ -252,11 +225,12 @@ if __name__ == '__main__':
                       wind_saturation_frequency=2.54,
                       diff_rot_coupling_timescale=5e-3,
                       wind_strength=0.17,
-                      eccentricity=0.207)
+                      eccentricity=0.2071468686756509)
 
 
-        evolve = evolution(interpolator,parameters,1)
-        evolve(f)
+        evolve_check = evolution(interpolator,parameters)
+        evolve_check()
+
 
 
 
