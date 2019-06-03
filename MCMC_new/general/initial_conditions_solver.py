@@ -50,7 +50,7 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
 
-        if initial_condition[1]>0.45 or initial_condition[1]<0 or initial_condition[0]<0 or abs(initial_condition[0]-self.target.Porb)>3.0:
+        if initial_condition[1]>0.45 or initial_condition[1]<0 or initial_condition[0]<0:
             print('Cannot accept eccentricity > 0.45')
             return scipy.nan, scipy.nan
 
@@ -242,10 +242,11 @@ class InitialConditionSolver:
                                 )
                 break
             except AssertionError:
-                if self.e_initial!=0:e=self.e_initial+0.001
-                else:e=e+0.001
+                if self.e_initial!=0:e=self.e_initial+0.0005
+                else:e=e+0.0005
                 if self.p_initial!=0:p=self.p_initial
                 continue
+
 
         print(self.spin)
         print(sol.x)
