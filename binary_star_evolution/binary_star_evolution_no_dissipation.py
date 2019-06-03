@@ -36,7 +36,7 @@ def create_planet(mass = (constants.M_jup / constants.M_sun).to('')) :
     return planet
 
 def create_star(mass, dissipation, interpolator, convective_phase_lag,wind=True) :
-    
+
     star = EvolvingStar(mass=mass,
                         metallicity=0.0,
                         wind_strength=0.17 if wind else 0.0,
@@ -45,7 +45,7 @@ def create_star(mass, dissipation, interpolator, convective_phase_lag,wind=True)
                         interpolator = interpolator)
 
     if dissipation == 1:
-        
+
      star.set_dissipation(zone_index = 0,
                          tidal_frequency_breaks = None,
                          spin_frequency_breaks = None,
@@ -83,7 +83,7 @@ def create_binary_system(primary,
                                 periapsis = numpy.array([0.0]))
 
 
-                        
+
     if isinstance(secondary, EvolvingStar) :
         secondary.detect_stellar_wind_saturation()
 
@@ -121,13 +121,13 @@ def create_binary_system(primary,
     return binary
 
 def plot_evolution(binary, wsat,style = dict(pcore = '-b', penv = '-g', score = 'm', senv = 'y')) :
-    
+
     """Calculate and plot the evolution of a properly constructed binary."""
-    
+
     wsun = 0.24795522138          #2*pi/25.34
-    
+
     binary.evolve(3.892258846087225, 1e-3, 1e-6, None)
-    
+
     evolution = binary.get_evolution()
 
     #print("wsun = ", wsun)
@@ -148,21 +148,21 @@ def plot_evolution(binary, wsat,style = dict(pcore = '-b', penv = '-g', score = 
     pyplot.semilogx(evolution.age, wenv_secondary, "-r", label = 'secondary_envelope')
 
 
-   
-    
+
+
     pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label = 'orbital_frequency')
     pyplot.legend(loc = 'upper right')
     pyplot.ylim(top = 30)
     pyplot.ylim(bottom = -20)
     pyplot.show()
-    
+
     return evolution
 
 
 def output_evolution(evolution, binary):
 
     """Write the given evolution to stdout organized in columns."""
-   
+
     quantities = list(
         filter(lambda q: q[0] != '_' and q != 'format', dir(evolution))
     )
@@ -182,11 +182,11 @@ def output_evolution(evolution, binary):
                 binary.primary.envelope_inertia(age),
                 binary.secondary.core_inertia(age),
                 binary.secondary.envelope_inertia(age)
-                
+
             ]
         ]))
 
-  
+
 
 
 def test_evolution(interpolator,convective_phase_lag,wind) :
@@ -210,14 +210,14 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
 
 
     disk_state = binary.final_state()
-   
+
     print("FINISHED PLANET-STAR EVOLUTION")
 
 
     planet.delete()
     star.delete()
     binary.delete()
-                                  
+
 
     primary = create_star(0.9913616532856468, 1, interpolator, convective_phase_lag,wind = wind)
     secondary = create_star(0.781325045452563, 0, interpolator, convective_phase_lag,wind = wind)
@@ -231,7 +231,7 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
         secondary_angmom=numpy.array([disk_state.envelope_angmom,
                                       disk_state.core_angmom])
     )
-                                  
+
     print("BINARY STAR SYSTEM CREATED")
 
     #print(numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
@@ -245,7 +245,7 @@ def test_evolution(interpolator,convective_phase_lag,wind) :
     #print (disk_state.envelope_angmom)
 
     output_evolution(evolution, binary)
-    
+
     print("ORBITAL_FREUQNCY = ", binary.orbital_frequency(evolution.semimajor))
 
     primary.delete()

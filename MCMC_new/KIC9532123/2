@@ -1,0 +1,257 @@
+2019-04-25 14:28:27,670 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+2019-04-25 14:28:27,670 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,671 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+2019-04-25 14:28:27,671 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,671 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolators")
+2019-04-25 14:28:27,671 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,672 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("model_suites")
+2019-04-25 14:28:27,672 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,672 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("quantities")
+2019-04-25 14:28:27,672 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,673 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_variables")
+2019-04-25 14:28:27,673 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,673 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolation_parameters")
+2019-04-25 14:28:27,673 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("tracks")
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_grids")
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("interpolator_tracks")
+2019-04-25 14:28:27,674 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_age_nodes")
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_feh_nodes")
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_mass_nodes")
+2019-04-25 14:28:27,675 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,676 INFO sqlalchemy.engine.base.Engine PRAGMA table_info("varchange_dependent_values")
+2019-04-25 14:28:27,676 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,685 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-04-25 14:28:27,685 INFO sqlalchemy.engine.base.Engine SELECT quantities.id AS quantities_id, quantities.name AS quantities_name 
+FROM quantities
+2019-04-25 14:28:27,685 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,686 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites
+2019-04-25 14:28:27,686 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,688 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+FROM (SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks) AS anon_1
+2019-04-25 14:28:27,688 INFO sqlalchemy.engine.base.Engine ()
+2019-04-25 14:28:27,688 INFO sqlalchemy.engine.base.Engine COMMIT
+2019-04-25 14:28:27,689 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-04-25 14:28:27,689 INFO sqlalchemy.engine.base.Engine SELECT interpolators.id AS interpolators_id, interpolators.name AS interpolators_name, interpolators.filename AS interpolators_filename, interpolators.checksum AS interpolators_checksum 
+FROM interpolators 
+WHERE interpolators.name = ?
+2019-04-25 14:28:27,690 INFO sqlalchemy.engine.base.Engine ('default',)
+2019-04-25 14:28:27,811 INFO sqlalchemy.engine.base.Engine SELECT tracks.id AS tracks_id, tracks.filename AS tracks_filename, tracks.mass AS tracks_mass, tracks.feh AS tracks_feh, tracks.model_suite_id AS tracks_model_suite_id, tracks.checksum AS tracks_checksum 
+FROM tracks, interpolator_tracks 
+WHERE ? = interpolator_tracks.interpolator_id AND tracks.id = interpolator_tracks.track_id
+2019-04-25 14:28:27,811 INFO sqlalchemy.engine.base.Engine (1,)
+/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
+  'storage.' % (dialect.name, dialect.driver))
+2019-04-25 14:28:27,813 INFO sqlalchemy.engine.base.Engine SELECT model_suites.id AS model_suites_id, model_suites.name AS model_suites_name 
+FROM model_suites 
+WHERE model_suites.id = ?
+2019-04-25 14:28:27,814 INFO sqlalchemy.engine.base.Engine (1,)
+2019-04-25 14:28:27,815 INFO sqlalchemy.engine.base.Engine SELECT interpolation_parameters.interpolator_id AS interpolation_parameters_interpolator_id, interpolation_parameters.quantity_id AS interpolation_parameters_quantity_id, interpolation_parameters.nodes AS interpolation_parameters_nodes, interpolation_parameters.smoothing AS interpolation_parameters_smoothing, interpolation_parameters.vs_log_age AS interpolation_parameters_vs_log_age, interpolation_parameters.log_quantity AS interpolation_parameters_log_quantity 
+FROM interpolation_parameters 
+WHERE ? = interpolation_parameters.interpolator_id
+2019-04-25 14:28:27,815 INFO sqlalchemy.engine.base.Engine (1,)
+2019-04-25 14:28:30,661 INFO sqlalchemy.engine.base.Engine SELECT varchange_grids.id AS varchange_grids_id 
+FROM varchange_grids 
+WHERE varchange_grids.name = ? AND varchange_grids.interpolator_id = ?
+2019-04-25 14:28:30,661 INFO sqlalchemy.engine.base.Engine ('default', 1)
+2019-04-25 14:28:30,662 INFO sqlalchemy.engine.base.Engine SELECT varchange_feh_nodes.value AS varchange_feh_nodes_value 
+FROM varchange_feh_nodes 
+WHERE varchange_feh_nodes.grid_id = ? ORDER BY varchange_feh_nodes."index"
+2019-04-25 14:28:30,662 INFO sqlalchemy.engine.base.Engine (1,)
+2019-04-25 14:28:30,663 INFO sqlalchemy.engine.base.Engine SELECT varchange_mass_nodes.value AS varchange_mass_nodes_value 
+FROM varchange_mass_nodes 
+WHERE varchange_mass_nodes.grid_id = ? ORDER BY varchange_mass_nodes."index"
+2019-04-25 14:28:30,663 INFO sqlalchemy.engine.base.Engine (1,)
+2019-04-25 14:28:30,663 INFO sqlalchemy.engine.base.Engine SELECT varchange_age_nodes.value AS varchange_age_nodes_value 
+FROM varchange_age_nodes 
+WHERE varchange_age_nodes.grid_id = ? ORDER BY varchange_age_nodes."index"
+2019-04-25 14:28:30,663 INFO sqlalchemy.engine.base.Engine (1,)
+2019-04-25 14:28:30,665 INFO sqlalchemy.engine.base.Engine COMMIT
+['30', '6073.3951518414615', '-0.22773241895339247', '8.214233087538224', '0.20716284564049725', '4.5075613915524775', '4.588470393809055', '5.483396841787058', '1.9665053256574435e-14', '5.475596649700955']
+NAME AND VALUE teff_primary 5925.439685090949
+NAME AND VALUE feh -0.20595206218725662
+NAME AND VALUE Porb 8.21369268907098
+NAME AND VALUE eccentricity 0.20663756794088567
+NAME AND VALUE logg 4.5912770179408176
+NAME AND VALUE Wdisk 4.523674549671376
+NAME AND VALUE logQ 5.516842629052541
+
+PROPOSED VALUES
+{'teff_primary': 5925.439685090949, 'feh': -0.20595206218725662, 'Porb': 8.21369268907098, 'eccentricity': 0.20663756794088567, 'logg': 4.5912770179408176, 'Wdisk': 4.523674549671376, 'logQ': 5.516842629052541}
+Calculating Masses
+
+-0.20595206218725662 5925.439685090949 4.5912770179408176
+2019-04-25 14:28:30,673 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-04-25 14:28:30,673 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_variables.id AS varchange_dependent_variables_id 
+FROM varchange_dependent_variables 
+WHERE varchange_dependent_variables.name = ?
+2019-04-25 14:28:30,673 INFO sqlalchemy.engine.base.Engine ('logg',)
+2019-04-25 14:28:30,676 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+FROM (SELECT varchange_dependent_values.variable_id AS varchange_dependent_values_variable_id, varchange_dependent_values.grid_id AS varchange_dependent_values_grid_id, varchange_dependent_values.feh_node_index AS varchange_dependent_values_feh_node_index, varchange_dependent_values.mass_node_index AS varchange_dependent_values_mass_node_index, varchange_dependent_values.age_node_index AS varchange_dependent_values_age_node_index, varchange_dependent_values.value AS varchange_dependent_values_value 
+FROM varchange_dependent_values 
+WHERE varchange_dependent_values.variable_id = ? AND varchange_dependent_values.grid_id = ?) AS anon_1
+2019-04-25 14:28:30,676 INFO sqlalchemy.engine.base.Engine (1, 1)
+2019-04-25 14:28:30,715 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_variables.id AS varchange_dependent_variables_id 
+FROM varchange_dependent_variables 
+WHERE varchange_dependent_variables.name = ?
+2019-04-25 14:28:30,715 INFO sqlalchemy.engine.base.Engine ('logg',)
+2019-04-25 14:28:30,716 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_values.feh_node_index AS varchange_dependent_values_feh_node_index, varchange_dependent_values.mass_node_index AS varchange_dependent_values_mass_node_index, varchange_dependent_values.age_node_index AS varchange_dependent_values_age_node_index, varchange_dependent_values.value AS varchange_dependent_values_value 
+FROM varchange_dependent_values 
+WHERE varchange_dependent_values.variable_id = ? AND varchange_dependent_values.grid_id = ?
+2019-04-25 14:28:30,716 INFO sqlalchemy.engine.base.Engine (1, 1)
+2019-04-25 14:28:32,858 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_variables.id AS varchange_dependent_variables_id 
+FROM varchange_dependent_variables 
+WHERE varchange_dependent_variables.name = ?
+2019-04-25 14:28:32,858 INFO sqlalchemy.engine.base.Engine ('weights',)
+2019-04-25 14:28:32,859 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_values.feh_node_index AS varchange_dependent_values_feh_node_index, varchange_dependent_values.mass_node_index AS varchange_dependent_values_mass_node_index, varchange_dependent_values.age_node_index AS varchange_dependent_values_age_node_index, varchange_dependent_values.value AS varchange_dependent_values_value 
+FROM varchange_dependent_values 
+WHERE varchange_dependent_values.variable_id = ? AND varchange_dependent_values.grid_id = ?
+2019-04-25 14:28:32,859 INFO sqlalchemy.engine.base.Engine (2, 1)
+2019-04-25 14:28:34,876 INFO sqlalchemy.engine.base.Engine COMMIT
+/home/kpenev/projects/git/poet/PythonPackage/stellar_evolution/change_variables.py:397: RuntimeWarning: invalid value encountered in less_equal
+  0
+/home/kpenev/projects/git/poet/PythonPackage/stellar_evolution/change_variables.py:404: RuntimeWarning: invalid value encountered in less_equal
+  0
+2019-04-25 14:28:35,933 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2019-04-25 14:28:35,934 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_variables.id AS varchange_dependent_variables_id 
+FROM varchange_dependent_variables 
+WHERE varchange_dependent_variables.name = ?
+2019-04-25 14:28:35,934 INFO sqlalchemy.engine.base.Engine ('teff',)
+2019-04-25 14:28:35,936 INFO sqlalchemy.engine.base.Engine SELECT count(*) AS count_1 
+FROM (SELECT varchange_dependent_values.variable_id AS varchange_dependent_values_variable_id, varchange_dependent_values.grid_id AS varchange_dependent_values_grid_id, varchange_dependent_values.feh_node_index AS varchange_dependent_values_feh_node_index, varchange_dependent_values.mass_node_index AS varchange_dependent_values_mass_node_index, varchange_dependent_values.age_node_index AS varchange_dependent_values_age_node_index, varchange_dependent_values.value AS varchange_dependent_values_value 
+FROM varchange_dependent_values 
+WHERE varchange_dependent_values.variable_id = ? AND varchange_dependent_values.grid_id = ?) AS anon_1
+2019-04-25 14:28:35,936 INFO sqlalchemy.engine.base.Engine (3, 1)
+2019-04-25 14:28:35,977 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_variables.id AS varchange_dependent_variables_id 
+FROM varchange_dependent_variables 
+WHERE varchange_dependent_variables.name = ?
+2019-04-25 14:28:35,977 INFO sqlalchemy.engine.base.Engine ('teff',)
+2019-04-25 14:28:35,977 INFO sqlalchemy.engine.base.Engine SELECT varchange_dependent_values.feh_node_index AS varchange_dependent_values_feh_node_index, varchange_dependent_values.mass_node_index AS varchange_dependent_values_mass_node_index, varchange_dependent_values.age_node_index AS varchange_dependent_values_age_node_index, varchange_dependent_values.value AS varchange_dependent_values_value 
+FROM varchange_dependent_values 
+WHERE varchange_dependent_values.variable_id = ? AND varchange_dependent_values.grid_id = ?
+2019-04-25 14:28:35,977 INFO sqlalchemy.engine.base.Engine (3, 1)
+2019-04-25 14:28:38,000 INFO sqlalchemy.engine.base.Engine COMMIT
+[]
+list index out of range
+list index out of range
+nan
+nan
+nan
+mass out of range
+REJECTED
+mass out of range for current values. proposing new values
+NAME AND VALUE teff_primary 5945.049811746534
+NAME AND VALUE feh -0.16597510967789647
+NAME AND VALUE Porb 8.213299421517208
+NAME AND VALUE eccentricity 0.20700201592043646
+NAME AND VALUE logg 4.3821475067288755
+NAME AND VALUE Wdisk 4.690495995921304
+NAME AND VALUE logQ 5.552941695914032
+
+PROPOSED VALUES
+{'teff_primary': 5945.049811746534, 'feh': -0.16597510967789647, 'Porb': 8.213299421517208, 'eccentricity': 0.20700201592043646, 'logg': 4.3821475067288755, 'Wdisk': 4.690495995921304, 'logQ': 5.552941695914032}
+Calculating Masses
+
+-0.16597510967789647 5945.049811746534 4.3821475067288755
+[array([0.97533099, 6.02771658]), array([1.02924047, 0.0516648 ])]
+0.975330994550618
+0.8621925991827463
+0.05166479702802237
+BEGINSAT
+star-planet evolution completed
+
+Trying Porb_initial = 8.213299421517208, e_initial =0.20700201592043646
+BINARY CONFIGURATION COMPLETE
+UE Porb 8.212537950960309
+NAME AND VALUE eccentricity 0.20806954777071612
+NAME AND VALUE logg 4.532661101894552
+NAME AND VALUE Wdisk 4.45548120005374
+NAME AND VALUE logQ 5.75271027142666
+
+PROPOSED VALUES
+{'teff_primary': 6088.7194552553765, 'feh': -0.14123340925005035, 'Porb': 8.212537950960309, 'eccentricity': 0.20806954777071612, 'logg': 4.532661101894552, 'Wdisk': 4.45548120005374, 'logQ': 5.75271027142666}
+Calculating Masses
+
+-0.14123340925005035 6088.7194552553765 4.532661101894552
+[]
+list index out of range
+list index out of range
+nan
+nan
+nan
+mass out of range
+REJECTED
+mass out of range for current values. proposing new values
+NAME AND VALUE teff_primary 6005.302994323969
+NAME AND VALUE feh -0.14757611581489005
+NAME AND VALUE Porb 8.213595699572254
+NAME AND VALUE eccentricity 0.20594855579674923
+NAME AND VALUE logg 4.645816113166997
+NAME AND VALUE Wdisk 4.61046858052301
+NAME AND VALUE logQ 5.4051740265392745
+
+PROPOSED VALUES
+{'teff_primary': 6005.302994323969, 'feh': -0.14757611581489005, 'Porb': 8.213595699572254, 'eccentricity': 0.20594855579674923, 'logg': 4.645816113166997, 'Wdisk': 4.61046858052301, 'logQ': 5.4051740265392745}
+Calculating Masses
+
+-0.14757611581489005 6005.302994323969 4.645816113166997
+[]
+list index out of range
+list index out of range
+nan
+nan
+nan
+mass out of range
+REJECTED
+mass out of range for current values. proposing new values
+NAME AND VALUE teff_primary 6115.418120342332
+NAME AND VALUE feh -0.2078773987908471
+NAME AND VALUE Porb 8.214684566801093
+NAME AND VALUE eccentricity 0.20705973406755837
+NAME AND VALUE logg 4.559969272672914
+NAME AND VALUE Wdisk 4.612600693835185
+NAME AND VALUE logQ 5.414230464513987
+
+PROPOSED VALUES
+{'teff_primary': 6115.418120342332, 'feh': -0.2078773987908471, 'Porb': 8.214684566801093, 'eccentricity': 0.20705973406755837, 'logg': 4.559969272672914, 'Wdisk': 4.612600693835185, 'logQ': 5.414230464513987}
+Calculating Masses
+
+-0.2078773987908471 6115.418120342332 4.559969272672914
+[]
+list index out of range
+list index out of range
+nan
+nan
+nan
+mass out of range
+REJECTED
+mass out of range for current values. proposing new values
+NAME AND VALUE teff_primary 6034.871328711671
+NAME AND VALUE feh -0.2624161395995594
+NAME AND VALUE Porb 8.214283865129131
+NAME AND VALUE eccentricity 0.20711266780212084
+NAME AND VALUE logg 4.464207605646444
+NAME AND VALUE Wdisk 4.51150177740119
+NAME AND VALUE logQ 5.519535235908773
+
+PROPOSED VALUES
+{'teff_primary': 6034.871328711671, 'feh': -0.2624161395995594, 'Porb': 8.214283865129131, 'eccentricity': 0.20711266780212084, 'logg': 4.464207605646444, 'Wdisk': 4.51150177740119, 'logQ': 5.519535235908773}
+Calculating Masses
+
+-0.2624161395995594 6034.871328711671 4.464207605646444
+[array([0.98561621, 2.82226612]), array([1.01572814, 0.05057216])]
+0.9856162119501031
+0.8712847313638912
+0.050572156883416985
+BEGINSAT
+star-planet evolution completed
+
+Trying Porb_initial = 8.214283865129131, e_initial =0.20711266780212084
+BINARY CONFIGURATION COMPLETE

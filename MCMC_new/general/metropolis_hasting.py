@@ -1,28 +1,22 @@
 #"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
-import time
+
+import scipy
+from scipy.stats import norm
+import numpy
+
 import pickle
+import csv
 
 import os
 import os.path
-import argparse
-import csv
 
-import sys
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
 
 from evolution_class import evolution
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-import scipy
-from scipy.stats import norm
-import numpy
-
+import time
 start_time = time.time()
 
 class MetropolisHastings:
@@ -31,9 +25,10 @@ class MetropolisHastings:
         """reutrns current surface spin of the star given the parameters"""
 
         find_spin = evolution(
-                            self.interpolator,
+                                self.interpolator,
                                 parameter_set,
                                 self.fixed_parameters,
+                                self.mass_ratio,
                                 self.instance
                                )
 
@@ -161,7 +156,7 @@ class MetropolisHastings:
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
-        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['max'],high=self.logQ['max'],size=None)
+        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
 
         print ('\nINITIAL PARAMETERS SET')
 
@@ -181,6 +176,15 @@ class MetropolisHastings:
             self.initialise_parameters()
 
             self.current_file_exist = None
+
+            if self.current_parameters['eccentricity']<0:
+                self.proposed_parameters = self.current_parameters
+                self.isAccepted = False
+                self.write_output()
+                self.proposed_parameters = dict()
+                self.iteration_step = self.iteration_step + 1
+                continue
+
 
             self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
 
@@ -214,12 +218,19 @@ class MetropolisHastings:
             self.values_proposed()
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
-            if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
+            if self.proposed_parameters['feh']<-1.4014 or self.proposed_parameters['feh']>0.537:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 print('feh value out of range')
                 continue
+            if self.proposed_parameters['eccentricity']<0:
+                self.isAccepted = False
+                self.write_output()
+                self.iteration_step = self.iteration_step + 1
+                print('e<0')
+                continue
+
 
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
             self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
@@ -229,6 +240,9 @@ class MetropolisHastings:
                 self.iteration_step = self.iteration_step + 1
                 print("mass out of range for current values. proposing new values")
                 continue
+
+
+
 
             # calculate acceptance probablity and check if proposed parameter is accepted or not
             print ('checking acceptance')
@@ -246,7 +260,6 @@ class MetropolisHastings:
                 f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
             self.iteration_step = self.iteration_step + 1
-
 
     def continue_last(self):
 
@@ -291,6 +304,7 @@ class MetropolisHastings:
                 proposed_step,
                 total_iterations,
                 observed_Pspin,
+                mass_ratio,
                 instance
                 ):
 
@@ -302,7 +316,7 @@ class MetropolisHastings:
         self.proposed_step = proposed_step
         self.iteration_step = 1
         self.total_iterations= total_iterations
-
+        self.mass_ratio=mass_ratio
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
@@ -329,98 +343,3 @@ class MetropolisHastings:
 
         self.time_stamp = 0.0
         self.time_elapsed = 0.0
-
-if __name__ == '__main__':
-
-    serialized_dir = "/home/ruskin/projects/poet/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
-
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
-
-
-    observation_data = dict(
-                        teff_primary=dict(value=5654, sigma=178),
-                        feh=dict(value=-0.38, sigma=0.3),
-                        Porb=dict(value=8.215, sigma=0.0001952),
-                        eccentricity=dict(value=0.207, sigma=0.001),
-                        logg=dict(value=4.6, sigma=0.14),
-                        Wdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
-                    )
-
-    observed_Pspin = dict(
-                        value=7.197222223380878,
-                        sigma=0.128 )
-
-    fixed_parameters = dict(
-                        disk_dissipation_age=5e-3,
-                        planet_formation_age=5e-3,
-                        wind=True,
-                        wind_saturation_frequency=2.54,
-                        diff_rot_coupling_timescale=5e-3,
-                        wind_strength=0.17,
-                        inclination=scipy.pi/2
-
-    )
-
-    proposed_step = dict(
-                        teff_step=150.0,
-                        feh_step=0.25,
-                        Porb_step=0.0002,
-                        eccentricity_step=0.001,
-                        logg_step=0.1,
-                        Wdisk_step=0.1,
-                        logQ_step=0.08
-                    )
-
-
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', action='store_const', dest='start',
-                    const='start',
-                    help='start mcmc from beginning')
-
-    parser.add_argument('-c', action='store_const', dest='cont',
-                    const='continue',
-                    help='continue mcmc from last iteration')
-
-    parser.add_argument('-i', action = 'store', dest = 'instance',
-                    help = 'define an instance of mcmc')
-    parser.add_argument('-q',action = 'store', dest = 'logQ')
-    args = parser.parse_args()
-
-    logQ = dict(max=5.0 + int(args.instance)*0.083)
-
-
-    #stepfilename = 'step_file_'+args.instance+'.txt'
-    #with open(stepfilename,'w') as f:
-        #for key,value in proposed_step.items():
-        #f.write(key + '\t' + repr(value) + '\n')
-
-    instance = args.instance
-    mcmc = MetropolisHastings(
-                            interpolator,
-                            fixed_parameters,
-                            observation_data,
-                            logQ,
-                            proposed_step,
-                            10,
-                            observed_Pspin,
-                            instance)
-
-
-    if args.start: mcmc.iterations()
-    elif args.cont: mcmc.continue_last()
-    else: print('provide correct arguments')
-#flush()
-#buffer_size =0 to write at the moment
-
-
-
-
-#logQ = 0.05
-#3sigma
-#randomly select from masses
-

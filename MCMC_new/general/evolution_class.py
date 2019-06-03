@@ -13,14 +13,12 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from mass_calculation import Derive_mass
-from solver_check import  InitialConditionSolver
+from initial_conditions_solver import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
 from astropy import units, constants
 import pickle
-import argparse
-
 
 
 class evolution:
@@ -114,36 +112,44 @@ class evolution:
 
         print ("Calculating Masses\n")
 
-        mass_ratio = 0.8840  # mass ratio is M2/M1
-
         mass = Derive_mass(
                             self.interpolator,
                             self.teff_primary,
                             self.logg,
                             self.feh)
 
-        sol = mass()
-        self.primary_mass = sol[0]
-        self.age=sol[1]
-        self.secondary_mass = self.primary_mass*mass_ratio
+        sol_mp,sol_age=mass()
+        self.primary_mass = sol_mp
+        self.age=sol_age
+        self.secondary_mass = self.primary_mass*self.mass_ratio
 
         print(self.primary_mass)
         print(self.secondary_mass)
         print(self.age)
 
-
-    def __init__(self,interpolator,observational_parameters):
+    def __init__(self,
+                 interpolator,
+                 observational_parameters,
+                 fixed_parameters,
+                 mass_ratio,
+                 instance):
 
         self.interpolator=interpolator
 
         for item,value in observational_parameters.items():
             setattr(self,item,value)
 
+        for item,value in fixed_parameters.items():
+            setattr(self,item,value)
+
+
         self.convective_phase_lag=phase_lag(self.logQ)
 
         self.primary_mass=0.0
         self.secondary_mass=0.0
 
+        self.mass_ratio=mass_ratio
+        self.instance=instance
 
 
     def __call__(self):
@@ -151,8 +157,11 @@ class evolution:
         tdisk = self.disk_dissipation_age
 
         self.calculate_star_masses()
-        if numpy.logical_or( numpy.isnan(self.primary_mass),
-                            numpy.isnan(self.secondary_mass)):
+        if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
+                                              self.secondary_mass<0.4)),
+                            (numpy.logical_or(numpy.isnan(self.primary_mass),
+                                              numpy.isnan(self.secondary_mass)))
+                            ):
             print('mass out of range')
             return scipy.nan
 
@@ -177,57 +186,37 @@ class evolution:
 
         primary = self.create_star(self.primary_mass, 1)
         secondary = self.create_star(self.secondary_mass, 1)
-        find_ic = InitialConditionSolver(primary,
-                                         secondary,
-                                         disk_dissipation_age=tdisk,
+        find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
-                                         secondary_angmom=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
+                                         secondary_angmom=numpy.array(
+                                             [disk_state.envelope_angmom, disk_state.core_angmom]),
+                                         is_secondary_star=True,
+                                         instance = self.instance)
 
         target = Structure(age=self.age,
                            Porb=self.Porb,  # current Porb to match
                            Wdisk=self.Wdisk,
-                           eccentricity=self.eccentricity,
-                           logQ=self.logQ)
+                           eccentricity=self.eccentricity)
 
-        find_ic(target=target)
+        ic,current_porb,current_e,spin,delta_p,delta_e =  find_ic(target=target,
+                       primary=primary,
+                       secondary=secondary)
+
+
+
+        pickle_fname = 'solver_results_'+self.instance+'.pickle'
+
+        with open(pickle_fname,'wb') as f:
+            pickle.dump(ic,f)
+            pickle.dump(current_porb,f)
+            pickle.dump(current_e,f)
+            pickle.dump(spin,f)
+            pickle.dump(delta_e,f)
+            pickle.dump(delta_p,f)
+            pickle.dump(self.primary_mass,f)
+            pickle.dump(self.secondary_mass,f)
 
         primary.delete()
         secondary.delete()
 
-
-if __name__ == '__main__':
-
-
-    for i in range(1):
-        serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
-        manager = StellarEvolutionManager(serialized_dir)
-        interpolator = manager.get_interpolator_by_name('default')
-
-        orbital_evolution_library.read_eccentricity_expansion_coefficients(
-            b"eccentricity_expansion_coef.txt"
-        )
-
-        parameters = dict(
-                      teff_primary= 5335.492032128414,
-                      feh=-0.7690531666974676,
-                      logg=4.621887887981691,
-                      logQ=5.332,
-                      Wdisk=4.298549388598006,
-                      Porb=7.903632794647903,
-                      incination=0.0,
-                      disk_dissipation_age=5e-3,
-                      wind=True,
-                      planet_formation_age=5e-3,
-                      wind_saturation_frequency=2.54,
-                      diff_rot_coupling_timescale=5e-3,
-                      wind_strength=0.17,
-                      eccentricity=0.20782473351422318)
-
-
-        evolve_check = evolution(interpolator,parameters)
-        evolve_check()
-
-
-
-
+        return spin

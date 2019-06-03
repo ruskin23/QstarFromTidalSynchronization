@@ -545,10 +545,12 @@ if __name__ == '__main__':
 
 
     #TeffK = 5654*0.9300264481948799
-    TeffK = 5654
+    TeffK = 6014.0
 
-    feh = -0.38
-    logg = 4.6
+    feh = -0.1
+    logg = 4.494
+
 
     m = interpolator.change_variables(feh,logg=logg, teff= TeffK)
-    print(m[0][0])
+    print(m)
+
