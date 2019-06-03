@@ -81,7 +81,6 @@ class InitialConditionSolver:
 
 
         self.binary.primary.select_interpolation_region(self.primary.core_formation_age())
-        if self.is_secondary_star is True: self.binary.secondary.detect_stellar_wind_saturation()
 
 
         self.binary.configure(  age =  self.primary.core_formation_age(),
@@ -108,6 +107,7 @@ class InitialConditionSolver:
             zero_outer_periapsis=True
         )
 
+        if self.is_secondary_star is True: self.binary.secondary.detect_stellar_wind_saturation()
 
         print ("BINARY CONFIGURATION COMPLETE")
 
@@ -125,7 +125,7 @@ class InitialConditionSolver:
 
         self.evolution=self.binary.get_evolution()
         self.evolution_age=self.evolution.age
-        self.wenv_primary=(self.evolution.primary_envelope_angmom / self.binary.primary.envelope_inertia(self.evolution.age)) / wsun
+        self.wenv_primary=(self.evolution.primary_envelope_angmom /                   self.binary.primary.envelope_inertia(self.evolution.age))
 
         print('final semimajor = ', self.final_state.semimajor)
         print('final age = ', self.final_state.age)
@@ -152,16 +152,21 @@ class InitialConditionSolver:
                 /
                 self.final_state.primary_envelope_angmom
         )
-
+        print(self.spin)
         return self.delta_p,self.detla_e
 
     def __init__(self,
+                 primary,
+                 secondary,
                  planet_formation_age=None,
                  disk_dissipation_age=None,
                  evolution_max_time_step=None,
                  evolution_precision=1e-6,
                  secondary_angmom=None,
                  is_secondary_star=None):
+
+        self.primary=primary
+        self.secondary=secondary
 
         self.final_state=None
         self.disk_dissipation_age = disk_dissipation_age
@@ -174,7 +179,7 @@ class InitialConditionSolver:
         self.wenv_primary = None
         self.evolution_age = None
 
-    def __call__(self, target, primary, secondary):
+    def __call__(self, target):
         """
         Find initial conditions which reproduce the given system now.
 
@@ -209,8 +214,6 @@ class InitialConditionSolver:
         """
 
         self.target = target
-        self.primary = primary
-        self.secondary = secondary
 
         self.disk_lock_frequency = (target.Wdisk if hasattr(target, 'Wdisk')
                                     else 2*pi/target.Pdisk)
@@ -220,14 +223,17 @@ class InitialConditionSolver:
 
         self.try_initial_conditions(check_intial_condition)
         #plt.semilogx(self.evolution_age,self.wenv_primary,'-r')
-        age_1 = self.evolution_age
-        primary_envelope_angmom_1 = numpy.array(self.wenv_primary)
-
-        self.try_initial_conditions(check_intial_condition)
+        #age_1 = self.evolution_age
+        #primary_envelope_angmom_1 = numpy.array(self.wenv_primary)
+        #self.try_initial_conditions(check_intial_condition)
         #plt.semilogx(self.evolution_age,self.wenv_primary,'-g')
-        age_2 = self.evolution_age
-        primary_envelope_angmom_2 = numpy.array(self.wenv_primary)
+        #age_2 = self.evolution_age
+        #primary_envelope_angmom_2 = numpy.array(self.wenv_primary)
 
+        plt.plot(self.evolution_age,self.wenv_primary)
+        plt.show()
+
+        """
         print(len(primary_envelope_angmom_1))
         print(len(primary_envelope_angmom_2))
 
@@ -245,7 +251,7 @@ class InitialConditionSolver:
             for age,env in zip(age_2,primary_envelope_angmom_2):
                 f.write(repr(i) + '\t' + repr(age) + '\t' + repr(env) + '\n')
                 i=i+1
-
+"""
         #difference_array = primary_envelope_angmom_1-primary_envelope_angmom_2
 
 

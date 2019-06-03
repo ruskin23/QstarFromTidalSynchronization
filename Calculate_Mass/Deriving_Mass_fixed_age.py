@@ -78,6 +78,9 @@ serialized_dir = "/home/kpenev/projects/git/poet/stellar_evolution_interpolators
 manager = StellarEvolutionManager(serialized_dir)
 interpolator = manager.get_interpolator_by_name('default')
 
-x=DerivePrimnaryMass(interpolator, -0.380, 1.10647793,  5654)
+x=DerivePrimnaryMass(interpolator, -0.078973, 4.346418,  5873.306906)
 
 print(x())
+
+y=DerivePrimnaryMass(interpolator,-0.078973, 4.346418, 0.8374*5873.306906)
+print(y())

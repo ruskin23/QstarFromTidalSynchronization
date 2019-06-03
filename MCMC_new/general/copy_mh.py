@@ -8,8 +8,6 @@ import argparse
 import csv
 
 import sys
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-#sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
 
 sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
 sys.path.append('/home/kpenev/projects/git/poet/scripts')
@@ -161,7 +159,7 @@ class MetropolisHastings:
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
-        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['max'],high=self.logQ['max'],size=None)
+        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
 
         print ('\nINITIAL PARAMETERS SET')
 
@@ -214,7 +212,7 @@ class MetropolisHastings:
             self.values_proposed()
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
-            if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
+            if self.proposed_parameters['feh']<-1.4014 or self.proposed_parameters['feh']>0.537:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
@@ -330,9 +328,13 @@ class MetropolisHastings:
         self.time_stamp = 0.0
         self.time_elapsed = 0.0
 
+
+
+
 if __name__ == '__main__':
 
     serialized_dir = "/home/ruskin/projects/poet/stellar_evolution_interpolators"
+    #serialized_dir = "/Users/ruskinpatel/Desktop/Research/poet/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -366,41 +368,41 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        teff_step=150.0,
-                        feh_step=0.25,
-                        Porb_step=0.0002,
+                        teff_step=130.0,
+                        feh_step=0.28,
+                        Porb_step=0.0001,
                         eccentricity_step=0.001,
                         logg_step=0.1,
                         Wdisk_step=0.1,
-                        logQ_step=0.08
+                        logQ_step=0.15
                     )
 
 
+    logQ = dict(
+                min=5.0,
+                max=6.0
+            )
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', action='store_const', dest='start',
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', action='store_const', dest='start',
                     const='start',
                     help='start mcmc from beginning')
 
-    parser.add_argument('-c', action='store_const', dest='cont',
+parser.add_argument('-c', action='store_const', dest='cont',
                     const='continue',
                     help='continue mcmc from last iteration')
 
-    parser.add_argument('-i', action = 'store', dest = 'instance',
+parser.add_argument('-i', action = 'store', dest = 'instance',
                     help = 'define an instance of mcmc')
-    parser.add_argument('-q',action = 'store', dest = 'logQ')
-    args = parser.parse_args()
+args = parser.parse_args()
 
-    logQ = dict(max=5.0 + int(args.instance)*0.083)
+stepfilename = 'step_file_'+args.instance+'.txt'
+with open(stepfilename,'w') as f:
+    for key,value in proposed_step.items():
+        f.write(key + '\t' + repr(value) + '\n')
 
-
-    #stepfilename = 'step_file_'+args.instance+'.txt'
-    #with open(stepfilename,'w') as f:
-        #for key,value in proposed_step.items():
-        #f.write(key + '\t' + repr(value) + '\n')
-
-    instance = args.instance
-    mcmc = MetropolisHastings(
+instance = args.instance
+mcmc = MetropolisHastings(
                             interpolator,
                             fixed_parameters,
                             observation_data,
@@ -411,16 +413,12 @@ if __name__ == '__main__':
                             instance)
 
 
-    if args.start: mcmc.iterations()
-    elif args.cont: mcmc.continue_last()
-    else: print('provide correct arguments')
+if args.start: mcmc.iterations()
+elif args.cont: mcmc.continue_last()
+else: print('provide correct arguments')
 #flush()
 #buffer_size =0 to write at the moment
+#
 
 
-
-
-#logQ = 0.05
-#3sigma
-#randomly select from masses
-
+## run evolution of the star without companion(or Q=infinity) to check!

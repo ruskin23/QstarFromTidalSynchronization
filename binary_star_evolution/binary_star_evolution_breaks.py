@@ -37,9 +37,9 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
     return planet
 
 
-def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True):
+def create_star(mass, dissipation, check_break_frequency,interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                        metallicity=-0.5048488058391019,
+                        metallicity=-0.078973,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.54,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -47,9 +47,9 @@ def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True
 
     if dissipation == True:
         star.set_dissipation(zone_index=0,
-                             tidal_frequency_breaks=None,
+                             tidal_frequency_breaks=numpy.array([check_break_frequency]),
                              spin_frequency_breaks=None,
-                             tidal_frequency_powers=numpy.array([0.0]),
+                             tidal_frequency_powers=numpy.array([1.0,1.5]),
                              spin_frequency_powers=numpy.array([0.0]),
                              reference_phase_lag=convective_phase_lag)
 
@@ -88,7 +88,7 @@ def create_binary_system(primary,
     binary = Binary(primary=primary,
                     secondary=secondary,
                     initial_orbital_period=initial_orbital_period,
-                    initial_eccentricity=0.213704509463302,
+                    initial_eccentricity=0.0,
                     initial_inclination=0.0,
                     disk_lock_frequency=disk_lock_frequency,
                     disk_dissipation_age=disk_dissipation_age,
@@ -97,7 +97,7 @@ def create_binary_system(primary,
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),
-                        eccentricity=0.213704509463302,
+                        eccentricity=0.0,
                         locked_surface=False,
                         zero_outer_inclination=True,
                         zero_outer_periapsis=True,
@@ -180,16 +180,19 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 0.04122866354544623
-    primary_mass = 0.7282385537767174
-    secondary_mass = 0.6437628815386182
-    initial_disk_period = 2*numpy.pi/4.44920802529774
-    initial_orbital_period =7.871614845733611
+    age = 4.346418
+    primary_mass = 1.0018893837758016
+    secondary_mass = 0.7808503448566498
+    initial_disk_period = 2*numpy.pi/4.484899
+    initial_orbital_period = 5.2663825
     #teff=5873.306906
 
     print(convective_phase_lag)
 
-    star = create_star(secondary_mass, True, interpolator=interpolator, convective_phase_lag=convective_phase_lag, wind=wind)
+    check_break_frequency = 4*numpy.pi*((1.0/initial_disk_period) - (1.0/initial_orbital_period))
+
+    star = create_star(secondary_mass, check_break_frequency,True, interpolator=interpolator,convective_phase_lag=convective_phase_lag, wind=wind)
+
     planet = create_planet(1.0)
 
     binary = create_binary_system(star,
@@ -208,8 +211,8 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     star.delete()
     binary.delete()
 
-    primary = create_star(primary_mass,True, interpolator,convective_phase_lag,wind=wind)
-    secondary = create_star(secondary_mass, True,interpolator,convective_phase_lag,wind=wind)
+    primary = create_star(primary_mass,True,check_break_frequency, interpolator,convective_phase_lag,wind=wind)
+    secondary = create_star(secondary_mass,True,check_break_frequency,interpolator,convective_phase_lag,wind=wind)
     # secondary = create_planet(1.0)
 
     print("Secondary_initial_angmom = ", numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
@@ -254,5 +257,5 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 5.331986748602551
+    logQ = 7.0
     test_evolution(interpolator,  phase_lag(logQ), True)
