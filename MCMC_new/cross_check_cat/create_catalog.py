@@ -85,7 +85,7 @@ with open(fname1,'r') as f1: #Lurie:
 
 
 for i in range(len(KIC)-1):
-    if Porb[i]<60 and e[i]<0.1:
+    if Porb[i]<60 and e[i]<0.01:
         fc.write(repr(KIC[i]) + '\t' + repr(teff[i]) + '\t' + repr(teff_e[i]) + '\t' + repr(feh[i]) + '\t' + repr(feh_e[i]) + '\t' + repr(Porb[i]) + '\t' + Porb_e[i] + '\t' + repr(e[i]) + '\t' + repr(e_e[i]) + '\t' + repr(logg[i]) + '\t' + repr(logg_e[i]) + '\t' + repr(Pspin[i]) + '\t' + repr(Pspin_e[i]) + '\t' + repr(q[i]) + '\n')
 
 
