@@ -21,6 +21,7 @@ from basic_utils import Structure
 from math import pi
 from scipy.optimize import brentq
 import numpy
+import scipy
 
 class InitialConditionSolver:
     """Find initial conditions which reproduce a given system now."""
@@ -267,17 +268,19 @@ class InitialConditionSolver:
             return (numpy.nan if return_difference else (numpy.nan,
                                                          numpy.nan,
                                                          numpy.nan))
-        porb_initial = brentq(
-            lambda porb_initial: self._try_initial_conditions(
-                porb_initial,
-                disk_period,
-            )[0] - self.target.Porb,
-            porb_min,
-            porb_max,
-            xtol=self.orbital_period_tolerance,
-            rtol=self.orbital_period_tolerance
-        )
-
+        try:
+            porb_initial = brentq(
+                lambda porb_initial: self._try_initial_conditions(
+                    porb_initial,
+                    disk_period,
+                )[0] - self.target.Porb,
+                porb_min,
+                porb_max,
+                xtol=self.orbital_period_tolerance,
+                rtol=self.orbital_period_tolerance
+            )
+        except AssertionError:
+            return scipy.nan,scipy.nan,scipy.nan
         #print("\nInitial orbital period root found")
 
         porb_final, spin_period = self._try_initial_conditions(
