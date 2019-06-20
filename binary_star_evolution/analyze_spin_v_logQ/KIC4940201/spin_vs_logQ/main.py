@@ -113,7 +113,7 @@ class evolution:
 
         print ("Calculating Masses\n")
 
-        mass_ratio = 0.8182  # mass ratio is M2/M1
+        mass_ratio = 0.9269#mass ratio is M2/M1
 
         mass = Derive_mass(
                             self.interpolator,
@@ -227,17 +227,17 @@ if __name__ == '__main__':
 #                'current_e' + '\t' + 'delta_p' + '\t' + 'delta_e' + '\n' )
 
 
-    logQ = numpy.arange(8.5,10.0,0.01)
+    logQ = numpy.arange(6.0,10.0,0.05)
     #logQ = [float(args.logQ)]
     for q in logQ:
         print('For logQ = ', q)
         parameters = dict(
-                      teff_primary=5860,
-                      feh=-0.62,
-                      logg=4.349,
+                      teff_primary=5496.0,
+                      feh= -0.38,
+                      logg=4.607,
                       logQ=q,
                       Wdisk=4.306699756301906,
-                      Porb=6.862,
+                      Porb=8.817,
                       incination=0.0,
                       disk_dissipation_age=5e-3,
                       wind=True,
@@ -245,7 +245,7 @@ if __name__ == '__main__':
                       wind_saturation_frequency=2.54,
                       diff_rot_coupling_timescale=5e-3,
                       wind_strength=0.17,
-                      eccentricity=0.003)
+                      eccentricity=0.046)
 
 
         evolve = evolution(interpolator,parameters,1)
