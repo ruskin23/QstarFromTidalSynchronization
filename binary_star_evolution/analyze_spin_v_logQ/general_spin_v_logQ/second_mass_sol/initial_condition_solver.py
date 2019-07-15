@@ -135,9 +135,9 @@ class InitialConditionSolver:
         if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
 
         self.delta_p = self.orbital_period-self.target.Porb
-        self.detla_e = self.eccentricity-self.target.eccentricity
+        self.delta_e = self.eccentricity-self.target.eccentricity
 
-        print(self.delta_p,self.detla_e)
+        print(self.delta_p,self.delta_e)
 
         self.spin =  (
                 2.0 * pi
@@ -149,7 +149,7 @@ class InitialConditionSolver:
 
         self.binary.delete()
         print(self.spin)
-        return self.delta_p,self.detla_e
+        return self.delta_p,self.delta_e
 
     def __init__(self,
                  planet_formation_age=None,
@@ -185,7 +185,7 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
         self.delta_p=1.0
-        self.detla_e=1.0
+        self.delta_e=1.0
 
     def __call__(self, target, primary, secondary):
         """
@@ -260,4 +260,4 @@ class InitialConditionSolver:
                 self.eccentricity,
                 self.spin,
                 self.delta_p,
-                self.detla_e)
+                self.delta_e)
