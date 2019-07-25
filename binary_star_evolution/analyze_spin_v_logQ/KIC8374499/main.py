@@ -217,7 +217,7 @@ if __name__ == '__main__':
 
     #data_file = 'catalog_'+args.instance+'.txt'
 
-    files=[27,28,39]
+    files=[22]
 
     for i in files:
         data_file='catalog_'+repr(i)+'_s.txt'
@@ -271,7 +271,7 @@ if __name__ == '__main__':
                 check_sign=1
                 q_max=0.0
                 q_min=0.0
-                logQ = numpy.arange(6.0,10.0,1.0)
+                logQ = numpy.arange(6.0,21.0,1.0)
                 for q in logQ:
                     print('Calculating for logQ = ', q)
                     spin = evolve(q,spin_vs_logQ_file,option=1)

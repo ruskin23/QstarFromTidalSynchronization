@@ -216,8 +216,7 @@ if __name__ == '__main__':
     fsol_range.write('KIC'+'\t'+'logq_min'+'\t'+'logq_max'+'\n')
 
     #data_file = 'catalog_'+args.instance+'.txt'
-
-    files = [11,12,13,14,15,16,17,18,19,20]
+    files = [8,9,10]
     for i in files:
         data_file='catalog_'+repr(i)+'_p.txt'
 
@@ -270,7 +269,7 @@ if __name__ == '__main__':
                 check_sign=1
                 q_max=0.0
                 q_min=0.0
-                logQ = numpy.arange(5.0,10.0,1.0)
+                logQ = numpy.arange(6.0,11.0,1.0)
                 for q in logQ:
                     print('Calculating for logQ = ', q)
                     spin = evolve(q,spin_vs_logQ_file,option=1)
