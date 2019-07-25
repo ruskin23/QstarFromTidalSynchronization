@@ -6,7 +6,6 @@ sys.path.append('/home/kpenev/projects/git/poet/scripts')
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import TeffK
 
@@ -20,6 +19,8 @@ import scipy
 import scipy.interpolate
 import scipy.linalg
 import scipy.optimize
+import numpy
+import random
 
 class QuantityEvaluator:
     """Evaluate stellar quantities fixing out of range issues etc."""
@@ -177,6 +178,13 @@ class VarChangingInterpolator(MESAInterpolator):
         Returns:
             - (mass, age):
                 The mass and age where the given dependent variables are
+-rw-rw-r-- 1 ruskin ruskin    50 Jul 12 12:55 catalog_21_s.txt
+-rw-rw-r-- 1 ruskin ruskin    52 Jul 12 12:55 catalog_22_s.txt
+-rw-rw-r-- 1 ruskin ruskin    50 Jul 12 12:55 catalog_23_s.txt
+-rw-rw-r-- 1 ruskin ruskin    52 Jul 12 12:55 catalog_24_s.txt
+-rw-rw-r-- 1 ruskin ruskin    53 Jul 12 12:55 catalog_25_s.txt
+-rw-rw-r-- 1 ruskin ruskin    51 Jul 12 12:55 catalog_27_s.txt
+-rw-rw-r-- 1 ruskin ruskin    53 Jul 12 12:55 catalog_28_s.txt
                 matched.
         """
 
@@ -533,24 +541,51 @@ class VarChangingInterpolator(MESAInterpolator):
 
         return result
 
-if __name__ == '__main__':
 
-    serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
+class Derive_mass:
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
+    def __init__(self,
+                 interp,
+                 teff,
+                 logg,
+                 feh):
 
+        self.interp = interp
+        self.teff = teff
+        self.logg = logg
+        self.feh = feh
 
-    #TeffK = 5654*0.9300264481948799
-    TeffK = 5461
+    def __call__(self):
 
-    feh =-0.1
-    logg = 4.497
+        print(self.feh,self.teff,self.logg)
 
+        m = self.interp.change_variables(self.feh,logg=self.logg,teff=self.teff)
+        print(m)
+        if len(m) == 1:
+            primary_mass = m[0][0]
+            age = m[0][1]
 
-    m = interpolator.change_variables(feh,logg=logg, teff= TeffK)
-    print(m)
+        elif len(m) == 2:
+            primary_mass = m[1][0]
+            age = m[1][1]
+        else:
+            primary_mass=scipy.nan
+            age=scipy.nan
 
+        return primary_mass,age
+
+        """
+        try:
+            primary_mass = m[0][0]
+            age = m[1][1]
+        except IndexError as e:
+            print(e)
+            try:
+                primary_mass = m[0]
+                age = m[1]
+            except IndexError as e:
+                print(e)
+                primary_mass=scipy.nan
+                age = scipy.nan
+        return primary_mass,age
+        """

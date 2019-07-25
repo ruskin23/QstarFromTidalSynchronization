@@ -86,7 +86,7 @@ class MetropolisHastings:
             header.append(key)
 
 
-        ext = 'current_orbital_period'  + '\t' + 'current_spin'  + '\t' + 'primary_mass'  + '\t' + 'secondary_mass' + '\t' + 'age' + '\n'
+        ext = 'age' + '\t' + 'current_orbital_period'  + '\t' + 'current_spin'  + '\t' + 'primary_mass'  + '\t' + 'secondary_mass' + '\n'
 
         for f_name in self.save_filename:
             with open(f_name, 'w', 1) as file:
@@ -109,7 +109,7 @@ class MetropolisHastings:
             f_name = self.save_filename[1]
 
         load_solver_file = 'solver_results_'+self.instance+'.pickle'
-
+        load_ics_file = 'ics_data_' + self.instance + '.pickle'
         if os.path.isfile(load_solver_file) == True:
             with open(load_solver_file,'rb') as f:
                 current_Porb=pickle.load(f)
@@ -117,19 +117,38 @@ class MetropolisHastings:
                 primary_mass=pickle.load(f)
                 secondary_mass=pickle.load(f)
                 age=pickle.load(f)
+        if os.path.isfile(load_ics_file)==True:
+            with open(load_ics_file,'rb') as f1:
+                binary_data=pickle.load(f1)
+                initial_Porb=pickle.load(f1)
+                current_Porb_discard=pickle.load(f1)
+                current_spin_discard=pickle.load(f1)
+
+            primary_envelop_angmom = binary_data['primary_envelope_angmom']
+            primary_core_angmom = binary_data['primary_core_angmom']
+            secondary_envelop_angmom = binary_data['secondary_envelope_angmom']
+            secondary_core_angmom = binary_data['secondary_core_angmom']
 
         with open(f_name, 'a', 1) as file:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
-                file.write('%s\t' % value)
+                file.write('%s\t' %value)
             if os.path.isfile(load_solver_file) == True:
                 file.write(
+                    repr(age) + '\t' +
                     repr(current_Porb) + '\t' +
                     repr(current_spin) + '\t' +
                     repr(primary_mass) + '\t' +
-                    repr(secondary_mass)  +
-                    repr(age) +
-                    '\n')
+                    repr(secondary_mass) + '\t'
+                )
+            if os.path.isfile(load_ics_file)==True:
+                file.write(
+                    repr(primary_envelop_angmom) + '\t' +
+                    repr(primary_core_angmom) + '\t' +
+                    repr(secondary_envelop_angmom) + '\t' +
+                    repr(secondary_core_angmom) + '\t'
+                )
+            file.write( '\n')
 
 
     def save_current_parameter(self):
@@ -150,6 +169,7 @@ class MetropolisHastings:
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
+        self.initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
 
         print ('\nINITIAL PARAMETERS SET')
@@ -291,6 +311,7 @@ class MetropolisHastings:
                 interpolator,
                 fixed_parameters,
                 observation_data,
+                Wdisk,
                 logQ,
                 proposed_step,
                 total_iterations,
@@ -303,6 +324,7 @@ class MetropolisHastings:
         self.interpolator  = interpolator
         self.fixed_parameters = fixed_parameters
         self.observation_data = observation_data
+        self.Wdisk=Wdisk
         self.logQ = logQ
         self.proposed_step = proposed_step
         self.iteration_step = 1

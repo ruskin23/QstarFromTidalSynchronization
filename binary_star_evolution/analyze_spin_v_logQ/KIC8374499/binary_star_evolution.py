@@ -39,7 +39,7 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
 
 def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                        metallicity=-0.5048488058391019,
+                        metallicity=-0.28,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.54,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -88,7 +88,7 @@ def create_binary_system(primary,
     binary = Binary(primary=primary,
                     secondary=secondary,
                     initial_orbital_period=initial_orbital_period,
-                    initial_eccentricity=0.213704509463302,
+                    initial_eccentricity=0.0442043555034391,
                     initial_inclination=0.0,
                     disk_lock_frequency=disk_lock_frequency,
                     disk_dissipation_age=disk_dissipation_age,
@@ -97,7 +97,7 @@ def create_binary_system(primary,
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),
-                        eccentricity=0.213704509463302,
+                        eccentricity=0.0,
                         locked_surface=False,
                         zero_outer_inclination=True,
                         zero_outer_periapsis=True,
@@ -133,19 +133,22 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
     orbitalfrequncy = binary.orbital_frequency(evolution.semimajor) / wsun
 
     quantities = ['primary_envelope', 'primary_core', 'secondary_envelope', 'secondary_core']
-
+    """
     pyplot.semilogx(evolution.age, wenv_primary, color="b", label='primary_envelope_spin_frequency')
     pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='secondary_envelope_spin_frequency')
     pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='primary_core_spin_frequency')
     pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='secondary_core_spin_frequency')
 
     pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='orbital_frequency')
-    pyplot.legend(loc='upper right')
+    pyplot.legend(loc='upper right',prop={'size': 20})
+    pyplot.ylabel('spin_frequency')
+    pyplot.xlabel('age')
     #pyplot.axhline(y=wsat/wsun)
     pyplot.ylim(top=100)
     pyplot.ylim(bottom=-20)
     pyplot.show()
 
+    """
     return evolution
 
 
@@ -180,11 +183,11 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 0.04122866354544623
-    primary_mass = 0.7282385537767174
-    secondary_mass = 0.6437628815386182
+    age = 0.04537993338268403
+    primary_mass = 1.0284590555296682
+    secondary_mass = 0.5099099997316096
     initial_disk_period = 2*numpy.pi/4.44920802529774
-    initial_orbital_period =7.871614845733611
+    initial_orbital_period =5.252002063015184
     #teff=5873.306906
 
     print(convective_phase_lag)
@@ -202,8 +205,8 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
     disk_state = binary.final_state()
 
-    print("FINISHED PLANET-STAR EVOLUTION")
 
+    print("FINISHED PLANET-STAR EVOLUTION")
     planet.delete()
     star.delete()
     binary.delete()
@@ -235,7 +238,15 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     print("FINISHED BINARY STAR EVOLUTION")
 
     disk_state = binary.final_state()
+    spin =  (
+                2.0 * numpy.pi
+                *
+                binary.primary.envelope_inertia(disk_state.age)
+                /
+                disk_state.primary_envelope_angmom
+        )
 
+    print('CURRENT SPIN = ', spin)
     #print (disk_state.envelope_angmom)
 
     #output_evolution(evolution, binary)
@@ -254,5 +265,8 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 5.331986748602551
-    test_evolution(interpolator,  phase_lag(logQ), True)
+    q=numpy.arange(6.0,7.0,0.1)
+    print(q)
+    for logQ in q:
+        print('FOR LOGQ = ',logQ)
+        test_evolution(interpolator,  phase_lag(logQ), True)

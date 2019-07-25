@@ -53,11 +53,8 @@ if __name__ == '__main__':
                 teff_primary=dict(value=float(data[1]),sigma=float(data[2])),
                 feh=dict(value=float(data[3]),sigma=float(data[4])),
                 Porb=dict(value=float(data[5]),sigma=float(data[6])),
-                #eccentricity=dict(value=0.0,sigma=0.0),
-                #eccentricity=dict(value=float(data[7]),sigma=float(data[8])),
-                logg=dict(value=float(data[9]),sigma=float(data[10])),
-                Wdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
-                        )
+                logg=dict(value=float(data[9]),sigma=float(data[10]))
+    )
 
     observed_Pspin = dict(value=float(data[11]),sigma=float(data[12]))
 
@@ -76,16 +73,19 @@ if __name__ == '__main__':
                         teff_step=130.0,
                         feh_step=0.28,
                         Porb_step=0.0001,
-                        #eccentricity_step=float(data[6]),
                         logg_step=0.1,
                         Wdisk_step=0.1,
                         logQ_step=0.15
                     )
 
+    Wdisk = dict(
+                min=2*scipy.pi / 14,
+                max=2*scipy.pi / 1.4
+    )
 
     logQ = dict(
-                min=4.5,
-                max=6.5
+                min=6.0,
+                max=10.0
     )
 
 stepfilename = 'step_file_'+args.instance+'.txt'
@@ -97,6 +97,7 @@ mcmc = MetropolisHastings(
                             interpolator,
                             fixed_parameters,
                             observation_data,
+                            Wdisk,
                             logQ,
                             proposed_step,
                             10,

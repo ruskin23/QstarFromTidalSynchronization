@@ -1,0 +1,4 @@
+  File "main.py", line 85
+    logQ = dict(
+       ^
+SyntaxError: invalid syntax
