@@ -279,8 +279,8 @@ class InitialConditionSolver:
                 xtol=self.orbital_period_tolerance,
                 rtol=self.orbital_period_tolerance
             )
-        except AssertionError:
-            return scipy.nan,scipy.nan,scipy.nan
+        except ValueError:
+            return scipy.nan, scipy.nan, scipy.nan
         #print("\nInitial orbital period root found")
 
         porb_final, spin_period = self._try_initial_conditions(
