@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-
+import os
 
 import sys
-sys.path.append('.../poet/PythonPackage')
-sys.path.append('.../poet/scripts')
+sys.path.append('/home/ruskin/projects/poet/PythonPackage')
+sys.path.append('/home/ruskin/projects/poet/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -216,7 +216,10 @@ if __name__ == '__main__':
     fsol_range.write('KIC'+'\t'+'logq_min'+'\t'+'logq_max'+'\n')
 
     #data_file = 'catalog_'+args.instance+'.txt'
-    files = [8,9,10]
+    files = [1,2,3,4,5,6,7,8,9,10]
+    #files = [11,12,13,14,15,16,17,18,19,20]
+    #files = [21,22,23,24,25,26,27,28,29,30]
+    #files = [31,32,33,34,35,36,37]
     for i in files:
         data_file='catalog_'+repr(i)+'_p.txt'
 
@@ -244,6 +247,8 @@ if __name__ == '__main__':
                 print('mass_ratio: ',mass_ratio)
 
                 spin_vs_logQ_file='spin_vs_logQ_'+KIC+'.txt'
+                if os.path.isfile(spin_vs_logQ_file)==True:
+                    break
                 with open(spin_vs_logQ_file,'w') as f_svq:
                     f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH' + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
                     f_svq.write(lines)

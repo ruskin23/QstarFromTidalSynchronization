@@ -543,19 +543,19 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    output_fname='mass_upto_0.2.txt'
+    output_fname='mass_range_0.2_0.4.txt'
     f_out=open(output_fname,'w')
     f_out.write('KIC' + '\t' + 'age_1' + '\t' + 'primary_mass_1' + '\t' + 'secondary_mass_1' + '\t' + 'age_2' + '\t' + 'primary_mass_2' + '\t' + 'secondary_mass_2' + '\n')
     f_out.close()
 
-    output_cat_file='nominal_data.txt'
+    output_cat_file='nominal_data_2.txt'
     f_cat=open(output_cat_file,'w')
     f_cat.write('KIC'  + '\t' + 'Teff' + '\t' + 'FeH' + '\t' + 'logg' + '\t' +
                 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' +
                 'mass_ratio' + '\n')
     f_cat.close()
 
-    with open('catalog_KIC.txt','r') as f:
+    with open('KIC_catalog_2.txt','r') as f:
 
         next(f)
 

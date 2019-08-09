@@ -256,6 +256,6 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 5.905250707122995
+    logQ = 8.0
     print(phase_lag(logQ))
     #test_evolution(interpolator,  phase_lag(logQ), True)
