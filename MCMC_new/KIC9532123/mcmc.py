@@ -419,7 +419,6 @@ if __name__ == '__main__':
 
 
 
-
 #logQ = 0.05
 #3sigma
 #randomly select from masses
