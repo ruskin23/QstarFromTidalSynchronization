@@ -219,7 +219,9 @@ if __name__ == '__main__':
     #files = [1,2,3,4,5,6,7,8,9,10]
     #files = [11,12,13,14,15,16,17,18,19,20]
     #files = [21,22,23,24,25,26,27,28,29,30]
-    files = [48,49,50,51]
+    #files = [38,39,40,41,42,43]
+    #files = [44,45,46,47,48]
+    files = [49,50,51]
     for i in files:
         data_file='catalog_'+repr(i)+'_p.txt'
 
@@ -247,9 +249,7 @@ if __name__ == '__main__':
                 print('mass_ratio: ',mass_ratio)
 
                 spin_vs_logQ_file='spin_vs_logQ_'+KIC+'.txt'
-                if os.path.isfile(spin_vs_logQ_file)==True:
-                    break
-                with open(spin_vs_logQ_file,'w') as f_svq:
+                with open(spin_vs_logQ_file,'a') as f_svq:
                     f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH' + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
                     f_svq.write(lines)
 
@@ -274,7 +274,7 @@ if __name__ == '__main__':
                 check_sign=1
                 q_max=0.0
                 q_min=0.0
-                logQ = numpy.arange(7.0,11.0,1.0)
+                logQ = [5.0,6.0]
                 for q in logQ:
                     print('Calculating for logQ = ', q)
                     spin = evolve(q,spin_vs_logQ_file,option=1)
