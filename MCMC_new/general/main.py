@@ -53,10 +53,8 @@ if __name__ == '__main__':
                 teff_primary=dict(value=float(data[1]),sigma=float(data[2])),
                 feh=dict(value=float(data[3]),sigma=float(data[4])),
                 Porb=dict(value=float(data[5]),sigma=float(data[6])),
-                #eccentricity=dict(value=0.0,sigma=0.0),
                 eccentricity=dict(value=float(data[7]),sigma=float(data[8])),
                 logg=dict(value=float(data[9]),sigma=float(data[10])),
-                Wdisk=dict(value=2*scipy.pi / 1.4, sigma=0.1)
                         )
 
     observed_Pspin = dict(value=float(data[11]),sigma=float(data[12]))
@@ -82,6 +80,10 @@ if __name__ == '__main__':
                         logQ_step=0.15
                     )
 
+    Wdisk = dict(
+                min=2*scipy.pi/14,
+                max=2*scipy.pi/1.4
+    )
 
     logQ = dict(
                 min=4.5,
@@ -97,6 +99,7 @@ mcmc = MetropolisHastings(
                             interpolator,
                             fixed_parameters,
                             observation_data,
+                            Wdisk,
                             logQ,
                             proposed_step,
                             10,

@@ -41,6 +41,7 @@ class MetropolisHastings:
 
         for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
             prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
+            print('prior = ', scipy.stats.norm(value_obs['value'],                value_obs['sigma']).pdf(value_parameter))
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
 
@@ -156,6 +157,7 @@ class MetropolisHastings:
 
         for key, value in self.observation_data.items():
             self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
+        self.initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
         self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
 
         print ('\nINITIAL PARAMETERS SET')
@@ -300,6 +302,7 @@ class MetropolisHastings:
                 interpolator,
                 fixed_parameters,
                 observation_data,
+                Wdisk,
                 logQ,
                 proposed_step,
                 total_iterations,
@@ -312,6 +315,7 @@ class MetropolisHastings:
         self.interpolator  = interpolator
         self.fixed_parameters = fixed_parameters
         self.observation_data = observation_data
+        self.Wdisk=Wdisk
         self.logQ = logQ
         self.proposed_step = proposed_step
         self.iteration_step = 1

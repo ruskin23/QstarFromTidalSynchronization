@@ -391,7 +391,7 @@ if __name__ == '__main__':
     parser.add_argument('-q',action = 'store', dest = 'logQ')
     args = parser.parse_args()
 
-    logQ = dict(max=5.0 + int(args.instance)*0.083)
+    logQ = dict(max=6.0 + int(args.instance)*0.083)
 
 
     #stepfilename = 'step_file_'+args.instance+'.txt'
