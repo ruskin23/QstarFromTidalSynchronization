@@ -12,14 +12,23 @@ def write_para(para,m_sol,i):
     with open(filename,'w') as f:
         f.write(kic + '\t' + para[1] + '\t' + para[3] + '\t' + para [9] + '\t' + para[7] + '\t' + para[5] + '\t' + para[11] + '\t' + para[13] + '\n')
 
+<<<<<<< HEAD
 i=38
 with open('mass_range_0.2_0.4.txt','r') as f1:
+=======
+i=1
+with open('mass_upto_0.2.txt','r') as f1:
+>>>>>>> 7ef64df41a19fcf453fe2eae341c4d839862d48a
     next(f1)
     for line1 in f1:
         data=line1.split()
         kic=data[0]
         print(kic)
+<<<<<<< HEAD
         with open('KIC_catalog_2.txt','r') as f2:
+=======
+        with open('KIC_catalog.txt','r') as f2:
+>>>>>>> 7ef64df41a19fcf453fe2eae341c4d839862d48a
             next(f2)
             for line2 in f2:
                 print('checking')

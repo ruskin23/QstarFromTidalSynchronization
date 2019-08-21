@@ -2,8 +2,9 @@
 import os
 
 import sys
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
+sys.path.append('.../poet/PythonPackage')
+sys.path.append('.../poet/scripts')
+
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
