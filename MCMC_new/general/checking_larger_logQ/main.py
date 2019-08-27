@@ -86,8 +86,8 @@ if __name__ == '__main__':
     )
 
     logQ = dict(
-                min=9,
-                max=10
+                min=7,
+                max=8
     )
 
 stepfilename = 'step_file_'+args.instance+'.txt'
