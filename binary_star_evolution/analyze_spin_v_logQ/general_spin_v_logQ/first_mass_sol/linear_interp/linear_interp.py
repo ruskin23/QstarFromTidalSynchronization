@@ -7,7 +7,7 @@ count = 0
 total = 0
 
 fname = []
-
+fname_no_sol = []
 for filename in os.listdir(directory):
     if filename.endswith('.txt'):
         print(filename)
@@ -29,7 +29,13 @@ for filename in os.listdir(directory):
         if spin_diff[0]*spin_diff[-1]<0:
             fname.append(filename)
             count=count+1
-
+        else:
+            fname_no_sol.append(filename)
+fm = open('no_sol_files.csv','w')
+fm.close()
+for x in fname_no_sol:
+    with open('no_sol_files.csv','a') as fn:
+        fn.write(x +'\n')
 
 
 

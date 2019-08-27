@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-
+import os
 
 import sys
 sys.path.append('.../poet/PythonPackage')
 sys.path.append('.../poet/scripts')
+
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -108,7 +109,6 @@ class evolution:
 
 
     def calculate_star_masses(self):
-
         star_masses = []
 
         print ("Calculating Masses\n")
@@ -203,7 +203,8 @@ class evolution:
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('instance',help='select system to run')
+    parser.add_argument('-s',dest='system',help='select system to run')
+    parser.add_argument('-w',dest='wdisk_instance',help='select value of wdisk')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -214,44 +215,35 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
+    files = [int(args.system)]
+    for i in files:
+        data_file='catalog_'+repr(i)+'_p.txt'
 
-    #data_file = 'catalog_'+args.instance+'.txt'
-    data_file = 'test_data.txt'
-    with open(data_file,'r') as f:
-        #next(f)
-        for lines in f:
-            data=lines.split()
-            KIC='KIC'+data[0]
-            teff=float(data[1])
-            feh=float(data[2])
-            logg=float(data[3])
-            eccentricity=float(data[4])
-            Porb=float(data[5])
-            Pspin=float(data[6])
-            mass_ratio=float(data[7])
+        with open(data_file,'r') as f:
+            #next(f)
+            for lines in f:
+                data=lines.split()
+                KIC='KIC'+data[0]
+                teff=float(data[1])
+                feh=float(data[2])
+                logg=float(data[3])
+                eccentricity=float(data[4])
+                Porb=float(data[5])
+                Pspin=float(data[6])
+                mass_ratio=float(data[7])
 
-            print('printing parameters:')
-            print('KIC: ',KIC)
-            print('teff: ',teff)
-            print('feh: ',feh)
-            print('logg: ',logg)
-            print('eccentricity: ',eccentricity)
-            print('Porb: ',Porb)
-            print('Pspin: ',Pspin)
-            print('mass_ratio: ',mass_ratio)
+                print('printing parameters:')
 
-            spin_vs_logQ_file='spin_vs_logQ_'+KIC+'.txt'
-            with open(spin_vs_logQ_file,'w') as f_svq:
-                f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH'
-                       + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' +
-                       '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
-                f_svq.write(lines)
+                spin_vs_logQ_file='spin_vs_logQ_'+KIC+'_'+args.wdisk_instance+'.txt'
+                with open(spin_vs_logQ_file,'w') as f_svq:
+                    f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH' + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
+                    f_svq.write(lines)
 
-            parameters = dict(
+                parameters = dict(
                         teff_primary=teff,
                         feh= feh,
                         logg=logg,
-                        Wdisk=7.306699756301906,
+                        Wdisk=(4.306699756301906+float(args.wdisk_instance)),
                         Porb=Porb,
                         incination=0.0,
                         disk_dissipation_age=5e-3,
@@ -262,31 +254,15 @@ if __name__ == '__main__':
                         wind_strength=0.17,
                         eccentricity=eccentricity,
                         mass_ratio=mass_ratio)
+                print(parameters)
+                evolve = evolution(interpolator,parameters)
 
-            evolve = evolution(interpolator,parameters)
+                logQ = numpy.arange(1.0,3.0,1)
+                for q in logQ:
+                    print('Calculating for logQ = ', q)
+                    spin = evolve(q,spin_vs_logQ_file,option=1)
+                    print('Obtained spin = ', spin)
 
-            check_sign=1
-            q_max=0.0
-
-            logQ = numpy.arange(5.0,9.0,1.0)
-            for q in logQ:
-                print('Calculating for logQ = ', q)
-                spin = evolve(q,spin_vs_logQ_file,option=1)
-                print('Obtained spin = ', spin)
-                spin_diff = Pspin-spin
-                print('spin difference = ',spin_diff)
-                check_sign=check_sign*spin_diff
-                if check_sign>0 and q_max==0:q_min=q
-                if check_sign<0 and q_max==0:q_max=q
-
-#            logQ_sol = brentq(
-#               lambda q:evolve(q,None,option=2)-Pspin,
-#               q_max,
-#               q_min)
-
-
-#            with open('logQ_solution','w') as f:
-#                f.write(repr(logQ_sol))
 
 
 
