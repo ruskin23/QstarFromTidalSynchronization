@@ -1,7 +1,16 @@
 """Allows finding mass and age given other properties at fixed [Fe/H]."""
 import sys
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+
+from pathlib import Path
+home_dir=str(Path.home())
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet'
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet'
+
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
@@ -559,6 +568,12 @@ class Derive_mass:
             age = m[0][1]
 
         elif len(m) == 2:
+            #if m[0][1]>m[1][1]:
+                #primary_mass=m[1][0]
+                #age=m[1][1]
+            #else:
+                #primary_mass=m[0][0]
+                #age=m[0][1]
             m_choice = random.choice(m)
             primary_mass = m_choice[0]
             age = m_choice[1]
