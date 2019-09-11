@@ -140,9 +140,13 @@ class InitialConditionSolver:
         #if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
 
         self.delta_p = self.orbital_period-self.target.Porb
-        self.detla_e = self.eccentricity-self.target.eccentricity
+        self.delta_e = self.eccentricity-self.target.eccentricity
 
-        print(self.delta_p,self.detla_e)
+        if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e)))==True:
+            print('Binary system was destroyed')
+            raise ValueError
+
+        print(self.delta_p,self.delta_e)
 
         self.spin =  (
                 2.0 * pi
@@ -156,7 +160,7 @@ class InitialConditionSolver:
 
         self.binary.delete()
 
-        return self.delta_p,self.detla_e
+        return self.delta_p,self.delta_e
 
     def __init__(self,
                  planet_formation_age=None,
@@ -201,20 +205,26 @@ class InitialConditionSolver:
 
         e=self.target.eccentricity
         p=self.target.Porb
-        #while True:
-        try:
-            sol = optimize.root(
+        while True:
+            try:
+                sol = optimize.root(
                                 self._try_initial_conditions,
                                 [p,e],
                                 method='lm'
                                 )
-        except AssertionError:
-            self.spin=scipy.nan
-            self.gsl_flag=True
-            self.delta_e=scipy.nan
-            self.delta_p=scipy.nan
-            self.orbital_period=p
-            self.eccentricity=e
+                break
+            except ValueError:
+                p=p+10.0
+                e=e+0.1
+                continue
+            except AssertionError:
+                self.spin=scipy.nan
+                self.gsl_flag=True
+                self.delta_e=scipy.nan
+                self.delta_p=scipy.nan
+                self.orbital_period=p
+                self.eccentricity=e
+                break
                 #if self.e_initial!=0:e=self.e_initial+0.0005
                 #else:e=e+0.0005
                 #if self.p_initial!=0:p=self.p_initial
@@ -229,7 +239,7 @@ class InitialConditionSolver:
         else:
             self.initial_orbital_period_sol,self.initial_eccentricity_sol = sol.x
 
-        if abs(self.delta_p)>0.1 or abs(self.detla_e)>0.1:self.spin=scipy.nan
+        if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:self.spin=scipy.nan
 
         pickle_fname=self.output_directory+'solver_results_'+self.instance+'.pickle'
 
@@ -241,7 +251,7 @@ class InitialConditionSolver:
             pickle.dump(self.eccentricity,f)
             pickle.dump(self.spin,f)
             pickle.dump(self.delta_p,f)
-            pickle.dump(self.detla_e,f)
+            pickle.dump(self.delta_e,f)
             pickle.dump(self.gsl_flag,f)
 
 

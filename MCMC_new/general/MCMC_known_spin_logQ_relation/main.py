@@ -2,6 +2,7 @@ import argparse
 import scipy
 import sys
 import os
+import os.path
 
 from pathlib import Path
 home_dir=str(Path.home())
@@ -26,8 +27,10 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
+    eccentricity_path=os.path.join(poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        bpoet_path+"eccentricity_expansion_coef.txt"
+        eccentricity_path
     )
 
     parser = argparse.ArgumentParser()
@@ -83,7 +86,6 @@ if __name__ == '__main__':
     proposed_step = dict(
                         teff_step=130.0,
                         feh_step=0.2,
-                        #Porb_step=0.0001,
                         Porb_step=float(data[6]),
                         eccentricity_step=float(data[8]),
                         logg_step=0.1,
@@ -106,7 +108,7 @@ if __name__ == '__main__':
                 max=2*scipy.pi/1.4
     )
 
-    logQ = dict(value=float(data[14])+5.0
+    logQ = dict(value=float(data[14])
     )
 
 output_direcotry= os.getcwd()+'/MCMC_'+system_number+'/'
