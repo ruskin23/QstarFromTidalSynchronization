@@ -27,7 +27,7 @@ if __name__ == '__main__':
     interpolator = manager.get_interpolator_by_name('default')
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
+        bpoet_path+"eccentricity_expansion_coef.txt"
     )
 
     parser = argparse.ArgumentParser()
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 max=2*scipy.pi/1.4
     )
 
-    logQ = dict(value=float(data[14])
+    logQ = dict(value=float(data[14])+5.0
     )
 
 output_direcotry= os.getcwd()+'/MCMC_'+system_number+'/'
