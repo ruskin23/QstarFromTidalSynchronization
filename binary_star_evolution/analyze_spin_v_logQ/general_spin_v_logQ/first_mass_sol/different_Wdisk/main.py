@@ -235,8 +235,8 @@ if __name__ == '__main__':
                 print('printing parameters:')
 
                 spin_vs_logQ_file='spin_vs_logQ_'+KIC+'_'+args.wdisk_instance+'.txt'
-                if os.path.isfile(spin_vs_logQ_file)==True:
-                    break
+                #if os.path.isfile(spin_vs_logQ_file)==True:
+                #    break
                 with open(spin_vs_logQ_file,'w') as f_svq:
                     f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH' + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
                     f_svq.write(lines)
@@ -245,7 +245,7 @@ if __name__ == '__main__':
                         teff_primary=teff,
                         feh= feh,
                         logg=logg,
-                        Wdisk=(4.306699756301906+float(args.wdisk_instance)),
+                        Wdisk=2*numpy.pi/(4.306699756301906+float(args.wdisk_instance)),
                         Porb=Porb,
                         incination=0.0,
                         disk_dissipation_age=5e-3,
@@ -259,7 +259,7 @@ if __name__ == '__main__':
                 print(parameters)
                 evolve = evolution(interpolator,parameters)
 
-                logQ = numpy.arange(4.0,16.0,1.0)
+                logQ = numpy.arange(8.0,16.0,1.0)
                 for q in logQ:
                     print('Calculating for logQ = ', q)
                     spin = evolve(q,spin_vs_logQ_file,option=1)

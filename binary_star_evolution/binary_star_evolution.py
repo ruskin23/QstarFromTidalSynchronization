@@ -93,7 +93,7 @@ def create_binary_system(primary,
                     disk_lock_frequency=disk_lock_frequency,
                     disk_dissipation_age=disk_dissipation_age,
                     secondary_formation_age=disk_dissipation_age)
-
+    #set large formation age for single star
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),

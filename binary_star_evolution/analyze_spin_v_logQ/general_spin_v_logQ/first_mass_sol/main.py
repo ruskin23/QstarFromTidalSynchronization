@@ -200,11 +200,23 @@ class evolution:
         primary.delete()
         secondary.delete()
 
+def select_files(instance):
+    files = {'1':[1,2,3,4,5],
+                 '2':[6,7,8,9,10],
+                 '3':[11,12,13,14,15],
+                 '4':[16,17,18,19,20],
+                 '5':[21,22,23,24,25],
+                 '6':[26,27,28,29,30],
+                 '7':[31,32,33,34,35],
+                 '8':[36,37,38,39,40]
+                 }
+    return(files[instance])
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-s',dest='system',help='select system to run')
-    parser.add_argument('-w',dest='wdisk_instance',help='select value of wdisk')
+    #parser.add_argument('-w',dest='wdisk_instance',help='select value of wdisk')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -215,7 +227,9 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    files = [int(args.system)]
+    #files = [int(args.system)]
+    files = select_files(args.system)
+
     for i in files:
         data_file='catalog_'+repr(i)+'_p.txt'
 
@@ -234,9 +248,7 @@ if __name__ == '__main__':
 
                 print('printing parameters:')
 
-                spin_vs_logQ_file='spin_vs_logQ_'+KIC+'_'+args.wdisk_instance+'.txt'
-                if os.path.isfile(spin_vs_logQ_file)==True:
-                    break
+                spin_vs_logQ_file='spin_vs_logQ_'+repr(i)+'.txt'
                 with open(spin_vs_logQ_file,'w') as f_svq:
                     f_svq.write('#DATA:' + '\n' + '#KIC' + '\t' + 'Teff'  + '\t' +  'FeH' + '\t' + 'logg' + '\t' + 'eccentricity' + '\t' + 'Porb' + '\t' + 'Pspin' + '\t' + 'q' + '\n' + '#')
                     f_svq.write(lines)
@@ -245,7 +257,8 @@ if __name__ == '__main__':
                         teff_primary=teff,
                         feh= feh,
                         logg=logg,
-                        Wdisk=(4.306699756301906+float(args.wdisk_instance)),
+                        #Wdisk=2*numpy.pi/(1.4+float(args.wdisk_instance)),
+                        Wdisk=4.44920802529774,
                         Porb=Porb,
                         incination=0.0,
                         disk_dissipation_age=5e-3,
