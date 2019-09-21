@@ -58,19 +58,22 @@ if __name__ == '__main__':
             if i==data_line:
                 data=lines.split()
                 KIC=data[0]
-                mass_ratio=float(data[13])
+                mass_ratio=float(data[14])
                 break
     print(KIC)
+    print(mass_ratio)
+    mass_age_feh_sample_file='mass_age_feh_sample_'+system_number+'.txt'
 
     observation_data = dict(
-                teff_primary=dict(value=float(data[1]),sigma=float(data[2])),
-                feh=dict(value=float(data[3]),sigma=float(data[4])),
-                Porb=dict(value=float(data[5]),sigma=float(data[6])),
-                eccentricity=dict(value=float(data[7]),sigma=float(data[8])),
-                logg=dict(value=float(data[9]),sigma=float(data[10])),
+                Porb=dict(value=float(data[6]),sigma=float(data[7])),
+                eccentricity=dict(value=float(data[8]),sigma=float(data[9])),
                         )
 
-    observed_Pspin = dict(value=float(data[11]),sigma=float(data[12]))
+    print(observation_data)
+
+    observed_Pspin = dict(value=float(data[12]),sigma=float(data[13]))
+
+    print(observed_Pspin)
 
     fixed_parameters = dict(
                         disk_dissipation_age=5e-3,
@@ -84,33 +87,22 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        teff_step=130.0,
-                        feh_step=0.2,
-                        Porb_step=float(data[6]),
-                        eccentricity_step=float(data[8]),
-                        logg_step=0.1,
+                        Porb_step=float(data[7]),
+                        eccentricity_step=float(data[9]),
                         Wdisk_step=0.1,
                         logQ_step=0.15
                     )
 
-    #proposed_step = dict(
-                        #teff_step=10.0,
-                        #feh_step=0.02,
-                        #Porb_step=0.0001,
-                        #eccentricity_step=float(data[6]),
-                        #logg_step=0.01,
-                        #Wdisk_step=0.1,
-                        #logQ_step=0.15
-                    #)
 
     Wdisk = dict(
                 min=2*scipy.pi/14,
                 max=2*scipy.pi/1.4
     )
 
-    logQ = dict(value=float(data[14])
+    logQ = dict(value=float(data[15])
     )
 
+    print(logQ)
 output_direcotry= os.getcwd()+'/MCMC_'+system_number+'/'
 if os.path.isdir(output_direcotry)==False:os.mkdir(output_direcotry)
 
@@ -125,6 +117,7 @@ mcmc = MetropolisHastings(
                             interpolator,
                             fixed_parameters,
                             observation_data,
+                            mass_age_feh_sample_file,
                             Wdisk,
                             logQ,
                             proposed_step,

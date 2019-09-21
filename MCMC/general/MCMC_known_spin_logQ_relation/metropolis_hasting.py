@@ -3,6 +3,7 @@
 import scipy
 from scipy.stats import norm
 import numpy
+import random
 
 import pickle
 import csv
@@ -62,13 +63,32 @@ class MetropolisHastings:
             print('Acceptance_probability = ', self.p_acceptance)
             print('Random_number = ', rand)
 
+    def propose_from_samples(self,name):
+
+        rand=random.randint(1,500004)
+
+        with open(self.mass_age_feh_sample_file,'r') as f:
+            for i,lines in enumerate(f):
+                if i==rand:
+                    x=lines.split()
+                    if name=='primary_mass':return float(x[1])
+                    if name=='age':return 10**float(x[2])
+                    if name=='feh':return float(x[3])
+
+
 
     def values_proposed(self):
 
         proposed = dict()
+
+        sample_keys=['primary_mass','age','feh']
+        for key in sample_keys:
+            proposed[key]=self.propose_from_samples(key)
+
         for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
-            proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
-            print("NAME AND VALUE",name_obs,proposed[name_obs] )
+            if name_obs not in sample_keys:
+                proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
+                print("NAME AND VALUE",name_obs,proposed[name_obs] )
 
         self.proposed_parameters = proposed
 
@@ -90,17 +110,15 @@ class MetropolisHastings:
         for key in self.current_parameters.keys():
             header.append(key)
 
-        ext = ['age',
-               'primary_mass',
-               'secondary_mass',
-               'inital_orbital_period',
-               'initial_eccentricity',
-               'current_orbital_period',
-               'current_eccentricity',
-               'current_spin',
-               'delta_e',
-               'delta_p',
-               'gsl_flag'
+        ext = [ 'secondary_mass',
+                'inital_orbital_period',
+                'initial_eccentricity',
+                'current_orbital_period',
+                'current_eccentricity',
+                'current_spin',
+                'delta_e',
+                'delta_p',
+                'gsl_flag'
                ]
 
 
@@ -134,14 +152,8 @@ class MetropolisHastings:
             f_name = self.save_filename[1]
 
 
-        mass_age_file =self.output_directory+'mass_age_solution_'+self.instance+'.pickle'
         load_solver_file = self.output_directory+'solver_results_'+self.instance+'.pickle'
 
-        if os.path.isfile(mass_age_file)==True:
-            with open(mass_age_file,'rb') as f:
-                age=pickle.load(f)
-                primary_mass=pickle.load(f)
-                secondary_mass=pickle.load(f)
 
         if os.path.isfile(load_solver_file) == True:
             with open(load_solver_file,'rb') as f:
@@ -157,17 +169,9 @@ class MetropolisHastings:
         with open(f_name, 'a', 1) as file:
 
             file.write('%s\t' %self.iteration_step)
-
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
-
-            if os.path.isfile(mass_age_file)==True:
-                file.write(
-                    repr(age)+'\t'+
-                    repr(primary_mass)+'\t'+
-                    repr(secondary_mass)+'\t'
-                    )
-
+                file.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
             if os.path.isfile(load_solver_file) == True:
                 file.write(
                     repr(initial_orbital_period)+'\t'+
@@ -190,6 +194,7 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
+            f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
             f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
 
@@ -198,16 +203,21 @@ class MetropolisHastings:
 
         """Initial values are drawn randomly from the given observable data set"""
 
+        initial_parameters=dict()
+        sample_keys=['primary_mass','age','feh']
+
+        for key in sample_keys:
+            initial_parameters[key]=self.propose_from_samples(key)
 
         for key, value in self.observation_data.items():
-            #self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
-            self.initial_parameters[key] = value['value']
-        self.initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
-        self.initial_parameters['logQ'] = self.logQ['value']
+            initial_parameters[key] = value['value']
+
+        initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
+        initial_parameters['logQ'] = self.logQ['value']
 
         print ('\nINITIAL PARAMETERS SET')
 
-        self.current_parameters = self.initial_parameters
+        self.current_parameters = initial_parameters
 
         if self.iteration_step==1:self.write_header()
 
@@ -324,15 +334,15 @@ class MetropolisHastings:
                 step = row
         self.iteration_step = int(step[0]) + 1
 
-        self.current_parameters['teff_primary'] = float(array[1])
-        self.current_parameters['feh'] = float(array[2])
-        self.current_parameters['Porb'] = float(array[3])
-        self.current_parameters['eccentricity'] = float(array[4])
-        self.current_parameters['logg'] = float(array[5])
+        self.current_parameters['primary_mass'] = float(array[1])
+        self.current_parameters['age'] = float(array[2])
+        self.current_parameters['feh'] = float(array[3])
+        self.current_parameters['Porb'] = float(array[4])
+        self.current_parameters['eccentricity'] = float(array[5])
         self.current_parameters['Wdisk'] = float(array[6])
         self.current_parameters['logQ'] = float(array[7])
 
-        if self.current_file_exist: self.current_posterior = float(array[8])
+        if self.current_file_exist: self.current_posterior = float(array[9])
         else : self.current_posterior = self.posterior_probability(self.current_parameters)
 
         self.iterations()
@@ -342,6 +352,7 @@ class MetropolisHastings:
                 interpolator,
                 fixed_parameters,
                 observation_data,
+                mass_age_feh_sample_file,
                 Wdisk,
                 logQ,
                 proposed_step,
@@ -361,10 +372,10 @@ class MetropolisHastings:
         self.proposed_step = proposed_step
         self.iteration_step = 1
         self.mass_ratio=mass_ratio
+        self.mass_age_feh_sample_file=mass_age_feh_sample_file
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
-        self.initial_parameters = dict()
 
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin

@@ -116,33 +116,6 @@ class evolution:
         return binary
 
 
-    def calculate_star_masses(self):
-
-        star_masses = []
-
-        print ("Calculating Masses\n")
-
-        mass = Derive_mass(
-                            self.interpolator,
-                            self.teff_primary,
-                            self.logg,
-                            self.feh)
-
-        self.primary_mass,self.age=mass()
-        if numpy.isnan(self.primary_mass)==True:self.secondary_mas=scipy.nan
-        else: self.secondary_mass = self.primary_mass*self.mass_ratio
-
-        print(self.primary_mass)
-        print(self.secondary_mass)
-        print(self.age)
-
-        pickle_fname=self.output_directory+'mass_age_solution_'+self.instance+'.pickle'
-
-        with open(pickle_fname,'wb') as f:
-            pickle.dump(self.age,f)
-            pickle.dump(self.primary_mass,f)
-            pickle.dump(self.secondary_mass,f)
-
 
 
     def __init__(self,
@@ -164,7 +137,6 @@ class evolution:
 
         self.convective_phase_lag=phase_lag(self.logQ)
 
-        self.primary_mass=0.0
         self.secondary_mass=0.0
 
         self.mass_ratio=mass_ratio
@@ -175,12 +147,14 @@ class evolution:
 
         tdisk = self.disk_dissipation_age
 
-        self.calculate_star_masses()
+        self.secondary_mass=self.primary_mass*self.mass_ratio
+
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
                                               numpy.isnan(self.secondary_mass)))
                             ):
+            print('secondary_mass = ',self.secondary_mass)
             print('mass out of range')
             return scipy.nan
 
