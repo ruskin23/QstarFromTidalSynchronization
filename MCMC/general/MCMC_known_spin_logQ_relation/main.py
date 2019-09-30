@@ -52,8 +52,8 @@ if __name__ == '__main__':
 
     system_number=args.system
     data_line=int(system_number)
-
-    with open('data_file.txt','r') as f:
+    data_filename = os.getcwd() + '/data_file.txt'
+    with open(data_filename,'r') as f:
         for i,lines in enumerate(f):
             if i==data_line:
                 data=lines.split()
@@ -62,7 +62,7 @@ if __name__ == '__main__':
                 break
     print(KIC)
     print(mass_ratio)
-    mass_age_feh_sample_file='mass_age_feh_sample_'+system_number+'.txt'
+    mass_age_feh_sample_file=os.getcwd() + '/mass_age_feh_sample_'+system_number+'.txt'
 
     observation_data = dict(
                 Porb=dict(value=float(data[6]),sigma=float(data[7])),
