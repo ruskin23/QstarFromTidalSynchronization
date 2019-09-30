@@ -90,7 +90,7 @@ if __name__ == '__main__':
                         Porb_step=float(data[7]),
                         eccentricity_step=float(data[9]),
                         Wdisk_step=0.1,
-                        logQ_step=0.15
+                        logQ_step=1.0
                     )
 
 

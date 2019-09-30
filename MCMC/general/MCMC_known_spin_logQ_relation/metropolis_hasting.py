@@ -41,9 +41,14 @@ class MetropolisHastings:
         print('Current Spin Value = ', self.spin_value )
         prior = 1.0
 
-        for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
-            prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-            print('prior = ', scipy.stats.norm(value_obs['value'],                value_obs['sigma']).pdf(value_parameter))
+        for key_obs,value_obs in self.observation_data.items():
+            prior=prior*scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs])
+            print('prior for ', key_obs)
+            print(scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs]))
+
+        #for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
+        #    prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
+        #    print('prior = ', scipy.stats.norm(value_obs['value'],                value_obs['sigma']).pdf(value_parameter))
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
 
@@ -85,10 +90,12 @@ class MetropolisHastings:
         for key in sample_keys:
             proposed[key]=self.propose_from_samples(key)
 
-        for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
-            if name_obs not in sample_keys:
-                proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
-                print("NAME AND VALUE",name_obs,proposed[name_obs] )
+        for key_obs,value_obs in self.observation_data.items():
+            step_key=key_obs+'_step'
+            proposed[key_obs]=scipy.stats.norm.rvs(loc=self.current_parameters[key_obs],scale=self.proposed_step[step_key])
+        proposed['Wdisk']=scipy.stats.norm.rvs(loc=self.current_parameters['Wdisk'],scale=self.proposed_step['Wdisk_step'])
+        proposed['logQ']=scipy.stats.norm.rvs(loc=self.current_parameters['logQ'],scale=self.proposed_step['logQ_step'])
+
 
         self.proposed_parameters = proposed
 
@@ -171,7 +178,7 @@ class MetropolisHastings:
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
-                file.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+            file.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
             if os.path.isfile(load_solver_file) == True:
                 file.write(
                     repr(initial_orbital_period)+'\t'+
