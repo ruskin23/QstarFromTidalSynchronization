@@ -7,10 +7,16 @@ import os.path
 from pathlib import Path
 home_dir=str(Path.home())
 
+git_dir='/QstarFromTidalSynchronization/MCMC/general/MCMC_known_spin_logQ_relation'
+
+
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
+    current_directory=home_dir+git_dir
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
+    current_directory=home_dir+'/projects'+git_dir
+
 
 sys.path.append(poet_path+'PythonPackage')
 sys.path.append(poet_path+'scripts')
@@ -52,7 +58,7 @@ if __name__ == '__main__':
 
     system_number=args.system
     data_line=int(system_number)
-    data_filename = os.getcwd() + '/data_file.txt'
+    data_filename = current_directory + '/data_file.txt'
     with open(data_filename,'r') as f:
         for i,lines in enumerate(f):
             if i==data_line:
@@ -62,7 +68,7 @@ if __name__ == '__main__':
                 break
     print(KIC)
     print(mass_ratio)
-    mass_age_feh_sample_file=os.getcwd() + '/mass_age_feh_sample_'+system_number+'.txt'
+    mass_age_feh_sample_file=current_directory + '/mass_age_feh_sample_'+system_number+'.txt'
 
     observation_data = dict(
                 Porb=dict(value=float(data[6]),sigma=float(data[7])),
@@ -103,7 +109,9 @@ if __name__ == '__main__':
     )
 
     print(logQ)
-output_direcotry= os.getcwd()+'/MCMC_'+system_number+'/'
+
+output_direcotry=current_directory+'/MCMC_'+system_number+'/'
+
 if os.path.isdir(output_direcotry)==False:os.mkdir(output_direcotry)
 
 stepfilename = output_direcotry+'step_file_'+args.instance+'.txt'
