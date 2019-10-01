@@ -46,14 +46,7 @@ class MetropolisHastings:
             print('prior for ', key_obs)
             print(scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs]))
 
-        #for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
-        #    prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-from pathlib import Path
-home_dir=str(Path.home())
-        #    print('prior = ', scipy.stats.norm(value_obs['value'],                value_obs['sigma']).pdf(value_parameter))
-
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
-
 
         print('likehood = ', likelihood)
         posterior = prior*likelihood
