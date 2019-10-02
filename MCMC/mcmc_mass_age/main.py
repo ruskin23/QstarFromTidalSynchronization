@@ -259,7 +259,7 @@ class metropolis_hasting:
                  parameters,
                  constraints,
                  step_size,
-                 instance):
+                 system):
 
         self.interpolator=interpolator
         self.parameters=parameters
@@ -273,42 +273,58 @@ class metropolis_hasting:
         self.constraints_evaulated=dict()
         self.current_results=dict()
 
-        self.instance=instance
+        self.system=system
 
         self.isAccepted=None
 
-        output_path = '/mnt/md0/ruskin/QstarFromTidalSynchronization/mcmc_mass_output/'
+        #output_path = '/mnt/md0/ruskin/QstarFromTidalSynchronization/mcmc_mass_output/'
 
-        self.filenames=[output_path+'accepted_parameters_'+self.instance+'.txt',
-                        output_path+'rejected_parameters_'+self.instance+'.txt']
+        self.filenames=['mass_age_teff_sample_'+self.system+'.txt',
+                        'rejected_parameters_'+self.system+'.txt']
 
 
 
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser()
-    parser.add_argument('-i', action='store',dest='instance',
-                        help='define an instance for mcmc')
+    parser.add_argument('-l',action='store',dest='data_line',
+                        help='specify the system from data_file.txt')
     args=parser.parse_args()
 
-    instance=args.instance
+    system=args.data_line
 
     #interpolator
     serialized_dir = poet_path +  "stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    #parameters
+
+    with open('catalog_KIC.txt','r') as f:
+        for i,lines in enumerate(f):
+            if i==int(system):
+                print('For values = ',lines)
+                x=lines.split()
+                teff_value=float(x[2])
+                teff_sigma=float(x[3])
+                logg_value=float(x[10])
+                logg_sigma=float(x[11])
+                feh_value=float(x[4])
+                feh_sigma=float(x[5])
+
     parameters = dict(
         mass=dict(min=0.5,max=1.2),
         lage=dict(min=-3,max=1.1),
-        feh=dict(value=-0.32,sigma=0.3)
+        feh=dict(value=feh_value,sigma=feh_sigma)
     )
 
+    print('Parameters = ',parameters)
+
     constraints = dict(
-        teff=dict(value=4848,sigma=173),
-        logg=dict(value=4.55,sigma=0.065)
+        teff=dict(value=teff_value,sigma=teff_sigma),
+        logg=dict(value=logg_value,sigma=logg_sigma)
     )
+
+    print('Constraints = ',constraints)
 
     step_size = dict(
         mass_step=1.0,
@@ -321,7 +337,7 @@ if __name__ == '__main__':
                             parameters,
                             constraints,
                             step_size,
-                            instance)
+                            system)
 
     #metropolis_hasting
     MCMC.iterations()
