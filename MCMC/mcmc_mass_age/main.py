@@ -293,6 +293,8 @@ if __name__ == '__main__':
 
     system=args.data_line
 
+    print('System = ', system)
+
     #interpolator
     serialized_dir = poet_path +  "stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -301,6 +303,7 @@ if __name__ == '__main__':
 
     with open('catalog_KIC.txt','r') as f:
         for i,lines in enumerate(f):
+            print(i)
             if i==int(system):
                 print('For values = ',lines)
                 x=lines.split()
