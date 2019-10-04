@@ -156,29 +156,30 @@ class evolution:
 
 
 
-        solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
+        #solutions =
+        find_ic(target=self.target, primary=primary,secondary=secondary)
 
-        print('Solution: ',solutions )
+        #print('Solution: ',solutions )
 
-        sol=[]
+        #sol=[]
 
-        for key,value in solutions.items():
-            sol.append(repr(value))
+        #for key,value in solutions.items():
+        #    sol.append(repr(value))
 
-        sol='\t'.join(sol)
-        with open(sol_file,'a',1) as f:
-            f.write(repr(q)+'\t'+sol+'\n')
-
-        primary.delete()
-        secondary.delete()
-
-        return solutions['spin']
+        #sol='\t'.join(sol)
+        #with open(sol_file,'a',1) as f:
+        #    f.write(repr(q)+'\t'+sol+'\n')
+#
+#        primary.delete()
+#        secondary.delete()
+#
+#        return solutions['spin']
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('index',help='select system to run')
+    parser.add_argument('system',help='select system to run')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -189,23 +190,15 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    index=int(args.index)
+    system=int(args.system)
 
-    system_array=[]
-    with open('spin_vs_logQ_systems_0.2.txt','r') as f:
-        for lines in f:
-            x=lines.split()
-            system_array.append(x[0])
-
-
-    system=system_array[index]
     print('System = ' ,system)
 
     data_file='spin_vs_logQ_systems_0.2.txt'
 
     parameters=dict()
 
-    spin_vs_logQ_file='SpinLogQ_'+system+'.txt'
+    spin_vs_logQ_file='SpinLogQ_test_'+args.system+'.txt'
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
@@ -220,7 +213,7 @@ if __name__ == '__main__':
         next(f)
         for lines in f:
             x=lines.split()
-            at_system=x[0]
+            at_system=int(x[0])
             if at_system==system:
                 parameters['primary_mass']=float(x[15])
                 parameters['age']=10**(float(x[16]))
@@ -238,23 +231,23 @@ if __name__ == '__main__':
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
 
-                print('Mass Ratio = ', mass_ratio)
                 print('Parameters: ', parameters)
 
                 evolve = evolution(interpolator,parameters)
 
                 Pspin=float(x[12])
 
-                logQ = numpy.arange(4.0,10.0,1.0)
-                #logQ=[4.0]
+                #logQ = numpy.arange(5.0,10.0,1.0)
+                logQ=[4.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)
-                    spin = evolve(q,spin_vs_logQ_file,option=1)
-                    print('Obtained spin = ', spin)
+                    #spin =
+                    evolve(q,spin_vs_logQ_file,option=1)
+                    #print('Obtained spin = ', spin)
 
-                    spin_diff = Pspin-spin
-                    print('spin difference = ',spin_diff)
+                    #spin_diff = Pspin-spin
+                    #print('spin difference = ',spin_diff)
 
                 break
 

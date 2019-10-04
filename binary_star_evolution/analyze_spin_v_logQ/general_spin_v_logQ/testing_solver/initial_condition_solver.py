@@ -230,6 +230,25 @@ class InitialConditionSolver:
         e=target.eccentricity
         p=target.Porb
 
+        ecc=numpy.linspace(e,0.4,5)
+        porb=numpy.linspace(p,p*2.0,5)
+
+        print('eccentricity = ', ecc)
+        print('Porb = ', porb)
+
+        with open('porb_e.txt','w',1) as f:
+            for ex in ecc:
+                for px in porb:
+                    print(px)
+                    a=[px,ex]
+                    try:
+                        result=self._try_initial_conditions(a)
+                        f.write(repr(px)+'\t'+
+                            repr(ex)+'\t'+
+                            repr(self.orbital_period)+'\t'+
+                            repr(self.eccentricity)+'\n')
+                    except:continue
+        """
         while True:
             try:
                 print('solving for p and e')
@@ -260,5 +279,5 @@ class InitialConditionSolver:
         solutions['e_current']=self.eccentricity
         solutions['delta_p']=self.delta_p
         solutions['delta_e']=self.delta_p
-
-        return solutions
+        """
+        #return solutions
