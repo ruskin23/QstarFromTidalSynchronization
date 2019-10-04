@@ -65,7 +65,7 @@ class MetropolisHastings:
 
     def propose_from_samples(self,name):
 
-        rand=random.randint(1,500004)
+        rand=random.randint(1,100000)
 
         with open(self.mass_age_feh_sample_file,'r') as f:
             for i,lines in enumerate(f):

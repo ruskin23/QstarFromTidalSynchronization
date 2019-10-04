@@ -58,7 +58,7 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
 
-        if initial_condition[1]>0.45 or initial_condition[1]<0 or initial_condition[0]<0:
+        if initial_condition[1]>0.9 or initial_condition[1]<0 or initial_condition[0]<0:
             print('Cannot accept eccentricity > 0.45')
             return scipy.nan, scipy.nan
 

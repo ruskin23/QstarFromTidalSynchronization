@@ -6,7 +6,7 @@ fname3='Mathur_2017_data.txt'
 fname4='KEBC_period_data.txt'
 
 with open('catalog_KIC.txt','w') as f:
-    f.write('KIC' + '\t' + 'teff' + '\t' + 'teff_e' + '\t' + 'feh' + '\t' +
+    f.write('0'+'\t'+'KIC' + '\t' + 'teff' + '\t' + 'teff_e' + '\t' + 'feh' + '\t' +
             'feh_e' + '\t' + 'Porb' + '\t' + 'Porb_e' + '\t' + 'e' + '\t' +
             'e_e' + '\t' + 'logg' + '\t' + 'logg_e'  + '\t' + 'Pspin' + '\t' +
             'Pspin_e' + '\t' + 'q' + '\n')
@@ -85,8 +85,8 @@ with open(fname1,'r') as f1: #Lurie:
 
 
 for i in range(len(KIC)-1):
-    if Porb[i]<60 and e[i]>0.2 and e[i]<0.4:
-        fc.write(repr(KIC[i]) + '\t' + repr(teff[i]) + '\t' + repr(teff_e[i]) + '\t' + repr(feh[i]) + '\t' + repr(feh_e[i]) + '\t' + repr(Porb[i]) + '\t' + Porb_e[i] + '\t' + repr(e[i]) + '\t' + repr(e_e[i]) + '\t' + repr(logg[i]) + '\t' + repr(logg_e[i]) + '\t' + repr(Pspin[i]) + '\t' + repr(Pspin_e[i]) + '\t' + repr(q[i]) + '\n')
+    if Porb[i]<60 and e[i]<0.4:
+        fc.write(repr(i+1) + '\t' + repr(KIC[i]) + '\t' + repr(teff[i]) + '\t' + repr(teff_e[i]) + '\t' + repr(feh[i]) + '\t' + repr(feh_e[i]) + '\t' + repr(Porb[i]) + '\t' + Porb_e[i] + '\t' + repr(e[i]) + '\t' + repr(e_e[i]) + '\t' + repr(logg[i]) + '\t' + repr(logg_e[i]) + '\t' + repr(Pspin[i]) + '\t' + repr(Pspin_e[i]) + '\t' + repr(q[i]) + '\n')
 
 
 
