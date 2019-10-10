@@ -28,7 +28,7 @@ class evolution:
         planet = LockedPlanet(mass=mass, radius=(constants.R_jup / constants.R_sun).to(''))
         return planet
 
-    def create_star(self, mass, dissipation):
+    def create_star(self, mass):
         star = EvolvingStar(mass=mass,
                             metallicity=self.feh,
                             wind_strength=self.wind_strength if self.wind else 0.0,
@@ -36,11 +36,10 @@ class evolution:
                             diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
                             interpolator=self.interpolator)
 
-        if dissipation == 1:
-            star.set_dissipation(zone_index=0,
-                                tidal_frequency_breaks=None,
+        star.set_dissipation(zone_index=0,
+                                tidal_frequency_breaks=self.tidal_frequency_breaks,
                                 spin_frequency_breaks=None,
-                                tidal_frequency_powers=numpy.array([0.0]),
+                                tidal_frequency_powers=self.tidal_frequency_powers,
                                 spin_frequency_powers=numpy.array([0.0]),
                                 reference_phase_lag=self.convective_phase_lag)
 
@@ -121,13 +120,13 @@ class evolution:
                               Wdisk=self.Wdisk,
                               eccentricity=self.eccentricity)
 
-    def __call__(self,q,sol_file,option=None):
+    def __call__(self,q,sol_file,frequency_break=None):
 
         tdisk = self.disk_dissipation_age
 
         self.convective_phase_lag=phase_lag(q)
 
-        star = self.create_star(self.secondary_mass,1)
+        star = self.create_star(self.secondary_mass)
         planet = self.create_planet(1.0)
 
         binary = self.create_binary_system(star,
@@ -146,8 +145,8 @@ class evolution:
 
         print ('star-planet evolution completed')
 
-        primary = self.create_star(self.primary_mass, 1)
-        secondary = self.create_star(self.secondary_mass, 1)
+        primary = self.create_star(self.primary_mass)
+        secondary = self.create_star(self.secondary_mass)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
                                          secondary_angmom=numpy.array(
@@ -195,6 +194,7 @@ if __name__ == '__main__':
     with open('spin_vs_logQ_systems_0.2.txt','r') as f:
         for lines in f:
             x=lines.split()
+            #system_array=lines.split()
             system_array.append(x[0])
 
 
@@ -205,7 +205,9 @@ if __name__ == '__main__':
 
     parameters=dict()
 
-    spin_vs_logQ_file='SpinLogQ_'+system+'.txt'
+
+    #spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
+    spin_vs_logQ_file='SpinLogQ_'+system+'_test.txt'
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
@@ -230,6 +232,16 @@ if __name__ == '__main__':
                 parameters['Porb']=float(x[6])
                 mass_ratio=float(x[14])
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
+                parameters['Pspin']=float(x[12])
+
+                #TidalFrequencyBreaks=numpy.array([4*numpy.pi*((1.0/parameters['Porb'])
+                #                                 -
+                #                                 1.0/parameters['Pspin'])])
+                TidalFrequencyBreaks=None
+                #TidalFrequencyPowers=numpy.array([3.0,3.0])
+                TidalFrequencyPowers=numpy.array([0.0])
+                parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+                parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
                 parameters['Wdisk']=7.3
                 parameters['disk_dissipation_age']=5e-3
@@ -243,18 +255,13 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                Pspin=float(x[12])
-
-                logQ = numpy.arange(4.0,10.0,1.0)
-                #logQ=[4.0]
+                #logQ = numpy.arange(5.0,10.0,1.0)
+                logQ=[7.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)
-                    spin = evolve(q,spin_vs_logQ_file,option=1)
+                    spin = evolve(q,spin_vs_logQ_file)
                     print('Obtained spin = ', spin)
-
-                    spin_diff = Pspin-spin
-                    print('spin difference = ',spin_diff)
 
                 break
 

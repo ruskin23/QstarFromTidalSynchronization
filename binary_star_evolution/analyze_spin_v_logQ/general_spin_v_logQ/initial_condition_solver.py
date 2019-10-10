@@ -114,7 +114,10 @@ class InitialConditionSolver:
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None
+            None,
+            create_c_code='output_52.cpp',
+            eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
+
         )
 
         self.p_initial = initial_condition[0]
@@ -123,6 +126,7 @@ class InitialConditionSolver:
         print ("BINARY EVOLUTION COMPLETE")
 
         self.final_state = self.binary.final_state()
+        print('Current Age = ', self.final_state.age)
         assert (self.final_state.age == self.target.age)
 
         self.orbital_period = self.binary.orbital_period(self.final_state.semimajor)
@@ -229,6 +233,10 @@ class InitialConditionSolver:
 
         e=target.eccentricity
         p=target.Porb
+
+        self._try_initial_conditions([p,e])
+
+        return scipy.nan
 
         while True:
             try:

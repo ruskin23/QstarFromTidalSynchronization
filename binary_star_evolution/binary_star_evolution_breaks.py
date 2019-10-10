@@ -49,7 +49,7 @@ def create_star(mass, dissipation, check_break_frequency,interpolator, convectiv
         star.set_dissipation(zone_index=0,
                              tidal_frequency_breaks=numpy.array([check_break_frequency]),
                              spin_frequency_breaks=None,
-                             tidal_frequency_powers=numpy.array([1.0,1.5]),
+                             tidal_frequency_powers=numpy.array([-3.0,-3.0]),
                              spin_frequency_powers=numpy.array([0.0]),
                              reference_phase_lag=convective_phase_lag)
 
