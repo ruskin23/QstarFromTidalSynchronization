@@ -12,7 +12,7 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from initial_condition_solver import  InitialConditionSolver
+from Solver1 import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy
@@ -224,7 +224,7 @@ if __name__ == '__main__':
                 mass_ratio=float(x[14])
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
 
-                parameters['Wdisk']=7.3
+                parameters['Wdisk']=4.3
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -238,7 +238,7 @@ if __name__ == '__main__':
                 Pspin=float(x[12])
 
                 #logQ = numpy.arange(5.0,10.0,1.0)
-                logQ=[4.0]
+                logQ=[6.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)

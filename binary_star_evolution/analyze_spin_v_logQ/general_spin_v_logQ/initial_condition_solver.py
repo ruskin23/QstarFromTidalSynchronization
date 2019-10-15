@@ -4,8 +4,8 @@ import pickle
 
 import sys
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+sys.path.append('/home/ruskin/projects/poet/PythonPackage')
+sys.path.append('/home/ruskin/projects/poet/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -51,7 +51,7 @@ class InitialConditionSolver:
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         #if hasattr(self, 'binary'): self.binary.delete()
         if initial_condition[1]>0.45 or initial_condition[1]<0:
-            print('Cannot accept eccentricity>0.45')
+            print('unacceptable values in initial_condition')
             return scipy.nan,scipy.nan
 
         if self.is_secondary_star is True:
@@ -114,9 +114,9 @@ class InitialConditionSolver:
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None,
-            create_c_code='output_52.cpp',
-            eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
+            None
+            #create_c_code='cfile_5_withbreaks.cpp',
+            #eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
 
         )
 
@@ -234,9 +234,7 @@ class InitialConditionSolver:
         e=target.eccentricity
         p=target.Porb
 
-        self._try_initial_conditions([p,e])
-
-        return scipy.nan
+        solutions=dict()
 
         while True:
             try:
@@ -244,13 +242,14 @@ class InitialConditionSolver:
                 sol = optimize.root(self._try_initial_conditions,
                                     [p,e],
                                     method='lm',
-                                    tol=1e-4,
                                     options={'xtol':1e-5}
                                     )
                 sol_p,sol_e=sol.x
                 break
 
             except Exception:
+                return solutions
+                """
                 if self.delta_p<1e-5 and self.delta_e<1e-5:
                     sol_p,sol_e=self.p_initial,self.e_inital
                     break
@@ -258,8 +257,7 @@ class InitialConditionSolver:
                     if self.e_inital:e=self.e_inital+0.001
                     else:e=e+0.001
                     continue
-
-        solutions=dict()
+                """
 
         solutions['spin']=self.spin
         solutions['Porb_inital']=sol_p
@@ -267,6 +265,6 @@ class InitialConditionSolver:
         solutions['Porb_current']=self.orbital_period
         solutions['e_current']=self.eccentricity
         solutions['delta_p']=self.delta_p
-        solutions['delta_e']=self.delta_p
+        solutions['delta_e']=self.delta_e
 
         return solutions

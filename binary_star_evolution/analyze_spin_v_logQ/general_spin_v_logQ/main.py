@@ -2,8 +2,8 @@
 
 
 import sys
-sys.path.append('.../poet/PythonPackage')
-sys.path.append('.../poet/scripts')
+sys.path.append('home/ruskin/projects/poet/PythonPackage')
+sys.path.append('home/ruskin/projects/poet/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -120,11 +120,11 @@ class evolution:
                               Wdisk=self.Wdisk,
                               eccentricity=self.eccentricity)
 
-    def __call__(self,q,sol_file,frequency_break=None):
 
-        tdisk = self.disk_dissipation_age
 
-        self.convective_phase_lag=phase_lag(q)
+
+
+    def initial_secodnary_angmom(self):
 
         star = self.create_star(self.secondary_mass)
         planet = self.create_planet(1.0)
@@ -132,12 +132,10 @@ class evolution:
         binary = self.create_binary_system(star,
                                       planet,
                                       10.0,
-                                      tdisk)
+                                      self.disk_dissipation_age)
 
-        binary.evolve(tdisk, 1e-3, 1e-6, None)
-
+        binary.evolve(self.disk_dissipation_age, 1e-3, 1e-6, None)
         disk_state = binary.final_state()
-
 
         planet.delete()
         star.delete()
@@ -145,17 +143,31 @@ class evolution:
 
         print ('star-planet evolution completed')
 
-        primary = self.create_star(self.primary_mass)
-        secondary = self.create_star(self.secondary_mass)
-        find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
-                                         evolution_max_time_step=1e-3,
-                                         secondary_angmom=numpy.array(
-                                             [disk_state.envelope_angmom, disk_state.core_angmom]),
-                                         is_secondary_star=True)
+        return numpy.array([disk_state.envelope_angmom, disk_state.core_angmom])
+
+    def __call__(self,q,sol_file,frequency_break=None):
+
+        self.convective_phase_lag=phase_lag(q)
+
+        while True:
+            IntialSecondaryAngmom=self.initial_secodnary_angmom()
+
+            primary=self.create_star(self.primary_mass)
+            secondary=self.create_star(self.secondary_mass)
+            find_ic=InitialConditionSolver(disk_dissipation_age=self.disk_dissipation_age,
+                                   evolution_max_time_step=1e-3,
+                                   secondary_angmom=IntialSecondaryAngmom,
+                                   is_secondary_star=True)
 
 
-
-        solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
+            print('Wdisk: ',self.Wdisk)
+            print('secondary_angmom_initial = ',IntialSecondaryAngmom)
+            solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
+            if bool(solutions)==False:
+                self.Wdisk=numpy.random.uniform(low=numpy.pi/14,
+                                                 high=numpy.pi/1.4)
+                continue
+            else:break
 
         print('Solution: ',solutions )
 
@@ -170,7 +182,6 @@ class evolution:
 
         primary.delete()
         secondary.delete()
-
         return solutions['spin']
 
 
@@ -178,6 +189,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
+    parser.add_argument('-b',action='store_const',dest='breaks',
+                        const='breaks',
+                        help='decide if breaks needed or not')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -205,9 +219,9 @@ if __name__ == '__main__':
 
     parameters=dict()
 
+    if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
+    else:spin_vs_logQ_file='SpinLogQ_'+system+'_test.txt'
 
-    #spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
-    spin_vs_logQ_file='SpinLogQ_'+system+'_test.txt'
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
@@ -234,16 +248,18 @@ if __name__ == '__main__':
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
                 parameters['Pspin']=float(x[12])
 
-                #TidalFrequencyBreaks=numpy.array([4*numpy.pi*((1.0/parameters['Porb'])
-                #                                 -
-                #                                 1.0/parameters['Pspin'])])
-                TidalFrequencyBreaks=None
-                #TidalFrequencyPowers=numpy.array([3.0,3.0])
-                TidalFrequencyPowers=numpy.array([0.0])
+                if args.breaks:
+                    TidalFrequencyBreaks=numpy.array([4*numpy.pi*((1.0/parameters['Porb'])
+                                                                  -
+                                                                  1.0/parameters['Pspin'])])
+                    TidalFrequencyPowers=numpy.array([2.0,2.0])
+                else:
+                    TidalFrequencyBreaks=None
+                    TidalFrequencyPowers=numpy.array([0.0])
                 parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
                 parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
-                parameters['Wdisk']=7.3
+                parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -255,8 +271,8 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                #logQ = numpy.arange(5.0,10.0,1.0)
-                logQ=[7.0]
+                logQ = numpy.arange(5.0,11.0,1.0)
+                #logQ=[5.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)

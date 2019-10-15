@@ -12,7 +12,6 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
 with open('CheckLogQSolution.txt','w') as f:
     for spin,system in zip(PspinValue,system_array):
         SpinFilename='SpinLogQ_'+system+'.txt'
-        print(SpinFilename)
         with open(SpinFilename,'r') as f1:
             next(f1)
             p=[]
@@ -24,3 +23,5 @@ with open('CheckLogQSolution.txt','w') as f:
             if zero_crossing.size==1:
 
                 f.write(system+'\t')
+            elif zero_crossing.size>1:
+                print(system)
