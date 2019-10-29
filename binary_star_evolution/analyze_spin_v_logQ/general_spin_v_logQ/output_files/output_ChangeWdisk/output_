@@ -1,0 +1,23 @@
+nohup: ignoring input
+/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
+  'storage.' % (dialect.name, dialect.driver))
+16
+System =  36
+Mass Ratio =  0.7898
+Parameters:  {'primary_mass': 0.9398025732276035, 'age': 0.27070676216439815, 'feh': -0.21334087028890159, 'eccentricity': 0.022, 'Porb': 8.929, 'secondary_mass': 0.7422560723351612, 'Pspin': 10.953, 'breaks': False, 'tidal_frequency_breaks': None, 'tidal_frequency_powers': array([0.]), 'Wdisk': 4.1, 'disk_dissipation_age': 0.005, 'wind': True, 'wind_saturation_frequency': 2.54, 'diff_rot_coupling_timescale': 0.005, 'wind_strength': 0.17, 'system': '36', 'print_cfile': False}
+Calculating for logQ =  5.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.92804695 0.01789685]
+solving for p and e
+
+Trying Porb_initial = 8.929, e_initial =0.022
+BINARY CONFIGURATION COMPBBINBINARY EVOLUTION COMPLETE
+Current Age =  0.5971501818382134
+0.46181537474413403 -0.03356301270296063
+11.200815374744131
+
+Trying Porb_initial = 10.739, e_initial =0.077
+BINARY CONFIGURATION COMPLETE
+ETE

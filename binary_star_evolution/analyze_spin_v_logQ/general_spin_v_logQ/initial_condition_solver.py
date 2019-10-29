@@ -110,15 +110,28 @@ class InitialConditionSolver:
 
         print ("BINARY CONFIGURATION COMPLETE")
 
-        self.binary.evolve(
-            self.target.age,
-            self.evolution_max_time_step,
-            self.evolution_precision,
-            None
-            #create_c_code='cfile_5_withbreaks.cpp',
-            #eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
+        if self.print_cfile==True:
+            if self.breaks==True:
+                create_c_code='cfile_'+self.system+'_withbreaks.cpp'
+            else:
+                create_c_code='cfile_'+self.system+'.cpp'
 
-        )
+            self.binary.evolve(
+                self.target.age,
+                self.evolution_max_time_step,
+                self.evolution_precision,
+                None,
+                create_c_code=create_c_code,
+                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
+            )
+
+        else:
+            self.binary.evolve(
+                self.target.age,
+                self.evolution_max_time_step,
+                self.evolution_precision,
+                None
+            )
 
         self.p_initial = initial_condition[0]
         self.e_inital = initial_condition[1]
@@ -138,7 +151,13 @@ class InitialConditionSolver:
         self.delta_p = self.orbital_period-self.target.Porb
         self.delta_e = self.eccentricity-self.target.eccentricity
 
-        print(self.delta_p,self.delta_e)
+        print('Final orbital period = ',self.orbital_period)
+        print('Final Eccentricity = ', self.eccentricity)
+
+        print('Difference between final and target p=%s , e=%s '
+              %(repr(self.delta_p),repr(self.delta_e)))
+
+
 
         self.spin =  (
                 2.0 * pi
@@ -153,7 +172,9 @@ class InitialConditionSolver:
         return self.delta_p,self.delta_e
 
     def __init__(self,
-                 planet_formation_age=None,
+                 system=None,
+                 print_cfile=None,
+                 breaks=None,
                  disk_dissipation_age=None,
                  evolution_max_time_step=None,
                  evolution_precision=1e-6,
@@ -179,7 +200,9 @@ class InitialConditionSolver:
 
         Returns: None.
         """
-
+        self.sytem=system
+        self.print_cfile=print_cfile
+        self.breaks=breaks
         self.disk_dissipation_age = disk_dissipation_age
         self.evolution_max_time_step = evolution_max_time_step
         self.evolution_precision = evolution_precision
@@ -249,15 +272,6 @@ class InitialConditionSolver:
 
             except Exception:
                 return solutions
-                """
-                if self.delta_p<1e-5 and self.delta_e<1e-5:
-                    sol_p,sol_e=self.p_initial,self.e_inital
-                    break
-                else:
-                    if self.e_inital:e=self.e_inital+0.001
-                    else:e=e+0.001
-                    continue
-                """
 
         solutions['spin']=self.spin
         solutions['Porb_inital']=sol_p

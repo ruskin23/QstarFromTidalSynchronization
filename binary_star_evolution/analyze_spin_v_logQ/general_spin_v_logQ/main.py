@@ -154,15 +154,19 @@ class evolution:
 
             primary=self.create_star(self.primary_mass)
             secondary=self.create_star(self.secondary_mass)
-            find_ic=InitialConditionSolver(disk_dissipation_age=self.disk_dissipation_age,
-                                   evolution_max_time_step=1e-3,
-                                   secondary_angmom=IntialSecondaryAngmom,
-                                   is_secondary_star=True)
+            find_ic=InitialConditionSolver(system=self.system,
+                                           print_cfile=self.print_cfile,
+                                           breaks=self.breaks,
+                                           disk_dissipation_age=self.disk_dissipation_age,
+                                           evolution_max_time_step=1e-3,
+                                           secondary_angmom=IntialSecondaryAngmom,
+                                           is_secondary_star=True)
 
 
             print('Wdisk: ',self.Wdisk)
             print('secondary_angmom_initial = ',IntialSecondaryAngmom)
             solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
+
             if bool(solutions)==False:
                 self.Wdisk=numpy.random.uniform(low=numpy.pi/14,
                                                  high=numpy.pi/1.4)
@@ -204,6 +208,7 @@ if __name__ == '__main__':
 
     index=int(args.index)
 
+    print(index)
     system_array=[]
     with open('spin_vs_logQ_systems_0.2.txt','r') as f:
         for lines in f:
@@ -220,7 +225,7 @@ if __name__ == '__main__':
     parameters=dict()
 
     if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
-    else:spin_vs_logQ_file='SpinLogQ_'+system+'_test.txt'
+    else:spin_vs_logQ_file='ChangeWdisk/SpinLogQ_'+system+'_test.txt'
 
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
@@ -249,13 +254,15 @@ if __name__ == '__main__':
                 parameters['Pspin']=float(x[12])
 
                 if args.breaks:
-                    TidalFrequencyBreaks=numpy.array([4*numpy.pi*((1.0/parameters['Porb'])
+                    TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['Porb'])
                                                                   -
-                                                                  1.0/parameters['Pspin'])])
+                                                                  1.0/parameters['Pspin']))])
                     TidalFrequencyPowers=numpy.array([2.0,2.0])
+                    parameters['breaks']=True
                 else:
                     TidalFrequencyBreaks=None
                     TidalFrequencyPowers=numpy.array([0.0])
+                    parameters['breaks']=False
                 parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
                 parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
@@ -265,6 +272,9 @@ if __name__ == '__main__':
                 parameters['wind_saturation_frequency']=2.54
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
+
+                parameters['system']=system
+                parameters['print_cfile']=False
 
                 print('Mass Ratio = ', mass_ratio)
                 print('Parameters: ', parameters)

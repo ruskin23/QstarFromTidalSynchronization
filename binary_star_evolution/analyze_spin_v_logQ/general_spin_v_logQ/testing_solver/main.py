@@ -13,6 +13,7 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from Solver1 import  InitialConditionSolver
+from intial_secondary_angmom import IntialSecondaryAngmom
 from basic_utils import Structure
 import numpy
 import scipy
@@ -110,6 +111,8 @@ class evolution:
 
         self.interpolator=interpolator
 
+        self.parameters=parameters
+
         for item,value in observational_parameters.items():
             setattr(self,item,value)
 
@@ -127,31 +130,17 @@ class evolution:
 
         self.convective_phase_lag=phase_lag(q)
 
-        star = self.create_star(self.secondary_mass,1)
-        planet = self.create_planet(1.0)
+        secondary_angmom=IntialSecondaryAngmom(self.interpolator,
+                                               q,
+                                               self.parameters
+                                               )
 
-        binary = self.create_binary_system(star,
-                                      planet,
-                                      10.0,
-                                      tdisk)
-
-        binary.evolve(tdisk, 1e-3, 1e-6, None)
-
-        disk_state = binary.final_state()
-
-
-        planet.delete()
-        star.delete()
-        binary.delete()
-
-        print ('star-planet evolution completed')
 
         primary = self.create_star(self.primary_mass, 1)
         secondary = self.create_star(self.secondary_mass, 1)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
                                          evolution_max_time_step=1e-3,
-                                         secondary_angmom=numpy.array(
-                                             [disk_state.envelope_angmom, disk_state.core_angmom]),
+                                         secondary_angmom=secondary_angmom,
                                          is_secondary_star=True)
 
 
@@ -198,7 +187,7 @@ if __name__ == '__main__':
 
     parameters=dict()
 
-    spin_vs_logQ_file='SpinLogQ_test_'+args.system+'.txt'
+    spin_vs_logQ_file='no_sol/SpinLogQ_test_'+args.system+'.txt'
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
@@ -214,6 +203,7 @@ if __name__ == '__main__':
         for lines in f:
             x=lines.split()
             at_system=int(x[0])
+            print(at_system)
             if at_system==system:
                 parameters['primary_mass']=float(x[15])
                 parameters['age']=10**(float(x[16]))
@@ -238,7 +228,7 @@ if __name__ == '__main__':
                 Pspin=float(x[12])
 
                 #logQ = numpy.arange(5.0,10.0,1.0)
-                logQ=[6.0]
+                logQ=[7.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)

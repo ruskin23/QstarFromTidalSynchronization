@@ -8,15 +8,16 @@ from pathlib import Path
 home_dir=str(Path.home())
 
 git_dir='/QstarFromTidalSynchronization/MCMC/general/MCMC_known_spin_logQ_relation'
-
+samples_dir='/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples'
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
     current_directory=home_dir+git_dir
+    samples_directory=home_dir+samples_dir
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
     current_directory=home_dir+'/projects'+git_dir
-
+    samples_directory=home_dir+'/projects'+samples_dir
 
 sys.path.append(poet_path+'PythonPackage')
 sys.path.append(poet_path+'scripts')
@@ -68,7 +69,7 @@ if __name__ == '__main__':
                 break
     print(KIC)
     print(mass_ratio)
-    mass_age_feh_sample_file=current_directory + '/mass_age_feh_sample_'+system_number+'.txt'
+    mass_age_feh_sample_file=samples_directory+ '/MassAgeFehSamples_'+system_number+'.txt'
 
     observation_data = dict(
                 Porb=dict(value=float(data[6]),sigma=float(data[7])),

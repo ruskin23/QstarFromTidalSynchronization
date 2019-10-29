@@ -16,9 +16,10 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from basic_utils import Structure
+from intial_secondary_angmom import IntialSecondaryAngmom
+
+
 from astropy import units, constants
-from basic_utils import Structure
-from math import pi
 import scipy
 from scipy import optimize
 from scipy.optimize import brentq
@@ -47,7 +48,7 @@ class InitialConditionSolver:
         """
 
         #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
-        print('Trying Porb_initial = %s, e_initial =%s'
+        print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         #if hasattr(self, 'binary'): self.binary.delete()
         if initial_condition[1]>0.45 or initial_condition[1]<0:
@@ -56,7 +57,7 @@ class InitialConditionSolver:
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
-            spin_angmom = self.secondary_angmom
+            spin_angmom = self.SecondaryAngmom
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
@@ -127,7 +128,7 @@ class InitialConditionSolver:
 
 
         self.spin =  (
-                2.0 * pi
+                2.0 * numpy.pi
                 *
                 self.binary.primary.envelope_inertia(self.final_state.age)
                 /
@@ -135,25 +136,30 @@ class InitialConditionSolver:
         )
 
         self.binary.delete()
-
-        print('Error = ', self.orbital_period-self.target.Porb)
-        return self.orbital_period
+        print('Final Spin = ',self.spin)
+        print('Final Eccentricity = ',self.eccentricity)
+        print('Final Porb =  ',self.orbital_period)
+        if self.single_solution==True:return self.orbital_period
+        if self.single_solution==False:
+            return self.orbital_period-self.target.Porb,self.eccentricity-self.target.eccentricity
 
     def _calculate_porb(self,p,e):
 
         print('Calculating for p=%s and e=%s'%(repr(p),repr(e)))
-        while True:
-            try:
-                porb_obtained=self._try_initial_conditions([p,e])
-                break
-            except:
-                self.disk_lock_frequency=numpy.random.uniform(low=2*numpy.pi/14,
-                                                              high=2*numpy.pi/1.4)
-                print('new disk frequency = ', self.disk_lock_frequency)
-                continue
+        try:
+            porb_obtained=self._try_initial_conditions([p,e])
+            print('porb_obtained = ', porb_obtained)
+            return porb_obtained
+        except:
+            return scipy.nan
 
-        print('porb_obtained = ', porb_obtained)
-        return porb_obtained
+
+    def _change_disk_frequency(self):
+        self.disk_lock_frequency=numpy.random.uniform(low=2*numpy.pi/14,
+                                                    high=2*numpy.pi/1.4)
+        self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
+        print('new disk frequency = ', self.disk_lock_frequency)
+        print('New secodnary angmom = ', self.SecondaryAngmom)
 
     def find_porb_range(self,p,e):
 
@@ -161,24 +167,36 @@ class InitialConditionSolver:
         porb_max=scipy.nan
 
         porb_initial_guess=p
+        curent_eccentrcity=e
         print('Initia Guess: ',porb_initial_guess)
-        porb_obtained=self._calculate_porb(porb_initial_guess,e)
+        while True:
 
-        porb_error=porb_obtained-self.target.Porb
-        print('Porb_error = ', porb_error)
-        if porb_error>0:step=-0.5
-        else:step=1.0
-        if porb_error<0:porb_min=p
+            porb_obtained=self._calculate_porb(porb_initial_guess,e)
+            if numpy.isnan(porb_obtained):
+                self._change_disk_frequency()
+                continue
+
+
+            porb_error=porb_obtained-self.target.Porb
+            print('Porb_error = ', porb_error)
+            if porb_error>0:step=-0.5
+            else:step=1.0
+            if porb_error<0:porb_min=p
+            else:porb_max=p
+            new_error=porb_error
+
+            while porb_error*new_error>0 and p<100.0:
+                p=p+step
+                porb_obtained=self._calculate_porb(p,e)
+                if numpy.isnan(porb_obtained):
+                    self._change_disk_frequency()
+                    break
+                new_error=porb_obtained-self.target.Porb
+                print('New error = ', new_error)
+            if numpy.isnan(porb_obtained):continue
+            else:break
+        if numpy.isnan(porb_min):porb_min=p
         else:porb_max=p
-        new_error=porb_error
-
-        while porb_error*new_error>0 and p<100.0:
-            p=p+step
-            porb_obtained=self._calculate_porb(p,e)
-            new_error=porb_obtained-self.target.Porb
-            print('New error = ', new_error)
-        if numpy.isnan(porb_min):porb_min=porb_obtained
-        else:porb_max=porb_obtained
 
         print('min = %s, max = %s' %(repr(porb_min),repr(porb_max)))
         return porb_min,porb_max
@@ -187,16 +205,22 @@ class InitialConditionSolver:
 
     def find_solution(self,p,e):
 
-        porb_min,porb_max=self.find_porb_range(p,e)
+        while True:
+            try:
+                porb_min,porb_max=self.find_porb_range(p,e)
 
-        porb_initial = brentq(lambda porb_initial :
-                              self._try_initial_conditions([porb_initial,e])
-                              - self.target.Porb,
-                              porb_min,
-                              porb_max,
-                              xtol=1e-5,
-                              rtol=1e-5)
-        print('Solutions = ', porb_initial,self.eccentricity)
+                self.porb_initial = brentq(lambda porb_initial :
+                                           self._try_initial_conditions([porb_initial,e])
+                                           - self.target.Porb,
+                                           porb_min,
+                                           porb_max,
+                                           xtol=1e-5,
+                                           rtol=1e-5)
+                break
+            except:
+                self._change_disk_frequency()
+                continue
+        print('Solutions = ', self.porb_initial,self.eccentricity)
 
 
 
@@ -233,6 +257,9 @@ class InitialConditionSolver:
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
+        self.secondary_angmom=secondary_angmom
+        self.porb_initial=scipy.nan
+        self.single_solution=False
 
     def __call__(self, target, primary, secondary):
         """
@@ -277,46 +304,62 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
+        print(self.disk_lock_frequency)
+        self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
+
         e_target=target.eccentricity
         porb_target=target.Porb
 
-        ecc=numpy.linspace(e_target,0.4,5)
+        """
+        ecc=numpy.linspace(e_target,0.4,4)
         print('Eccentricity = ', ecc)
 
-        with open('eccIntiialFinal.txt','w',1) as f:
+        e_min,e_max=scipy.nan,scipy.nan
+        self.single_solution=True
+        for e in ecc:
+            print('\ncalculating for e = ', e)
+            porb_solution_new=self.find_solution(porb_target,e)
+            e_error=e_target-self.eccentricity
+            if abs(e_error)<1e-2:
+                self.single_solution=False
+                print(self.porb_initial)
+                print(e)
+                sol=optimize.root(self._try_initial_conditions,
+                                  [self.porb_initial,e],
+                                  method='lm')
+                sol_p,sol_e=sol.x
+                print(sol_p,sol_e)
+                break
+            elif e_error>0:
+                e_min=e
+            else:
+                e_max=e
 
-            for e in ecc:
-                print('\ncalculating for e = ', e)
-                porb_solution_new=self.find_solution(porb_target,e)
-                e_error=e_target-self.eccentricity
-                if e_error>0:
-                    e_min=e
-                else:
-                    e_max=e
-                    break
+        if numpy.isnan(e_min):e_min=e_target
+        print(e_min,e_max)
 
-            print(e_min,e_max)
+        e_intial=(e_min+e_max)/2.0
         """
         while True:
             try:
                 print('solving for p and e')
                 sol = optimize.root(self._try_initial_conditions,
-                                    [p,e],
+                                    [5.231958357414529,0.1],
                                     method='lm',
-                                    tol=1e-4,
-                                    options={'xtol':1e-5}
+                                    tol=1e-6
                                     )
                 sol_p,sol_e=sol.x
                 break
+            except:
+                self.disk_lock_frequency=numpy.random.uniform(low=2*numpy.pi/14,
+                                                              high=2*numpy.pi/1.4)
+                self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
+                print('new disk frequency = ', self.disk_lock_frequency)
+                continue
 
-            except Exception:
-                if self.delta_p<1e-5 and self.delta_e<1e-5:
-                    sol_p,sol_e=self.p_initial,self.e_inital
-                    break
-                else:
-                    if self.e_inital:e=self.e_inital+0.001
-                    else:e=e+0.001
-                    continue
+
+        print(sol.x)
+        """
 
         solutions=dict()
 
