@@ -3,7 +3,7 @@ import numpy
 s=[]
 p=[]
 q=[]
-with open('Upperlimit.txt','r') as f:
+with open('FindingSolution.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()

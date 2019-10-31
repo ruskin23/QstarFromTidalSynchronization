@@ -1,0 +1,602 @@
+nohup: ignoring input
+/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
+  'storage.' % (dialect.name, dialect.driver))
+System =  83
+Mass Ratio =  0.6828
+Parameters:  {'primary_mass': 0.6978680318553117, 'age': 0.4917072561282003, 'feh': -0.5889736509556008, 'eccentricity': 0.018, 'Porb': 7.549, 'secondary_mass': 0.47650429215080675, 'Pspin': 8.603, 'breaks': False, 'tidal_frequency_breaks': None, 'tidal_frequency_powers': array([0.]), 'Wdisk': 4.1, 'disk_dissipation_age': 0.005, 'wind': True, 'wind_saturation_frequency': 2.54, 'diff_rot_coupling_timescale': 0.005, 'wind_strength': 0.17, 'system': '83', 'print_cfile': False}
+Calculating for logQ =  6.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.676433383547708
+Final Eccentricity =  0.017507511797960104
+Difference between final and target p=0.12743338354770728 , e=-0.0004924882020398945 
+7.676433383547709
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.676433383037658
+Final Eccentricity =  0.017507511805371218
+Difference between final and target p=0.1274333830376575 , e=-0.0004924881946287811 
+7.67643338303766
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.676433383037658
+Final Eccentricity =  0.017507511805371218
+Difference between final and target p=0.1274333830376575 , e=-0.0004924881946287811 
+7.67643338303766
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.676433490662561
+Final Eccentricity =  0.017507511860779517
+Difference between final and target p=0.12743349066256027 , e=-0.0004924881392204816 
+7.6764334906625615
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.676433383079458
+Final Eccentricity =  0.01750751207312654
+Difference between final and target p=0.12743338307945784 , e=-0.0004924879268734597 
+7.67643338307946
+
+Trying Porb_initial = 7.415716364981007, e_initial =0.018559109818020655
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548524275831319
+Final Eccentricity =  0.017995000390616477
+Difference between final and target p=-0.00047572416868124634 , e=-4.999609383521397e-06 
+7.54852427583132
+
+Trying Porb_initial = 7.415716475483792, e_initial =0.018559109818020655
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5485243846572025
+Final Eccentricity =  0.017995000534912733
+Difference between final and target p=-0.00047561534279783046 , e=-4.9994650872658974e-06 
+7.548524384657203
+
+Trying Porb_initial = 7.415716364981007, e_initial =0.018559110094572943
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548524277036447
+Final Eccentricity =  0.017995000666935223
+Difference between final and target p=-0.00047572296355369303 , e=-4.999333064775735e-06 
+7.5485242770364485
+
+Trying Porb_initial = 7.416179959388632, e_initial =0.018563507772575587
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548968818685085
+Final Eccentricity =  0.017999470875548217
+Difference between final and target p=-3.118131491497422e-05 , e=-5.291244517813265e-07 
+7.548968818685086
+
+Trying Porb_initial = 7.416180069898325, e_initial =0.018563507772575587
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5489689246283165
+Final Eccentricity =  0.017999470945968595
+Difference between final and target p=-3.10753716838974e-05 , e=-5.290540314034642e-07 
+7.548968924628318
+
+Trying Porb_initial = 7.416179959388632, e_initial =0.01856350804919341
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548968815991709
+Final Eccentricity =  0.0179994711671844
+Difference between final and target p=-3.118400829116297e-05 , e=-5.288328155973743e-07 
+7.548968815991712
+
+Trying Porb_initial = 7.416217352466643, e_initial =0.018563987047738074
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549004671119747
+Final Eccentricity =  0.017999952228548728
+Difference between final and target p=4.67111974700174e-06 , e=-4.7771451270467447e-08 
+7.54900467111975
+
+Trying Porb_initial = 7.416217462976893, e_initial =0.018563987047738074
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549004779596521
+Final Eccentricity =  0.017999952184695644
+Difference between final and target p=4.779596520343432e-06 , e=-4.781530435482573e-08 
+7.549004779596524
+
+Trying Porb_initial = 7.416217352466643, e_initial =0.018563987324363037
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549004672620465
+Final Eccentricity =  0.01799995245175066
+Difference between final and target p=4.672620464774013e-06 , e=-4.7548249337836523e-08 
+7.549004672620468
+
+Trying Porb_initial = 7.416212280353213, e_initial =0.018564043758731302
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999809682158
+Final Eccentricity =  0.018000004907804998
+Difference between final and target p=-1.903178423745544e-07 , e=4.9078049992046235e-09 
+7.54899980968216
+Solution:  {'spin': 7.54899980968216, 'Porb_inital': 7.416212280353213, 'e_initial': 0.018564043758731302, 'Porb_current': 7.548999809682158, 'e_current': 0.018000004907804998, 'delta_p': -1.903178423745544e-07, 'delta_e': 4.9078049992046235e-09}
+Obtained spin =  7.54899980968216
+Calculating for logQ =  7.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.55766517484121
+Final Eccentricity =  0.017974489797908767
+Difference between final and target p=0.008665174841209655 , e=-2.551020209123206e-05 
+7.557665174841214
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.55766517484121
+Final Eccentricity =  0.017974489797908767
+Difference between final and target p=0.008665174841209655 , e=-2.551020209123206e-05 
+7.557665174841214
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.55766517484121
+Final Eccentricity =  0.017974489797908767
+Difference between final and target p=0.008665174841209655 , e=-2.551020209123206e-05 
+7.557665174841214
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.557665287208012
+Final Eccentricity =  0.01797448978261543
+Difference between final and target p=0.00866528720801174 , e=-2.55102173845681e-05 
+7.557665287208014
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.557665174905612
+Final Eccentricity =  0.017974490058633944
+Difference between final and target p=0.008665174905611472 , e=-2.55099413660545e-05 
+7.557665174905614
+
+Trying Porb_initial = 7.5403193959022845, e_initial =0.018025029514245713
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548996561194572
+Final Eccentricity =  0.017999263625768855
+Difference between final and target p=-3.4388054279688163e-06 , e=-7.363742311437826e-07 
+7.548996561194574
+
+Trying Porb_initial = 7.540319508261799, e_initial =0.018025029514245713
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5489966734377525
+Final Eccentricity =  0.01799926363646835
+Difference between final and target p=-3.3265622478850787e-06 , e=-7.363635316469386e-07 
+7.548996673437754
+
+Trying Porb_initial = 7.5403193959022845, e_initial =0.018025029782839583
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548996561244722
+Final Eccentricity =  0.01799926389894838
+Difference between final and target p=-3.4387552787507047e-06 , e=-7.36101051619642e-07 
+7.548996561244724
+
+Trying Porb_initial = 7.54032270300896, e_initial =0.01802575321789627
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999864546873
+Final Eccentricity =  0.017999986358173764
+Difference between final and target p=-1.3545312693707956e-07 , e=-1.3641826234617183e-08 
+7.548999864546873
+Solution:  {'spin': 7.548999864546873, 'Porb_inital': 7.54032270300896, 'e_initial': 0.01802575321789627, 'Porb_current': 7.548999864546873, 'e_current': 0.017999986358173764, 'delta_p': -1.3545312693707956e-07, 'delta_e': -1.3641826234617183e-08}
+Obtained spin =  7.548999864546873
+Calculating for logQ =  8.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.550014784710303
+Final Eccentricity =  0.017998152593442934
+Difference between final and target p=0.0010147847103025853 , e=-1.8474065570650566e-06 
+10.366800372472845
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5499864301054345
+Final Eccentricity =  0.01799793847616888
+Difference between final and target p=0.0009864301054340885 , e=-2.061523831118489e-06 
+10.366789607511688
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5499864301054345
+Final Eccentricity =  0.01799793847616888
+Difference between final and target p=0.0009864301054340885 , e=-2.061523831118489e-06 
+10.366789607511688
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549986542617258
+Final Eccentricity =  0.01799793848025696
+Difference between final and target p=0.0009865426172579461 , e=-2.0615197430379206e-06 
+10.36678965280015
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549986430141129
+Final Eccentricity =  0.01799793874403006
+Difference between final and target p=0.0009864301411282028 , e=-2.0612559699373367e-06 
+10.366789607620044
+
+Trying Porb_initial = 7.5480134917444515, e_initial =0.018002100192244175
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999975056315
+Final Eccentricity =  0.01800003629416051
+Difference between final and target p=-2.494368533945135e-08 , e=3.629416051031953e-08 
+10.366394437816469
+
+Trying Porb_initial = 7.5480136042186174, e_initial =0.018002100192244175
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000087551807
+Final Eccentricity =  0.018000036294769903
+Difference between final and target p=8.75518066933978e-08 , e=3.629476990479885e-08 
+10.366394483050945
+
+Trying Porb_initial = 7.5480134917444515, e_initial =0.018002100460496374
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999975073395
+Final Eccentricity =  0.01800003656275086
+Difference between final and target p=-2.4926605668440516e-08 , e=3.656275086166838e-08 
+10.366394437751824
+
+Trying Porb_initial = 7.548013518990927, e_initial =0.01800206394363048
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54900000233578
+Final Eccentricity =  0.018000000053509844
+Difference between final and target p=2.335779569762053e-09 , e=5.350984585983376e-11 
+10.366394455813541
+Solution:  {'spin': 10.366394455813541, 'Porb_inital': 7.548013518990927, 'e_initial': 0.01800206394363048, 'Porb_current': 7.54900000233578, 'e_current': 0.018000000053509844, 'delta_p': 2.335779569762053e-09, 'delta_e': 5.350984585983376e-11}
+Obtained spin =  10.366394455813541
+Calculating for logQ =  9.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549104361585279
+Final Eccentricity =  0.017999798467366976
+Difference between final and target p=0.0001043615852784896 , e=-2.0153263302277735e-07 
+10.894403165571193
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549104361585279
+Final Eccentricity =  0.017999798467366976
+Difference between final and target p=0.0001043615852784896 , e=-2.0153263302277735e-07 
+10.894403165571193
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549104361585279
+Final Eccentricity =  0.017999798467366976
+Difference between final and target p=0.0001043615852784896 , e=-2.0153263302277735e-07 
+10.894403165571193
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54910447407853
+Final Eccentricity =  0.017999798467316638
+Difference between final and target p=0.0001044740785296483 , e=-2.0153268336098318e-07 
+10.894403169678371
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549104361583507
+Final Eccentricity =  0.017999798735433517
+Difference between final and target p=0.00010436158350657365 , e=-2.012645664815904e-07 
+10.89440316514968
+
+Trying Porb_initial = 7.5488956438148, e_initial =0.018000201601955455
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000006180237
+Final Eccentricity =  0.018000000044737546
+Difference between final and target p=6.180236766795133e-09 , e=4.473754700029531e-11 
+10.894398377448201
+
+Trying Porb_initial = 7.548895756302111, e_initial =0.018000201601955455
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5490001186702855
+Final Eccentricity =  0.018000000044755944
+Difference between final and target p=1.1867028515410993e-07 , e=4.475594547748152e-11 
+10.894398381598396
+
+Trying Porb_initial = 7.5488956438148, e_initial =0.01800020187017936
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000006175001
+Final Eccentricity =  0.018000000312975925
+Difference between final and target p=6.175000955011001e-09 , e=3.1297592642531846e-10 
+10.894398377979863
+
+Trying Porb_initial = 7.54889563763384, e_initial =0.018000201557221332
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999999995419
+Final Eccentricity =  0.017999999999997837
+Difference between final and target p=-4.581224288813246e-12 , e=-2.1614654510671016e-15 
+10.894398375063425
+Solution:  {'spin': 10.894398375063425, 'Porb_inital': 7.54889563763384, 'e_initial': 0.018000201557221332, 'Porb_current': 7.548999999995419, 'e_current': 0.017999999999997837, 'delta_p': -4.581224288813246e-12, 'delta_e': -2.1614654510671016e-15}
+Obtained spin =  10.894398375063425
+Calculating for logQ =  10.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5490104984264805
+Final Eccentricity =  0.017999979889182758
+Difference between final and target p=1.0498426480154421e-05 , e=-2.0110817240681644e-08 
+10.949107304926398
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5490104984264805
+Final Eccentricity =  0.017999979889182758
+Difference between final and target p=1.0498426480154421e-05 , e=-2.0110817240681644e-08 
+10.949107304926398
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.5490104984264805
+Final Eccentricity =  0.017999979889182758
+Difference between final and target p=1.0498426480154421e-05 , e=-2.0110817240681644e-08 
+10.949107304926398
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549010610914993
+Final Eccentricity =  0.017999979889173272
+Difference between final and target p=1.0610914992881249e-05 , e=-2.011082672614961e-08 
+10.949107305385851
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549010498424828
+Final Eccentricity =  0.01799998015740112
+Difference between final and target p=1.0498424827254382e-05 , e=-1.9842598879965534e-08 
+10.94910730487938
+
+Trying Porb_initial = 7.548989501664492, e_initial =0.01800002011012248
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000000098075
+Final Eccentricity =  0.017999999999056077
+Difference between final and target p=9.807443746012723e-11 , e=-9.43922023877164e-13 
+10.949107256829443
+Solution:  {'spin': 10.949107256829443, 'Porb_inital': 7.548989501664492, 'e_initial': 0.01800002011012248, 'Porb_current': 7.549000000098075, 'e_current': 0.017999999999056077, 'delta_p': 9.807443746012723e-11, 'delta_e': -9.43922023877164e-13}
+Obtained spin =  10.949107256829443
+Calculating for logQ =  11.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54900105046942
+Final Eccentricity =  0.0179999979893421
+Difference between final and target p=1.0504694198942843e-06 , e=-2.010657897122403e-09 
+10.954593897178135
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54900105046942
+Final Eccentricity =  0.0179999979893421
+Difference between final and target p=1.0504694198942843e-06 , e=-2.010657897122403e-09 
+10.954593897178135
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54900105046942
+Final Eccentricity =  0.0179999979893421
+Difference between final and target p=1.0504694198942843e-06 , e=-2.010657897122403e-09 
+10.954593897178135
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549001162958216
+Final Eccentricity =  0.017999997989339843
+Difference between final and target p=1.1629582159500274e-06 , e=-2.010660155732369e-09 
+10.95459389738633
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.54900105046936
+Final Eccentricity =  0.017999998257560053
+Difference between final and target p=1.0504693594981518e-06 , e=-1.7424399458010331e-09 
+10.954593897310243
+
+Trying Porb_initial = 7.5489989495303815, e_initial =0.01800000201065892
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.548999999999747
+Final Eccentricity =  0.017999999999995728
+Difference between final and target p=-2.531308496145357e-13 , e=-4.270889197854899e-15 
+10.954593896887662
+Solution:  {'spin': 10.954593896887662, 'Porb_inital': 7.5489989495303815, 'e_initial': 0.01800000201065892, 'Porb_current': 7.548999999999747, 'e_current': 0.017999999999995728, 'delta_p': -2.531308496145357e-13, 'delta_e': -4.270889197854899e-15}
+Obtained spin =  10.954593896887662
+Calculating for logQ =  12.0
+BEGINSAT
+star-planet evolution completed
+Wdisk:  4.1
+secondary_angmom_initial =  [0.39720519 0.        ]
+solving for p and e
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000105053328
+Final Eccentricity =  0.017999999798938075
+Difference between final and target p=1.0505332781463039e-07 , e=-2.0106192405444645e-10 
+10.955142714852316
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000105053328
+Final Eccentricity =  0.017999999798938075
+Difference between final and target p=1.0505332781463039e-07 , e=-2.0106192405444645e-10 
+10.955142714852316
+
+Trying Porb_initial = 7.549, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000105053328
+Final Eccentricity =  0.017999999798938075
+Difference between final and target p=1.0505332781463039e-07 , e=-2.0106192405444645e-10 
+10.955142714852316
+
+Trying Porb_initial = 7.549000112488867, e_initial =0.018
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000217542195
+Final Eccentricity =  0.017999999798938168
+Difference between final and target p=2.17542194924647e-07 , e=-2.0106183037937875e-10 
+10.955142714852546
+
+Trying Porb_initial = 7.549, e_initial =0.0180000002682209
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000105053344
+Final Eccentricity =  0.018000000067159
+Difference between final and target p=1.0505334380184195e-07 , e=6.715900058296143e-11 
+10.955142714836398
+
+Trying Porb_initial = 7.548999894946662, e_initial =0.018000000201061992
+BINARY CONFIGURATION COMPLETE
+BINARY EVOLUTION COMPLETE
+Current Age =  0.4917072561282003
+Final orbital period =  7.549000000000004
+Final Eccentricity =  0.01800000000000017
+Difference between final and target p=3.552713678800501e-15 , e=1.700029006457271e-16 
+10.955142714886982
+Solution:  {'spin': 10.955142714886982, 'Porb_inital': 7.548999894946662, 'e_initial': 0.018000000201061992, 'Porb_current': 7.549000000000004, 'e_current': 0.01800000000000017, 'delta_p': 3.552713678800501e-15, 'delta_e': 1.700029006457271e-16}
+Obtained spin =  10.955142714886982

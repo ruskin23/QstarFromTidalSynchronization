@@ -54,7 +54,8 @@ systems=[]
 for files in os.listdir(directory):
     x=files.split('_')
     if x[0]=='SpinLogQ':
-        systems.append(x[1])
+        name=x[2].split('.')
+        systems.append(name[0])
 print(systems)
 with open('spin_vs_logQ_systems_0.2.txt','r') as f:
     next(f)
@@ -65,29 +66,21 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                 p=[]
                 spin=float(x[12])
                 porb=float(x[6])
-                with open('SpinLogQ_'+s+'_test.txt','r') as f1:
+                with open('SpinLogQ_WithBreaks_'+s+'.txt','r') as f1:
                     next(f1)
-                    no_check=0
                     for lines1 in f1:
                         y=lines1.split()
-                        if y[1]!='spin':
-                            p.append(float(y[1])-spin)
-
-                    if len(p)<6:print('Incomplete for system: ',s)
+                        p.append(float(y[1])-spin)
+                    print('For system: ',s)
+                    print(p)
                     p=numpy.array(p)
                     zero_crossing=numpy.where(numpy.diff(numpy.sign(p)))[0]
                     if zero_crossing.size==1:
                         FindSolution(s,
-                                     'SpinLogQ_'+s+'_test.txt',
+                                     'SpinLogQ_WithBreaks_'+s+'.txt',
                                      spin,
                                      porb
                                      )
-                        print('systems with single solution: ',s)
-                    if zero_crossing.size==0 and spin/porb>1:
-                        print('systems cannot produce high pspin values: ',s)
-                        no_check=1
-                    if zero_crossing.size==0 and spin/porb<1 and no_check==0:
-                        print('system with no solutions: ',s)
-                    if zero_crossing.size>1:
-                        print('system with mulitple solution: ',s)
+                        print(s)
+
                     break

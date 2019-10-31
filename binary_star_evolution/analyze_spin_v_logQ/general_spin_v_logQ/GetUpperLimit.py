@@ -186,13 +186,14 @@ class evolution:
 
         primary.delete()
         secondary.delete()
-        return solutions['spin']
+        return solutions['spin'],solutions['e_current']
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
+    parser.add_argument('logq',help='logq value to start with')
     parser.add_argument('-b',action='store_const',dest='breaks',
                         const='breaks',
                         help='decide if breaks needed or not')
@@ -226,9 +227,9 @@ if __name__ == '__main__':
     parameters=dict()
 
     if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
-    else:spin_vs_logQ_file='ChangeWdisk/SpinLogQ_'+system+'_test.txt'
+    else:spin_vs_logQ_file='UpperLimit/SpinLogQ_'+system+'_test.txt'
 
-    with open(spin_vs_logQ_file,'a') as f:
+    with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
                 'Porb_initial'+'\t'+
@@ -282,12 +283,18 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ = numpy.arange(6.0,7.0,0.01)
-                #logQ=[4.0]
-                for q in logQ:
+                q=float(args.logq)
+                while True:
 
-                    print('Calculating for logQ = ', q)
-                    spin = evolve(q,spin_vs_logQ_file)
+                    print('\n\nCalculating for logQ = ', q)
+                    spin,ecc = evolve(q,spin_vs_logQ_file)
+                    e_error=abs(ecc-parameters['eccentricity'])
+
+                    print('Eccentricity Error = ',e_error)
+                    if e_error>1e-3:
+                        q=q+0.1
+                        continue
+                    else:break
                     print('Obtained spin = ', spin)
 
                 break

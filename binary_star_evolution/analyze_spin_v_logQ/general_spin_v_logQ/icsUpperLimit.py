@@ -4,8 +4,8 @@ import pickle
 
 import sys
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+sys.path.append('/home/ruskin/projects/poet/PythonPackage')
+sys.path.append('/home/ruskin/projects/poet/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -16,10 +16,9 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from basic_utils import Structure
-from intial_secondary_angmom import IntialSecondaryAngmom
-
-
 from astropy import units, constants
+from basic_utils import Structure
+from math import pi
 import scipy
 from scipy import optimize
 from scipy.optimize import brentq
@@ -52,12 +51,12 @@ class InitialConditionSolver:
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         #if hasattr(self, 'binary'): self.binary.delete()
         if initial_condition[1]>0.45 or initial_condition[1]<0:
-            print('Cannot accept eccentricity>0.45')
+            print('unacceptable values in initial_condition')
             return scipy.nan,scipy.nan
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
-            spin_angmom = self.SecondaryAngmom
+            spin_angmom = self.secondary_angmom
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
@@ -111,24 +110,57 @@ class InitialConditionSolver:
 
         print ("BINARY CONFIGURATION COMPLETE")
 
-        self.binary.evolve(
-            self.target.age,
-            self.evolution_max_time_step,
-            self.evolution_precision,
-            None
-        )
+        if self.print_cfile==True:
+            if self.breaks==True:
+                create_c_code='cfile_'+self.system+'_withbreaks.cpp'
+            else:
+                create_c_code='cfile_'+self.system+'.cpp'
+
+            self.binary.evolve(
+                self.target.age,
+                self.evolution_max_time_step,
+                self.evolution_precision,
+                None,
+                create_c_code=create_c_code,
+                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
+            )
+
+        else:
+            self.binary.evolve(
+                self.target.age,
+                self.evolution_max_time_step,
+                self.evolution_precision,
+                None
+            )
+
+        self.p_initial = initial_condition[0]
+        self.e_inital = initial_condition[1]
 
         print ("BINARY EVOLUTION COMPLETE")
 
         self.final_state = self.binary.final_state()
+        print('Current Age = ', self.final_state.age)
         assert (self.final_state.age == self.target.age)
 
         self.orbital_period = self.binary.orbital_period(self.final_state.semimajor)
         self.eccentricity = self.final_state.eccentricity
 
 
+        if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
+
+        self.delta_p = self.orbital_period-self.target.Porb
+        self.delta_e = self.eccentricity-self.target.eccentricity
+
+        print('Final orbital period = ',self.orbital_period)
+        print('Final Eccentricity = ', self.eccentricity)
+
+        print('Difference between final and target p=%s , e=%s '
+              %(repr(self.delta_p),repr(self.delta_e)))
+
+
+
         self.spin =  (
-                2.0 * numpy.pi
+                2.0 * pi
                 *
                 self.binary.primary.envelope_inertia(self.final_state.age)
                 /
@@ -136,96 +168,13 @@ class InitialConditionSolver:
         )
 
         self.binary.delete()
-        print('Final Spin = ',self.spin)
-        print('Final Eccentricity = ',self.eccentricity)
-        print('Final Porb =  ',self.orbital_period)
-        if self.single_solution==True:return self.orbital_period
-        if self.single_solution==False:
-            return self.orbital_period-self.target.Porb,self.eccentricity-self.target.eccentricity
-
-    def _calculate_porb(self,p,e):
-
-        print('Calculating for p=%s and e=%s'%(repr(p),repr(e)))
-        try:
-            porb_obtained=self._try_initial_conditions([p,e])
-            print('porb_obtained = ', porb_obtained)
-            return porb_obtained
-        except:
-            return scipy.nan
-
-
-    def _change_disk_frequency(self):
-        self.disk_lock_frequency=numpy.random.uniform(low=2*numpy.pi/14,
-                                                    high=2*numpy.pi/1.4)
-        self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
-        print('new disk frequency = ', self.disk_lock_frequency)
-        print('New secodnary angmom = ', self.SecondaryAngmom)
-
-    def find_porb_range(self,p,e):
-
-        porb_min=scipy.nan
-        porb_max=scipy.nan
-
-        porb_initial_guess=p
-        curent_eccentrcity=e
-        print('Initia Guess: ',porb_initial_guess)
-        while True:
-
-            porb_obtained=self._calculate_porb(porb_initial_guess,e)
-            if numpy.isnan(porb_obtained):
-                self._change_disk_frequency()
-                continue
-
-
-            porb_error=porb_obtained-self.target.Porb
-            print('Porb_error = ', porb_error)
-            if porb_error>0:step=-0.5
-            else:step=1.0
-            if porb_error<0:porb_min=p
-            else:porb_max=p
-            new_error=porb_error
-
-            while porb_error*new_error>0 and p<100.0:
-                p=p+step
-                porb_obtained=self._calculate_porb(p,e)
-                if numpy.isnan(porb_obtained):
-                    self._change_disk_frequency()
-                    break
-                new_error=porb_obtained-self.target.Porb
-                print('New error = ', new_error)
-            if numpy.isnan(porb_obtained):continue
-            else:break
-        if numpy.isnan(porb_min):porb_min=p
-        else:porb_max=p
-
-        print('min = %s, max = %s' %(repr(porb_min),repr(porb_max)))
-        return porb_min,porb_max
-
-
-
-    def find_solution(self,p,e):
-
-        while True:
-            try:
-                porb_min,porb_max=self.find_porb_range(p,e)
-
-                self.porb_initial = brentq(lambda porb_initial :
-                                           self._try_initial_conditions([porb_initial,e])
-                                           - self.target.Porb,
-                                           porb_min,
-                                           porb_max,
-                                           xtol=1e-5,
-                                           rtol=1e-5)
-                break
-            except:
-                self._change_disk_frequency()
-                continue
-        print('Solutions = ', self.porb_initial,self.eccentricity)
-
-
+        print(self.spin)
+        return self.delta_p,self.delta_e
 
     def __init__(self,
-                 planet_formation_age=None,
+                 system=None,
+                 print_cfile=None,
+                 breaks=None,
                  disk_dissipation_age=None,
                  evolution_max_time_step=None,
                  evolution_precision=1e-6,
@@ -251,15 +200,16 @@ class InitialConditionSolver:
 
         Returns: None.
         """
-
+        self.sytem=system
+        self.print_cfile=print_cfile
+        self.breaks=breaks
         self.disk_dissipation_age = disk_dissipation_age
         self.evolution_max_time_step = evolution_max_time_step
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
-        self.secondary_angmom=secondary_angmom
-        self.porb_initial=scipy.nan
-        self.single_solution=None
+        self.delta_p=1.0
+        self.delta_e=1.0
 
     def __call__(self, target, primary, secondary):
         """
@@ -304,90 +254,24 @@ class InitialConditionSolver:
                                     else 2*pi/target.Pdisk)
 
 
-        print(self.disk_lock_frequency)
-        self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
+        e=target.eccentricity
+        p=target.Porb
 
-        e_target=target.eccentricity
-        porb_target=target.Porb
+        solutions=dict()
 
-
-##################################################################################################################################################################################################################################################################################################################################################
-
-
-        ecc=numpy.linspace(e_target,0.4,4)
-        print('Eccentricity = ', ecc)
-
-        e_min,e_max=scipy.nan,scipy.nan
-        self.single_solution=True
-        for e in ecc:
-            print('\ncalculating for e = ', e)
-            porb_solution_new=self.find_solution(porb_target,e)
-            e_error=e_target-self.eccentricity
-            print('ecc error = ',e_error)
-            if abs(e_error)<1e-2:
-                print('Final eccentricity is close enough')
-                self.single_solution=False
-                print(self.porb_initial)
-                print(e)
-                sol=optimize.root(self._try_initial_conditions,
-                                  [self.porb_initial,e],
-                                  method='lm')
-                sol_p,sol_e=sol.x
-                print(sol_p,sol_e)
-                break
-            elif e_error>0:
-                print('setting minimum e')
-                e_min=e
-            elif numpy.isnan(e_max):
-                print('setting maximum e')
-                e_max=e
-
-        if numpy.isnan(e_min):e_min=e_target
-        print(e_min,e_max)
-
-
-##################################################################################################################################################################################################################################################################################################################################################
-
-
-
-        """
         while True:
             try:
                 print('solving for p and e')
                 sol = optimize.root(self._try_initial_conditions,
-                                    [5.231958357414529,0.1],
+                                    [p,e],
                                     method='lm',
-                                    tol=1e-6
+                                    options={'xtol':1e-5}
                                     )
                 sol_p,sol_e=sol.x
                 break
-            except:
-                self.disk_lock_frequency=numpy.random.uniform(low=2*numpy.pi/14,
-                                                              high=2*numpy.pi/1.4)
-                self.SecondaryAngmom=self.secondary_angmom(self.disk_lock_frequency)
-                print('new disk frequency = ', self.disk_lock_frequency)
-                continue
 
-
-        print(sol.x)
-        """
-
-#########################################################################################################################################################################
-#########################################################################################################################################################################
-
-
-
-
-
-
-
-##################################################################################################################################################################################################################################################################################################################################################
-
-
-
-        """
-
-        solutions=dict()
+            except Exception:
+                return solutions
 
         solutions['spin']=self.spin
         solutions['Porb_inital']=sol_p
@@ -395,6 +279,6 @@ class InitialConditionSolver:
         solutions['Porb_current']=self.orbital_period
         solutions['e_current']=self.eccentricity
         solutions['delta_p']=self.delta_p
-        solutions['delta_e']=self.delta_p
-        """
-        #return solutions
+        solutions['delta_e']=self.delta_e
+
+        return solutions

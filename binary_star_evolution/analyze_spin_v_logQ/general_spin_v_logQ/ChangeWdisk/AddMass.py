@@ -2,11 +2,11 @@ import numpy
 
 
 system_array=[]
-with open('FindLogQSolution.txt','r') as f:
+with open('FindingSolution.txt','r') as f:
+    next(f)
     for lines in f:
         x=lines.split()
         system_array.append(x[0])
-
 
 mass_array=[]
 with open('spin_vs_logQ_systems_0.2.txt','r') as f:
@@ -19,9 +19,9 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                 break
 
 
-
 with open('FindLogQSolution_withMass.txt','w') as f:
-    with open('FindLogQSolution.txt','r') as f1:
+    with open('FindingSolution.txt','r') as f1:
+        next(f1)
         for i,lines in enumerate(f1):
             x=lines.split()
             x.append(mass_array[i])
