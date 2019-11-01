@@ -93,7 +93,7 @@ def FindSolution(system,
 
         if Porb>PspinSigmaMin and Porb<PspinSigmaMax:
             synchronized=True
-        else: synchronized=False
+        else: synchronized=None
 
         with open('SolutionFile.txt','a') as f1:
             f1.write(system+'\t'+
@@ -142,6 +142,10 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                         print('Incomplete for system: ',s)
                     p=numpy.array(p)
                     zero_crossing=numpy.where(numpy.diff(numpy.sign(p)))[0]
+
+                    circularized=None
+                    synchronized=None
+
                     if zero_crossing.size==1:
                         FindSolution(s,
                                      'SpinLogQ_'+s+'_test.txt',
