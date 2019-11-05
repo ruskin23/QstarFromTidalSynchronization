@@ -227,11 +227,11 @@ if __name__ == '__main__':
 
                 Pspin=float(x[12])
 
-                #logQ = numpy.arange(5.0,10.0,1.0)
-                logQ=[7.0]
+                logQ = numpy.linspace(5.5,7.0,20)
+                #logQ=[6.0]
                 for q in logQ:
 
-                    print('Calculating for logQ = ', q)
+                    print('\n\nCalculating for logQ = ', q)
                     #spin =
                     evolve(q,spin_vs_logQ_file,option=1)
                     #print('Obtained spin = ', spin)

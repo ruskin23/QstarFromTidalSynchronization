@@ -203,7 +203,7 @@ class InitialConditionSolver:
 
 
 
-    def find_solution(self,p,e):
+    def find_porb_solution(self,p,e):
 
         while True:
             try:
@@ -220,8 +220,62 @@ class InitialConditionSolver:
             except:
                 self._change_disk_frequency()
                 continue
-        print('Solutions = ', self.porb_initial,self.eccentricity)
+        print('Porb Solutions = ', self.porb_initial,self.eccentricity)
 
+
+
+    def find_e_range(self,porb_target,e_target):
+
+        print('\nFinding e range')
+        ecc=numpy.linspace(e_target,0.38,4)
+        print('Eccentricity array = ', ecc)
+
+        e_min,e_max=scipy.nan,scipy.nan
+        self.single_solution=True
+        for e in ecc:
+            print('\ncalculating for e = ', e)
+            porb_solution_new=self.find_porb_solution(porb_target,e)
+            e_error=e_target-self.eccentricity
+            print('ecc error = ',e_error)
+            if e_error>0:
+                print('setting minimum e')
+                e_min=e
+            elif e_error<0:
+                print('setting maximum e')
+                e_max=e
+                break
+
+        return e_min,e_max
+
+    def find_e_solution(self,porb_target,e_target):
+
+        e_min,e_max=self.find_e_range(porb_target,e_target)
+
+        print('Found e Range:')
+        print(e_min,e_max)
+
+        print('\nSolving for e now')
+        while True:
+            if numpy.isnan(e_min)==False and numpy.isnan(e_max)==False:
+                e_mid=(e_min+e_max)/2.0
+                print('e_mid = ', e_mid)
+                porb_solution=self.find_porb_solution(porb_target,e_mid)
+                e_error=e_target-self.eccentricity
+                if abs(e_error)<1e-4:
+                    print('Solution Found: ')
+                    print(e_mid)
+                    print(self.eccentricity)
+                    break
+                elif e_error<0:
+                    print('solution on left side')
+                    e_max=e_mid
+                else:
+                    print('Solution of right side')
+                    e_min=e_mid
+
+            else:
+                print('NO SOLUTION')
+                break
 
 
     def __init__(self,
@@ -313,41 +367,9 @@ class InitialConditionSolver:
 
 ##################################################################################################################################################################################################################################################################################################################################################
 
-
-        ecc=numpy.linspace(e_target,0.4,4)
-        print('Eccentricity = ', ecc)
-
-        e_min,e_max=scipy.nan,scipy.nan
-        self.single_solution=True
-        for e in ecc:
-            print('\ncalculating for e = ', e)
-            porb_solution_new=self.find_solution(porb_target,e)
-            e_error=e_target-self.eccentricity
-            print('ecc error = ',e_error)
-            if abs(e_error)<1e-2:
-                print('Final eccentricity is close enough')
-                self.single_solution=False
-                print(self.porb_initial)
-                print(e)
-                sol=optimize.root(self._try_initial_conditions,
-                                  [self.porb_initial,e],
-                                  method='lm')
-                sol_p,sol_e=sol.x
-                print(sol_p,sol_e)
-                break
-            elif e_error>0:
-                print('setting minimum e')
-                e_min=e
-            elif numpy.isnan(e_max):
-                print('setting maximum e')
-                e_max=e
-
-        if numpy.isnan(e_min):e_min=e_target
-        print(e_min,e_max)
-
+        self.find_e_solution(porb_target,e_target)
 
 ##################################################################################################################################################################################################################################################################################################################################################
-
 
 
         """

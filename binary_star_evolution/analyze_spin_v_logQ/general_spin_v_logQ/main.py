@@ -225,10 +225,10 @@ if __name__ == '__main__':
 
     parameters=dict()
 
-    if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/break3.0/SpinLogQ_WithBreaks_'+system+'.txt'
-    else:spin_vs_logQ_file='ChangeWdisk/SpinLogQ_'+system+'_test.txt'
+    if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/UpperLimit/breaks2.0/SpinLogQ_WithBreaks_'+system+'.txt'
+    else:spin_vs_logQ_file='SpinLogQFiles/SpinLogQ_'+system+'_test.txt'
 
-    with open(spin_vs_logQ_file,'a') as f:
+    with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
                 'Porb_initial'+'\t'+
@@ -282,7 +282,8 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ = numpy.arange(6.0,7.0,0.01)
+                logQ=numpy.linspace(9,10,20)
+                #logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
                 #logQ=[4.0]
                 for q in logQ:
 

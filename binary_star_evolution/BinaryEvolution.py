@@ -71,10 +71,7 @@ class Evolution:
             secondary_config = dict(spin_angmom=secondary_angmom,
                                     inclination=numpy.array([0.0]),
                                     periapsis=numpy.array([0.0]))
-
-
-        primary.select_interpolation_region(primary.core_formation_age())
-        primary.detect_stellar_wind_saturation()
+        print(secondary_config['spin_angmom'])
 
         binary = Binary(primary=primary,
                         secondary=secondary,
@@ -85,16 +82,10 @@ class Evolution:
                         disk_dissipation_age=self.disk_dissipation_age,
                         secondary_formation_age=self.disk_dissipation_age)
 
-        secondary.configure(age=self.disk_dissipation_age,
-                            companion_mass=primary.mass,
-                            semimajor=binary.semimajor(self.PorbInitial),
-                            eccentricity=self.EccentricityInitial,
-                            locked_surface=False,
-                            zero_outer_inclination=True,
-                            zero_outer_periapsis=True,
-                            **secondary_config)
-        if isinstance(secondary, EvolvingStar):
-            secondary.detect_stellar_wind_saturation()
+
+        primary.select_interpolation_region(primary.core_formation_age())
+        if isinstance(secondary, EvolvingStar):secondary.detect_stellar_wind_saturation()
+
 
         binary.configure(age=primary.core_formation_age(),
                          semimajor=float('nan'),
@@ -103,6 +94,17 @@ class Evolution:
                          inclination=None,
                          periapsis=None,
                          evolution_mode='LOCKED_SURFACE_SPIN')
+
+        primary.detect_stellar_wind_saturation()
+
+        binary.secondary.configure(age=self.disk_dissipation_age,
+                            companion_mass=primary.mass,
+                            semimajor=binary.semimajor(self.PorbInitial),
+                            eccentricity=self.EccentricityInitial,
+                            locked_surface=False,
+                            zero_outer_inclination=True,
+                            zero_outer_periapsis=True,
+                            **secondary_config)
 
         return binary
 
@@ -126,7 +128,8 @@ class Evolution:
                                                         label='primary_envelope_spin_frequency_'+str(self.q))
         if self.plot_secondary_envelope==True:pyplot.semilogx(evolution.age,
                                                           wenv_secondary,
-                                                          color="r",
+                                                          color=self.plot_color,
+                                                              linestyle=':',
                                                           label='secondary_envelope_spin_frequency'+str(self.q))
         if self.plot_primary_core==True:pyplot.semilogx(evolution.age,
                                                     wcore_primary, color="b",
@@ -137,7 +140,10 @@ class Evolution:
                                                       color="r",linestyle='--',
                                                       label='secondary_core_spin_frequency'+str(self.q))
 
-        if self.q==8:pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='orbital_frequency')
+        if self.q==10.0:
+            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun)
+            pyplot.axhline(y=2*numpy.pi/self.PorbCurrent/wsun,label='PorbCurrent')
+            pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='orbital_frequency')
         pyplot.legend(loc='upper right')
         #pyplot.axhline(y=wsat/wsun)
         #ax.ylim(top=100)
@@ -177,6 +183,12 @@ class Evolution:
                 final_state.primary_envelope_angmom
         )
 
+        PorbFinal=binary.orbital_period(final_state.semimajor)
+        EccFinal=final_state.eccentricity
+
+        print('Final Porb = ',PorbFinal )
+        print('Final Eccentricity = ', EccFinal)
+        print('Secondary Initial Angmom = ', SecondaryAngmom(self.Wdisk))
         print('Final Spin = ',spin)
 
         if self.plot==True:self.plot_evolution(binary,evolution,2.54)
@@ -229,8 +241,8 @@ if __name__ == '__main__':
     parameters['secondary_mass']=secondary_mass
     parameters['age']=age
     parameters['feh']=feh
-    #parameters['PorbInitial']=8.180356495087922
-    #parameters['EccentricityInitial']=0.18202161823731802
+    #parameters['PorbInitial']=8.180356495086663
+    #parameters['EccentricityInitial']=0.18202161823737095
     parameters['PorbCurrent']=PorbCurrent
     parameters['PspinCurrent']=PspinCurrent
 
@@ -266,20 +278,23 @@ if __name__ == '__main__':
     parameters['plot']=True
     parameters['plot_primary_envelope']=True
     parameters['plot_primary_core']=False
-    parameters['plot_secondary_envelope']=False
+    parameters['plot_secondary_envelope']=True
     parameters['plot_secondary_core']=False
     #parameters['plot_color']='-b'
     #evolve=Evolution(interpolator,parameters)
 
     print(parameters)
 
+    #q=8.0
 
-    PorbInitial=[8.180356495087922,8.220011186718875,8.45724283561943,8.589445021544392,8.613981800791764]
-    EccentricityInitial=[0.18202161823731802,0.17173511650823867,0.17581844688137874,0.1792431339584296,0.17991655132970052]
-    logQ=[8.0,9.0,10.0,11.0,12.0]
+    #evolve=Evolution(interpolator,parameters)
+    #evolve(q)
+
+
+    PorbInitial=[8.3108749748239,8.44329659042446,8.458286134340986,8.459827710559024,8.459982761652514]
+    EccentricityInitial=[0.04203515118102658,0.04189305205288432,0.04198917406815888,0.04199891630622043,0.04199989161922022]
+    logQ=[6.0,7.0,8.0,9.0,10.0]
     plot_color=["r","g","b","c","m"]
-    #fig=pyplot.figure()
-    #ax=fig.add_subplot(1,1,1)
 
     for i in range(5):
 
@@ -291,6 +306,5 @@ if __name__ == '__main__':
 
         evolve=Evolution(interpolator,parameters)
         evolve(q)
-        #ax=evolve(q,ax)
 
     pyplot.show()

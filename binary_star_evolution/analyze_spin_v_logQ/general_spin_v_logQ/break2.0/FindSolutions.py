@@ -115,7 +115,8 @@ systems=[]
 for files in os.listdir(directory):
     x=files.split('_')
     if x[0]=='SpinLogQ':
-        systems.append(x[1])
+        y=x[2].split('.')
+        systems.append(y[0])
 print(systems)
 with open('spin_vs_logQ_systems_0.2.txt','r') as f:
     next(f)
@@ -128,7 +129,7 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                 porb=float(x[6])
                 spin_error=float(x[13])
                 primary_mass=float(x[14])
-                with open('SpinLogQ_'+s+'_test.txt','r') as f1:
+                with open('SpinLogQ_WithBreaks_'+s+'.txt','r') as f1:
                     next(f1)
                     lowspin_check=0
                     incomplete_check=0
@@ -148,7 +149,7 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
 
                     if zero_crossing.size==1:
                         FindSolution(s,
-                                     'SpinLogQ_'+s+'_test.txt',
+                                     'SpinLogQ_WithBreaks_'+s+'.txt',
                                      spin,
                                      porb,
                                      spin_error,
@@ -160,7 +161,7 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                         lowspin_check=1
                     if zero_crossing.size==0 and spin/porb<1 and lowspin_check==0 and incomplete_check==0:
                         FindUpperLimit(s,
-                                       'SpinLogQ_'+s+'_test.txt',
+                                       'SpinLogQ_WithBreaks_'+s+'.txt',
                                        spin,
                                        porb,
                                        primary_mass)
