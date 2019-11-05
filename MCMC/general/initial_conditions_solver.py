@@ -4,8 +4,16 @@ import pickle
 
 import sys
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+from pathlib import Path
+home_dir=str(Path.home())
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet'
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet'
+
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -50,7 +58,7 @@ class InitialConditionSolver:
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
 
-        if initial_condition[1]>0.45 or initial_condition[1]<0 or initial_condition[0]<0:
+        if initial_condition[1]>0.9 or initial_condition[1]<0 or initial_condition[0]<0:
             print('Cannot accept eccentricity > 0.45')
             return scipy.nan, scipy.nan
 
@@ -129,12 +137,16 @@ class InitialConditionSolver:
         self.eccentricity = self.final_state.eccentricity
 
 
-        if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
+        #if (numpy.isnan(self.orbital_period)): self.orbital_period = 0.0
 
         self.delta_p = self.orbital_period-self.target.Porb
-        self.detla_e = self.eccentricity-self.target.eccentricity
+        self.delta_e = self.eccentricity-self.target.eccentricity
 
-        print(self.delta_p,self.detla_e)
+        if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e)))==True:
+            print('Binary system was destroyed')
+            raise ValueError
+
+        print(self.delta_p,self.delta_e)
 
         self.spin =  (
                 2.0 * pi
@@ -148,7 +160,7 @@ class InitialConditionSolver:
 
         self.binary.delete()
 
-        return self.delta_p,self.detla_e
+        return self.delta_p,self.delta_e
 
     def __init__(self,
                  planet_formation_age=None,
@@ -157,26 +169,10 @@ class InitialConditionSolver:
                  evolution_precision=1e-6,
                  secondary_angmom=None,
                  is_secondary_star=None,
-                 instance=None):
+                 instance=None,
+                 output_directory=None):
         """
         Initialize the object.
-
-        Args:
-            - planet_formation_age:
-                If not None, the planet is assumed to form at the given age
-                (in Gyr). Otherwise, the starting age must be specified each
-                time this object is called.
-
-            - disk_dissipation_age:
-                The age at which the disk dissipates in Gyrs.
-
-            - evolution_max_time_step:
-                The maximum timestep the evolution is allowed to make.
-
-            - evolution_precision:
-                The precision to require of the evolution.
-
-        Returns: None.
         """
 
         self.disk_dissipation_age = disk_dissipation_age
@@ -185,41 +181,17 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
         self.instance = instance
+        self.output_directory = output_directory
         self.e_initial = 0
         self.p_initial = 0
+        self.initial_orbital_period_sol=None
+        self.initial_eccentricity_sol=None
+        self.gsl_flag=False
 
     def __call__(self, target, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
 
-        Args:
-            - target:
-                The target configuration to reproduce by tuning the the
-                initial conditions for.
-                The following attributes must be defined:
-                    - age:
-                        The age at which the system configuration is known.
-                    - Porb:
-                        The orbital period to reproduce.
-                    - Pdisk | Wdisk:
-                        The stellar surface spin period to reproduce or the
-                        disk locking period or the disk locking frequency.
-            - primary
-
-            - secondary
-
-        Returns:
-            - porb_initial:
-                Initial orbital period.
-
-            - psurf:
-                Current priamry star spin matching initial orbital period and
-                initial_disk_fequency
-
-            Further, the solver object has an attribute named 'binary' (an
-            instance of (evolve_interface.Binary) which was evolved from
-            the initial conditions found to most closely reproduce the
-            specified target configuration.
         """
 
 
@@ -241,23 +213,49 @@ class InitialConditionSolver:
                                 method='lm'
                                 )
                 break
-            except AssertionError:
-                if self.e_initial!=0:e=self.e_initial+0.0005
-                else:e=e+0.0005
-                if self.p_initial!=0:p=self.p_initial
+            except ValueError:
+                p=p+10.0
+                e=e+0.1
                 continue
-
+            except AssertionError:
+                self.spin=scipy.nan
+                self.gsl_flag=True
+                self.delta_e=scipy.nan
+                self.delta_p=scipy.nan
+                self.orbital_period=p
+                self.eccentricity=e
+                break
+                #if self.e_initial!=0:e=self.e_initial+0.0005
+                #else:e=e+0.0005
+                #if self.p_initial!=0:p=self.p_initial
+                #continue
 
         print(self.spin)
-        print(sol.x)
 
-        if abs(self.delta_p)>0.1 or abs(self.detla_e)>0.1:self.spin=scipy.nan
-        return (sol.x,
-                self.orbital_period,
-                self.eccentricity,
-                self.spin,
-                self.delta_p,
-                self.detla_e)
+        if numpy.isnan(self.spin):
+            self.initial_orbital_period_sol=scipy.nan
+            self.initial_eccentricity_sol=scipy.nan
+
+        else:
+            self.initial_orbital_period_sol,self.initial_eccentricity_sol = sol.x
+
+        if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:self.spin=scipy.nan
+
+        pickle_fname=self.output_directory+'solver_results_'+self.instance+'.pickle'
+
+        print('pickle file name = ', pickle_fname)
+        with open(pickle_fname,'wb') as f:
+            pickle.dump(self.initial_orbital_period_sol,f)
+            pickle.dump(self.initial_eccentricity_sol,f)
+            pickle.dump(self.orbital_period,f)
+            pickle.dump(self.eccentricity,f)
+            pickle.dump(self.spin,f)
+            pickle.dump(self.delta_p,f)
+            pickle.dump(self.delta_e,f)
+            pickle.dump(self.gsl_flag,f)
+
+
+        return self.spin
 
 
 

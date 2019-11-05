@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 
+import sys
+
+from pathlib import Path
+home_dir=str(Path.home())
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet'
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet'
+
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 import sys
-sys.path.append('.../poet/PythonPackage')
-sys.path.append('.../poet/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -12,7 +22,6 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from mass_calculation import Derive_mass
 from initial_conditions_solver import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
@@ -106,33 +115,15 @@ class evolution:
         return binary
 
 
-    def calculate_star_masses(self):
 
-        star_masses = []
-
-        print ("Calculating Masses\n")
-
-        mass = Derive_mass(
-                            self.interpolator,
-                            self.teff_primary,
-                            self.logg,
-                            self.feh)
-
-        sol_mp,sol_age=mass()
-        self.primary_mass = sol_mp
-        self.age=sol_age
-        self.secondary_mass = self.primary_mass*self.mass_ratio
-
-        print(self.primary_mass)
-        print(self.secondary_mass)
-        print(self.age)
 
     def __init__(self,
                  interpolator,
                  observational_parameters,
                  fixed_parameters,
                  mass_ratio,
-                 instance):
+                 instance,
+                 output_directory):
 
         self.interpolator=interpolator
 
@@ -145,18 +136,19 @@ class evolution:
 
         self.convective_phase_lag=phase_lag(self.logQ)
 
-        self.primary_mass=0.0
         self.secondary_mass=0.0
 
         self.mass_ratio=mass_ratio
         self.instance=instance
-
+        self.output_directory=output_directory
 
     def __call__(self):
 
         tdisk = self.disk_dissipation_age
 
-        self.calculate_star_masses()
+        self.secondary_mass=self.primary_mass*self.mass_ratio
+        print('Secondary Mass = ',self.secondary_mass)
+
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
@@ -191,30 +183,19 @@ class evolution:
                                          secondary_angmom=numpy.array(
                                              [disk_state.envelope_angmom, disk_state.core_angmom]),
                                          is_secondary_star=True,
-                                         instance = self.instance)
+                                         instance = self.instance,
+                                         output_directory=self.output_directory)
 
         target = Structure(age=self.age,
                            Porb=self.Porb,  # current Porb to match
                            Wdisk=self.Wdisk,
                            eccentricity=self.eccentricity)
 
-        ic,current_porb,current_e,spin,delta_p,delta_e =  find_ic(target=target,
+        spin =  find_ic(target=target,
                        primary=primary,
                        secondary=secondary)
 
 
-
-        pickle_fname = 'solver_results_'+self.instance+'.pickle'
-
-        with open(pickle_fname,'wb') as f:
-            pickle.dump(ic,f)
-            pickle.dump(current_porb,f)
-            pickle.dump(current_e,f)
-            pickle.dump(spin,f)
-            pickle.dump(delta_e,f)
-            pickle.dump(delta_p,f)
-            pickle.dump(self.primary_mass,f)
-            pickle.dump(self.secondary_mass,f)
 
         primary.delete()
         secondary.delete()

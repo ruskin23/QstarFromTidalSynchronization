@@ -3,6 +3,7 @@
 import scipy
 from scipy.stats import norm
 import numpy
+import random
 
 import pickle
 import csv
@@ -29,7 +30,8 @@ class MetropolisHastings:
                                 parameter_set,
                                 self.fixed_parameters,
                                 self.mass_ratio,
-                                self.instance
+                                self.instance,
+                                self.output_directory
                                )
 
         self.spin_value = find_spin()
@@ -39,12 +41,12 @@ class MetropolisHastings:
         print('Current Spin Value = ', self.spin_value )
         prior = 1.0
 
-        for (key_obs,value_obs),(key_parameter,value_parameter) in zip(self.observation_data.items(),parameter_set.items()):
-            prior  *= scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(value_parameter)
-            print('prior = ', scipy.stats.norm(value_obs['value'],                value_obs['sigma']).pdf(value_parameter))
+        for key_obs,value_obs in self.observation_data.items():
+            prior=prior*scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs])
+            print('prior for ', key_obs)
+            print(scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs]))
 
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
-
 
         print('likehood = ', likelihood)
         posterior = prior*likelihood
@@ -61,19 +63,44 @@ class MetropolisHastings:
             print('Acceptance_probability = ', self.p_acceptance)
             print('Random_number = ', rand)
 
+    def propose_from_samples(self,name):
+
+        rand=random.randint(1,100000)
+
+        with open(self.mass_age_feh_sample_file,'r') as f:
+            for i,lines in enumerate(f):
+                if i==rand:
+                    x=lines.split()
+                    if name=='primary_mass':return float(x[1])
+                    if name=='age':return 10**float(x[2])
+                    if name=='feh':return float(x[3])
+
+
 
     def values_proposed(self):
 
         proposed = dict()
-        for (name_obs,value_obs),(name_step,value_step) in zip(self.current_parameters.items(),self.proposed_step.items()):
-            proposed[name_obs]=scipy.stats.norm.rvs(loc=value_obs, scale=value_step)
-            print("NAME AND VALUE",name_obs,proposed[name_obs] )
+
+        sample_keys=['primary_mass','age','feh']
+        for key in sample_keys:
+            proposed[key]=self.propose_from_samples(key)
+
+        for key_obs,value_obs in self.observation_data.items():
+            step_key=key_obs+'_step'
+            proposed[key_obs]=scipy.stats.norm.rvs(loc=self.current_parameters[key_obs],scale=self.proposed_step[step_key])
+        proposed['Wdisk']=scipy.stats.norm.rvs(loc=self.current_parameters['Wdisk'],scale=self.proposed_step['Wdisk_step'])
+        proposed['logQ']=scipy.stats.norm.rvs(loc=self.current_parameters['logQ'],scale=self.proposed_step['logQ_step'])
+
 
         self.proposed_parameters = proposed
 
     def write_header(self):
 
-        f = os.getcwd()
+        """
+        Write the header in both accepted and rejected parameter files
+        """
+
+        f = self.output_directory
         file_list = os.listdir(f)
         for name in self.save_filename:
             if name in file_list:
@@ -85,14 +112,32 @@ class MetropolisHastings:
         for key in self.current_parameters.keys():
             header.append(key)
 
+        ext = [ 'secondary_mass',
+                'inital_orbital_period',
+                'initial_eccentricity',
+                'current_orbital_period',
+                'current_eccentricity',
+                'current_spin',
+                'delta_e',
+                'delta_p',
+                'gsl_flag'
+               ]
 
-        ext = 'inital_orbital_period'  + '\t' + 'initial_eccentricity'  + '\t' + 'current_orbital_period'  + '\t' + 'current_eccentricity'  + '\t' + 'current_spin'  + '\t' + 'delta_e'  + '\t' + 'delta_p'  + '\t' + 'primary_mass'  + '\t' + 'secondary_mass' + '\n'
+
+        for a in ext:
+            header.append(a)
 
         for f_name in self.save_filename:
             with open(f_name, 'w', 1) as file:
                 for name in header:
                     file.write('%s\t' % name)
-                file.write(ext)
+                file.write('\n')
+
+        with open(self.output_directory+'time_stamp_' + self.instance +'.txt','w') as f:
+            f.write('Step'+'\t'+'Time_elapsed'+'\n')
+
+
+
 
     def write_output(self):
 
@@ -108,36 +153,41 @@ class MetropolisHastings:
             print('REJECTED')
             f_name = self.save_filename[1]
 
-        load_solver_file = 'solver_results_'+self.instance+'.pickle'
+
+        load_solver_file = self.output_directory+'solver_results_'+self.instance+'.pickle'
+
 
         if os.path.isfile(load_solver_file) == True:
             with open(load_solver_file,'rb') as f:
-                ic=pickle.load(f)
+                initial_orbital_period=pickle.load(f)
+                intial_eccentricity=pickle.load(f)
                 current_Porb=pickle.load(f)
                 current_e=pickle.load(f)
                 current_spin=pickle.load(f)
                 delta_e=pickle.load(f)
                 delta_p=pickle.load(f)
-                primary_mass=pickle.load(f)
-                secondary_mass=pickle.load(f)
+                gsl_flag=pickle.load(f)
 
         with open(f_name, 'a', 1) as file:
+
             file.write('%s\t' %self.iteration_step)
             for key, value in self.proposed_parameters.items():
                 file.write('%s\t' % value)
+            file.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
             if os.path.isfile(load_solver_file) == True:
                 file.write(
-                    repr(ic[0]) + '\t' +
-                    repr(ic[1]) + '\t' +
-                    repr(current_Porb) + '\t' +
-                    repr(current_e) + '\t' +
-                    repr(current_spin) + '\t' +
-                    repr(delta_e) + '\t' +
-                    repr(delta_p) + '\t' +
-                    repr(primary_mass) + '\t' +
-                    repr(secondary_mass)  +
+                    repr(initial_orbital_period)+'\t'+
+                    repr(intial_eccentricity)+'\t'+
+                    repr(current_Porb)+'\t'+
+                    repr(current_e)+'\t'+
+                    repr(current_spin)+'\t'+
+                    repr(delta_e)+'\t'+
+                    repr(delta_p)+'\t'+
+                    repr(gsl_flag)+
                     '\n')
 
+        with open(self.output_directory+'time_stamp_' + self.instance +'.txt', 'a') as f:
+                f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
     def save_current_parameter(self):
 
@@ -146,6 +196,7 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
+            f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
             f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
 
@@ -154,20 +205,32 @@ class MetropolisHastings:
 
         """Initial values are drawn randomly from the given observable data set"""
 
+        initial_parameters=dict()
+
+        with open(self.catalog_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                at_system=x[0]
+                if at_system==self.system:
+                    initial_parameters['primary_mass']=float(x[15])
+                    initial_parameters['age']=10**float(x[16])
+                    initial_parameters['feh']=float(x[17])
+                    break
 
         for key, value in self.observation_data.items():
-            self.initial_parameters[key] = scipy.stats.norm.rvs(loc=value['value'], scale=value['sigma'])
-        self.initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
-        self.initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+            initial_parameters[key] = value['value']
+
+        initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
+        initial_parameters['logQ'] = self.logQ['value']
 
         print ('\nINITIAL PARAMETERS SET')
 
-        self.current_parameters = self.initial_parameters
+        self.current_parameters = initial_parameters
 
         if self.iteration_step==1:self.write_header()
 
-        print(self.current_parameters)
-
+        print('Current Parameters: ', self.current_parameters)
 
 
     def first_iteration(self):
@@ -178,15 +241,6 @@ class MetropolisHastings:
             self.initialise_parameters()
 
             self.current_file_exist = None
-
-            if self.current_parameters['eccentricity']<0:
-                self.proposed_parameters = self.current_parameters
-                self.isAccepted = False
-                self.write_output()
-                self.proposed_parameters = dict()
-                self.iteration_step = self.iteration_step + 1
-                continue
-
 
             self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
 
@@ -205,8 +259,6 @@ class MetropolisHastings:
 
         """runs the specified number of iteration for the mcmc"""
 
-
-        #while self.iteration_step <= self.total_iterations:
         while True:
 
             self.isAccepted = None
@@ -220,7 +272,7 @@ class MetropolisHastings:
             self.values_proposed()
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
-            if self.proposed_parameters['feh']<-1.4014 or self.proposed_parameters['feh']>0.537:
+            if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
@@ -240,7 +292,7 @@ class MetropolisHastings:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
-                print("mass out of range for current values. proposing new values")
+                print('Cannot calclate spin value')
                 continue
 
 
@@ -257,9 +309,6 @@ class MetropolisHastings:
 
             self.write_output()
             self.save_current_parameter()
-
-            with open('time_stamp_' + self.instance +'.txt', 'a') as f:
-                f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
             self.iteration_step = self.iteration_step + 1
 
@@ -284,34 +333,37 @@ class MetropolisHastings:
                 step = row
         self.iteration_step = int(step[0]) + 1
 
-        self.current_parameters['teff_primary'] = float(array[1])
-        self.current_parameters['feh'] = float(array[2])
-        self.current_parameters['Porb'] = float(array[3])
-        self.current_parameters['eccentricity'] = float(array[4])
-        self.current_parameters['logg'] = float(array[5])
+        self.current_parameters['primary_mass'] = float(array[1])
+        self.current_parameters['age'] = float(array[2])
+        self.current_parameters['feh'] = float(array[3])
+        self.current_parameters['Porb'] = float(array[4])
+        self.current_parameters['eccentricity'] = float(array[5])
         self.current_parameters['Wdisk'] = float(array[6])
         self.current_parameters['logQ'] = float(array[7])
 
-        if self.current_file_exist: self.current_posterior = float(array[8])
+        if self.current_file_exist: self.current_posterior = float(array[9])
         else : self.current_posterior = self.posterior_probability(self.current_parameters)
 
         self.iterations()
 
     def __init__(
                 self,
+                system,
                 interpolator,
                 fixed_parameters,
                 observation_data,
+                mass_age_feh_sample_file,
+                catalog_file,
                 Wdisk,
                 logQ,
                 proposed_step,
-                total_iterations,
                 observed_Pspin,
                 mass_ratio,
-                instance
+                instance,
+                output_directory
                 ):
 
-
+        self.system=system
         self.interpolator  = interpolator
         self.fixed_parameters = fixed_parameters
         self.observation_data = observation_data
@@ -319,12 +371,12 @@ class MetropolisHastings:
         self.logQ = logQ
         self.proposed_step = proposed_step
         self.iteration_step = 1
-        self.total_iterations= total_iterations
         self.mass_ratio=mass_ratio
+        self.mass_age_feh_sample_file=mass_age_feh_sample_file
+        self.catalog_file=catalog_file
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
-        self.initial_parameters = dict()
 
         self.isAccepted = None
         self.observed_Pspin = observed_Pspin
@@ -338,12 +390,16 @@ class MetropolisHastings:
 
         self.instance = instance
 
-        #self.filename = ['accepted_test_1.txt', 'rejected_test_1.txt']
-        self.save_filename = ['accepted_parameters_' + self.instance + '.txt',
-                         'rejected_parameters_'+ self.instance +'.txt']
+        self.output_directory=output_directory
+
+        self.save_filename = [
+            self.output_directory+'accepted_parameters_'+self.instance+'.txt',
+            self.output_directory+'rejected_parameters_'+ self.instance +'.txt'
+            ]
 
 
-        self.current_filename = 'current_parameters_'+ self.instance +'.txt'
+        self.current_filename = self.output_directory+'current_parameters_'+ self.instance +'.txt'
 
         self.time_stamp = 0.0
         self.time_elapsed = 0.0
+

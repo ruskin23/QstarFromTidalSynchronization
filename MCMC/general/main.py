@@ -1,9 +1,28 @@
 import argparse
 import scipy
 import sys
+import os
+import os.path
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+from pathlib import Path
+home_dir=str(Path.home())
+
+git_dir='/QstarFromTidalSynchronization/MCMC/general/'
+samples_dir='/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples'
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet/'
+    current_directory=home_dir+git_dir
+    samples_directory=home_dir+samples_dir
+
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet/'
+    current_directory=home_dir+'/projects'+git_dir
+    samples_directory=home_dir+'/projects'+samples_dir
+
+
+sys.path.append(poet_path+'PythonPackage')
+sys.path.append(poet_path+'scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -13,12 +32,14 @@ from metropolis_hasting import MetropolisHastings
 
 if __name__ == '__main__':
 
-    serialized_dir = "/home/ruskin/projects/poet/stellar_evolution_interpolators"
+    serialized_dir = poet_path +  "stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
+    eccentricity_path=os.path.join(poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
+        eccentricity_path
     )
 
     parser = argparse.ArgumentParser()
@@ -38,26 +59,36 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    data_line=int(args.system)
+    system_number=args.system
 
-    with open('test_data.txt','r') as f:
-        for i,lines in enumerate(f):
-            if i==data_line:
-                data=lines.split()
-                KIC=int(data[0])
-                mass_ratio=float(data[13])
-                break
-    print(KIC)
+    mass_age_feh_sample_file=samples_directory+ '/MassAgeFehSamples_'+system_number+'.txt'
+    catalog_file=current_directory+'/spin_vs_logQ_systems_0.2.txt'
+    solution_file=current_directory+'/SolutionFile.txt'
 
-    observation_data = dict(
-                teff_primary=dict(value=float(data[1]),sigma=float(data[2])),
-                feh=dict(value=float(data[3]),sigma=float(data[4])),
-                Porb=dict(value=float(data[5]),sigma=float(data[6])),
-                eccentricity=dict(value=float(data[7]),sigma=float(data[8])),
-                logg=dict(value=float(data[9]),sigma=float(data[10])),
+
+    with open(catalog_file,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            at_system=x[0]
+            if system_number==at_system:
+                Porb_value=float(x[6])
+                Porb_error=float(x[7])
+                eccentricity_value=float(x[8])
+                eccentricity_error=float(x[9])
+                Pspin_value=float(x[12])
+                Pspin_error=float(x[13])
+                mass_ratio=float(x[14])
+
+    observation_data = dict(Porb=dict(value=Porb_value,sigma=Porb_error),
+                            eccentricity=dict(value=eccentricity_value,sigma=eccentricity_error)
                         )
 
-    observed_Pspin = dict(value=float(data[11]),sigma=float(data[12]))
+    print('Observational data: ',observation_data)
+
+    observed_Pspin = dict(value=Pspin_value,sigma=Pspin_error)
+
+    print('Observed Spin: ',observed_Pspin)
 
     fixed_parameters = dict(
                         disk_dissipation_age=5e-3,
@@ -71,41 +102,54 @@ if __name__ == '__main__':
     )
 
     proposed_step = dict(
-                        teff_step=130.0,
-                        feh_step=0.28,
-                        Porb_step=0.0001,
-                        eccentricity_step=float(data[6]),
-                        logg_step=0.1,
+                        Porb_step=Porb_error,
+                        eccentricity_step=eccentricity_error,
                         Wdisk_step=0.1,
-                        logQ_step=0.15
+                        logQ_step=1.0
                     )
+
 
     Wdisk = dict(
                 min=2*scipy.pi/14,
                 max=2*scipy.pi/1.4
     )
 
-    logQ = dict(
-                min=9,
-                max=10
-    )
+    with open(solution_file,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            at_system=x[0]
+            if at_system==system_number:
+                logQ_value=float(x[1])
+                break
+    logQ = dict(value=logQ_value)
 
-stepfilename = 'step_file_'+args.instance+'.txt'
+    print('logQ: ',logQ)
+
+output_direcotry=current_directory+'/MCMC_'+system_number+'/'
+
+if os.path.isdir(output_direcotry)==False:os.mkdir(output_direcotry)
+
+stepfilename = output_direcotry+'step_file_'+args.instance+'.txt'
 with open(stepfilename,'w') as f:
     for key,value in proposed_step.items():
         f.write(key + '\t' + repr(value) + '\n')
+
 instance = args.instance
-mcmc = MetropolisHastings(
-                            interpolator,
-                            fixed_parameters,
-                            observation_data,
-                            Wdisk,
-                            logQ,
-                            proposed_step,
-                            10,
-                            observed_Pspin,
-                            mass_ratio,
-                            instance)
+
+mcmc = MetropolisHastings(system_number,
+                          interpolator,
+                          fixed_parameters,
+                          observation_data,
+                          mass_age_feh_sample_file,
+                          catalog_file,
+                          Wdisk,
+                          logQ,
+                          proposed_step,
+                          observed_Pspin,
+                          mass_ratio,
+                          instance,
+                          output_direcotry)
 
 
 if args.start: mcmc.iterations()
