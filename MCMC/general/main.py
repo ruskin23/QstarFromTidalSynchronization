@@ -57,6 +57,9 @@ if __name__ == '__main__':
     parser.add_argument('-l', action = 'store', dest = 'system',
                     help = 'select a system for mcmc')
 
+    parser.add_argument('-b', action = 'store', dest = 'breaks',
+                    help = 'flag this to include tidal frequency breaks')
+
     args = parser.parse_args()
 
     system_number=args.system
@@ -105,7 +108,7 @@ if __name__ == '__main__':
                         Porb_step=Porb_error,
                         eccentricity_step=eccentricity_error,
                         Wdisk_step=0.1,
-                        logQ_step=1.0
+                        logQ_step=0.2
                     )
 
 
