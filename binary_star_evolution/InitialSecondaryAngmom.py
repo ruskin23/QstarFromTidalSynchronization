@@ -104,17 +104,16 @@ class IntialSecondaryAngmom:
 
     def __init__(self,
                  interpolator,
-                 logQ,
                  parameters
                  ):
 
 
         self.interpolator=interpolator
-        self.convective_phase_lag=phase_lag(logQ)
 
         for item,value in parameters.items():
             setattr(self,item,value)
 
+        self.convective_phase_lag=phase_lag(self.logQ)
 
     def __call__(self,wdisk):
 

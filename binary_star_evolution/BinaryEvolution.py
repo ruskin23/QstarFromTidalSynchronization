@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-
+import shelve
 import matplotlib
 
 matplotlib.use('TkAgg')
@@ -20,6 +20,8 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from InitialSecondaryAngmom import IntialSecondaryAngmom
+from initial_condition_solver import  InitialConditionSolver
+from basic_utils import Structure
 import numpy
 import scipy
 from astropy import units, constants
@@ -110,63 +112,82 @@ class Evolution:
 
 
     def plot_evolution(self,
-                       binary,
-                       evolution,
+                       Frequencies,
                        wsat):
         """plot the evolution of a properly constructed binary."""
 
-        wenv_secondary = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
-        wcore_secondary = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
-        wenv_primary = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
-        wcore_primary = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
-        orbitalfrequncy = binary.orbital_frequency(evolution.semimajor) / wsun
+        PlotKey=str(parameters[self.plot_key])
+
+        if self.plot_primary_envelope==True:pyplot.semilogx(Frequencies['age'],
+                                                            Frequencies['wenv_primary'],
+                                                            color=self.plot_color,
+                                                            label='PrimaryEnvelope_'+self.plot_key+'_'+PlotKey)
+
+        if self.plot_secondary_envelope==True:pyplot.semilogx(Frequencies['age'],
+                                                            Frequencies['wenv_secondary'],
+                                                            color=self.plot_color,
+                                                            linestyle=':',
+                                                            label='SecondaryEnvelope_logQ'+self.plot_key+'_'+PlotKey)
+
+        if self.plot_primary_core==True:pyplot.semilogx(Frequencies['age'],
+                                                        Frequencies['wcore_primary'],
+                                                        color="b",
+                                                        linestyle='--',
+                                                        label='PrimaryCore_logQ'+self.plot_key+'_'+PlotKey)
+
+        if self.plot_secondary_core==True:pyplot.semilogx(Frequencies['age'],
+                                                          Frequencies['wcore_secondary'],
+                                                          color="r",linestyle='--',
+                                                          label='SecondaryCore_logQ'+self.plot_key+'_'+PlotKey)
 
 
-        if self.plot_primary_envelope==True:pyplot.semilogx(evolution.age,
-                                                        wenv_primary,
-                                                        color=self.plot_color,
-                                                        label='primary_envelope_spin_frequency_'+str(self.q))
-        if self.plot_secondary_envelope==True:pyplot.semilogx(evolution.age,
-                                                          wenv_secondary,
-                                                          color=self.plot_color,
-                                                              linestyle=':',
-                                                          label='secondary_envelope_spin_frequency'+str(self.q))
-        if self.plot_primary_core==True:pyplot.semilogx(evolution.age,
-                                                    wcore_primary, color="b",
-                                                    linestyle='--',
-                                                    label='primary_core_spin_frequency'+str(self.q))
-        if self.plot_secondary_core==True:pyplot.semilogx(evolution.age,
-                                                      wcore_secondary,
-                                                      color="r",linestyle='--',
-                                                      label='secondary_core_spin_frequency'+str(self.q))
 
-        if self.q==10.0:
-            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun)
+    def calculate_intial_conditions(self,
+                              primary,
+                              secondary,
+                              SecondaryAngmom):
+
+        FindIC=InitialConditionSolver(system=self.system,
+                                      print_cfile=self.print_cfile,
+                                      breaks=self.breaks,
+                                      disk_dissipation_age=self.disk_dissipation_age,
+                                      evolution_max_time_step=1e-3,
+                                      secondary_angmom=SecondaryAngmom(self.Wdisk),
+                                      is_secondary_star=True)
+
+        target=Structure(age=self.age,
+                         Porb=self.PorbCurrent,
+                         Wdisk=self.Wdisk,
+                         eccentricity=self.EccentricityCurrent)
+
+        Solutions=FindIC(target=target,
+                         primary=primary,
+                         secondary=secondary)
+
+        print('Final Pspin = ', Solutions['spin'])
+
+        Frequencies=dict()
+
+        if self.plot==True:
+            with shelve.open('InitialConditionsFrequencies.shelve','r') as F:
+                for key,value in F.items():
+                    Frequencies[key]=value
+
+            self.plot_evolution(Frequencies,2.54)
+
+            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun,label='PSpinCurrent')
             pyplot.axhline(y=2*numpy.pi/self.PorbCurrent/wsun,label='PorbCurrent')
-            pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='orbital_frequency')
-        pyplot.legend(loc='upper right')
-        #pyplot.axhline(y=wsat/wsun)
-        #ax.ylim(top=100)
-        #ax.ylim(bottom=-20)
+            pyplot.semilogx(Frequencies['age'], Frequencies['orbitalfrequncy'],"-k",label='OrbitalFrrequency')
+            pyplot.legend(loc='upper right')
 
-    def __call__(self,
-                 logQ):
-
-        self.convective_phase_lag=phase_lag(logQ)
-        self.q=logQ
-        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,
-                                              logQ,
-                                              self.parameters)
-
-        primary=self.create_star(self.primary_mass)
-        secondary=self.create_star(self.secondary_mass)
-
+    def evolve_binary(self,
+                      primary,
+                      secondary,
+                      SecondaryAngmom):
 
         binary=self.create_binary_system(primary,
                                          secondary,
                                          secondary_angmom=SecondaryAngmom(self.Wdisk))
-
-
         binary.evolve(self.age,
                       self.evolution_max_time_step,
                       self.evolution_precision,
@@ -175,13 +196,8 @@ class Evolution:
         final_state=binary.final_state()
         evolution=binary.get_evolution()
 
-        spin = (
-                2.0 * numpy.pi
-                *
-                binary.primary.envelope_inertia(final_state.age)
-                /
-                final_state.primary_envelope_angmom
-        )
+        spin = (2.0*numpy.pi*binary.primary.envelope_inertia(final_state.age)/
+                final_state.primary_envelope_angmom)
 
         PorbFinal=binary.orbital_period(final_state.semimajor)
         EccFinal=final_state.eccentricity
@@ -191,7 +207,43 @@ class Evolution:
         print('Secondary Initial Angmom = ', SecondaryAngmom(self.Wdisk))
         print('Final Spin = ',spin)
 
-        if self.plot==True:self.plot_evolution(binary,evolution,2.54)
+        if  self.plot==True:
+
+            Frequencies=dict()
+
+            Frequencies['age']=evolution.age
+            Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
+            Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
+            Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
+            Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
+            Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
+
+            self.plot_evolution(Frequencies,2.54)
+
+            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun,label='PSpinCurrent')
+            pyplot.axhline(y=2*numpy.pi/self.PorbCurrent/wsun,label='PorbCurrent')
+            pyplot.semilogx(Frequencies['age'], orbitalfrequncy,"-k",label='OrbitalFrrequency')
+
+
+
+    def __call__(self):
+
+        self.convective_phase_lag=phase_lag(self.logQ)
+        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,
+                                              self.parameters)
+
+        primary=self.create_star(self.primary_mass)
+        secondary=self.create_star(self.secondary_mass)
+
+        if self.GetEvolution==True:self.evolve_binary(primary,
+                                                      secondary,
+                                                      SecondaryAngmom)
+
+
+        if self.GetInitialCondtion==True:self.calculate_intial_conditions(primary,
+                                                                          secondary,
+                                                                          SecondaryAngmom)
+
 
     def __init__(self,
                  interpolator,
@@ -237,14 +289,16 @@ if __name__ == '__main__':
 
     parameters=dict()
 
+    parameters['system']=system
     parameters['primary_mass']=primary_mass
     parameters['secondary_mass']=secondary_mass
     parameters['age']=age
     parameters['feh']=feh
-    #parameters['PorbInitial']=8.180356495086663
-    #parameters['EccentricityInitial']=0.18202161823737095
+    parameters['PorbInitial']=PorbCurrent
+    parameters['EccentricityInitial']=EccentricityCurrent
     parameters['PorbCurrent']=PorbCurrent
     parameters['PspinCurrent']=PspinCurrent
+    parameters['EccentricityCurrent']=EccentricityCurrent
 
     if args.breaks:
         TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['PorbCurrent'])
@@ -265,7 +319,7 @@ if __name__ == '__main__':
 
     parameters['dissipation']=True
 
-    parameters['Wdisk']=4.1
+    #parameters['Wdisk']=4.1
     parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
     parameters['wind_saturation_frequency']=2.54
@@ -274,23 +328,50 @@ if __name__ == '__main__':
 
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
+    parameters['print_cfile']=False
+
+    parameters['GetEvolution']=False
+    parameters['GetInitialCondtion']=True
+
 
     parameters['plot']=True
     parameters['plot_primary_envelope']=True
     parameters['plot_primary_core']=False
-    parameters['plot_secondary_envelope']=True
+    parameters['plot_secondary_envelope']=False
     parameters['plot_secondary_core']=False
+    parameters['plot_key']='Wdisk'
     #parameters['plot_color']='-b'
-    #evolve=Evolution(interpolator,parameters)
 
-    print(parameters)
+    parameters['logQ']=6.021021021021021
 
-    #q=8.0
+    for key,value in parameters.items():
+        print("{} = {}".format(key,value))
 
-    #evolve=Evolution(interpolator,parameters)
-    #evolve(q)
+    wdisk=[0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0]
+    plot_color=['r','g','b','c','m','y','k','w']
+    i=0
+    for w in wdisk:
+        parameters['Wdisk']=w
+        parameters['plot_color']=plot_color[i]
+        print('Calculating for {}'.format(w))
+        evolve=Evolution(interpolator,parameters)
+        evolve()
+        i=i+1
 
+    if parameters['plot']==True:
 
+        with shelve.open('InitialConditionsFrequencies.shelve','r') as F:
+            age=F['age']
+            orbitalfrequncy=F['orbitalfrequncy']
+
+        pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,label='PSpinCurrent')
+        pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,label='PorbCurrent')
+        pyplot.semilogx(age,orbitalfrequncy,"k",label='OrbitalFrrequency')
+        pyplot.legend(loc='upper right')
+
+    pyplot.show()
+
+    """
     PorbInitial=[8.3108749748239,8.44329659042446,8.458286134340986,8.459827710559024,8.459982761652514]
     EccentricityInitial=[0.04203515118102658,0.04189305205288432,0.04198917406815888,0.04199891630622043,0.04199989161922022]
     logQ=[6.0,7.0,8.0,9.0,10.0]
@@ -308,3 +389,4 @@ if __name__ == '__main__':
         evolve(q)
 
     pyplot.show()
+    """
