@@ -144,8 +144,9 @@ class MetropolisHastings:
 
         if self.isAccepted == True:
             print('ACCEPTED')
-            self.current_parameters = self.proposed_parameters
-            self.current_posterior = self.proposed_posterior
+            if self.iteration_step>1:
+                self.current_parameters = self.proposed_parameters
+                self.current_posterior = self.proposed_posterior
             f_name = self.save_filename[0]
 
 
@@ -168,14 +169,22 @@ class MetropolisHastings:
                 delta_p=pickle.load(f)
                 gsl_flag=pickle.load(f)
 
-        with open(f_name, 'a', 1) as file:
+        with open(f_name, 'a', 1) as f:
 
-            file.write('%s\t' %self.iteration_step)
-            for key, value in self.proposed_parameters.items():
-                file.write('%s\t' % value)
-            file.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+            f.write('%s\t' %self.iteration_step)
+
+            if self.iteration_step==1:
+                for key, value in self.current_parameters.items():
+                    f.write('%s\t' % value)
+                f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t')
+
+            else:
+                for key, value in self.proposed_parameters.items():
+                    f.write('%s\t' % value)
+                f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+
             if os.path.isfile(load_solver_file) == True:
-                file.write(
+                f.write(
                     repr(initial_orbital_period)+'\t'+
                     repr(intial_eccentricity)+'\t'+
                     repr(current_Porb)+'\t'+
@@ -236,25 +245,23 @@ class MetropolisHastings:
 
     def first_iteration(self):
 
-        """Calculates first set of parameters and its corresponding posterior probability. The process will run until a non-zero or non-nan value of posterior probability is calculated"""
+        """Calculates first set of parameters and its corresponding posterior
+        probability"""
 
-        while True:
-            self.initialise_parameters()
+        self.initialise_parameters()
+        self.current_file_exist = None
+        self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
+        self.isAccepted = True
+        self.write_output()
+        self.iteration_step=self.iteration_step+1
 
-            self.current_file_exist = None
-
-            self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
-
-            if self.current_posterior == 0 or numpy.isnan(self.current_posterior):
-                self.proposed_parameters = self.current_parameters
-                self.isAccepted = False
-                self.write_output()
-                self.proposed_parameters = dict()
-                self.iteration_step = self.iteration_step + 1
-                continue
-
-            else: break
-
+            #if self.current_posterior == 0 or numpy.isnan(self.current_posterior):
+            #    self.proposed_parameters = self.current_parameters
+            #    self.isAccepted = False
+            #    self.write_output()
+            #    self.proposed_parameters = dict()
+            #    self.iteration_step = self.iteration_step+1
+            #    continue
 
     def iterations(self):
 
@@ -266,7 +273,9 @@ class MetropolisHastings:
             self.check_age_neg = False
 
             #initialising the set of parameters
-            if self.iteration_step == 1 : self.first_iteration()
+            if self.iteration_step == 1 :
+                self.first_iteration()
+                continue
 
             #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
             #while self.check_age_neg is True: self.values_proposed()

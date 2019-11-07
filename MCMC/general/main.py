@@ -107,8 +107,8 @@ if __name__ == '__main__':
     proposed_step = dict(
                         Porb_step=Porb_error,
                         eccentricity_step=eccentricity_error,
-                        Wdisk_step=0.1,
-                        logQ_step=0.2
+                        Wdisk_step=0.01,
+                        logQ_step=0.05
                     )
 
 
