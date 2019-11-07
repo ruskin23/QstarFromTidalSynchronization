@@ -175,11 +175,6 @@ class Evolution:
 
             self.plot_evolution(Frequencies,2.54)
 
-            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun,label='PSpinCurrent')
-            pyplot.axhline(y=2*numpy.pi/self.PorbCurrent/wsun,label='PorbCurrent')
-            pyplot.semilogx(Frequencies['age'], Frequencies['orbitalfrequncy'],"-k",label='OrbitalFrrequency')
-            pyplot.legend(loc='upper right')
-
     def evolve_binary(self,
                       primary,
                       secondary,
@@ -219,11 +214,6 @@ class Evolution:
             Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
 
             self.plot_evolution(Frequencies,2.54)
-
-            pyplot.axhline(y=(2*numpy.pi/self.PspinCurrent)/wsun,label='PSpinCurrent')
-            pyplot.axhline(y=2*numpy.pi/self.PorbCurrent/wsun,label='PorbCurrent')
-            pyplot.semilogx(Frequencies['age'], orbitalfrequncy,"-k",label='OrbitalFrrequency')
-
 
 
     def __call__(self):
@@ -348,7 +338,7 @@ if __name__ == '__main__':
         print("{} = {}".format(key,value))
 
     wdisk=[0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0]
-    plot_color=['r','g','b','c','m','y','k','w']
+    plot_color=['r','g','b','c','m','y','k','tab:olive']
     i=0
     for w in wdisk:
         parameters['Wdisk']=w

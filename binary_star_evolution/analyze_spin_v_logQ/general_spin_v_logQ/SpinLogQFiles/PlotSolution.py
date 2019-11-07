@@ -41,23 +41,25 @@ with open('SolutionFile.txt','r') as f:
             exact['mass'].append(float(x[8]))
 
 
+plt.scatter(synchronised['logfrequency'],synchronised['logQ'],marker='^',label='synchronised limit')
+plt.scatter(circularised['logfrequency'],circularised['logQ'],marker='^',label='circularised limit')
+plt.scatter(exact['logfrequency'],exact['logQ'],marker='o',label='exact')
+plt.legend()
+plt.xlabel('Tidal Frequency')
+plt.ylabel('logQ')
+plt.savefig('TidalFrequencyNoBreaks.eps')
 
-#plt.scatter(synchronised['logfrequency'],synchronised['logQ'],marker='v',label='synchronised')
-#plt.scatter(circularised['logfrequency'],circularised['logQ'],marker='v',label='circularised')
-#plt.scatter(exact['logfrequency'],exact['logQ'],marker='o',label='exact')
-#plt.legend()
-#plt.savefig('TidalFrequencyNoBreaks.eps')
-
-
-#plt.scatter(synchronised['logperiod'],synchronised['logQ'],marker='v',label='synchronised')
-#plt.scatter(circularised['logperiod'],circularised['logQ'],marker='v',label='circularised')
+#plt.scatter(synchronised['logperiod'],synchronised['logQ'],marker='^',label='synchronised limit')
+#plt.scatter(circularised['logperiod'],circularised['logQ'],marker='^',label='circularised limit')
 #plt.scatter(exact['logperiod'],exact['logQ'],marker='o',label='exact')
 #plt.legend()
+#plt.xlabel('Tidal Period')
+#plt.ylabel('logQ')
 #plt.savefig('TidalPeriodNoBreaks.eps')
 
 
-plt.scatter(synchronised['mass'],synchronised['logQ'],marker='v',label='synchronised')
-plt.scatter(circularised['mass'],circularised['logQ'],marker='v',label='circularised')
-plt.scatter(exact['mass'],exact['logQ'],marker='o',label='exact')
-plt.legend()
-plt.savefig('PrimaryMassNoBreaks.eps')
+#plt.scatter(synchronised['mass'],synchronised['logQ'],marker='v',label='synchronised')
+#plt.scatter(circularised['mass'],circularised['logQ'],marker='v',label='circularised')
+#plt.scatter(exact['mass'],exact['logQ'],marker='o',label='exact')
+#plt.legend()
+#plt.savefig('PrimaryMassNoBreaks.eps')
