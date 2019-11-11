@@ -230,9 +230,11 @@ class MetropolisHastings:
         for key, value in self.observation_data.items():
             initial_parameters[key] = value['value']
 
-        #initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
-        initial_parameters['Wdisk'] = 4.1
-        initial_parameters['logQ'] = self.logQ['value']
+
+        initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
+        initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+        #initial_parameters['Wdisk'] = 4.1
+        #initial_parameters['logQ'] = self.logQ['value']
 
         print ('\nINITIAL PARAMETERS SET')
 

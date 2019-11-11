@@ -302,11 +302,11 @@ if __name__ == '__main__':
 
 
     with open('catalog_KIC.txt','r') as f:
-        for i,lines in enumerate(f):
-            print(i)
-            if i==int(system):
+        for lines in f:
+            x=lines.split()
+            at_system=x[0]
+            if at_system==system:
                 print('For values = ',lines)
-                x=lines.split()
                 teff_value=float(x[2])
                 teff_sigma=float(x[3])
                 logg_value=float(x[10])

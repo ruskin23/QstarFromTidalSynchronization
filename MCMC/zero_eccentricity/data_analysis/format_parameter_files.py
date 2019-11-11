@@ -45,8 +45,8 @@ class format_parameter_files():
             for line in reader:
                 self.iter['iteration'].append(int(line[0]))
                 for index,key in enumerate(self.parameters):
-                    self.data[key].append(float(line[index+1]))
-
+                    try:self.data[key].append(float(line[index+1]))
+                    except:continue
 
     def create_array(self,key):
 
@@ -62,7 +62,7 @@ class format_parameter_files():
 
         for index,value in enumerate(self.value_array[key]):
             if index>0 and self.value_array[key][index]==0:
-                self.value_array[key][index] = self.value_array[key][index-1]
+                self.value_array[key][index] = self.value_array[key][index-2]
 
         return self.value_array
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    parameters = [  'teff', 'feh', 'Porb', 'logg', 'Wdisk', 'logQ']
+    parameters = [  'teff', 'feh', 'Porb', 'logg', 'Wdisk', 'logQ', 'Porbcurrent', 'Pspin']
 
     if args.instance:
         fill_values = format_parameter_files(parameters,args.instance,None,args.format_file,args.plot)
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     elif args.all:
         if args.combine: p = None
         else: p = args.plot
-        for k in range(3,8):
+        for k in range(1,5):
             i = str(k)
             fill_values = format_parameter_files(parameters,i,None,args.format_file,p)
             fill_values()

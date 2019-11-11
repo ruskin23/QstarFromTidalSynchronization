@@ -107,8 +107,8 @@ if __name__ == '__main__':
     proposed_step = dict(
                         Porb_step=Porb_error,
                         eccentricity_step=eccentricity_error,
-                        Wdisk_step=0.01,
-                        logQ_step=0.05
+                        Wdisk_step=0.1,
+                        logQ_step=0.5
                     )
 
 
@@ -117,15 +117,18 @@ if __name__ == '__main__':
                 max=2*scipy.pi/1.4
     )
 
-    with open(solution_file,'r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            at_system=x[0]
-            if at_system==system_number:
-                logQ_value=float(x[1])
-                break
-    logQ = dict(value=logQ_value)
+    #with open(solution_file,'r') as f:
+    #    next(f)
+    #    for lines in f:
+    #        x=lines.split()
+    #        at_system=x[0]
+    #        if at_system==system_number:
+    #            logQ_value=float(x[1])
+    #            break
+    #logQ = dict(value=logQ_value)
+
+    logQ = dict(min=5.0,
+                max=9.0)
 
     print('logQ: ',logQ)
 
