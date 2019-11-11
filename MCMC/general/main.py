@@ -7,7 +7,7 @@ import os.path
 from pathlib import Path
 home_dir=str(Path.home())
 
-git_dir='/QstarFromTidalSynchronization/MCMC/general/'
+git_dir='/QstarFromTidalSynchronization/MCMC/general'
 samples_dir='/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples'
 
 if home_dir=='/home/rxp163130':

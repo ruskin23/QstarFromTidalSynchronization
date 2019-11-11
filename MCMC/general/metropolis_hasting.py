@@ -246,24 +246,20 @@ class MetropolisHastings:
 
 
     def first_iteration(self):
-
-        """Calculates first set of parameters and its corresponding posterior
-        probability"""
-
-        self.initialise_parameters()
-        self.current_file_exist = None
-        self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
+        
+        while True:
+       
+            self.initialise_parameters()
+            self.current_file_exist = None
+            self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
+            if self.current_posterior==0 or numpy.isnan(self.current_posterior):
+                continue
+            else:
+                break
         self.isAccepted = True
-        self.write_output()
-        self.iteration_step=self.iteration_step+1
+       	self.write_output()
+       	self.iteration_step=self.iteration_step+1
 
-            #if self.current_posterior == 0 or numpy.isnan(self.current_posterior):
-            #    self.proposed_parameters = self.current_parameters
-            #    self.isAccepted = False
-            #    self.write_output()
-            #    self.proposed_parameters = dict()
-            #    self.iteration_step = self.iteration_step+1
-            #    continue
 
     def iterations(self):
 
