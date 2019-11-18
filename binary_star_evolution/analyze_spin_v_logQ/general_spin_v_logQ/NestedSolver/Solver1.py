@@ -145,12 +145,11 @@ class InitialConditionSolver:
 
     def _calculate_porb(self,p,e):
 
-        print('Calculating for p=%s and e=%s'%(repr(p),repr(e)))
         try:
             porb_obtained=self._try_initial_conditions([p,e])
             print('porb_obtained = ', porb_obtained)
             return porb_obtained
-        except:
+        except AssertionError:
             return scipy.nan
 
 
@@ -161,10 +160,12 @@ class InitialConditionSolver:
         print('new disk frequency = ', self.disk_lock_frequency)
         print('New secodnary angmom = ', self.SecondaryAngmom)
 
-    def find_porb_range(self,p,e):
+    def find_porb_range(self,e):
 
         porb_min=scipy.nan
         porb_max=scipy.nan
+
+        p=self.target.Porb
 
         porb_initial_guess=p
         curent_eccentrcity=e
@@ -174,6 +175,9 @@ class InitialConditionSolver:
             porb_obtained=self._calculate_porb(porb_initial_guess,e)
             if numpy.isnan(porb_obtained):
                 self._change_disk_frequency()
+                p=self.target.Porb
+                porb_min=scipy.nan
+                porb_max=scipy.nan
                 continue
 
 
@@ -189,11 +193,15 @@ class InitialConditionSolver:
                 p=p+step
                 porb_obtained=self._calculate_porb(p,e)
                 if numpy.isnan(porb_obtained):
-                    self._change_disk_frequency()
                     break
                 new_error=porb_obtained-self.target.Porb
                 print('New error = ', new_error)
-            if numpy.isnan(porb_obtained):continue
+            if numpy.isnan(porb_obtained):
+                porb_min=scipy.nan
+                porb_max=scipy.nan
+                self._change_disk_frequency()
+                p=self.target.Porb
+                continue
             else:break
         if numpy.isnan(porb_min):porb_min=p
         else:porb_max=p
@@ -203,80 +211,129 @@ class InitialConditionSolver:
 
 
 
-    def find_porb_solution(self,p,e):
+    def find_porb_solution(self,e):
 
         while True:
             try:
-                porb_min,porb_max=self.find_porb_range(p,e)
+                porb_min,porb_max=self.find_porb_range(e)
 
-                self.porb_initial = brentq(lambda porb_initial :
+                porb_initial_solution = brentq(lambda porb_initial :
                                            self._try_initial_conditions([porb_initial,e])
                                            - self.target.Porb,
                                            porb_min,
-                                           porb_max,
-                                           xtol=1e-5,
-                                           rtol=1e-5)
+                                           porb_max)
                 break
-            except:
+            except AssertionError:
                 self._change_disk_frequency()
                 continue
-        print('Porb Solutions = ', self.porb_initial,self.eccentricity)
+        print('Intial Porb and Final e Solutions = ', porb_initial_solution,self.eccentricity)
+        if self.BrentMethod==False:return porb_initial_solution
+        else:return self.eccentricity
 
 
+    def TestingEccentricityBehaviour(self):
 
-    def find_e_range(self,porb_target,e_target):
+        self.single_solution=True
+        self.BrentMethod=False
+        print('Setting e array')
+        eArray = numpy.linspace(self.target.eccentricity,0.4,20)
+        print(eArray)
+
+        with open('EccentricityBehaviour.txt','w') as f:
+            f.write('InitialEccentricity'+'\t'+
+                    'FinalEccentricity'+'\n')
+
+            for eValue in eArray:
+                print('\nCalculating for e = ', eValue)
+                porb_initial_solution=self.find_porb_solution(eValue)
+                print('Final Eccentricity = ',self.eccentricity)
+                f.write(repr(eValue)+'\t'+
+                        repr(self.eccentricity)+'\n')
+
+    def find_e_range(self):
+
 
         print('\nFinding e range')
-        ecc=numpy.linspace(e_target,0.38,4)
+        ecc=numpy.linspace(self.target.eccentricity,0.38,4)
         print('Eccentricity array = ', ecc)
 
         e_min,e_max=scipy.nan,scipy.nan
         self.single_solution=True
         for e in ecc:
             print('\ncalculating for e = ', e)
-            porb_solution_new=self.find_porb_solution(porb_target,e)
-            e_error=e_target-self.eccentricity
+            porb_initial_solution=self.find_porb_solution(e)
+            e_error=self.target.eccentricity-self.eccentricity
             print('ecc error = ',e_error)
             if e_error>0:
                 print('setting minimum e')
                 e_min=e
             elif e_error<0:
                 print('setting maximum e')
+                if numpy.isnan(e_min):e_min=self.target.eccentricity
                 e_max=e
                 break
 
-        return e_min,e_max
+        return e_min,e_max,porb_initial_solution
 
-    def find_e_solution(self,porb_target,e_target):
+    def find_e_solution(self):
 
-        e_min,e_max=self.find_e_range(porb_target,e_target)
+        e_min,e_max,porb_initial_solution=self.find_e_range()
+        self.single_solution=True
+
 
         print('Found e Range:')
         print(e_min,e_max)
 
+        if abs(e_min-e_max)<1e-4:
+            print('Range is extremely small!')
+            e_mid=(e_min+e_max)/2.0
+            print('Solution = {}'.format(e_mid))
+            porb_initial_solution=self.find_porb_solution(e_mid)
+            print('porb_solution',porb_initial_solution)
+            return porb_initial_solution,e_mid
+
+
+
+
         print('\nSolving for e now')
+
+        if numpy.isnan(e_min)==False and numpy.isnan(e_max)==False:
+            print('Solution Exists')
+            self.BrentMethod=True
+            e_initial=brentq(lambda e_initial :
+                                            self.find_porb_solution(e_initial)
+                                            - self.target.eccentricity,
+                                            e_min,
+                                            e_max,
+                                            xtol=1e-5,
+                                            rtol=1e-5)
+            return self.find_porb_solution(e_initial),e_initial
+        else:
+            print('NO SOLUTION')
+            return porb_initial_solution,scipy.nan
+        """
         while True:
             if numpy.isnan(e_min)==False and numpy.isnan(e_max)==False:
+                self.BrentMethod=False
                 e_mid=(e_min+e_max)/2.0
-                print('e_mid = ', e_mid)
-                porb_solution=self.find_porb_solution(porb_target,e_mid)
-                e_error=e_target-self.eccentricity
-                if abs(e_error)<1e-4:
-                    print('Solution Found: ')
-                    print(e_mid)
-                    print(self.eccentricity)
-                    break
-                elif e_error<0:
-                    print('solution on left side')
+                print('e_mid = ',e_mid)
+                porb_initial_solution=self.find_porb_solution(e_mid)
+                e_error=abs(self.target.eccentricity-self.eccentricity)
+                print('Eccentricity Error = ', e_error)
+                if e_error<1e-4:
+                   print('Solution Found')
+                   return porb_initial_solution,e_mid
+                if e_error<0:
+                    print('setting e_max to e_mid')
                     e_max=e_mid
-                else:
-                    print('Solution of right side')
+                if e_error>0:
+                    print('setting e_min to e_mid')
                     e_min=e_mid
-
             else:
                 print('NO SOLUTION')
-                break
+                return porb_initial_solution,scipy.nan
 
+        """
 
     def __init__(self,
                  planet_formation_age=None,
@@ -314,6 +371,7 @@ class InitialConditionSolver:
         self.secondary_angmom=secondary_angmom
         self.porb_initial=scipy.nan
         self.single_solution=None
+        self.BrentMethod=None
 
     def __call__(self, target, primary, secondary):
         """
@@ -367,8 +425,8 @@ class InitialConditionSolver:
 
 ##################################################################################################################################################################################################################################################################################################################################################
 
-        self.find_e_solution(porb_target,e_target)
-
+        sol_p,sol_e=self.find_e_solution()
+        #self.TestingEccentricityBehaviour()
 ##################################################################################################################################################################################################################################################################################################################################################
 
 
@@ -407,7 +465,6 @@ class InitialConditionSolver:
 
 
 
-        """
 
         solutions=dict()
 
@@ -416,7 +473,7 @@ class InitialConditionSolver:
         solutions['e_initial']=sol_e
         solutions['Porb_current']=self.orbital_period
         solutions['e_current']=self.eccentricity
-        solutions['delta_p']=self.delta_p
-        solutions['delta_e']=self.delta_p
-        """
-        #return solutions
+        solutions['delta_p']=self.orbital_period-porb_target
+        solutions['delta_e']=self.eccentricity-e_target
+
+        return solutions

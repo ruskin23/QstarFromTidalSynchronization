@@ -193,8 +193,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
-    parser.add_argument('-b',action='store_const',dest='breaks',
-                        const='breaks',
+    parser.add_argument('-b',action='store',dest='breaks',
                         help='decide if breaks needed or not')
     args = parser.parse_args()
 
@@ -206,18 +205,7 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    #index=int(args.index)
 
-    #print(index)
-    #system_array=[]
-    #with open('spin_vs_logQ_systems_0.2.txt','r') as f:
-    #    for lines in f:
-    #        x=lines.split()
-    #        #system_array=lines.split()
-    #        system_array.append(x[0])
-
-
-    #system=system_array[index]
     system=args.index
     print('System = ' ,system)
 
@@ -225,8 +213,9 @@ if __name__ == '__main__':
 
     parameters=dict()
 
-    if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/UpperLimit/breaks2.0/SpinLogQ_WithBreaks_'+system+'.txt'
+    if args.breaks:spin_vs_logQ_file='break'+args.breaks+'/SpinLogQ_WithBreaks_'+system+'.txt'
     else:spin_vs_logQ_file='SpinLogQFiles/SpinLogQ_'+system+'_test.txt'
+
 
     with open(spin_vs_logQ_file,'a') as f:
         f.write('logQ'+'\t'+
@@ -258,7 +247,7 @@ if __name__ == '__main__':
                     TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['Porb'])
                                                                   -
                                                                   1.0/parameters['Pspin']))])
-                    TidalFrequencyPowers=numpy.array([2.0,2.0])
+                    TidalFrequencyPowers=numpy.array([float(args.breaks),float(args.breaks)])
                     parameters['breaks']=True
                 else:
                     TidalFrequencyBreaks=None
@@ -282,9 +271,7 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ=numpy.linspace(5.947368421052632,6.052631578947368,5)
-                #logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
-                #logQ=[6.021021021021021]
+                logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)

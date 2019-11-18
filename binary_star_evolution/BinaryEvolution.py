@@ -183,10 +183,25 @@ class Evolution:
         binary=self.create_binary_system(primary,
                                          secondary,
                                          secondary_angmom=SecondaryAngmom(self.Wdisk))
-        binary.evolve(self.age,
-                      self.evolution_max_time_step,
-                      self.evolution_precision,
-                      None)
+
+        if self.print_cfile==True:
+            if self.breaks==True:
+                create_c_code='debug/cfile_'+self.system+'_withbreaks.cpp'
+            else:
+                create_c_code='debug/cfile_'+self.system+'.cpp'
+
+            binary.evolve(
+                self.age,
+                self.evolution_max_time_step,
+                self.evolution_precision,
+                None,
+                create_c_code=create_c_code,
+                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt")
+        else:
+            binary.evolve(self.age,
+                          self.evolution_max_time_step,
+                          self.evolution_precision,
+                          None)
 
         final_state=binary.final_state()
         evolution=binary.get_evolution()
@@ -218,7 +233,6 @@ class Evolution:
 
     def __call__(self):
 
-        self.convective_phase_lag=phase_lag(self.logQ)
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,
                                               self.parameters)
 
@@ -243,6 +257,9 @@ class Evolution:
         self.parameters=parameters
         for item,value in parameters.items():
             setattr(self,item,value)
+
+        self.convective_phase_lag=phase_lag(self.logQ)
+        print('Convective Phase lag = ',self.convective_phase_lag)
 
 if __name__ == '__main__':
 
@@ -280,12 +297,12 @@ if __name__ == '__main__':
     parameters=dict()
 
     parameters['system']=system
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']=secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['PorbInitial']=PorbCurrent
-    parameters['EccentricityInitial']=EccentricityCurrent
+    parameters['primary_mass']=0.8069084165860996
+    parameters['secondary_mass']=0.5349802801965841
+    parameters['age']=0.757861942098359
+    parameters['feh']=-0.8490581487794251
+    parameters['PorbInitial']=8.45997076375184
+    parameters['EccentricityInitial']=0.056445839637857
     parameters['PorbCurrent']=PorbCurrent
     parameters['PspinCurrent']=PspinCurrent
     parameters['EccentricityCurrent']=EccentricityCurrent
@@ -307,9 +324,9 @@ if __name__ == '__main__':
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
-    parameters['dissipation']=True
+    parameters['dissipation']=False
 
-    #parameters['Wdisk']=4.1
+    parameters['Wdisk']=4.902235290386203
     parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
     parameters['wind_saturation_frequency']=2.54
@@ -320,8 +337,8 @@ if __name__ == '__main__':
     parameters['evolution_precision']=1e-6
     parameters['print_cfile']=False
 
-    parameters['GetEvolution']=False
-    parameters['GetInitialCondtion']=True
+    parameters['GetEvolution']=True
+    parameters['GetInitialCondtion']=False
 
 
     parameters['plot']=True
@@ -330,15 +347,27 @@ if __name__ == '__main__':
     parameters['plot_secondary_envelope']=False
     parameters['plot_secondary_core']=False
     parameters['plot_key']='Wdisk'
-    #parameters['plot_color']='-b'
+    parameters['plot_color']='b'
 
-    parameters['logQ']=6.021021021021021
+    parameters['logQ']=11.58908286576814
 
     for key,value in parameters.items():
         print("{} = {}".format(key,value))
 
-    wdisk=[0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0]
-    plot_color=['r','g','b','c','m','y','k','tab:olive']
+
+
+    evolve=Evolution(interpolator,parameters)
+    evolve()
+
+    pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,label='PSpinCurrent',color='r')
+    pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,label='PorbCurrent',color='g')
+    pyplot.show()
+##################################################################################################################################################################################################################################################################################################################################################
+
+
+    """
+    wdisk=[0.8,4.0]
+    plot_color=['r','g']
     i=0
     for w in wdisk:
         parameters['Wdisk']=w
@@ -354,12 +383,14 @@ if __name__ == '__main__':
             age=F['age']
             orbitalfrequncy=F['orbitalfrequncy']
 
-        pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,label='PSpinCurrent')
-        pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,label='PorbCurrent')
+        pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,label='PSpinCurrent',color='r')
+        pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,label='PorbCurrent',color='g')
         pyplot.semilogx(age,orbitalfrequncy,"k",label='OrbitalFrrequency')
         pyplot.legend(loc='upper right')
 
     pyplot.show()
+    """
+##################################################################################################################################################################################################################################################################################################################################################
 
     """
     PorbInitial=[8.3108749748239,8.44329659042446,8.458286134340986,8.459827710559024,8.459982761652514]

@@ -118,7 +118,7 @@ for files in os.listdir(directory):
         y=x[2].split('.')
         systems.append(y[0])
 print(systems)
-with open('spin_vs_logQ_systems_0.2.txt','r') as f:
+with open('spin_vs_logQ_systems.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()

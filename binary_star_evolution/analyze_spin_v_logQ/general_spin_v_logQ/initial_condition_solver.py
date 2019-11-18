@@ -200,7 +200,7 @@ class InitialConditionSolver:
 
         Returns: None.
         """
-        self.sytem=system
+        self.system=system
         self.print_cfile=print_cfile
         self.breaks=breaks
         self.disk_dissipation_age = disk_dissipation_age
@@ -270,7 +270,9 @@ class InitialConditionSolver:
                 sol_p,sol_e=sol.x
                 break
 
-            except Exception:
+            except Exception as err:
+                print('err = ', err)
+                #break
                 return solutions
 
         solutions['spin']=self.spin

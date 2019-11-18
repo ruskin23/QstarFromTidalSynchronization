@@ -39,9 +39,9 @@ class evolution:
 
         if dissipation == 1:
             star.set_dissipation(zone_index=0,
-                                tidal_frequency_breaks=None,
+                                tidal_frequency_breaks=self.tidal_frequency_breaks,
                                 spin_frequency_breaks=None,
-                                tidal_frequency_powers=numpy.array([0.0]),
+                                tidal_frequency_powers=self.tidal_frequency_powers,
                                 spin_frequency_powers=numpy.array([0.0]),
                                 reference_phase_lag=self.convective_phase_lag)
 
@@ -145,30 +145,35 @@ class evolution:
 
 
 
-        #solutions =
-        find_ic(target=self.target, primary=primary,secondary=secondary)
+        solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
 
-        #print('Solution: ',solutions )
+        if self.FindCircularLimit==True:
+            return solutions['sol_e']
 
-        #sol=[]
+        if self.FindSyncLimit==True:
+            return solution['spin']
 
-        #for key,value in solutions.items():
-        #    sol.append(repr(value))
+        sol=[]
 
-        #sol='\t'.join(sol)
-        #with open(sol_file,'a',1) as f:
-        #    f.write(repr(q)+'\t'+sol+'\n')
-#
-#        primary.delete()
-#        secondary.delete()
-#
-#        return solutions['spin']
+        for key,value in solutions.items():
+            sol.append(repr(value))
+
+        sol='\t'.join(sol)
+        with open(sol_file,'a',1) as f:
+            f.write(repr(q)+'\t'+sol+'\n')
+
+        primary.delete()
+        secondary.delete()
+
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('system',help='select system to run')
+    parser.add_argument('-a',action = 'store_const',dest='add',const='add',help='add to logQvsPspin')
+    parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
+    parser.add_argument('-b',action = 'store_const',dest='breaks',const='breaks',help='breaks')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -183,12 +188,16 @@ if __name__ == '__main__':
 
     print('System = ' ,system)
 
-    data_file='spin_vs_logQ_systems_0.2.txt'
-
+    data_file='spin_vs_logQ_systems.txt'
     parameters=dict()
 
-    spin_vs_logQ_file='no_sol/SpinLogQ_test_'+args.system+'.txt'
-    with open(spin_vs_logQ_file,'w') as f:
+    if args.breaks:spin_vs_logQ_file='../break2.0/SpinLogQ_WithBreaks_'+args.system+'.txt'
+    else: spin_vs_logQ_file='../SpinLogQFiles/SpinLogQ_'+args.system+'.txt'
+
+    if args.new:action='w'
+    if args.add:action='a'
+
+    with open(spin_vs_logQ_file,action) as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
                 'Porb_initial'+'\t'+
@@ -211,8 +220,23 @@ if __name__ == '__main__':
 
                 parameters['eccentricity']=float(x[8])
                 parameters['Porb']=float(x[6])
+                parameters['Pspin']=float(x[12])
                 mass_ratio=float(x[14])
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
+
+                if args.breaks:
+                    TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['Porb'])
+                                                                  -
+                                                                  1.0/parameters['Pspin']))])
+                    TidalFrequencyPowers=numpy.array([2.0,2.0])
+                    parameters['breaks']=True
+                else:
+                    TidalFrequencyBreaks=None
+                    TidalFrequencyPowers=numpy.array([0.0])
+                    parameters['breaks']=False
+
+                parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+                parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
                 parameters['Wdisk']=4.3
                 parameters['disk_dissipation_age']=5e-3
@@ -221,23 +245,16 @@ if __name__ == '__main__':
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
 
+                parameters['FindCircularLimit']=False
+                parameters['FindSyncLimit']=False
                 print('Parameters: ', parameters)
 
                 evolve = evolution(interpolator,parameters)
 
-                Pspin=float(x[12])
-
-                logQ = numpy.linspace(5.5,7.0,20)
-                #logQ=[6.0]
+                logQ = numpy.linspace(9.1,10.0,5)
+                #logQ=[5.775]
                 for q in logQ:
-
                     print('\n\nCalculating for logQ = ', q)
-                    #spin =
                     evolve(q,spin_vs_logQ_file,option=1)
-                    #print('Obtained spin = ', spin)
-
-                    #spin_diff = Pspin-spin
-                    #print('spin difference = ',spin_diff)
 
                 break
-
