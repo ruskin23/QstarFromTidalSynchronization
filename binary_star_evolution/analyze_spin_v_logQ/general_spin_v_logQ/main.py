@@ -209,7 +209,7 @@ if __name__ == '__main__':
     system=args.index
     print('System = ' ,system)
 
-    data_file='spin_vs_logQ_systems_0.2.txt'
+    data_file='spin_vs_logQ_systems.txt'
 
     parameters=dict()
 
@@ -217,7 +217,7 @@ if __name__ == '__main__':
     else:spin_vs_logQ_file='SpinLogQFiles/SpinLogQ_'+system+'_test.txt'
 
 
-    with open(spin_vs_logQ_file,'a') as f:
+    with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
                 'Porb_initial'+'\t'+
@@ -271,7 +271,8 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
+                logQ=numpy.linspace(6.1,7.1,10)
+                #logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
                 for q in logQ:
 
                     print('Calculating for logQ = ', q)

@@ -147,12 +147,6 @@ class evolution:
 
         solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
 
-        if self.FindCircularLimit==True:
-            return solutions['sol_e']
-
-        if self.FindSyncLimit==True:
-            return solution['spin']
-
         sol=[]
 
         for key,value in solutions.items():
@@ -164,6 +158,12 @@ class evolution:
 
         primary.delete()
         secondary.delete()
+
+        if self.FindCircularLimit==True:
+            return solutions['e_initial']
+
+        if self.FindSyncLimit==True:
+            return solution['spin']
 
 
 
@@ -245,16 +245,34 @@ if __name__ == '__main__':
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
 
-                parameters['FindCircularLimit']=False
                 parameters['FindSyncLimit']=False
+                parameters['FindCircularLimit']=False
                 print('Parameters: ', parameters)
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ = numpy.linspace(9.1,10.0,5)
-                #logQ=[5.775]
-                for q in logQ:
-                    print('\n\nCalculating for logQ = ', q)
-                    evolve(q,spin_vs_logQ_file,option=1)
 
-                break
+                if parameters['FindCircularLimit']==False:
+                    logQ = numpy.linspace(6.0,12.0,20)
+                    #logQ=[6.2,6.4,6.6,6.8]
+
+                    for q in logQ:
+                        print('\n\nCalculating for logQ = ', q)
+                        evolve(q,spin_vs_logQ_file,option=1)
+
+                    break
+
+
+                if parameters['FindCircularLimit']==True:
+
+                    e=scipy.nan
+                    q=6.1
+                    while numpy.isnan(e):
+                        print('\n\nCalculating for logQ = ', q)
+                        e=evolve(q,spin_vs_logQ_file,option=1)
+                        q=q+0.1
+
+
+
+
+
