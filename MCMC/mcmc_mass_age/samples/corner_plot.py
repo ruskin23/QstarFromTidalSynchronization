@@ -17,13 +17,11 @@ with open('MassAgeFehSamples_'+system+'.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
-        try:
-            data.append(float(x[1]))
-            data.append(float(x[2]))
-            data.append(float(x[3]))
-            data.append(float(x[4]))
-            data.append(float(x[5]))
-        except:continue
+        data.append(float(x[1]))
+        data.append(float(x[2]))
+        data.append(float(x[3]))
+        data.append(float(x[4]))
+        data.append(float(x[5]))
 
 
 data=np.array(data)
@@ -38,5 +36,5 @@ figure=corner.corner(d,
 
 
 plt.figure(1)
+plt.plot()
 plt.show()
-

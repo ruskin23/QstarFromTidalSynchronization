@@ -13,9 +13,7 @@ system=args.system
 
 data=[]
 
-#with open('MassAgeFehSamples_'+system+'.txt','r') as f:
-
-with open('mass_age_teff_sample_1.txt','r') as f:
+with open('MassAgeFehSamples_'+system+'.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
