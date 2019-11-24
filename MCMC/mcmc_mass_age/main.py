@@ -297,7 +297,6 @@ class metropolis_hasting:
                         'rejected_parameters/rejected_parameters_'+self.system+'.txt']
 
 
-
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser()

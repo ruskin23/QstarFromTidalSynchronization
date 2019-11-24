@@ -111,10 +111,7 @@ class InitialConditionSolver:
         print ("BINARY CONFIGURATION COMPLETE")
 
         if self.print_cfile==True:
-            if self.breaks==True:
-                create_c_code='cfile_'+self.system+'_withbreaks.cpp'
-            else:
-                create_c_code='cfile_'+self.system+'.cpp'
+            create_c_code='cfile_'+self.system+'_break'+str(self.breaks)+'.cpp'
 
             self.binary.evolve(
                 self.target.age,

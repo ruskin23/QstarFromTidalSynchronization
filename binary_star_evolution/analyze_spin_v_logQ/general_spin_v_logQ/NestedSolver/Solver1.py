@@ -50,7 +50,7 @@ class InitialConditionSolver:
         #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
-        #if hasattr(self, 'binary'): self.binary.delete()
+        if hasattr(self, 'binary'): self.binary.delete()
         if initial_condition[1]>0.45 or initial_condition[1]<0:
             print('Cannot accept eccentricity>0.45')
             return scipy.nan,scipy.nan
@@ -135,7 +135,7 @@ class InitialConditionSolver:
                 self.final_state.primary_envelope_angmom
         )
 
-        self.binary.delete()
+        #self.binary.delete()
         print('Final Spin = ',self.spin)
         print('Final Eccentricity = ',self.eccentricity)
         print('Final Porb =  ',self.orbital_period)
@@ -251,7 +251,7 @@ class InitialConditionSolver:
 
 
         print('\nFinding e range')
-        ecc=numpy.linspace(self.target.eccentricity,0.38,4)
+        ecc=numpy.linspace(self.target.eccentricity,0.4,4)
         print('Eccentricity array = ', ecc)
 
         e_min,e_max=scipy.nan,scipy.nan
@@ -279,17 +279,6 @@ class InitialConditionSolver:
 
         print('Found e Range:')
         print(e_min,e_max)
-
-        if abs(e_min-e_max)<1e-4:
-            print('Range is extremely small!')
-            e_mid=(e_min+e_max)/2.0
-            print('Solution = {}'.format(e_mid))
-            porb_initial_solution=self.find_porb_solution(e_midi,'Porb')
-            print('porb_solution',porb_initial_solution)
-            return porb_initial_solution,e_mid
-
-
-
 
         print('\nSolving for e now')
 

@@ -228,6 +228,10 @@ class Evolution:
             Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
             Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
 
+            pyplot.semilogx(Frequencies['age'],
+                          Frequencies['orbitalfrequncy'],
+                          color="k",
+                          label='orbitalfrequncy')
             self.plot_evolution(Frequencies,2.54)
 
 
@@ -281,7 +285,7 @@ if __name__ == '__main__':
 
     system=args.system
 
-    with open('spin_vs_logQ_systems_0.2.txt','r') as f:
+    with open('SpinlogQCatalog_el0.4.txt','r') as f:
         for lines in f:
             x=lines.split()
             if x[0]==system:
@@ -297,12 +301,12 @@ if __name__ == '__main__':
     parameters=dict()
 
     parameters['system']=system
-    parameters['primary_mass']=0.8069084165860996
-    parameters['secondary_mass']=0.5349802801965841
-    parameters['age']=0.757861942098359
-    parameters['feh']=-0.8490581487794251
-    parameters['PorbInitial']=8.45997076375184
-    parameters['EccentricityInitial']=0.056445839637857
+    parameters['primary_mass']=1.062659100869097
+    parameters['secondary_mass']=0.4560932860930165
+    parameters['age']=4.528845456247639
+    parameters['feh']=-0.19759853806898514
+    parameters['PorbInitial']=1.946
+    parameters['EccentricityInitial']=0.085
     parameters['PorbCurrent']=PorbCurrent
     parameters['PspinCurrent']=PspinCurrent
     parameters['EccentricityCurrent']=EccentricityCurrent
@@ -324,9 +328,9 @@ if __name__ == '__main__':
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
-    parameters['dissipation']=False
+    parameters['dissipation']=True
 
-    parameters['Wdisk']=4.902235290386203
+    parameters['Wdisk']=4.1
     parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
     parameters['wind_saturation_frequency']=2.54
@@ -349,11 +353,10 @@ if __name__ == '__main__':
     parameters['plot_key']='Wdisk'
     parameters['plot_color']='b'
 
-    parameters['logQ']=11.58908286576814
+    parameters['logQ']=6.0
 
     for key,value in parameters.items():
         print("{} = {}".format(key,value))
-
 
 
     evolve=Evolution(interpolator,parameters)
@@ -362,8 +365,8 @@ if __name__ == '__main__':
     pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,label='PSpinCurrent',color='r')
     pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,label='PorbCurrent',color='g')
     pyplot.show()
-##################################################################################################################################################################################################################################################################################################################################################
 
+##################################################################################################################################################################################################################################################################################################################################################
 
     """
     wdisk=[0.8,4.0]

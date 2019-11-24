@@ -1,8 +1,9 @@
 import numpy
 import matplotlib.pyplot as plt
+import sys
 
-
-spinfile='SpinLogQ_78_test.txt'
+system=sys.argv[1]
+spinfile='PspinInterpolated/SpinlogQ_'+system+'.txt'
 
 with open(spinfile,'r') as f:
         next(f)

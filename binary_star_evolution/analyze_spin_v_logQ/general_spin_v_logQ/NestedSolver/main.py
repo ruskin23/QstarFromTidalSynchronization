@@ -171,9 +171,10 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('system',help='select system to run')
+    parser.add_argument('-b',action='store',dest='breaks',
+                        help='decide if breaks needed or not')
     parser.add_argument('-a',action = 'store_const',dest='add',const='add',help='add to logQvsPspin')
     parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
-    parser.add_argument('-b',action = 'store_const',dest='breaks',const='breaks',help='breaks')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -184,16 +185,16 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    system=int(args.system)
+    system=args.system
+    breakPower=float(args.breaks)
 
     print('System = ' ,system)
 
-    data_file='spin_vs_logQ_systems.txt'
+    data_file='SpinlogQCatalog_el0.4.txt'
     parameters=dict()
 
-    if args.breaks:spin_vs_logQ_file='../break2.0/SpinLogQ_WithBreaks_'+args.system+'.txt'
-    else: spin_vs_logQ_file='../SpinLogQFiles/SpinLogQ_'+args.system+'.txt'
-
+    spin_vs_logQ_file='../break'+args.breaks+'/SpinLogQ_'+system+'.txt'
+    #spin_vs_logQ_file='TestingSystem12.txt'
     if args.new:action='w'
     if args.add:action='a'
 
@@ -211,11 +212,11 @@ if __name__ == '__main__':
         next(f)
         for lines in f:
             x=lines.split()
-            at_system=int(x[0])
+            at_system=x[0]
             print(at_system)
             if at_system==system:
                 parameters['primary_mass']=float(x[15])
-                parameters['age']=10**(float(x[16]))
+                parameters['age']=float(x[16])
                 parameters['feh']=float(x[17])
 
                 parameters['eccentricity']=float(x[8])
@@ -224,21 +225,17 @@ if __name__ == '__main__':
                 mass_ratio=float(x[14])
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
 
-                if args.breaks:
-                    TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['Porb'])
-                                                                  -
-                                                                  1.0/parameters['Pspin']))])
-                    TidalFrequencyPowers=numpy.array([2.0,2.0])
-                    parameters['breaks']=True
-                else:
+                if breakPower==0.0:
                     TidalFrequencyBreaks=None
                     TidalFrequencyPowers=numpy.array([0.0])
-                    parameters['breaks']=False
+                else:
+                    TidalFrequencyBreaks=numpy.array([2*numpy.pi])
+                    TidalFrequencyPowers=numpy.array([breakPower,breakPower])
 
                 parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
                 parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
-                parameters['Wdisk']=4.3
+                parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -253,8 +250,9 @@ if __name__ == '__main__':
 
 
                 if parameters['FindCircularLimit']==False:
-                    logQ = numpy.linspace(6.0,12.0,20)
-                    #logQ=[6.2,6.4,6.6,6.8]
+                    logQ = numpy.linspace(6.0,15.0,20)
+                    #logQ=[20.0]
+
 
                     for q in logQ:
                         print('\n\nCalculating for logQ = ', q)
