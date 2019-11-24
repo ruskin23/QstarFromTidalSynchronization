@@ -186,16 +186,16 @@ class evolution:
 
         primary.delete()
         secondary.delete()
-        return solutions['spin']
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
-    parser.add_argument('-b',action='store_const',dest='breaks',
-                        const='breaks',
+    parser.add_argument('-b',action='store',dest='breaks',
                         help='decide if breaks needed or not')
+    parser.add_argument('-a',action = 'store_const',dest='add',const='add',help='add to logQvsPspin')
+    parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -206,29 +206,22 @@ if __name__ == '__main__':
         b"eccentricity_expansion_coef.txt"
     )
 
-    #index=int(args.index)
 
-    #print(index)
-    #system_array=[]
-    #with open('spin_vs_logQ_systems_0.2.txt','r') as f:
-    #    for lines in f:
-    #        x=lines.split()
-    #        #system_array=lines.split()
-    #        system_array.append(x[0])
-
-
-    #system=system_array[index]
     system=args.index
     print('System = ' ,system)
 
-    data_file='spin_vs_logQ_systems_0.2.txt'
+    data_file='SpinlogQCatalog_el0.4.txt'
 
     parameters=dict()
 
-    if args.breaks:spin_vs_logQ_file='/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ/UpperLimit/breaks2.0/SpinLogQ_WithBreaks_'+system+'.txt'
-    else:spin_vs_logQ_file='SpinLogQFiles/SpinLogQ_'+system+'_test.txt'
+    spin_vs_logQ_file='break'+args.breaks+'/SpinLogQ_'+system+'.txt'
 
-    with open(spin_vs_logQ_file,'a') as f:
+    if args.new:action='w'
+    if args.add:action='a'
+
+    breakPower=float(args.breaks)
+
+    with open(spin_vs_logQ_file,action) as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
                 'Porb_initial'+'\t'+
@@ -245,7 +238,7 @@ if __name__ == '__main__':
             at_system=x[0]
             if at_system==system:
                 parameters['primary_mass']=float(x[15])
-                parameters['age']=10**(float(x[16]))
+                parameters['age']=float(x[16])
                 parameters['feh']=float(x[17])
 
                 parameters['eccentricity']=float(x[8])
@@ -254,16 +247,13 @@ if __name__ == '__main__':
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
                 parameters['Pspin']=float(x[12])
 
-                if args.breaks:
-                    TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['Porb'])
-                                                                  -
-                                                                  1.0/parameters['Pspin']))])
-                    TidalFrequencyPowers=numpy.array([2.0,2.0])
-                    parameters['breaks']=True
-                else:
+                if breakPower==0.0:
                     TidalFrequencyBreaks=None
                     TidalFrequencyPowers=numpy.array([0.0])
-                    parameters['breaks']=False
+                else:
+                    TidalFrequencyBreaks=numpy.array([2*numpy.pi])
+                    TidalFrequencyPowers=numpy.array([breakPower,breakPower])
+
                 parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
                 parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
@@ -276,20 +266,18 @@ if __name__ == '__main__':
 
                 parameters['system']=system
                 parameters['print_cfile']=False
+                parameters['breaks']=breakPower
 
                 print('Mass Ratio = ', mass_ratio)
                 print('Parameters: ', parameters)
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ=numpy.linspace(5.947368421052632,6.052631578947368,5)
-                #logQ = [6.0,7.0,8.0,9.0,10.0,11.0]
-                #logQ=[6.021021021021021]
+                logQ=numpy.linspace(6.0,12.0,10)
                 for q in logQ:
 
-                    print('Calculating for logQ = ', q)
-                    spin = evolve(q,spin_vs_logQ_file)
-                    print('Obtained spin = ', spin)
+                    print('\nCalculating for logQ = ', q)
+                    evolve(q,spin_vs_logQ_file)
 
                 break
 

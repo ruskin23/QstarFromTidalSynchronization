@@ -32,14 +32,12 @@ class metropolis_hasting:
                            name,
                            mass,
                            feh,
-                           lage):
+                           age):
 
 
         print('Calculating Quantity: ', name)
         quantity_radius=self.interpolator('radius',mass,feh)
         quantity_lum=self.interpolator('lum',mass,feh)
-
-        age = 10**lage
 
         if name=='teff':
             T=TeffK(quantity_radius,quantity_lum)
@@ -69,7 +67,7 @@ class metropolis_hasting:
                 evalute[key]=self.calculate_quantity(key,
                                                 parameter_set['mass'],
                                                 parameter_set['feh'],
-                                                parameter_set['lage'])
+                                                parameter_set['age'])
         except AssertionError:
             print('Maximum Age Error')
             return scipy.nan
@@ -111,7 +109,6 @@ class metropolis_hasting:
                 self.current_parameters=self.proposed_parameters
                 self.current_posterior=self.proposed_posterior
                 self.current_results=self.constraints_evaulated
-                self.isAccepted=True
             else:
                 print('Rejected')
                 self.isAccepted=False
@@ -146,17 +143,18 @@ class metropolis_hasting:
 
     def write_output(self):
 
-        if self.iteration_step==1:
-            print('writing header')
-            header=['Iteration_Step']
-            for key in self.parameters:
-                header.append(key)
-            for key in self.constraints:
-                header.append(key)
-            for fname in self.filenames:
-                with open(fname,'w+') as f:
-                    f.write('\t'.join(header))
-                    f.write('\n')
+        if self.instance==1:
+            if self.iteration_step==1:
+                print('writing header')
+                header=['Iteration_Step']
+                for key in self.parameters:
+                    header.append(key)
+                for key in self.constraints:
+                    header.append(key)
+                for fname in self.filenames:
+                    with open(fname,'w+') as f:
+                        f.write('\t'.join(header))
+                        f.write('\n')
 
         print('in write output: CurrentResults = ', self.current_results)
         self.write_on_file(self.filenames[0],
@@ -171,10 +169,24 @@ class metropolis_hasting:
     def initialise_parameters(self):
 
         for key,value in self.parameters.items():
-            if key in ['mass','lage']:
+            if key in ['mass','age']:
                 self.current_parameters[key]=numpy.random.uniform(low=value['min'],high=value['max'])
             else:
                 self.current_parameters[key]=scipy.stats.norm.rvs(loc=value['value'],scale=value['sigma'])
+
+
+        if numpy.logical_or(self.current_parameters['feh']<-1.014,
+                            self.current_parameters['feh']>0.537):
+            print('Proposed Feh out of range')
+            self.initialise_parameters()
+        if numpy.logical_or(self.current_parameters['mass']<0.4,
+                            self.current_parameters['mass']>1.2):
+            print('Proposed mass out of range')
+            self.initialise_parameters()
+        if numpy.logical_or(self.current_parameters['age']<0.001,
+                            self.current_parameters['age']>12.0):
+            print('Proposed age out of range')
+            self.initialise_parameters()
 
         print('First Parameter Set:')
         print(self.current_parameters)
@@ -222,8 +234,8 @@ class metropolis_hasting:
                 self.iteration_step=self.iteration_step+1
                 if self.iteration_step>max_step:break
                 continue
-            if numpy.logical_or(self.proposed_parameters['lage']<-3.0,
-                                self.proposed_parameters['lage']>1.1):
+            if numpy.logical_or(self.proposed_parameters['age']<0.001,
+                                self.proposed_parameters['age']>12.0):
                 print('Proposed age out of range')
                 self.isAccepted=False
                 self.write_output()
@@ -259,7 +271,8 @@ class metropolis_hasting:
                  parameters,
                  constraints,
                  step_size,
-                 system):
+                 system,
+                 instance):
 
         self.interpolator=interpolator
         self.parameters=parameters
@@ -274,14 +287,14 @@ class metropolis_hasting:
         self.current_results=dict()
 
         self.system=system
+        self.instance=instance
 
         self.isAccepted=None
 
         #output_path = '/mnt/md0/ruskin/QstarFromTidalSynchronization/mcmc_mass_output/'
 
-        self.filenames=['mass_age_teff_sample_'+self.system+'.txt',
-                        'rejected_parameters_'+self.system+'.txt']
-
+        self.filenames=['samples/MassAgeFehSamples_'+self.system+'.txt',
+                        'rejected_parameters/rejected_parameters_'+self.system+'.txt']
 
 
 if __name__ == '__main__':
@@ -289,10 +302,12 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('-l',action='store',dest='data_line',
                         help='specify the system from data_file.txt')
+    parser.add_argument('-i',action='store',dest='instance',
+                        help='specify instance')
     args=parser.parse_args()
 
     system=args.data_line
-
+    instance=args.instance
     print('System = ', system)
 
     #interpolator
@@ -314,9 +329,10 @@ if __name__ == '__main__':
                 feh_value=float(x[4])
                 feh_sigma=float(x[5])
 
+
     parameters = dict(
         mass=dict(min=0.5,max=1.2),
-        lage=dict(min=-3,max=1.1),
+        age=dict(min=0.01,max=10),
         feh=dict(value=feh_value,sigma=feh_sigma)
     )
 
@@ -331,16 +347,19 @@ if __name__ == '__main__':
 
     step_size = dict(
         mass_step=1.0,
-        lage_step=1.0,
+        age_step=1.0,
         feh_step=0.3
     )
+
+
 
     #initialise class
     MCMC=metropolis_hasting(interpolator,
                             parameters,
                             constraints,
                             step_size,
-                            system)
+                            system,
+                            instance)
 
     #metropolis_hasting
     MCMC.iterations()

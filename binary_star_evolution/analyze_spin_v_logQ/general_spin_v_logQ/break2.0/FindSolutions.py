@@ -69,8 +69,10 @@ def FindSolution(system,
         q=[]
         for lines in f:
             x=lines.split()
-            q.append(float(x[0]))
-            p.append(float(x[1]))
+            try:
+                q.append(float(x[0]))
+                p.append(float(x[1]))
+            except:continue
 
         q=numpy.array(q)
         p=numpy.array(p)
@@ -118,7 +120,7 @@ for files in os.listdir(directory):
         y=x[2].split('.')
         systems.append(y[0])
 print(systems)
-with open('spin_vs_logQ_systems_0.2.txt','r') as f:
+with open('spin_vs_logQ_systems.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
@@ -135,9 +137,10 @@ with open('spin_vs_logQ_systems_0.2.txt','r') as f:
                     incomplete_check=0
                     for lines1 in f1:
                         y=lines1.split()
-                        if y[1]!='spin':
-                            p.append(float(y[1])-spin)
-
+                        try:
+                            if y[1]!='spin':
+                                p.append(float(y[1])-spin)
+                        except:continue
                     if len(p)<6:
                         incomplete_check=1
                         print('Incomplete for system: ',s)
