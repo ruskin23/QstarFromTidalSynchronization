@@ -1,3 +1,6 @@
+#!/usr/bin/env python3 -u
+
+
 import argparse
 import scipy
 import sys
@@ -157,7 +160,7 @@ mcmc = MetropolisHastings(system_number,
                           instance,
                           output_direcotry)
 
-
+sys.stdout.flush()
 if args.start: mcmc.iterations()
 elif args.cont: mcmc.continue_last()
 else: print('provide correct arguments')

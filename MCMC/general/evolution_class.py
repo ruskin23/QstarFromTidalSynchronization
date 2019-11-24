@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -u
 
 import sys
 
@@ -148,13 +148,14 @@ class evolution:
 
         self.secondary_mass=self.primary_mass*self.mass_ratio
         print('Secondary Mass = ',self.secondary_mass)
-
+        sys.stdout.flush()
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
                                               numpy.isnan(self.secondary_mass)))
                             ):
             print('mass out of range')
+            sys.stdout.flush()
             return scipy.nan
 
         star = self.create_star(self.secondary_mass,1)
@@ -175,7 +176,7 @@ class evolution:
         binary.delete()
 
         print ('star-planet evolution completed')
-
+        sys.stdout.flush()
         primary = self.create_star(self.primary_mass, 1)
         secondary = self.create_star(self.secondary_mass, 1)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,
@@ -199,5 +200,5 @@ class evolution:
 
         primary.delete()
         secondary.delete()
-
+       
         return spin

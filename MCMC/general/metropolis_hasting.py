@@ -1,4 +1,4 @@
-#"/home/kpenev/projects/git/poet/stellar_evolution_interpolators"
+#!/usr/bin/env python3 -u
 
 import scipy
 from scipy.stats import norm
@@ -8,6 +8,7 @@ import random
 import pickle
 import csv
 
+import sys
 import os
 import os.path
 
@@ -39,16 +40,18 @@ class MetropolisHastings:
         if numpy.isnan(self.spin_value): return scipy.nan
 
         print('Current Spin Value = ', self.spin_value )
+        sys.stdout.flush()
         prior = 1.0
 
         for key_obs,value_obs in self.observation_data.items():
             prior=prior*scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs])
             print('prior for ', key_obs)
             print(scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs]))
-
+            sys.stdout.flush()
         likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
 
         print('likehood = ', likelihood)
+        sys.stdout.flush()
         posterior = prior*likelihood
         return posterior
 
@@ -62,7 +65,7 @@ class MetropolisHastings:
             else: self.isAccepted = False
             print('Acceptance_probability = ', self.p_acceptance)
             print('Random_number = ', rand)
-
+            sys.stdout.flush()
     def propose_from_samples(self,name):
 
         rand=random.randint(1,100000)
@@ -133,7 +136,7 @@ class MetropolisHastings:
                     file.write('%s\t' % name)
                 file.write('\n')
 
-        with open(self.output_directory+'time_stamp_' + self.instance +'.txt','w') as f:
+        with open(self.output_directory+'time_stamp_' + self.instance +'.txt','w',1) as f:
             f.write('Step'+'\t'+'Time_elapsed'+'\n')
 
 
@@ -144,6 +147,7 @@ class MetropolisHastings:
 
         if self.isAccepted == True:
             print('ACCEPTED')
+            sys.stdout.flush()
             if self.iteration_step>1:
                 self.current_parameters = self.proposed_parameters
                 self.current_posterior = self.proposed_posterior
@@ -152,6 +156,7 @@ class MetropolisHastings:
 
         else:
             print('REJECTED')
+            sys.stdout.flush()
             f_name = self.save_filename[1]
 
 
@@ -195,13 +200,13 @@ class MetropolisHastings:
                     repr(gsl_flag)+
                     '\n')
 
-        with open(self.output_directory+'time_stamp_' + self.instance +'.txt', 'a') as f:
+        with open(self.output_directory+'time_stamp_' + self.instance +'.txt', 'a',1) as f:
                 f.write(repr(self.iteration_step) + '\t' + repr(self.time_elapsed) + '\n')
 
     def save_current_parameter(self):
 
         name = self.current_filename
-        with open(name, 'w') as f:
+        with open(name, 'w',1) as f:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
@@ -243,7 +248,7 @@ class MetropolisHastings:
         if self.iteration_step==1:self.write_header()
 
         print('Current Parameters: ', self.current_parameters)
-
+        sys.stdout.flush()
 
     def first_iteration(self):
         
@@ -280,17 +285,20 @@ class MetropolisHastings:
             self.values_proposed()
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
+            sys.stdout.flush()
             if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 print('feh value out of range')
+                sys.stdout.flush()
                 continue
             if self.proposed_parameters['eccentricity']<0:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 print('e<0')
+                sys.stdout.flush()
                 continue
 
 
@@ -301,6 +309,7 @@ class MetropolisHastings:
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
                 print('Cannot calclate spin value')
+                sys.stdout.flush()
                 continue
 
 
@@ -310,7 +319,7 @@ class MetropolisHastings:
             print ('checking acceptance')
             self.check_acceptance()
             print ('isAccepted = ', self.isAccepted)
-
+            sys.stdout.flush()
 
             self.time_elapsed = time.time() - self.time_stamp
             self.time_stamp = time.time()
@@ -334,7 +343,7 @@ class MetropolisHastings:
             for row in reader:
                 array = row
             print(array)
-
+            sys.stdout.flush()
         with open(self.save_filename[1], 'r') as f:
             reader = csv.reader(f, dialect='excel-tab')
             for row in reader:

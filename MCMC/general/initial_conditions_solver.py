@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -u
 
 import pickle
 
@@ -57,7 +57,6 @@ class InitialConditionSolver:
         #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
-
         if initial_condition[1]>0.9 or initial_condition[1]<0 or initial_condition[0]<0:
             print('Cannot accept eccentricity > 0.45')
             return scipy.nan, scipy.nan
@@ -159,6 +158,7 @@ class InitialConditionSolver:
         print(self.spin)
 
         self.binary.delete()
+        sys.stdout.flush()
 
         return self.delta_p,self.delta_e
 
@@ -253,8 +253,8 @@ class InitialConditionSolver:
             pickle.dump(self.delta_p,f)
             pickle.dump(self.delta_e,f)
             pickle.dump(self.gsl_flag,f)
-
-
+        
+        sys.stdout.flush()
         return self.spin
 
 
