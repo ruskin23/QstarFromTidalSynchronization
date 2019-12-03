@@ -273,7 +273,8 @@ if __name__ == '__main__':
 
                 evolve = evolution(interpolator,parameters)
 
-                logQ=numpy.linspace(6.0,12.0,10)
+                #logQ=numpy.linspace(6.0,12.0,10)
+                logQ=[8.2,8.3,8.4,8.5]
                 for q in logQ:
 
                     print('\nCalculating for logQ = ', q)

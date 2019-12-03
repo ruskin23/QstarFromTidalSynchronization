@@ -1,9 +1,13 @@
+import numpy
 s=[]
 
 with open('SpinlogQCatalog_el0.4.txt','r') as f:
     next(f)
     for lines in f :
         x=lines.split()
-        s.append(x[0])
+        s.append(int(x[0]))
 
-print(' '.join(s))
+s.sort()
+print(s)
+k=[str(i) for i in s]
+print(' '.join(k))
