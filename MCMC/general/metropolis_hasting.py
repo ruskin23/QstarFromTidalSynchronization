@@ -75,7 +75,7 @@ class MetropolisHastings:
                 if i==rand:
                     x=lines.split()
                     if name=='primary_mass':return float(x[1])
-                    if name=='age':return 10**float(x[2])
+                    if name=='age':return float(x[2])
                     if name=='feh':return float(x[3])
 
 
@@ -228,7 +228,7 @@ class MetropolisHastings:
                 at_system=x[0]
                 if at_system==self.system:
                     initial_parameters['primary_mass']=float(x[15])
-                    initial_parameters['age']=10**float(x[16])
+                    initial_parameters['age']=float(x[16])
                     initial_parameters['feh']=float(x[17])
                     break
 
@@ -236,10 +236,10 @@ class MetropolisHastings:
             initial_parameters[key] = value['value']
 
 
-        initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
-        initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
-        #initial_parameters['Wdisk'] = 4.1
-        #initial_parameters['logQ'] = self.logQ['value']
+        #initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
+        #initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
+        initial_parameters['Wdisk'] = 4.1
+        initial_parameters['logQ'] = self.logQ['value']
 
         print ('\nINITIAL PARAMETERS SET')
 
