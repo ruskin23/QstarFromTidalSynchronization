@@ -26,46 +26,22 @@ if __name__=='__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    system=args.system
-
-    with open('SpinlogQCatalog_el0.4.txt','r') as f:
-        for lines in f:
-            x=lines.split()
-            if x[0]==system:
-                primary_mass=float(x[15])
-                massratio=float(x[14])
-                secondary_mass=massratio*primary_mass
-                age=float(x[16])
-                feh=float(x[17])
-                PspinCurrent=float(x[12])
-                PorbCurrent=float(x[6])
-                EccentricityCurrent=float(x[8])
-
     parameters=dict()
 
-    parameters['system']=system
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']= secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['PorbInitial']= PorbCurrent
-    parameters['EccentricityInitial']=EccentricityCurrent
-    parameters['PorbCurrent']=PorbCurrent
-    parameters['PspinCurrent']=PspinCurrent
-    parameters['EccentricityCurrent']=EccentricityCurrent
+    primary_masses=[0.4,0.6,0.8,1.0,1.2]
+    secondary_masses=[1.2,1.0,0.8,0.6,0.4]
+    wdisk=[0.5,1.0,2.0,3.0,4.0]
 
-    if args.breaks:
-        #TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['PorbCurrent'])
-        #                                                   -
-        #                                                   1.0/parameters['PspinCurrent']))])
+    parameters['age']=6.0
+    parameters['feh']=0.0
 
-        TidalFrequencyBreaks=numpy.array([abs(2*numpy.pi)])
-        TidalFrequencyPowers=numpy.array([2.0,2.0])
-        parameters['breaks']=True
-    else:
-        TidalFrequencyBreaks=None
-        TidalFrequencyPowers=numpy.array([0.0])
-        parameters['breaks']=False
+
+    parameters['PorbInitial']= 8.0
+    parameters['EccentricityInitial']=0.1
+
+    TidalFrequencyBreaks=numpy.array([abs(2*numpy.pi)])
+    TidalFrequencyPowers=numpy.array([2.0,2.0])
+    parameters['breaks']=True
 
     parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
     parameters['tidal_frequency_powers']=TidalFrequencyPowers
@@ -75,7 +51,6 @@ if __name__=='__main__':
 
     parameters['dissipation']=True
 
-    parameters['Wdisk']=4.1
     parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
     parameters['wind_saturation_frequency']=2.54
@@ -89,7 +64,9 @@ if __name__=='__main__':
     parameters['GetEvolution']=True
     parameters['GetInitialCondtion']=False
 
-    parameters['plot']=True
+    parameters['ReturnResults']=True
+
+    parameters['plot']=False
     parameters['plot_primary_envelope']=True
     parameters['plot_primary_core']=False
     parameters['plot_secondary_envelope']=False
@@ -97,8 +74,41 @@ if __name__=='__main__':
     parameters['plot_key']='logQ'
     parameters['plot_color']='b'
 
-    parameters['logQ']=6.0
 
     for key,value in parameters.items():
         print("{} = {}".format(key,value))
 
+    logQ=[3.0,3.5,4.0,4.5,5.0]
+
+    with open('CheckCircularVsSync.txt','w') as f:
+        f.write('PrimaryMass'+'\t'+
+                'SecondaryMass'+'\t'+
+                'Wdisk'+'\t'+
+                'logQ'+'\t'+
+                'FinalPorb'+'\t'+
+                'FinalEccentricity'+'\t'+
+                'FinalSpin'+'\n')
+
+    for i in range(5):
+        FinalResults=dict()
+
+        parameters['primary_mass']=primary_masses[i]
+        parameters['secondary_mass']=secondary_masses[i]
+        parameters['Wdisk']=wdisk[i]
+        parameters['logQ']=logQ[i]
+
+        print('Calculating for paramters:',parameters)
+
+
+        evolve=Evolution(interpolator,parameters)
+        FinalResults=evolve()
+
+
+        with open('CheckCircularVsSync.txt','a') as f:
+            f.write(repr(parameters['primary_mass'])+'\t'+
+                    repr(parameters['secondary_mass'])+'\t'+
+                    repr(parameters['Wdisk'])+'\t'+
+                    repr(parameters['logQ'])+'\t'+
+                    repr(FinalResults['Porb'])+'\t'+
+                    repr(FinalResults['Eccentricity'])+'\t'+
+                    repr(FinalResults['spin'])+'\n')

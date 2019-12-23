@@ -23,7 +23,8 @@ import numpy
 import scipy
 from astropy import units, constants
 
-wsun = 0.24795522138
+#wsun = 0.24795522138
+wsun=1.0
 
 class Evolution:
 
@@ -213,22 +214,45 @@ class Evolution:
         print('Final Eccentricity = ', EccFinal)
         print('Secondary Initial Angmom = ', SecondaryAngmom(self.Wdisk))
         print('Final Spin = ',spin)
+
+        self.FinalValues['Porb']=PorbFinal
+        self.FinalValues['Eccentricity']=EccFinal
+        self.FinalValues['Spin']=spin
+
+        Frequencies=dict()
+
+        Frequencies['age']=evolution.age
+        Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
+        Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
+        Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
+        Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
+        Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
+
+        tidal_frequency=[]
+        for orbf,spinf in zip(Frequencies['orbitalfrequncy'],Frequencies['wenv_primary']):
+            tidal_frequency.append(abs(2*(orbf-spinf)))
+        Frequencies['tidal_frequency']=tidal_frequency
+
+        self.FinalValues['tidal_frequency']=tidal_frequency
+
+
         if  self.plot==True:
 
             Frequencies=dict()
-
-            Frequencies['age']=evolution.age
-            Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
-            Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
-            Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
-            Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
-            Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
 
             pyplot.semilogx(Frequencies['age'],
                           Frequencies['orbitalfrequncy'],
                           color=self.plot_color,
                           linestyle='--',
                           label='orbitalfrequncy'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
+
+
+            pyplot.semilogx(Frequencies['age'],
+                            Frequencies['tidal_frequency'],
+                            color=self.plot_color,
+                            linestyle='-.',
+                            label='tidal_frequency'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
+
             self.plot_evolution(Frequencies,2.54)
 
 
@@ -240,9 +264,12 @@ class Evolution:
         primary=self.create_star(self.primary_mass)
         secondary=self.create_star(self.secondary_mass)
 
-        if self.GetEvolution==True:self.evolve_binary(primary,
-                                                      secondary,
-                                                      SecondaryAngmom)
+        if self.GetEvolution==True:
+            self.evolve_binary(primary,
+                               secondary,
+                               SecondaryAngmom)
+            if self.ReturnResutls==True:
+                return self.FinalValues
 
 
         if self.GetInitialCondtion==True:self.calculate_intial_conditions(primary,
@@ -258,6 +285,8 @@ class Evolution:
         self.parameters=parameters
         for item,value in parameters.items():
             setattr(self,item,value)
+
+        self.FinalValues=dict()
 
         self.convective_phase_lag=phase_lag(self.logQ)
         print('Convective Phase lag = ',self.convective_phase_lag)

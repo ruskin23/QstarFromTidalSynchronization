@@ -1,3 +1,5 @@
+
+
 import numpy
 import argparse
 import matplotlib
@@ -12,6 +14,7 @@ from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from BinaryEvolution import Evolution
+from orbital_evolution.transformations import phase_lag
 
 wsun = 0.24795522138
 
@@ -50,32 +53,18 @@ if __name__=='__main__':
 
     parameters=dict()
 
+
     parameters['system']=system
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']= secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['PorbInitial']= 9.639020067957873
-    parameters['EccentricityInitial']=0.020270562376710374
-    parameters['PorbCurrent']=PorbCurrent
+    parameters['primary_mass']=0.9654755537291438
+    parameters['secondary_mass']= 0.8058824446977164
+    parameters['age']=3.85637152328439
+    parameters['feh']=0.0890714690959666
+    parameters['PorbInitial']= 17.09668292
+    parameters['EccentricityInitial']= 0.24893609
+    parameters['PorbCurrent']=17.09668292
+    parameters['EccentricityCurrent']=0.24893609
+
     parameters['PspinCurrent']=PspinCurrent
-    parameters['EccentricityCurrent']=EccentricityCurrent
-
-    if args.breaks:
-        #TidalFrequencyBreaks=numpy.array([abs(-4*numpy.pi*((1.0/parameters['PorbCurrent'])
-        #                                                   -
-        #                                                   1.0/parameters['PspinCurrent']))])
-
-        TidalFrequencyBreaks=numpy.array([abs(2*numpy.pi)])
-        TidalFrequencyPowers=numpy.array([2.0,2.0])
-        parameters['breaks']=True
-    else:
-        TidalFrequencyBreaks=None
-        TidalFrequencyPowers=numpy.array([0.0])
-        parameters['breaks']=False
-
-    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
-    parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
@@ -96,6 +85,7 @@ if __name__=='__main__':
     parameters['GetEvolution']=False
     parameters['GetInitialCondtion']=True
 
+    parameters['ReturnResutls']=True
 
     parameters['plot']=False
     parameters['plot_primary_envelope']=True
@@ -105,21 +95,61 @@ if __name__=='__main__':
     parameters['plot_key']='logQ'
     parameters['plot_color']='b'
 
-    parameters['logQ']=8.119487908961593
+    #parameters['logQ']=logQ1
 
-    for key,value in parameters.items():
-        print("{} = {}".format(key,value))
+    #for key,value in parameters.items():
+    #    print("{} = {}".format(key,value))
 
+    #q=[5.0,6.0,7.0,8.0,9.0]
+    q=[7.0]
 
-    evolve=Evolution(interpolator,parameters)
-    evolve()
+    for logQ1 in q:
+        result=dict()
+        if args.breaks:
 
+            alpha=-1.0
 
+            logQMax=4.0
+            phase_lagMax=phase_lag(logQMax)
+            phase_lag1=phase_lag(logQ1)
+            omegaref1=2*numpy.pi
 
-    #pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,linestyle=':',label='PSpinCurrent',color='r')
-    #pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
-    #pyplot.legend()
+            omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+
+            TidalFrequencyBreaks=numpy.array([omegaref])
+            TidalFrequencyPowers=numpy.array([0,alpha])
+            parameters['breaks']=True
+            parameters['logQ']=logQMax
+        else:
+            TidalFrequencyBreaks=None
+            TidalFrequencyPowers=numpy.array([0.0])
+            parameters['breaks']=False
+            parameters['logQ']=logQ1
+
+        parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+        parameters['tidal_frequency_powers']=TidalFrequencyPowers
+
+        print(TidalFrequencyBreaks)
+
+        evolve=Evolution(interpolator,parameters)
+        result=evolve()
+
+    #checking phase lag bechaviour with tidal frequency:
+    print(result)
+    #phaseLag=[]
+    #for omega in result['tidal_frequency']:
+    #    phaseLag.append(phase_lagMax*(omegaref/omega))
+
+    #pyplot.plot(result['tidal_frequency'],phaseLag)
     #pyplot.show()
+
+    if parameters['plot']==True:
+
+
+        pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,linestyle=':',label='PSpinCurrent',color='r')
+        pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
+        pyplot.legend()
+        pyplot.show()
 
 ##################################################################################################################################################################################################################################################################################################################################################
 
