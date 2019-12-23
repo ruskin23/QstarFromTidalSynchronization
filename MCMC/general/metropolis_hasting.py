@@ -23,85 +23,8 @@ start_time = time.time()
 
 class MetropolisHastings:
 
-    def posterior_probability(self,parameter_set=None):
-        """reutrns current surface spin of the star given the parameters"""
-
-        find_spin = evolution(
-                                self.interpolator,
-                                parameter_set,
-                                self.fixed_parameters,
-                                self.mass_ratio,
-                                self.instance,
-                                self.output_directory
-                               )
-
-        self.spin_value = find_spin()
-
-        if numpy.isnan(self.spin_value): return scipy.nan
-
-        print('Current Spin Value = ', self.spin_value )
-        sys.stdout.flush()
-        prior = 1.0
-
-        for key_obs,value_obs in self.observation_data.items():
-            prior=prior*scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs])
-            print('prior for ', key_obs)
-            print(scipy.stats.norm(value_obs['value'],value_obs['sigma']).pdf(parameter_set[key_obs]))
-            sys.stdout.flush()
-        likelihood = scipy.stats.norm(self.observed_Pspin['value'],self.observed_Pspin['sigma']).pdf(self.spin_value)
-
-        print('likehood = ', likelihood)
-        sys.stdout.flush()
-        posterior = prior*likelihood
-        return posterior
-
-
-    def check_acceptance(self):
-        self.p_acceptance = self.proposed_posterior/self.current_posterior
-        if self.p_acceptance > 1: self.isAccepted = True
-        else:
-            rand = numpy.random.random_sample()
-            if self.p_acceptance > rand : self.isAccepted = True
-            else: self.isAccepted = False
-            print('Acceptance_probability = ', self.p_acceptance)
-            print('Random_number = ', rand)
-            sys.stdout.flush()
-    def propose_from_samples(self,name):
-
-        rand=random.randint(1,100000)
-
-        with open(self.mass_age_feh_sample_file,'r') as f:
-            for i,lines in enumerate(f):
-                if i==rand:
-                    x=lines.split()
-                    if name=='primary_mass':return float(x[1])
-                    if name=='age':return float(x[2])
-                    if name=='feh':return float(x[3])
-
-
-
-    def values_proposed(self):
-
-        proposed = dict()
-
-        sample_keys=['primary_mass','age','feh']
-        for key in sample_keys:
-            proposed[key]=self.propose_from_samples(key)
-
-        for key_obs,value_obs in self.observation_data.items():
-            step_key=key_obs+'_step'
-            proposed[key_obs]=scipy.stats.norm.rvs(loc=self.current_parameters[key_obs],scale=self.proposed_step[step_key])
-        proposed['Wdisk']=scipy.stats.norm.rvs(loc=self.current_parameters['Wdisk'],scale=self.proposed_step['Wdisk_step'])
-        proposed['logQ']=scipy.stats.norm.rvs(loc=self.current_parameters['logQ'],scale=self.proposed_step['logQ_step'])
-
-
-        self.proposed_parameters = proposed
 
     def write_header(self):
-
-        """
-        Write the header in both accepted and rejected parameter files
-        """
 
         f = self.output_directory
         file_list = os.listdir(f)
@@ -131,19 +54,80 @@ class MetropolisHastings:
             header.append(a)
 
         for f_name in self.save_filename:
-            with open(f_name, 'w', 1) as file:
+            with open(f_name, 'w', 1) as fheader:
                 for name in header:
-                    file.write('%s\t' % name)
-                file.write('\n')
+                    fheader.write('%s\t' % name)
+                fheader.write('\n')
 
         with open(self.output_directory+'time_stamp_' + self.instance +'.txt','w',1) as f:
             f.write('Step'+'\t'+'Time_elapsed'+'\n')
 
 
 
+    def posterior_probability(self,
+                              parameter_set=None):
+
+        model_calculations = evolution(self.interpolator,
+                                       parameter_set,
+                                       self.fixed_parameters,
+                                       self.mass_ratio,
+                                       self.instance,
+                                       self.output_directory
+                                       )
+
+        self.model_parameters=model_calculations()
+
+        for key,value in self.model_parameters.items():
+            if numpy.isnan(value):return scipy.nan
+
+        print('Current Spin Value = ', self.model_parameters['spin'])
+        print('Teff Value = ', self.model_parameters['teff'])
+        print('logg Value =  ', self.model_parameters['logg'])
+        sys.stdout.flush()
+
+        prior = 1.0
+        likelihood = 1.0
+
+        for key,value in self.sampling_parameters.items():
+            if value['dist']=='Normal':
+                prior=prior*scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])
+                print('prior for {} = {}'.format(key,scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])))
+
+        for key,value in self.model_parameters.items():
+            likelihood=likelihood*scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])
+            print('likelihood for {} = {}'.format(key,scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])))
+
+        print('likehood = ', likelihood)
+        sys.stdout.flush()
+
+        posterior = prior*likelihood
+
+        return posterior
+
+
+    def check_acceptance(self):
+        self.p_acceptance = self.proposed_posterior/self.current_posterior
+        if self.p_acceptance > 1: self.isAccepted = True
+        else:
+            rand = numpy.random.random_sample()
+            if self.p_acceptance > rand : self.isAccepted = True
+            else: self.isAccepted = False
+            print('Acceptance_probability = ', self.p_acceptance)
+            print('Random_number = ', rand)
+            sys.stdout.flush()
+
+
+    def values_proposed(self):
+
+        proposed = dict()
+
+        for key,value in self.sampling_parameters.items():
+            proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
+
+        self.proposed_parameters = proposed
+
 
     def write_output(self):
-
 
         if self.isAccepted == True:
             print('ACCEPTED')
@@ -221,39 +205,26 @@ class MetropolisHastings:
 
         initial_parameters=dict()
 
-        with open(self.catalog_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                at_system=x[0]
-                if at_system==self.system:
-                    initial_parameters['primary_mass']=float(x[15])
-                    initial_parameters['age']=float(x[16])
-                    initial_parameters['feh']=float(x[17])
-                    break
+        for key, value in self.sampling_parameters.items():
+            if value['dist']=='Normal':
+                initial_parameters[key]=value['value']
+            if value['dist']=='Uniform':
+                initial_parameters[key]=numpy.random.uniform(low=value['min'],high=value['max'])
 
-        for key, value in self.observation_data.items():
-            initial_parameters[key] = value['value']
-
-
-        #initial_parameters['Wdisk'] = numpy.random.uniform(low=self.Wdisk['min'],high=self.Wdisk['max'],size=None)
-        #initial_parameters['logQ'] = numpy.random.uniform(low=self.logQ['min'],high=self.logQ['max'],size=None)
-        initial_parameters['Wdisk'] = 4.1
-        initial_parameters['logQ'] = self.logQ['value']
-
-        print ('\nINITIAL PARAMETERS SET')
+        print ('\nINITIAL PARAMETERS SET:')
+        for key,value in initial_parameters.items():
+            print('{} = {}'.format(key,value))
+        sys.stdout.flush()
 
         self.current_parameters = initial_parameters
 
         if self.iteration_step==1:self.write_header()
 
-        print('Current Parameters: ', self.current_parameters)
-        sys.stdout.flush()
 
     def first_iteration(self):
-        
+
         while True:
-       
+
             self.initialise_parameters()
             self.current_file_exist = None
             self.current_posterior =  self.posterior_probability(parameter_set=self.current_parameters)
@@ -273,7 +244,6 @@ class MetropolisHastings:
         while True:
 
             self.isAccepted = None
-            self.check_age_neg = False
 
             #initialising the set of parameters
             if self.iteration_step == 1 :
@@ -286,6 +256,20 @@ class MetropolisHastings:
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
             sys.stdout.flush()
+            if self.proposed_parameters['age']<0 or self.proposed_parameters['age']>10:
+                self.isAccepted=False
+                self.write_output()
+                self.iteration_step=self.iteration_step+1
+                print('age out of range')
+                sys.stdout.flush()
+                continue
+            if self.proposed_parameters['primary_mass']<0.4 or self.proposed_parameters['primary_mass']>1.2:
+                self.isAccepted=False
+                self.write_output()
+                self.iteration_step=self.iteration_step+1
+                print('Mass out of range')
+                sys.stdout.flush()
+                continue
             if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
                 self.isAccepted = False
                 self.write_output()
@@ -308,15 +292,12 @@ class MetropolisHastings:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
-                print('Cannot calclate spin value')
+                print('Cannot calclate model parameters')
                 sys.stdout.flush()
                 continue
 
 
-
-
             # calculate acceptance probablity and check if proposed parameter is accepted or not
-            print ('checking acceptance')
             self.check_acceptance()
             print ('isAccepted = ', self.isAccepted)
             sys.stdout.flush()
@@ -363,40 +344,30 @@ class MetropolisHastings:
 
         self.iterations()
 
-    def __init__(
-                self,
-                system,
-                interpolator,
-                fixed_parameters,
-                observation_data,
-                mass_age_feh_sample_file,
-                catalog_file,
-                Wdisk,
-                logQ,
-                proposed_step,
-                observed_Pspin,
-                mass_ratio,
-                instance,
-                output_directory
-                ):
+    def __init__(self,
+                 system_number,
+                 interpolator,
+                 sampling_parameters,
+                 fixed_parameters,
+                 observational_parameters,
+                 catalog_file,
+                 mass_ratio,
+                 instance,
+                 output_directory):
 
-        self.system=system
-        self.interpolator  = interpolator
-        self.fixed_parameters = fixed_parameters
-        self.observation_data = observation_data
-        self.Wdisk=Wdisk
-        self.logQ = logQ
-        self.proposed_step = proposed_step
-        self.iteration_step = 1
+        self.system=system_number
+        self.interpolator=interpolator
+        self.sampling_parameters=sampling_parameters
+        self.fixed_parameters=fixed_parameters
+        self.iteration_step=1
         self.mass_ratio=mass_ratio
-        self.mass_age_feh_sample_file=mass_age_feh_sample_file
         self.catalog_file=catalog_file
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
 
         self.isAccepted = None
-        self.observed_Pspin = observed_Pspin
+        self.observational_parameters = observational_parameters
 
         self.check_age_neg = None
 

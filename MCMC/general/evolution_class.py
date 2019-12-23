@@ -22,6 +22,11 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
+from stellar_evolution.manager import StellarEvolutionManager
+from stellar_evolution.derived_stellar_quantities import\
+    TeffK,\
+    LogGCGS,\
+    RhoCGS
 from initial_conditions_solver import  InitialConditionSolver
 from basic_utils import Structure
 import numpy
@@ -31,6 +36,24 @@ import pickle
 
 
 class evolution:
+
+    def teff_and_logg(self):
+
+        radius=self.interpolator('radius',self.primary_mass,self.feh)
+        lum=self.interpolator('lum',self.primary_mass,self.feh)
+
+        T=TeffK(radius,lum)
+        G=LogGCGS(self.primary_mass,radius)
+
+        try:
+            teff=T(self.age)
+            logg=G(self.age)
+        except AssertionError:
+            teff=scipy.nan
+            logg=scipy.nan
+
+        self.model_parameters['teff']=teff
+        self.model_parameters['logg']=logg
 
     def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')):
         """Return a configured planet to use in the evolution."""
@@ -119,7 +142,7 @@ class evolution:
 
     def __init__(self,
                  interpolator,
-                 observational_parameters,
+                 sampling_parameters,
                  fixed_parameters,
                  mass_ratio,
                  instance,
@@ -127,7 +150,7 @@ class evolution:
 
         self.interpolator=interpolator
 
-        for item,value in observational_parameters.items():
+        for item,value in sampling_parameters.items():
             setattr(self,item,value)
 
         for item,value in fixed_parameters.items():
@@ -136,19 +159,17 @@ class evolution:
 
         self.convective_phase_lag=phase_lag(self.logQ)
 
-        self.secondary_mass=0.0
-
         self.mass_ratio=mass_ratio
         self.instance=instance
         self.output_directory=output_directory
+
+        self.model_parameters=dict()
 
     def __call__(self):
 
         tdisk = self.disk_dissipation_age
 
         self.secondary_mass=self.primary_mass*self.mass_ratio
-        print('Secondary Mass = ',self.secondary_mass)
-        sys.stdout.flush()
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
@@ -156,7 +177,16 @@ class evolution:
                             ):
             print('mass out of range')
             sys.stdout.flush()
-            return scipy.nan
+            for key in ['teff','logg','spin']:
+                self.model_parameters[key]=scipy.nan
+                return self.model_parameters
+
+        self.teff_and_logg()
+        for key,value in self.model_parameters.items():
+            if numpy.isnan(value):
+                print('Maximum age error')
+                return self.model_parameters
+
 
         star = self.create_star(self.secondary_mass,1)
         planet = self.create_planet(1.0)
@@ -192,13 +222,14 @@ class evolution:
                            Wdisk=self.Wdisk,
                            eccentricity=self.eccentricity)
 
-        spin =  find_ic(target=target,
-                       primary=primary,
-                       secondary=secondary)
+        self.model_parameters['spin']=find_ic(target=target,
+                                             primary=primary,
+                                             secondary=secondary)
 
 
 
         primary.delete()
         secondary.delete()
-       
-        return spin
+
+
+        return self.model_parameters
