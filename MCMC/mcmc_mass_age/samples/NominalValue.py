@@ -4,10 +4,10 @@ import numpy
 
 class Nominal:
 
-    def FiftyPercentileValue(self):
+    def NPercentileValue(self):
 
         Values={}
-        Distribution=CummulativeDistribution(self.SampleFile,0.5)
+        Distribution=CummulativeDistribution(self.SampleFile,self.PercentileValue)
         for parameter in self.parameterKey:
             Values[parameter]=Distribution(parameter,option='PercentileValue')
         return Values
@@ -41,14 +41,16 @@ class Nominal:
 
     def __call__(self):
 
-        StandardMean=self.FiftyPercentileValue()
+        StandardMean=self.NPercentileValue()
         FinalMean=self.CorrectNominal(StandardMean)
 
         return FinalMean
 
     def __init__(self,
                  SampleFile,
-                 parameterKey):
+                 parameterKey,
+                 PercentileValue):
 
         self.SampleFile=SampleFile
         self.parameterKey=parameterKey
+        self.PercentileValue=PercentileValue
