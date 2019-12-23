@@ -6,36 +6,38 @@ synchronised={'logQ': [],
               'logfrequency':[],
               'logperiod':[],
               'mass':[],
-              'age':[]}
+              'age':[],
+              'eccentricity':[]}
 
 exact={'logQ': [],
        'logfrequency':[],
        'logperiod':[],
        'mass':[],
-       'age':[]}
+       'age':[],
+       'eccentricity':[]}
 
-with open('SolutionFile.txt','r') as f:
+with open('SpinVslogQ_WithErrorBars.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
-        sync=x[10]
+        sync=x[14]
         if sync=='True':
             synchronised['logQ'].append(float(x[1]))
-            synchronised['logfrequency'].append(float(x[6]))
-            synchronised['logperiod'].append(float(x[7]))
-            synchronised['mass'].append(float(x[8]))
-            synchronised['age'].append(float(x[9]))
-
+            synchronised['logfrequency'].append(float(x[11]))
+            synchronised['logperiod'].append(abs(float(x[10])))
+            synchronised['mass'].append(float(x[12]))
+            synchronised['age'].append(float(x[13]))
+            synchronised['eccentricity'].append(float(x[6]))
         if sync=='None':
             exact['logQ'].append(float(x[1]))
-            exact['logfrequency'].append(float(x[6]))
-            exact['logperiod'].append(float(x[7]))
-            exact['mass'].append(float(x[8]))
-            exact['age'].append(float(x[9]))
+            exact['logfrequency'].append(float(x[11]))
+            exact['logperiod'].append(abs(float(x[10])))
+            exact['mass'].append(float(x[12]))
+            exact['age'].append(float(x[13]))
+            exact['eccentricity'].append(float(x[6]))
 
-
-plt.scatter(synchronised['logfrequency'],synchronised['logQ'],marker='v',label='synchronised limit')
-plt.scatter(exact['logfrequency'],exact['logQ'],marker='o',label='exact')
+plt.semilogx(synchronised['logperiod'],synchronised['logQ'],'v',label='synchronised limit')
+plt.semilogx(exact['logperiod'],exact['logQ'],'o',label='exact')
 plt.legend()
 plt.xlabel('Tidal Frequency')
 plt.ylabel('logQ')
