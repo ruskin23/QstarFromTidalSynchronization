@@ -137,6 +137,7 @@ def SearchSolution(SystemDict):
                 x=lines.split()
                 at_system=x[0]
                 if at_system==key:
+                    print('Searchin for system = ',x[0])
                     PspinObserved=float(x[12])
                     Porb=float(x[6])
                     PspinError=float(x[13])
@@ -185,6 +186,8 @@ for s in systems:
     number=str(s)
     lgq=[]
     spin=[]
+    print('For System = ',s)
+    if s=='35':continue
     with open('break'+breakPower+'/SpinLogQ_'+s+'.txt','r') as f:
         for i,lines in enumerate(f):
             x=lines.split()
