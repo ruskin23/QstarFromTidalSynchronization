@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import time
-
+start_time=time.time()
 import sys
 sys.path.append('.../poet/PythonPackage')
 sys.path.append('.../poet/scripts')
@@ -13,7 +13,7 @@ from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
-from Solver1 import  InitialConditionSolver
+from InterpolatorSolver import  InitialConditionSolver
 from intial_secondary_angmom import IntialSecondaryAngmom
 from basic_utils import Structure
 import numpy
@@ -125,7 +125,7 @@ class evolution:
                               Wdisk=self.Wdisk,
                               eccentricity=self.eccentricity)
 
-    def __call__(self,q,sol_file,option=None):
+    def __call__(self,q,option=None):
 
         tdisk = self.disk_dissipation_age
 
@@ -147,30 +147,7 @@ class evolution:
 
 
         solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
-
-        sol=[]
-
-        for key,value in solutions.items():
-            sol.append(repr(value))
-
-        sol='\t'.join(sol)
-
-        if self.breakPower<0:
-            q=self.logQ1
-
-        with open(sol_file,'a',1) as f:
-            f.write(repr(q)+'\t'+sol+'\n')
-
-        primary.delete()
-        secondary.delete()
-
-        if self.FindCircularLimit==True:
-            return solutions['e_initial']
-
-        if self.FindSyncLimit==True:
-            return solution['spin']
-
-
+        print(solutions)
 
 if __name__ == '__main__':
 
@@ -178,8 +155,6 @@ if __name__ == '__main__':
     parser.add_argument('system',help='select system to run')
     parser.add_argument('-b',action='store',dest='breaks',
                         help='decide if breaks needed or not')
-    parser.add_argument('-a',action = 'store_const',dest='add',const='add',help='add to logQvsPspin')
-    parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -198,20 +173,6 @@ if __name__ == '__main__':
     data_file='SpinlogQCatalog_el0.4.txt'
     parameters=dict()
 
-    spin_vs_logQ_file='../break'+args.breaks+'/SpinLogQ_'+system+'.txt'
-    if args.new:action='w'
-    if args.add:action='a'
-
-    with open(spin_vs_logQ_file,action) as f:
-        f.write('logQ'+'\t'+
-                'spin'+'\t'+
-                'Porb_initial'+'\t'+
-                'e_initial'+'\t'+
-                'Porb_current'+'\t'+
-                'e_current'+'\t'+
-                'delta_p'+'\t'+
-                'detla_e'+'\n')
-
     with open(data_file,'r') as f:
         next(f)
         for lines in f:
@@ -219,14 +180,17 @@ if __name__ == '__main__':
             at_system=x[0]
             print(at_system)
             if at_system==system:
+
                 parameters['primary_mass']=float(x[15])
                 parameters['age']=float(x[16])
                 parameters['feh']=float(x[17])
 
                 parameters['eccentricity']=float(x[8])
                 parameters['Porb']=float(x[6])
+
                 parameters['Pspin']=float(x[12])
                 mass_ratio=float(x[14])
+
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
 
                 parameters['Wdisk']=4.1
@@ -236,69 +200,52 @@ if __name__ == '__main__':
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
 
-                parameters['FindSyncLimit']=False
-                parameters['FindCircularLimit']=False
+                logQ=[7.0]
 
-                if parameters['FindCircularLimit']==False:
-                    logQ = numpy.linspace(6.0,12.0,10)
+                for q in logQ:
 
-                    for q in logQ:
+                    if breakPower==0.0:
+                        TidalFrequencyBreaks=None
+                        TidalFrequencyPowers=numpy.array([0.0])
 
-                        start_time=time.time()
+                    elif breakPower>0.0:
+                        TidalFrequencyBreaks=numpy.array([2*numpy.pi])
+                        TidalFrequencyPowers=numpy.array([breakPower,breakPower])
 
-                        if breakPower==0.0:
-                            TidalFrequencyBreaks=None
-                            TidalFrequencyPowers=numpy.array([0.0])
+                    elif breakPower<0.0:
 
-                        elif breakPower>0.0:
-                            TidalFrequencyBreaks=numpy.array([2*numpy.pi])
-                            TidalFrequencyPowers=numpy.array([breakPower,breakPower])
+                        #Calculate reference frequency
+                        logQMax=4.0
+                        PhaseLagMax=phase_lag(logQMax)
+                        logQ1=q
+                        PhaseLag1=phase_lag(logQ1)
+                        omega1=2*numpy.pi
+                        omegaRef=omega1*((PhaseLagMax/PhaseLag1)**(1.0/breakPower))
 
-                        elif breakPower<0.0:
+                        #set logQ to logQMax and define logQ1 parameter
+                        parameters['logQ1']=q
+                        q=logQMax
 
-                            #Calculate reference frequency
-                            logQMax=4.0
-                            PhaseLagMax=phase_lag(logQMax)
-                            logQ1=q
-                            PhaseLag1=phase_lag(logQ1)
-                            omega1=2*numpy.pi
-                            omegaRef=omega1*((PhaseLagMax/PhaseLag1)**(1.0/breakPower))
+                        TidalFrequencyBreaks=numpy.array([omegaRef])
+                        TidalFrequencyPowers=numpy.array([0.0,breakPower])
 
-                            #set logQ to logQMax and define logQ1 parameter
-                            parameters['logQ1']=q
-                            q=logQMax
+                    parameters['breakPower']=breakPower
+                    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+                    parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
-                            TidalFrequencyBreaks=numpy.array([omegaRef])
-                            TidalFrequencyPowers=numpy.array([0.0,breakPower])
+                    print('parameters:', parameters)
 
-                        parameters['breakPower']=breakPower
-                        parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
-                        parameters['tidal_frequency_powers']=TidalFrequencyPowers
+                    print('\n\nCalculating for logQ = ', q)
+                    evolve = evolution(interpolator,parameters)
+                    evolve(q,option=1)
 
-                        print('parameters:', parameters)
-
-                        print('\n\nCalculating for logQ = ', q)
-                        evolve = evolution(interpolator,parameters)
-                        evolve(q,spin_vs_logQ_file,option=1)
-
-                        end_time=time.time()
-                        print('--------%s seconds -------' %(end_time-start_time))
-                        print('--------%s minutes -------' %((end_time-start_time)/60))
-                        print('--------%s hours -------' %((end_time-start_time)/60))
-
-                    break
+                break
 
 
-                if parameters['FindCircularLimit']==True:
-
-                    e=scipy.nan
-                    q=6.1
-                    while numpy.isnan(e):
-                        print('\n\nCalculating for logQ = ', q)
-                        e=evolve(q,spin_vs_logQ_file,option=1)
-                        q=q+0.1
-
-
+    end_time=time.time()
+    print('--------%s seconds -------' %(end_time-start_time))
+    print('--------%s minutes -------' %((end_time-start_time)/60))
+    print('--------%s hours -------' %((end_time-start_time)/60))
 
 
 
