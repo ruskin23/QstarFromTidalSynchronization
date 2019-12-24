@@ -46,6 +46,7 @@ class MetropolisHastings:
                 'current_spin',
                 'delta_e',
                 'delta_p',
+                'bad_solution_flag',
                 'gsl_flag'
                ]
 
@@ -156,6 +157,7 @@ class MetropolisHastings:
                 current_spin=pickle.load(f)
                 delta_e=pickle.load(f)
                 delta_p=pickle.load(f)
+                bad_solution=pickle.load(f)
                 gsl_flag=pickle.load(f)
 
         with open(f_name, 'a', 1) as f:
@@ -181,6 +183,7 @@ class MetropolisHastings:
                     repr(current_spin)+'\t'+
                     repr(delta_e)+'\t'+
                     repr(delta_p)+'\t'+
+                    repr(bad_solution)+'\t'+
                     repr(gsl_flag)+
                     '\n')
 

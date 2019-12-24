@@ -186,6 +186,7 @@ class InitialConditionSolver:
         self.p_initial = 0
         self.initial_orbital_period_sol=None
         self.initial_eccentricity_sol=None
+        self.bad_solution=False
         self.gsl_flag=False
 
     def __call__(self, target, primary, secondary):
@@ -225,10 +226,6 @@ class InitialConditionSolver:
                 self.orbital_period=p
                 self.eccentricity=e
                 break
-                #if self.e_initial!=0:e=self.e_initial+0.0005
-                #else:e=e+0.0005
-                #if self.p_initial!=0:p=self.p_initial
-                #continue
 
         print(self.spin)
 
@@ -239,7 +236,9 @@ class InitialConditionSolver:
         else:
             self.initial_orbital_period_sol,self.initial_eccentricity_sol = sol.x
 
-        if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:self.spin=scipy.nan
+        if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:
+            self.bad_solution=True
+            self.spin=scipy.nan
 
         pickle_fname=self.output_directory+'solver_results_'+self.instance+'.pickle'
 
@@ -252,8 +251,9 @@ class InitialConditionSolver:
             pickle.dump(self.spin,f)
             pickle.dump(self.delta_p,f)
             pickle.dump(self.delta_e,f)
+            pickle.dump(self.bad_solution,f)
             pickle.dump(self.gsl_flag,f)
-        
+
         sys.stdout.flush()
         return self.spin
 
