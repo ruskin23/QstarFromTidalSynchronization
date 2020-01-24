@@ -37,23 +37,6 @@ import pickle
 
 class evolution:
 
-    def teff_and_logg(self):
-
-        radius=self.interpolator('radius',self.primary_mass,self.feh)
-        lum=self.interpolator('lum',self.primary_mass,self.feh)
-
-        T=TeffK(radius,lum)
-        G=LogGCGS(self.primary_mass,radius)
-
-        try:
-            teff=T(self.age)
-            logg=G(self.age)
-        except AssertionError:
-            teff=scipy.nan
-            logg=scipy.nan
-
-        self.model_parameters['teff']=teff
-        self.model_parameters['logg']=logg
 
     def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')):
         """Return a configured planet to use in the evolution."""
@@ -222,9 +205,9 @@ class evolution:
                            Wdisk=self.Wdisk,
                            eccentricity=self.eccentricity)
 
-        self.model_parameters['spin']=find_ic(target=target,
-                                             primary=primary,
-                                             secondary=secondary)
+        self.spin=find_ic(target=target,
+                          primary=primary,
+                          secondary=secondary)
 
 
 
@@ -232,4 +215,4 @@ class evolution:
         secondary.delete()
 
 
-        return self.model_parameters
+        return self.spin
