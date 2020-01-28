@@ -68,6 +68,7 @@ class MetropolisHastings:
     def posterior_probability(self,
                               parameter_set=None):
 
+
         model_calculations = evolution(self.interpolator,
                                        parameter_set,
                                        self.fixed_parameters,
@@ -76,30 +77,40 @@ class MetropolisHastings:
                                        self.output_directory
                                        )
 
-        self.model_parameters=model_calculations()
+        self.spin=model_calculations()
 
-        for key,value in self.model_parameters.items():
-            if numpy.isnan(value):return scipy.nan
+        if numpy.isnan(self.spin):return scipy.nan
 
-        print('Current Spin Value = ', self.model_parameters['spin'])
-        print('Teff Value = ', self.model_parameters['teff'])
-        print('logg Value =  ', self.model_parameters['logg'])
+        print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
 
         prior = 1.0
-        likelihood = 1.0
 
+        #Calclate Priors
         for key,value in self.sampling_parameters.items():
             if value['dist']=='Normal':
                 prior=prior*scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])
                 print('prior for {} = {}'.format(key,scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])))
+            if value['dist']=='Uniform':
+                if numpy.logical_or(parameter_set[key]<self.sampling_parameters[key]['min'],
+                                    parameter_set[key]>self.sampling_parameters[key]['max']):
+                    prior=0
+                    break
 
-        for key,value in self.model_parameters.items():
-            likelihood=likelihood*scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])
-            print('likelihood for {} = {}'.format(key,scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])))
-
-        print('likehood = ', likelihood)
+        #Calculate Likelihood
+        likelihood=scipy.stats.norm(self.observed_spin[key]['value'],self.observed_spin[key]['sigma']).pdf(self.spin[key])
+        print('likelihood = ', likelihood)
         sys.stdout.flush()
+
+        #Calculate Transition Probability
+        S=0
+        with open(self.sample_file,'r') as f:
+            for lines in f:
+                x=lines.split()
+                e=0
+                for key,value in self.sampling_parameters.items():
+                    if value['dist']=='Samples':
+                        e=e+(float())**2
 
         posterior = prior*likelihood
 
@@ -108,6 +119,7 @@ class MetropolisHastings:
 
     def check_acceptance(self):
         self.p_acceptance = self.proposed_posterior/self.current_posterior
+
         if self.p_acceptance > 1: self.isAccepted = True
         else:
             rand = numpy.random.random_sample()
@@ -118,14 +130,38 @@ class MetropolisHastings:
             sys.stdout.flush()
 
 
+    def propose_from_sample(self,key):
+
+
+        U=random.uniform(0, 1)
+
+        parameter_value=self.current_parameters[key]
+
+        with open(self.samples_file,'r') as f:
+            for lines in f:
+                x=lines.split()
+                sample_value=float(x[i])
+
+                distance=parameter_value-sample_value
+                modfied_mulitplicity=sample_value*exp(-(distance/
+                                                       self.sampling_parameters[key]['step'])**2)
+                modified_parameter=sample_value*modfied_mulitplicity
+
+                if modified_parameter>U:return sample_value
+                else:U=U-modified_multiplicity
+
     def values_proposed(self):
 
         proposed = dict()
 
         for key,value in self.sampling_parameters.items():
-            proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
+            if value['dist']=='Normal' or value['dist']=='Uniform':
+                proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
 
-        self.proposed_parameters = proposed
+            else:
+                propsed[key]=self.propose_from_sample(key)
+
+        self.proposed_parameters=proposed
 
 
     def write_output(self):
@@ -211,8 +247,16 @@ class MetropolisHastings:
         for key, value in self.sampling_parameters.items():
             if value['dist']=='Normal':
                 initial_parameters[key]=value['value']
-            if value['dist']=='Uniform':
-                initial_parameters[key]=numpy.random.uniform(low=value['min'],high=value['max'])
+
+        with  open(self.solution_file) as f:
+            next(f)
+            for lines in f:
+                at_system=x[0]
+                if at_system==self.system:
+                    initial_parameters['Wdisk']=4.1
+                    initial_parameters['primary_mass']=x[8]
+                    initial_parameters['age']=x[9]
+                    initial_parameters['feh']=x[10]
 
         print ('\nINITIAL PARAMETERS SET:')
         for key,value in initial_parameters.items():
@@ -354,6 +398,8 @@ class MetropolisHastings:
                  fixed_parameters,
                  observational_parameters,
                  catalog_file,
+                 solution_file,
+                 mass_age_teff_sample_file,
                  mass_ratio,
                  instance,
                  output_directory):
@@ -361,10 +407,13 @@ class MetropolisHastings:
         self.system=system_number
         self.interpolator=interpolator
         self.sampling_parameters=sampling_parameters
+        self.step_sizes=step_sizes
         self.fixed_parameters=fixed_parameters
         self.iteration_step=1
         self.mass_ratio=mass_ratio
         self.catalog_file=catalog_file
+        self.solution_file=solution_file
+        self.mass_age_teff_sample_file=mass_age_teff_sample_file
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()

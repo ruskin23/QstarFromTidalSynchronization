@@ -76,29 +76,22 @@ class MetropolisHastings:
                                        self.output_directory
                                        )
 
-        self.model_parameters=model_calculations()
+        self.spin=model_calculations()
 
-        for key,value in self.model_parameters.items():
-            if numpy.isnan(value):return scipy.nan
+        if numpy.isnan(self.spin:return scipy.nan
 
-        print('Current Spin Value = ', self.model_parameters['spin'])
-        print('Teff Value = ', self.model_parameters['teff'])
-        print('logg Value =  ', self.model_parameters['logg'])
+        print('Current Spin Value = ', self.pin
         sys.stdout.flush()
 
         prior = 1.0
-        likelihood = 1.0
 
         for key,value in self.sampling_parameters.items():
             if value['dist']=='Normal':
                 prior=prior*scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])
                 print('prior for {} = {}'.format(key,scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])))
 
-        for key,value in self.model_parameters.items():
-            likelihood=likelihood*scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])
-            print('likelihood for {} = {}'.format(key,scipy.stats.norm(self.observational_parameters[key]['value'],self.observational_parameters[key]['sigma']).pdf(self.model_parameters[key])))
-
-        print('likehood = ', likelihood)
+        likelihood=scipy.stats.norm(self.observed_spin[key]['value'],self.observed_spin[key]['sigma']).pdf(self.spin[key])
+        print('likelihood = ', likelihood)
         sys.stdout.flush()
 
         posterior = prior*likelihood
@@ -125,7 +118,16 @@ class MetropolisHastings:
         for key,value in self.sampling_parameters.items():
             proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
 
-        self.proposed_parameters = proposed
+        r=random.randint(1,100000)
+        with open(self.mass_age_teff_sample_file,'r') as f:
+              for i,lines in enumerate(f):
+                if i==r:
+                    proposed['primary_mass']=float(x[1])
+                    proposed['age']=float(x[2])
+                    proposed['feh']=float(x[3])
+                break
+
+        self.proposed_parameters=proposed
 
 
     def write_output(self):
@@ -211,8 +213,16 @@ class MetropolisHastings:
         for key, value in self.sampling_parameters.items():
             if value['dist']=='Normal':
                 initial_parameters[key]=value['value']
-            if value['dist']=='Uniform':
-                initial_parameters[key]=numpy.random.uniform(low=value['min'],high=value['max'])
+
+        with  open(self.solution_file) as f:
+            next(f)
+            for lines in f:
+                at_system=x[0]
+                if at_system==self.system:
+                    initial_parameters['Wdisk']=4.1
+                    initial_parameters['primary_mass']=x[8]
+                    initial_parameters['age']=x[9]
+                    initial_parameters['feh']=x[10]
 
         print ('\nINITIAL PARAMETERS SET:')
         for key,value in initial_parameters.items():
@@ -354,6 +364,8 @@ class MetropolisHastings:
                  fixed_parameters,
                  observational_parameters,
                  catalog_file,
+                 solution_file,
+                 mass_age_teff_sample_file,
                  mass_ratio,
                  instance,
                  output_directory):
@@ -365,6 +377,8 @@ class MetropolisHastings:
         self.iteration_step=1
         self.mass_ratio=mass_ratio
         self.catalog_file=catalog_file
+        self.solution_file=solution_file
+        self.mass_age_teff_sample_file=mass_age_teff_sample_file
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
