@@ -87,7 +87,7 @@ if __name__ == '__main__':
     instance = args.instance
     system_number=args.system
 
-    output_direcotry=current_directory+'/MCMC_'+system_number+'/'
+    if home_dir=='/home/rxp163130':output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
     if os.path.isdir(output_direcotry)==False:os.mkdir(output_direcotry)
 
     catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
