@@ -160,7 +160,7 @@ class evolution:
                             ):
             print('mass out of range')
             sys.stdout.flush()
-            return self.model_parameters
+            return scipy.nan
 
 
 
