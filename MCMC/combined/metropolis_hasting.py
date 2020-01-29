@@ -78,7 +78,6 @@ class MetropolisHastings:
                                        )
 
         self.spin=model_calculations()
-
         if numpy.isnan(self.spin):return scipy.nan
 
         print('Current Spin Value = ', self.spin)
@@ -98,21 +97,24 @@ class MetropolisHastings:
                     break
 
         #Calculate Likelihood
-        likelihood=scipy.stats.norm(self.observed_spin[key]['value'],self.observed_spin[key]['sigma']).pdf(self.spin[key])
+        print('observed Spin = ',self.observed_spin)
+        likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
         #Calculate Transition Probability
         S=0
-        with open(self.sample_file,'r') as f:
+        phi_N=[parameter_set[key]/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
+        with open(self.samples_file,'r') as f:
+            next(f)
             for lines in f:
                 x=lines.split()
-                e=0
-                for key,value in self.sampling_parameters.items():
-                    if value['dist']=='Samples':
-                        e=e+(float())**2
+                phi_i=[float(x[self.sampled_keys.index(key)])/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
+                arg=numpy.subtract(phi_N,phi_i)
+                S=S+numpy.exp(-float(x[3])*numpy.dot(arg,arg))
 
-        posterior = prior*likelihood
+        print('Transition Probability = ', S)
+        posterior = prior*likelihood*S
 
         return posterior
 
@@ -132,23 +134,22 @@ class MetropolisHastings:
 
     def propose_from_sample(self,key):
 
-
         U=random.uniform(0, 1)
-
         parameter_value=self.current_parameters[key]
-
         with open(self.samples_file,'r') as f:
+            next(f)
             for lines in f:
                 x=lines.split()
-                sample_value=float(x[i])
+                sample_value=float(x[self.sampled_keys.index(key)])
+                mulitplicity=float(x[3])
 
                 distance=parameter_value-sample_value
-                modfied_mulitplicity=sample_value*exp(-(distance/
+                modified_mulitplicity=mulitplicity*numpy.exp(-(distance/
                                                        self.sampling_parameters[key]['step'])**2)
-                modified_parameter=sample_value*modfied_mulitplicity
-
+                modified_parameter=sample_value*modified_mulitplicity
                 if modified_parameter>U:return sample_value
-                else:U=U-modified_multiplicity
+                else:
+                    U=U-modified_mulitplicity
 
     def values_proposed(self):
 
@@ -159,7 +160,7 @@ class MetropolisHastings:
                 proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
 
             else:
-                propsed[key]=self.propose_from_sample(key)
+                proposed[key]=self.propose_from_sample(key)
 
         self.proposed_parameters=proposed
 
@@ -245,18 +246,15 @@ class MetropolisHastings:
         initial_parameters=dict()
 
         for key, value in self.sampling_parameters.items():
-            if value['dist']=='Normal':
-                initial_parameters[key]=value['value']
+            initial_parameters[key]=value['value']
 
         with  open(self.solution_file) as f:
             next(f)
             for lines in f:
+                x=lines.split()
                 at_system=x[0]
                 if at_system==self.system:
-                    initial_parameters['Wdisk']=4.1
-                    initial_parameters['primary_mass']=x[8]
-                    initial_parameters['age']=x[9]
-                    initial_parameters['feh']=x[10]
+                    initial_parameters['logQ']=float(x[1])
 
         print ('\nINITIAL PARAMETERS SET:')
         for key,value in initial_parameters.items():
@@ -396,10 +394,10 @@ class MetropolisHastings:
                  interpolator,
                  sampling_parameters,
                  fixed_parameters,
-                 observational_parameters,
+                 observed_spin,
                  catalog_file,
                  solution_file,
-                 mass_age_teff_sample_file,
+                 samples_file,
                  mass_ratio,
                  instance,
                  output_directory):
@@ -407,20 +405,22 @@ class MetropolisHastings:
         self.system=system_number
         self.interpolator=interpolator
         self.sampling_parameters=sampling_parameters
-        self.step_sizes=step_sizes
         self.fixed_parameters=fixed_parameters
         self.iteration_step=1
         self.mass_ratio=mass_ratio
         self.catalog_file=catalog_file
         self.solution_file=solution_file
-        self.mass_age_teff_sample_file=mass_age_teff_sample_file
+        self.samples_file=samples_file
+
+        self.sampled_keys=[]
+        for key,value in self.sampling_parameters.items():
+            if value['dist']=='Samples':self.sampled_keys.append(key)
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
 
         self.isAccepted = None
-        self.observational_parameters = observational_parameters
-
+        self.observed_spin=observed_spin
         self.check_age_neg = None
 
         self.proposed_posterior = 0.0

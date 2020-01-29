@@ -160,15 +160,8 @@ class evolution:
                             ):
             print('mass out of range')
             sys.stdout.flush()
-            for key in ['teff','logg','spin']:
-                self.model_parameters[key]=scipy.nan
-                return self.model_parameters
+            return self.model_parameters
 
-        self.teff_and_logg()
-        for key,value in self.model_parameters.items():
-            if numpy.isnan(value):
-                print('Maximum age error')
-                return self.model_parameters
 
 
         star = self.create_star(self.secondary_mass,1)

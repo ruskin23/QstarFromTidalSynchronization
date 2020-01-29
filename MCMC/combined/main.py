@@ -9,7 +9,7 @@ import os.path
 from pathlib import Path
 home_dir=str(Path.home())
 
-git_dir='/QstarFromTidalSynchronization/MCMC/general'
+git_dir='/QstarFromTidalSynchronization/MCMC/combined'
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
     solution_file=current_directory+'/SolutionFileBreaks0.0.txt'
-    mass_age_feh_file=samples_directory+'/MassAgeFehSamples_'+system_number+'.txt'
+    samples_file=samples_directory+'/MassAgeFehSamples_'+system_number+'.txt'
     stepfilename = output_direcotry+'step_file_'+args.instance+'.txt'
 
     with open(catalog_file,'r') as f:
@@ -108,6 +108,9 @@ if __name__ == '__main__':
                 Pspin_value=float(x[12])
                 Pspin_error=float(x[13])
                 mass_ratio=float(x[14])
+                primary_mass_value=float(x[15])
+                age_value=float(x[16])
+                feh_value=float(x[17])
                 break
 
 
@@ -118,40 +121,47 @@ if __name__ == '__main__':
             at_system=x[0]
             if system_number==at_system:
                 logQ_value=float(x[1])
-                primary_mass_value=float(x[])
-                age_value=float(x[])
-                feh_value=float(x[])
                 break
 
     sampling_parameters=dict(Porb=dict(value=Porb_value,
                                        sigma=Porb_error,
                                        dist='Normal',
-                                       step=Porb_error)
+                                       step=Porb_error),
+
                              eccentricity=dict(value=eccentricity_value,
                                                sigma=eccentricity_error,
                                                dist='Normal',
-                                               step=eccentricity_error)
-                             Wdisk=dict(min=2*scipy.pi/14,
+                                               step=eccentricity_error),
+
+                             Wdisk=dict(value=4.1,
+                                        min=2*scipy.pi/14,
                                         max=2*scipy.pi/1.4,
                                         dist='Uniform',
-                                        step=0.1)
+                                        step=0.1),
+
                              logQ=dict(value=logQ_value,
+                                       min=5.0,
+                                       max=12.0,
                                        dist='Uniform',
-                                       step=0.5)
+                                       step=0.5),
+
                              primary_mass=dict(value=primary_mass_value,
                                                dist='Samples',
-                                               step=0.1)
+                                               step=0.1),
+
                              age=dict(value=age_value,
                                       dist='Samples',
-                                      step=0.5)
+                                      step=0.5),
+
                              feh=dict(value=feh_value,
                                       dist='Samples',
                                       step=0.1)
+
                              )
 
 
     observed_spin=dict(value=Pspin_value,
-                       sigma=Pspin_error)                                              )
+                       sigma=Pspin_error)
 
     fixed_parameters = dict(disk_dissipation_age=5e-3,
                             planet_formation_age=5e-3,
@@ -174,10 +184,10 @@ mcmc = MetropolisHastings(system_number,
                           interpolator,
                           sampling_parameters,
                           fixed_parameters,
-                          observational_parameters,
+                          observed_spin,
                           catalog_file,
                           solution_file,
-                          mass_age_feh_file,
+                          samples_file,
                           mass_ratio,
                           instance,
                           output_direcotry)
