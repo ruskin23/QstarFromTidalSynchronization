@@ -1,10 +1,20 @@
-from attributedict.collections import AttributeDict
+import scipy
+from scipy.stats import norm
 
-parameters=dict(a=dict(value=10,sigma=12),
-                b=dict(value=13,sigma=15),
-                c=123123)
+import numpy
+import matplolib.pyplot as plt
 
 
-#p=AttributeDict({'foo': {'bar': [1, 2, 3]}})
-p=AttributeDict(parameters)
-print(p.c)
+
+parameter=dict(value=1.0,
+        sigma=0.5)
+
+a=[]
+for i in range(10000):
+    a.append(scipy.stats.norm.rvs(loc=parameters['value'],scale=parameters['sigma']))
+
+x=numpy.linspace(-0.01,0.01,len(a))
+
+plt.plot(x,a)
+pltshow()
+

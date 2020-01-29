@@ -39,6 +39,8 @@ class MetropolisHastings:
             header.append(key)
 
         ext = [ 'secondary_mass',
+                'posterior_probability',
+                'acceptance_ratio',
                 'inital_orbital_period',
                 'initial_eccentricity',
                 'current_orbital_period',
@@ -204,12 +206,16 @@ class MetropolisHastings:
             if self.iteration_step==1:
                 for key, value in self.current_parameters.items():
                     f.write('%s\t' % value)
-                f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t')
+                f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t'+
+                        repr(self.current_posterior)+'\t'+
+                        repr(self.p_acceptance)+'\t')
 
             else:
                 for key, value in self.proposed_parameters.items():
                     f.write('%s\t' % value)
-                f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+                f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t'+
+                        repr(self.proposed_posterior)+'\t'+
+                        repr(self.p_acceptance)+'\t')
 
             if os.path.isfile(load_solver_file) == True:
                 f.write(
@@ -376,13 +382,13 @@ class MetropolisHastings:
                 step = row
         self.iteration_step = int(step[0]) + 1
 
-        self.current_parameters['primary_mass'] = float(array[1])
-        self.current_parameters['age'] = float(array[2])
-        self.current_parameters['feh'] = float(array[3])
-        self.current_parameters['Porb'] = float(array[4])
-        self.current_parameters['eccentricity'] = float(array[5])
-        self.current_parameters['Wdisk'] = float(array[6])
-        self.current_parameters['logQ'] = float(array[7])
+        self.current_parameters['primary_mass'] = float(array[5])
+        self.current_parameters['age'] = float(array[6])
+        self.current_parameters['feh'] = float(array[7])
+        self.current_parameters['Porb'] = float(array[1])
+        self.current_parameters['eccentricity'] = float(array[2])
+        self.current_parameters['Wdisk'] = float(array[3])
+        self.current_parameters['logQ'] = float(array[4])
 
         if self.current_file_exist: self.current_posterior = float(array[9])
         else : self.current_posterior = self.posterior_probability(self.current_parameters)
