@@ -1,8 +1,0 @@
-/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
-  'storage.' % (dialect.name, dialect.driver))
-/usr/local/lib/python3.6/dist-packages/sqlalchemy/sql/sqltypes.py:603: SAWarning: Dialect sqlite+pysqlite does *not* support Decimal objects natively, and SQLAlchemy must convert from floating point - rounding errors and other issues may occur. Please consider storing Decimal numbers as strings or integers on this platform for lossless storage.
-  'storage.' % (dialect.name, dialect.driver))
-usage: main.py [-h] [-s] [-c] [-i INSTANCE] [-l SYSTEM] [-b BREAKS]
-main.py: error: argument -i: expected one argument
-usage: main.py [-h] [-s] [-c] [-i INSTANCE] [-l SYSTEM] [-b BREAKS]
-main.py: error: argument -i: expected one argument
