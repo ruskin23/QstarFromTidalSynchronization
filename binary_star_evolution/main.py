@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 
 import numpy
 import argparse
@@ -55,14 +55,14 @@ if __name__=='__main__':
 
 
     parameters['system']=system
-    parameters['primary_mass']=0.9654755537291438
-    parameters['secondary_mass']= 0.8058824446977164
-    parameters['age']=3.85637152328439
-    parameters['feh']=0.0890714690959666
-    parameters['PorbInitial']= 17.09668292
-    parameters['EccentricityInitial']= 0.24893609
-    parameters['PorbCurrent']=17.09668292
-    parameters['EccentricityCurrent']=0.24893609
+    parameters['primary_mass']=0.545822492469885
+    parameters['secondary_mass']= 0.4290164790813296
+    #parameters['age']=2.865279224238208
+    parameters['feh']=-0.9286157087094026
+    parameters['PorbInitial']= PorbCurrent
+    parameters['EccentricityInitial']=EccentricityCurrent
+    parameters['PorbCurrent']=PorbCurrent
+    parameters['EccentricityCurrent']=EccentricityCurrent
 
     parameters['PspinCurrent']=PspinCurrent
 
@@ -97,45 +97,66 @@ if __name__=='__main__':
 
     #parameters['logQ']=logQ1
 
-    #for key,value in parameters.items():
-    #    print("{} = {}".format(key,value))
-
     #q=[5.0,6.0,7.0,8.0,9.0]
-    q=[7.0]
+    q=[5.0]
 
-    for logQ1 in q:
-        result=dict()
-        if args.breaks:
+    ages=[0.1,0.5,1.0]
 
-            alpha=-1.0
+    for age in ages:
+        parameters['age']=age
 
-            logQMax=4.0
-            phase_lagMax=phase_lag(logQMax)
-            phase_lag1=phase_lag(logQ1)
-            omegaref1=2*numpy.pi
+        for key,value in parameters.items():
+            print("{} = {}".format(key,value))
 
-            omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+        for logQ1 in q:
+            result=dict()
+            if args.breaks:
 
-            TidalFrequencyBreaks=numpy.array([omegaref])
-            TidalFrequencyPowers=numpy.array([0,alpha])
-            parameters['breaks']=True
-            parameters['logQ']=logQMax
-        else:
-            TidalFrequencyBreaks=None
-            TidalFrequencyPowers=numpy.array([0.0])
-            parameters['breaks']=False
-            parameters['logQ']=logQ1
+                alpha=-1.0
 
-        parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
-        parameters['tidal_frequency_powers']=TidalFrequencyPowers
+                logQMax=4.0
+                phase_lagMax=phase_lag(logQMax)
+                phase_lag1=phase_lag(logQ1)
+                omegaref1=2*numpy.pi
 
-        print(TidalFrequencyBreaks)
+                omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
 
-        evolve=Evolution(interpolator,parameters)
-        result=evolve()
+                TidalFrequencyBreaks=numpy.array([omegaref])
+                TidalFrequencyPowers=numpy.array([0,alpha])
+                parameters['breaks']=True
+                parameters['logQ']=logQMax
+            else:
+                TidalFrequencyBreaks=None
+                TidalFrequencyPowers=numpy.array([0.0])
+                parameters['breaks']=False
+                parameters['logQ']=logQ1
+
+            parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+            parameters['tidal_frequency_powers']=TidalFrequencyPowers
+
+            print(TidalFrequencyBreaks)
+
+            evolve=Evolution(interpolator,parameters)
+            final_values,frequencies=evolve()
+
+        observed_spin_frquency=(2*numpy.pi/PspinCurrent)/wsun
+        calculated_spin_frequencies=frequencies['wenv_primary']
+        spin_diff=calculated_spin_frequencies-observed_spin_frquency
+
+        print('Observed Spin = ',observed_spin_frquency)
+        print('Caclulated Spin Frequency = ', calculated_spin_frequencies)
+        print('Spin Diff = ', spin_diff)
+
+
+        zero_crossing=numpy.where(numpy.diff(numpy.sign(spin_diff)))[0]
+
+        print('Zero Crossing = ', zero_crossing)
+
+        print(calculated_spin_frequencies[zero_crossing])
+        print(frequencies['age'][zero_crossing])
+
 
     #checking phase lag bechaviour with tidal frequency:
-    print(result)
     #phaseLag=[]
     #for omega in result['tidal_frequency']:
     #    phaseLag.append(phase_lagMax*(omegaref/omega))

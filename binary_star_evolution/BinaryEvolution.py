@@ -110,31 +110,30 @@ class Evolution:
 
 
     def plot_evolution(self,
-                       Frequencies,
                        wsat):
         """plot the evolution of a properly constructed binary."""
 
         PlotKey=str(self.parameters[self.plot_key])
 
-        if self.plot_primary_envelope==True:pyplot.semilogx(Frequencies['age'],
-                                                            Frequencies['wenv_primary'],
+        if self.plot_primary_envelope==True:pyplot.semilogx(self.Frequencies['age'],
+                                                            self.Frequencies['wenv_primary'],
                                                             color=self.plot_color,
                                                             label='PrimaryEnvelope_'+self.plot_key+'_'+PlotKey)
 
-        if self.plot_secondary_envelope==True:pyplot.semilogx(Frequencies['age'],
-                                                            Frequencies['wenv_secondary'],
+        if self.plot_secondary_envelope==True:pyplot.semilogx(self.Frequencies['age'],
+                                                            self.Frequencies['wenv_secondary'],
                                                             color=self.plot_color,
                                                             linestyle=':',
                                                             label='SecondaryEnvelope_logQ'+self.plot_key+'_'+PlotKey)
 
-        if self.plot_primary_core==True:pyplot.semilogx(Frequencies['age'],
-                                                        Frequencies['wcore_primary'],
+        if self.plot_primary_core==True:pyplot.semilogx(self.Frequencies['age'],
+                                                        self.Frequencies['wcore_primary'],
                                                         color="b",
                                                         linestyle='--',
                                                         label='PrimaryCore_logQ'+self.plot_key+'_'+PlotKey)
 
-        if self.plot_secondary_core==True:pyplot.semilogx(Frequencies['age'],
-                                                          Frequencies['wcore_secondary'],
+        if self.plot_secondary_core==True:pyplot.semilogx(self.Frequencies['age'],
+                                                          self.Frequencies['wcore_secondary'],
                                                           color="r",linestyle='--',
                                                           label='SecondaryCore_logQ'+self.plot_key+'_'+PlotKey)
 
@@ -164,13 +163,12 @@ class Evolution:
 
         print('Final Pspin = ', Solutions['spin'])
 
-        Frequencies=dict()
+
+        with shelve.open('InitialConditionsFrequencies.shelve','r') as F:
+            for key,value in F.items():
+                self.Frequencies[key]=value
 
         if self.plot==True:
-            with shelve.open('InitialConditionsFrequencies.shelve','r') as F:
-                for key,value in F.items():
-                    Frequencies[key]=value
-
             self.plot_evolution(Frequencies,2.54)
 
     def evolve_binary(self,
@@ -219,41 +217,36 @@ class Evolution:
         self.FinalValues['Eccentricity']=EccFinal
         self.FinalValues['Spin']=spin
 
-        Frequencies=dict()
-
-        Frequencies['age']=evolution.age
-        Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
-        Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
-        Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
-        Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
-        Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
+        self.Frequencies['age']=evolution.age
+        self.Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
+        self.Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
+        self.Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
+        self.Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
+        self.Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
 
         tidal_frequency=[]
         for orbf,spinf in zip(Frequencies['orbitalfrequncy'],Frequencies['wenv_primary']):
             tidal_frequency.append(abs(2*(orbf-spinf)))
-        Frequencies['tidal_frequency']=tidal_frequency
+        self.Frequencies['tidal_frequency']=tidal_frequency
 
-        self.FinalValues['tidal_frequency']=tidal_frequency
 
 
         if  self.plot==True:
 
-            Frequencies=dict()
-
-            pyplot.semilogx(Frequencies['age'],
-                          Frequencies['orbitalfrequncy'],
+            pyplot.semilogx(self.Frequencies['age'],
+                          self.Frequencies['orbitalfrequncy'],
                           color=self.plot_color,
                           linestyle='--',
                           label='orbitalfrequncy'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
 
 
-            pyplot.semilogx(Frequencies['age'],
-                            Frequencies['tidal_frequency'],
-                            color=self.plot_color,
-                            linestyle='-.',
-                            label='tidal_frequency'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
+            #pyplot.semilogx(Frequencies['age'],
+            #                Frequencies['tidal_frequency'],
+            #                color=self.plot_color,
+            #                linestyle='-.',
+            #                label='tidal_frequency'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
 
-            self.plot_evolution(Frequencies,2.54)
+            self.plot_evolution(2.54)
 
 
     def __call__(self):
@@ -268,14 +261,15 @@ class Evolution:
             self.evolve_binary(primary,
                                secondary,
                                SecondaryAngmom)
-            if self.ReturnResutls==True:
-                return self.FinalValues
 
 
-        if self.GetInitialCondtion==True:self.calculate_intial_conditions(primary,
-                                                                          secondary,
-                                                                          SecondaryAngmom)
+        if self.GetInitialCondtion==True:
+            self.calculate_intial_conditions(primary,
+                                             secondary,
+                                             SecondaryAngmom)
 
+        if self.ReturnResutls==True:
+                return self.FinalValues,self.Frequencies
 
     def __init__(self,
                  interpolator,
@@ -287,7 +281,7 @@ class Evolution:
             setattr(self,item,value)
 
         self.FinalValues=dict()
-
+        self.Frequencies=dict()
         self.convective_phase_lag=phase_lag(self.logQ)
         print('Convective Phase lag = ',self.convective_phase_lag)
 

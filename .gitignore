@@ -5,6 +5,7 @@
 /MCMC/output*
 *.txt
 *.pickle
+*.out
 
 #vim swap files
 .*.swp

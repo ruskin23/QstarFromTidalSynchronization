@@ -157,15 +157,19 @@ def SearchSolution(SystemDict):
                                      PrimaryMass,
                                      Age)
                     elif abs(PspinValues[0]-Porb)<0.01:
-                        print('Limit for = ', key)
-                        FindSynchronizationLimit(key,
-                                                 logQValues,
-                                                 PspinValues,
-                                                 PspinObserved,
-                                                 PspinError,
-                                                 Porb,
-                                                 PrimaryMass,
-                                                 Age)
+                        if numpy.logical_and(Porb>PspinObserved-PspinError,
+                                             Porb<PspinObserved+PspinError):
+                            print('Limit for = ', key)
+                            FindSynchronizationLimit(key,
+                                                     logQValues,
+                                                     PspinValues,
+                                                     PspinObserved,
+                                                     PspinError,
+                                                     Porb,
+                                                     PrimaryMass,
+                                                     Age)
+                        else:
+                            print('System Number: ', key)
                     else:
                         print('No Solution for : ', key)
                     break
@@ -186,9 +190,9 @@ for s in systems:
     number=str(s)
     lgq=[]
     spin=[]
-    print('For System = ',s)
     if s=='35':continue
     with open('break'+breakPower+'/SpinLogQ_'+s+'.txt','r') as f:
+        if s=='59':print('Found system 59')
         for i,lines in enumerate(f):
             x=lines.split()
             if x[0]=='logQ':continue
@@ -203,5 +207,5 @@ for s in systems:
         SystemDict[number]['logQ']=lgq
         SystemDict[number]['spin']=spin
 
-
+print(SystemDict['59'])
 SearchSolution(SystemDict)
