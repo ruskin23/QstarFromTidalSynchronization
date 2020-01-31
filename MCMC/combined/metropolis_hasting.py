@@ -79,10 +79,10 @@ class MetropolisHastings:
                                        self.output_directory
                                        )
 
-        #self.spin=model_calculations()
-        #if numpy.isnan(self.spin):return scipy.nan
+        self.spin=model_calculations()
+        if numpy.isnan(self.spin):return scipy.nan
 
-        #print('Current Spin Value = ', self.spin)
+        print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
 
         prior = 1.0
@@ -100,8 +100,7 @@ class MetropolisHastings:
 
         #Calculate Likelihood
         print('observed Spin = ',self.observed_spin)
-        #likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
-        likelihood=1
+        likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
@@ -139,9 +138,6 @@ class MetropolisHastings:
 
         U=random.uniform(0, 1)
         parameter_value=self.current_parameters[key]
-        if key=='primary_mass':
-            print('Random Number generated = ',U)
-            print('Mass value from current parameters = ',parameter_value )
 
         N=0
         with open(self.samples_file,'r') as f:
@@ -166,10 +162,6 @@ class MetropolisHastings:
                 modified_mulitplicity=(mulitplicity*numpy.exp(-(distance/
                                                        self.sampling_parameters[key]['step'])**2))/N
                 modified_parameter=sample_value*modified_mulitplicity
-                if key=='primary_mass':
-                    print('Sample Value = ',sample_value)
-                    print('mulitplicity = ',mulitplicity)
-                    print('modified_mulitplicity = ', modified_mulitplicity)
                 if modified_mulitplicity>U:return sample_value
                 else:
                     U=U-modified_mulitplicity
