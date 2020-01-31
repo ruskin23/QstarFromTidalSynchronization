@@ -94,6 +94,7 @@ if __name__ == '__main__':
     system_number=args.system
 
     if home_dir=='/home/rxp163130':output_directory=current_directory+'/ganymede/MCMC_'+system_number+'/'
+    if home_dir=='/home/ruskin':output_directory=current_directory+'/kartof/MCMC_'+system_number+'/'
     if home_dir=='/home1/06850/rpatel23':output_directory=current_directory+'/stampede2/MCMC_'+system_number+'/'
     if os.path.isdir(output_directory)==False:os.mkdir(output_directory)
 
@@ -154,15 +155,15 @@ if __name__ == '__main__':
 
                              primary_mass=dict(value=primary_mass_value,
                                                dist='Samples',
-                                               step=0.1),
+                                               step=1.0),
 
                              age=dict(value=age_value,
                                       dist='Samples',
-                                      step=0.5),
+                                      step=1.0),
 
                              feh=dict(value=feh_value,
                                       dist='Samples',
-                                      step=0.1)
+                                      step=0.3)
 
                              )
 
