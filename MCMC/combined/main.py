@@ -78,7 +78,7 @@ def cmdline_args():
 
 if __name__ == '__main__':
 
-    serialized_dir = poet_path +  "stellar_evolution_interpolators"
+    serialized_dir = poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -93,14 +93,14 @@ if __name__ == '__main__':
     instance = args.instance
     system_number=args.system
 
-    if home_dir=='/home/rxp163130':output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
-    if home_dir=='/home1/06850/rpatel23':current_directoy+'stampede2/MCMC_'+system_number+'/'
-    if os.path.isdir(output_direcotry)==False:os.mkdir(output_direcotry)
+    if home_dir=='/home/rxp163130':output_directory=current_directory+'/ganymede/MCMC_'+system_number+'/'
+    if home_dir=='/home1/06850/rpatel23':output_directory=current_directory+'/stampede2/MCMC_'+system_number+'/'
+    if os.path.isdir(output_directory)==False:os.mkdir(output_directory)
 
     catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
     solution_file=current_directory+'/SolutionFileBreaks0.0.txt'
     samples_file=samples_directory+'/MassAgeFehSamples_'+system_number+'.txt'
-    stepfilename = output_direcotry+'step_file_'+args.instance+'.txt'
+    stepfilename = output_directory+'step_file_'+args.instance+'.txt'
 
     with open(catalog_file,'r') as f:
         next(f)
@@ -197,7 +197,7 @@ mcmc = MetropolisHastings(system_number,
                           samples_file,
                           mass_ratio,
                           instance,
-                          output_direcotry)
+                          output_directory)
 
 sys.stdout.flush()
 if args.start: mcmc.iterations()

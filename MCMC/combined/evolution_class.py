@@ -9,6 +9,9 @@ if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet'
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet'
+if home_dir=='/home1/06850/rpatel23':
+    work_dir='/work/06850/rpatel23/stampede2'
+    poet_path=work_dir+'/poet'
 
 sys.path.append(poet_path+'/PythonPackage')
 sys.path.append(poet_path+'/scripts')
