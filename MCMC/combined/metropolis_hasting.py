@@ -79,10 +79,10 @@ class MetropolisHastings:
                                        self.output_directory
                                        )
 
-        self.spin=model_calculations()
-        if numpy.isnan(self.spin):return scipy.nan
+        #self.spin=model_calculations()
+        #if numpy.isnan(self.spin):return scipy.nan
 
-        print('Current Spin Value = ', self.spin)
+        #print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
 
         prior = 1.0
@@ -100,23 +100,25 @@ class MetropolisHastings:
 
         #Calculate Likelihood
         print('observed Spin = ',self.observed_spin)
-        likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
+        likelihood=1.0
+        #likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
         #Calculate Transition Probability
         S=0
         phi_N=[parameter_set[key]/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
+
         with open(self.samples_file,'r') as f:
             next(f)
             for lines in f:
                 x=lines.split()
                 phi_i=[float(x[self.sampled_keys.index(key)])/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
                 arg=numpy.subtract(phi_N,phi_i)
-                S=S+numpy.exp(-float(x[3])*numpy.dot(arg,arg))
+                S=S+float(x[3])*numpy.exp(-numpy.dot(arg,arg)/2)
 
         print('Transition Probability = ', S)
-        posterior = prior*likelihood*S
+        posterior = (prior*likelihood)/S
 
         return posterior
 
@@ -134,37 +136,105 @@ class MetropolisHastings:
             sys.stdout.flush()
 
 
-    def propose_from_sample(self,key):
+    def propose_from_samples(self):
 
-        U=random.uniform(0, 1)
-        parameter_value=self.current_parameters[key]
 
         N=0
+
+        mass_current=self.current_parameters['primary_mass']
+        age_current=self.current_parameters['age']
+        feh_current=self.current_parameters['feh']
+
+        mass_step=self.sampled_parameters['primary_mass']['step']
+        age_step=self.sampling_parameters['age']['step']
+        feh_step=self.sampling_parameters['feh']['step']
+
         with open(self.samples_file,'r') as f:
             next(f)
             for lines in f:
                 x=lines.split()
-                sample_value=float(x[self.sampled_keys.index(key)])
+                mass_sample=float(x[0])
+                age_sample=float(x[1])
+                feh_sample=float(x[2])
+
                 mulitplicity=float(x[3])
-                distance=parameter_value-sample_value
-                modified_mulitplicity=mulitplicity*numpy.exp(-(distance/
-                                                       self.sampling_parameters[key]['step'])**2)
+
+                mass_diff=mass_sample-mass_current
+                age_diff=age_sample-age_current
+                feh_diff=feh_sample-feh_current
+
+                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
+
+                modified_mulitplicity = mulitplicity * ( numpy.exp( - ( arg  )  )  )
+
                 N=N+modified_mulitplicity
 
+
+        U=random.uniform(0, 1)
+
         with open(self.samples_file,'r') as f:
             next(f)
             for lines in f:
                 x=lines.split()
-                sample_value=float(x[self.sampled_keys.index(key)])
+                parameters=[float(x[0]),float(x[1]),float(x[2])]
+
+                x=lines.split()
+                mass_sample=float(x[0])
+                age_sample=float(x[1])
+                feh_sample=float(x[2])
+
                 mulitplicity=float(x[3])
 
-                distance=parameter_value-sample_value
-                modified_mulitplicity=(mulitplicity*numpy.exp(-(distance/
-                                                       self.sampling_parameters[key]['step'])**2))/N
-                modified_parameter=sample_value*modified_mulitplicity
-                if modified_mulitplicity>U:return sample_value
-                else:
-                    U=U-modified_mulitplicity
+                mass_diff=mass_sample-mass_current
+                age_diff=age_sample-age_current
+                feh_diff=feh_sample-feh_current
+
+                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
+
+                modified_mulitplicity = mulitplicity * ((numpy.exp(-(arg))))/N
+
+                print('MM = ', modified_mulitplicity)
+                print('U = ', U)
+
+
+                if modified_mulitplicity>U:
+                    return parameters
+                else: U=U-modified_mulitplicity
+
+        """
+        N=0
+        current_values=[self.current_parameters[key]/self.sampled_parameters[key]['step'] for key in
+                        self.sampled_keys]
+
+        print('\nCurrent Values = ', current_values)
+        SampleSet=[]
+        MM=[]
+
+        with open(self.samples_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+
+                sample_set=[float(x[self.sampled_keys.index(key)]) for key in self.sampled_keys]
+                sample_values=[float(x[self.sampled_keys.index(key)])/self.sampled_parameters[key]['step'] for key in
+                        self.sampled_keys]
+
+
+                mulitplicity=float(x[3])
+                distance=numpy.subtract(sample_values,current_values)
+                arg=numpy.dot(distance,distance)
+                modified_mulitplicity=mulitplicity*numpy.exp(-arg)
+                N=N+modified_mulitplicity
+
+                MM.append(modified_mulitplicity)
+                SampleSet.append(sample_set)
+
+        U=random.uniform(0, 1)
+        for s,mm in zip(SampleSet,MM):
+            mm=mm/N
+            if mm>U:return s
+            else:U=U-mm
+        """
 
     def values_proposed(self):
 
@@ -174,11 +244,18 @@ class MetropolisHastings:
             if value['dist']=='Normal' or value['dist']=='Uniform':
                 proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
 
-            else:
-                proposed[key]=self.propose_from_sample(key)
+
+        s=self.propose_from_samples()
+
+        proposed['primary_mass']=s[0]
+        proposed['age']=s[1]
+        proposed['feh']=s[2]
+
+        for index,key in enumerate(self.sampled_keys):
+            proposed[key]=s[index]
+
 
         self.proposed_parameters=proposed
-
 
     def write_output(self):
 
@@ -321,27 +398,6 @@ class MetropolisHastings:
             print ('\nPROPOSED VALUES')
             print (self.proposed_parameters)
             sys.stdout.flush()
-            if self.proposed_parameters['age']<0 or self.proposed_parameters['age']>10:
-                self.isAccepted=False
-                self.write_output()
-                self.iteration_step=self.iteration_step+1
-                print('age out of range')
-                sys.stdout.flush()
-                continue
-            if self.proposed_parameters['primary_mass']<0.4 or self.proposed_parameters['primary_mass']>1.2:
-                self.isAccepted=False
-                self.write_output()
-                self.iteration_step=self.iteration_step+1
-                print('Mass out of range')
-                sys.stdout.flush()
-                continue
-            if self.proposed_parameters['feh']<-1.014 or self.proposed_parameters['feh']>0.537:
-                self.isAccepted = False
-                self.write_output()
-                self.iteration_step = self.iteration_step + 1
-                print('feh value out of range')
-                sys.stdout.flush()
-                continue
             if self.proposed_parameters['eccentricity']<0:
                 self.isAccepted = False
                 self.write_output()
@@ -373,7 +429,9 @@ class MetropolisHastings:
             self.write_output()
             self.save_current_parameter()
 
+
             self.iteration_step = self.iteration_step + 1
+
 
     def continue_last(self):
 
@@ -433,9 +491,16 @@ class MetropolisHastings:
         self.samples_file=samples_file
 
         self.sampled_keys=[]
+        self.sampled_parameters=dict()
         for key,value in self.sampling_parameters.items():
-            if value['dist']=='Samples':self.sampled_keys.append(key)
-
+            if value['dist']=='Samples':
+                self.sampled_parameters[key]=dict()
+                while True:
+                    self.sampled_parameters[key]['value']=value['value']
+                    self.sampled_parameters[key]['step']=value['step']
+                    break
+                self.sampled_keys.append(key)
+        print(self.sampled_parameters)
         self.current_parameters= dict()
         self.proposed_parameters = dict()
 

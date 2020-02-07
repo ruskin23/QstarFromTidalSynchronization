@@ -145,7 +145,7 @@ if __name__ == '__main__':
                                         min=2*scipy.pi/14,
                                         max=2*scipy.pi/1.4,
                                         dist='Uniform',
-                                        step=0.1),
+                                        step=0.5),
 
                              logQ=dict(value=logQ_value,
                                        min=5.0,
