@@ -8,7 +8,7 @@
 
 \section{Sampling for Mass, Age and Feh}
 
-Let $\phi_k$ and $m_k$ be the present state and its respective multiplitcity in the chain of n samples. Let $\sigma_{\phi}$ be the proposed step size. 
+Let $\phi_k$ and $m_k$ be the present state and its respective multiplitcity in the chain of n samples. Let $\sigma_{\phi}$ be the proposed step size.
 
 \begin{enumerate}
 \item The mulitplicity for each sample point is thus modified as:
@@ -27,7 +27,7 @@ $$\phi_i^{\prime} = \phi_i \times m^{\prime}$$
 \begin{algorithm}
 \caption{Random Sampling}
 \algsetup{indent=4em}
-\begin{algorithmic} 
+\begin{algorithmic}
 \STATE $U \rightarrow U(0,1)$
 \FOR{$i=1$ to $n$}
 	\IF {$m_i^{\prime} < U$}
@@ -60,15 +60,14 @@ where
 Using:
 $$\Pi(\phi^N) = m_N / \sum_{i=1}^n m_N$$
 $$S(\phi^N | \phi^{N+1}) =\dfrac{ m_N   e^{  -\left(\tfrac{\phi^N - \phi^{N+1}}{\sqrt{2}\sigma_{\phi}}\right)^2     }}{\sum_i^{n} m_i e^{  -\left(\tfrac{\phi^N - \phi^{i}}{\sqrt{2}\sigma_{\phi}}\right)^2}}$$.
-$$S(\theta^N | \theta^{N+1}) = S(\theta^{N+1} | \theta^{N})$$ 
+$$S(\theta^N | \theta^{N+1}) = S(\theta^{N+1} | \theta^{N})$$
 
 The acceptance ratio reduces to:
 \[
 \boxed{
-R= \dfrac{P(D | \theta^{N+1},\phi^{N+1})}{P(D | \theta^{N},\phi^{N})}   \dfrac{\Pi(\theta^{N+1})}{ \Pi(\theta^{N})} \dfrac{\sum_{i=1}^{n} m_i \exp \left[  -\left(\tfrac{\phi^N - \phi^{i}}{\sqrt{2}\sigma_{\phi}}\right)^2 \right] } {\sum_{i=1}^{n} m_i \exp \left[  -\left(\tfrac{\phi^{N+1} - \phi^i}{\sqrt{2}\sigma_{\phi}}\right)^2 \right]}
+R= \dfrac{P(D | \theta^{N+1},\phi^{N+1})}{P(D | \theta^{N},\phi^{N})}   \dfrac{\Pi(\theta^{N+1})}{ \Pi(\theta^{N})} \dfrac{\sum_{i=1}^{n} m_i \exp \left[  -\left(\tfrac{\phi^{N} - \phi^{i}}{\sqrt{2}\sigma_{\phi}}\right)^2 \right] } {\sum_{i=1}^{n} m_i \exp \left[  -\left(\tfrac{\phi^{N+1} - \phi^i}{\sqrt{2}\sigma_{\phi}}\right)^2 \right]}
 }
 \]
-
 
 
 
