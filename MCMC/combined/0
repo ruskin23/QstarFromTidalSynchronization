@@ -1,0 +1,68 @@
+import numpy
+from numpy import inf
+import matplotlib.pyplot as plt
+
+age_mean=4.049835253026934
+sigma_theory=0.8
+sigma_step=1.0
+
+
+def norm(x,
+         loc=0.0,
+         sigma=1.0):
+
+    y=x-loc
+    y=y/sigma
+    return numpy.exp(-(y**2)/2)
+
+
+samples='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/MassAgeFehSamples_54.txt'
+reduced_samples='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_54.txt'
+mcmc_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/kartof/MCMC_54/TEST2/accepted_parameters_2.txt'
+
+age=[]
+multiplicity=[]
+
+
+with open(reduced_samples,'r') as f:
+    next(f)
+    for lines in f:
+        x=lines.split()
+        age=numpy.append(age,float(x[1]))
+
+
+likelihood=norm(age,loc=age_mean,sigma=sigma_theory)
+
+
+S=0
+multiplicity=[]
+with open(reduced_samples,'r') as f:
+    next(f)
+    for lines in f:
+        age_i=float(x[1])
+        m_i=float(x[2])
+        multiplicity=numpy.append(multiplicity,m_i)
+        S=S+m_i*norm(age,loc=age_i,sigma=sigma_step)
+
+
+diff=numpy.diff(age)
+diff=numpy.append(diff,age[-1])
+
+differ=norm(diff,loc=0,sigma=sigma_step)
+
+
+
+posterior=likelihood*S/differ
+
+nmax=numpy.argmax(posterior)
+
+print(likelihood[nmax])
+print(S[nmax])
+print(differ[nmax])
+
+#values,base=numpy.histogram(posterior,bins=1000)
+#cummulative=numpy.cumsum(values)
+#cummulative=cummulative/max(cummulative)
+#plt.plot(base[:-1],cummulative,c='blue')
+#plt.show()
+
