@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#SBATCH -p normal
+#SBATCH -J MCMC
+#SBATCH -o /scratch/06850/rpatel23/output/MCMC.o%j
+#SBATCH -N 1
+#SBATCH -n 90
+#SBATCH -t 4-00:00:00
+
+#SBATCH --mail-user=rxp153130@utdallas.edu
+#SBATCH --mail-type=all    
+
+
+module load gsl
+module load gcc
+module load python3
+module load boost
+module load launcher
+
+
+for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do 
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
+
+export LAUNCHER_JOB_FILE=JobFile
+
+$LAUNCHER_DIR/paramrun

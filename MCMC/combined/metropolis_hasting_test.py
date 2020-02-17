@@ -24,6 +24,14 @@ start_time = time.time()
 class MetropolisHastings:
 
 
+    def _norm(self,
+              value,
+              loc=0.0,
+              sigma=1.0):
+
+        arg=(value-loc)/sigma
+        return numpy.exp(-(arg**2)/2)
+
     def write_header(self):
 
         f = self.output_directory
@@ -67,14 +75,34 @@ class MetropolisHastings:
 
 
     def test_model(self,
-                   key,
                    parameter_set):
 
 
-        param_value=parameter_set[key]
+        L=1.0
 
-        arg = ((param_value-self.sampling_parameters[key]['value'])/self.model_width[key])**2
-        return numpy.exp(-arg/2)
+        if self.test_case=='prior':return 1
+
+        if self.test_case=='uncorrelated':
+            for key in self.sampled_keys:
+                param_value=parameter_set[key]
+                L=L*self._norm(param_value,loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
+            return L
+
+        if self.test_case=='correlated':
+            for key in ['primary_mass','age']:
+                L=L*self._norm(parameter_set[key],loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
+            arg=(parameter_set['primary_mass']*parameter_set['age']-self.sampling_parameters['primary_mass']['value']*self.sampling_parameters['age']['value'])/(self.model_width['primary_mass'])*(self.model_width['age'])
+            return L*numpy.exp(-(arg**2)/2)
+
+        if self.test_case=='correlated_logQ':
+            for key in ['logQ','age']:
+                L=L*self._norm(parameter_set[key],loc=self.sampling_parameters[key]['value'],sigma=self.model_width[key])
+            arg=(parameter_set['logQ']*parameter_set['age']-self.sampling_parameters['logQ']['value']*self.sampling_parameters['age']['value'])/(self.model_width['logQ'])*(self.model_width['age'])
+
+            print('L = ',L)
+            print('arg = ',arg)
+            print('LIKELIHOOD = ', L*numpy.exp(-(arg**2)/2))
+            return L*numpy.exp(-(arg**2)/2)
 
 
     def posterior_probability(self,
@@ -94,14 +122,7 @@ class MetropolisHastings:
                     prior=0
 
         #Calculate Likelihood
-        likelihood=1.0
-        print('observed Spin = ',self.observed_spin)
-        for key in self.sampled_keys:
-            if key=='age':
-                likelihood=likelihood*self.test_model(key,parameter_set)
-                print('likelihood for {} = {}'.format(key,self.test_model(key,parameter_set)))
-
-        #likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
+        likelihood=self.test_model(parameter_set)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
@@ -138,66 +159,6 @@ class MetropolisHastings:
 
     def propose_from_samples(self):
 
-
-        N=0
-
-        mass_current=self.current_parameters['primary_mass']
-        age_current=self.current_parameters['age']
-        feh_current=self.current_parameters['feh']
-
-        mass_step=self.sampled_parameters['primary_mass']['step']
-        age_step=self.sampling_parameters['age']['step']
-        feh_step=self.sampling_parameters['feh']['step']
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                mass_sample=float(x[0])
-                age_sample=float(x[1])
-                feh_sample=float(x[2])
-
-                mulitplicity=float(x[3])
-
-                mass_diff=mass_sample-mass_current
-                age_diff=age_sample-age_current
-                feh_diff=feh_sample-feh_current
-
-                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
-
-                modified_mulitplicity = mulitplicity * ( numpy.exp( - ( arg  )  )  )
-
-                N=N+modified_mulitplicity
-
-
-        U=random.uniform(0, 1)
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                parameters=[float(x[0]),float(x[1]),float(x[2])]
-
-                x=lines.split()
-                mass_sample=float(x[0])
-                age_sample=float(x[1])
-                feh_sample=float(x[2])
-
-                mulitplicity=float(x[3])
-
-                mass_diff=mass_sample-mass_current
-                age_diff=age_sample-age_current
-                feh_diff=feh_sample-feh_current
-
-                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
-
-                modified_mulitplicity = mulitplicity * ((numpy.exp(-(arg))))/N
-
-                if modified_mulitplicity>U:
-                    return parameters
-                else: U=U-modified_mulitplicity
-
-        """
         N=0
         current_values=[self.current_parameters[key]/self.sampled_parameters[key]['step'] for key in
                         self.sampled_keys]
@@ -230,7 +191,6 @@ class MetropolisHastings:
             mm=mm/N
             if mm>U:return s
             else:U=U-mm
-        """
 
     def values_proposed(self):
 
@@ -474,7 +434,8 @@ class MetropolisHastings:
                  samples_file,
                  mass_ratio,
                  instance,
-                 output_directory):
+                 output_directory,
+                 test_case):
 
         self.system=system_number
         self.interpolator=interpolator
@@ -498,8 +459,10 @@ class MetropolisHastings:
                 self.sampled_keys.append(key)
         print(self.sampled_parameters)
         self.model_width=dict(primary_mass=0.8,
-                              age=0.1,
-                              feh=0.2)
+                              age=0.8,
+                              feh=0.2,
+                              logQ=0.2)
+
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
@@ -524,6 +487,8 @@ class MetropolisHastings:
 
 
         self.current_filename = self.output_directory+'current_parameters_'+ self.instance +'.txt'
+
+        self.test_case=test_case
 
         self.time_stamp = 0.0
         self.time_elapsed = 0.0

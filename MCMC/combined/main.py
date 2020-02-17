@@ -94,7 +94,7 @@ if __name__ == '__main__':
     system_number=args.system
 
     if home_dir=='/home/rxp163130':output_directory=current_directory+'/ganymede/MCMC_'+system_number+'/'
-    if home_dir=='/home/ruskin':output_directory=current_directory+'/kartof/MCMC_'+system_number+'/TEST2/'
+    if home_dir=='/home/ruskin':output_directory=current_directory+'/MCMC_TESTS/TEST5/'
     if home_dir=='/home1/06850/rpatel23':output_directory=current_directory+'/stampede2/MCMC_'+system_number+'/'
     if os.path.isdir(output_directory)==False:os.mkdir(output_directory)
 
@@ -188,6 +188,8 @@ with open(stepfilename,'w') as f:
     for key,value in sampling_parameters.items():
         f.write(key + '\t' + repr(value['step']) + '\n')
 
+
+#test_case='correlated_logQ'
 mcmc = MetropolisHastings(system_number,
                           interpolator,
                           sampling_parameters,
@@ -198,7 +200,8 @@ mcmc = MetropolisHastings(system_number,
                           samples_file,
                           mass_ratio,
                           instance,
-                          output_directory)
+                          output_directory)#,
+#                          test_case)
 
 sys.stdout.flush()
 if args.start: mcmc.iterations()

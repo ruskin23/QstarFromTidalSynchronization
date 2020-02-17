@@ -79,10 +79,10 @@ class MetropolisHastings:
                                        self.output_directory
                                        )
 
-        #self.spin=model_calculations()
-        #if numpy.isnan(self.spin):return scipy.nan
+        self.spin=model_calculations()
+        if numpy.isnan(self.spin):return scipy.nan
 
-        #print('Current Spin Value = ', self.spin)
+        print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
 
         prior = 1.0
@@ -100,8 +100,7 @@ class MetropolisHastings:
 
         #Calculate Likelihood
         print('observed Spin = ',self.observed_spin)
-        likelihood=1.0
-        #likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
+        likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
@@ -140,69 +139,6 @@ class MetropolisHastings:
 
 
         N=0
-
-        mass_current=self.current_parameters['primary_mass']
-        age_current=self.current_parameters['age']
-        feh_current=self.current_parameters['feh']
-
-        mass_step=self.sampled_parameters['primary_mass']['step']
-        age_step=self.sampling_parameters['age']['step']
-        feh_step=self.sampling_parameters['feh']['step']
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                mass_sample=float(x[0])
-                age_sample=float(x[1])
-                feh_sample=float(x[2])
-
-                mulitplicity=float(x[3])
-
-                mass_diff=mass_sample-mass_current
-                age_diff=age_sample-age_current
-                feh_diff=feh_sample-feh_current
-
-                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
-
-                modified_mulitplicity = mulitplicity * ( numpy.exp( - ( arg  )  )  )
-
-                N=N+modified_mulitplicity
-
-
-        U=random.uniform(0, 1)
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                parameters=[float(x[0]),float(x[1]),float(x[2])]
-
-                x=lines.split()
-                mass_sample=float(x[0])
-                age_sample=float(x[1])
-                feh_sample=float(x[2])
-
-                mulitplicity=float(x[3])
-
-                mass_diff=mass_sample-mass_current
-                age_diff=age_sample-age_current
-                feh_diff=feh_sample-feh_current
-
-                arg = (mass_diff/mass_step)**2 + (age_diff/age_step)**2 + (feh_diff/feh_step)**2
-
-                modified_mulitplicity = mulitplicity * ((numpy.exp(-(arg))))/N
-
-                print('MM = ', modified_mulitplicity)
-                print('U = ', U)
-
-
-                if modified_mulitplicity>U:
-                    return parameters
-                else: U=U-modified_mulitplicity
-
-        """
-        N=0
         current_values=[self.current_parameters[key]/self.sampled_parameters[key]['step'] for key in
                         self.sampled_keys]
 
@@ -234,7 +170,6 @@ class MetropolisHastings:
             mm=mm/N
             if mm>U:return s
             else:U=U-mm
-        """
 
     def values_proposed(self):
 
