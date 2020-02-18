@@ -97,12 +97,11 @@ class MetropolisHastings:
         if self.test_case=='correlated_logQ':
             for key in ['logQ','age']:
                 L=L*self._norm(parameter_set[key],loc=self.sampling_parameters[key]['value'],sigma=self.model_width[key])
-            arg=(parameter_set['logQ']*parameter_set['age']-self.sampling_parameters['logQ']['value']*self.sampling_parameters['age']['value'])/(self.model_width['logQ'])*(self.model_width['age'])
+            L=L*self._norm(parameter_set['logQ']*parameter_set['age'],loc=self.sampling_parameters['logQ']['value']*self.sampling_parameters['age']['value'],sigma=self.model_width['logQ'])*(self.model_width['age'])
 
             print('L = ',L)
             print('arg = ',arg)
-            print('LIKELIHOOD = ', L*numpy.exp(-(arg**2)/2))
-            return L*numpy.exp(-(arg**2)/2)
+            return L
 
 
     def posterior_probability(self,
