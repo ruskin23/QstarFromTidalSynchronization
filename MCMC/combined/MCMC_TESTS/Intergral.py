@@ -1,5 +1,6 @@
 import numpy
 from scipy import special
+from scipy import integrate
 import matplotlib.pyplot as plt
 import itertools
 
@@ -16,12 +17,15 @@ logQ_min=5.0
 logQ_max=12.0
 
 
+def intergand(t,logQ):
+
+    I = numpy.exp( - ((logQ-logQ_mean)/(sigma_logQ))**2 - (((t*logQ)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2 )
+
+    return I
+
 def EvaluateIntegral(t):
-
     A = (1/sigma_logQ**2)*(1 + (t**2)/(sigma_t**2))
-
     B = 2*(1 + (t*t_mean)/(sigma_t**2))*((logQ_mean)/(sigma_logQ**2))
-
     C = (1 + ((t_mean**2)/((sigma_t**2))))*((logQ_mean**2)/(sigma_logQ**2))
 
     alpha = (C/A) - (B**2/A**2)
@@ -39,6 +43,27 @@ def EvaluateIntegral(t):
 
 
     I = (numpy.sqrt(numpy.pi)/2)*Omega*(special.erf(z2)-special.erf(z1))
+    """
+
+    B = t/(2*sigma_t)
+    C = ((t-t_mean)/sigma_t)*(logQ_mean/sigma_logQ)
+
+    alpha = -B**2 + C
+
+    Omega = (numpy.sqrt(numpy.pi)/2)*numpy.exp(-alpha)*sigma_logQ
+
+    x1 = numpy.log(10)*logQ_min
+    x2 = numpy.log(10)*logQ_max
+
+    y1 = (x1 - logQ_mean)/sigma_logQ
+    y2 = (x2 - logQ_mean)/sigma_logQ
+
+    z1 = y1 + B
+    z2 = y2 + B
+
+    I = Omega*(special.erf(z2)-special.erf(z1))
+    """
+
 
     print('age = ',t)
     print('A = ',A)
@@ -54,9 +79,12 @@ def EvaluateIntegral(t):
 
     return I
 
+
 def EvaluateProbability(t,m):
 
-    P = m*numpy.exp(-((t-t_mean)**2)/(sigma_t**2))*EvaluateIntegral(t)
+    I = lambda logQ: intergand(t,logQ)
+    print('for t = {} I = {}'.format(t,integrate.quad(I,logQ_min,logQ_max)[0]))
+    P =    m*numpy.exp(-((t-t_mean)**2)/(sigma_t**2))*integrate.quad(I,logQ_min,logQ_max)[0]
 
     return P
 
@@ -156,15 +184,45 @@ if __name__=='__main__':
             multiplicity=numpy.append(multiplicity,float(x[3]))
 
 
+    age_cummulative=MarginalizeLogQ(age,multiplicity)
 
-    #age_cummulative=MarginalizeLogQ(age,multiplicity)
+    age_cummulative=cummulative_distribution(age_cummulative)
+    plt.scatter(*zip(*age_cummulative))
 
-    t_value=6.7
-    logQ_uniform=numpy.linspace(logQ_min,logQ_max,1000)
 
-    #integrand = - ((logQ_uniform-logQ_mean)/(sigma_logQ))**2 - (((t_value*logQ_uniform)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2
-    integrand =  - (((t_value*logQ_uniform)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2
-    plt.plot(logQ_uniform,integrand)
+    mcmc_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/MCMC_TESTS/TEST5/AccetedParameters.txt'
+
+    age_mcmc=[]
+    with open(mcmc_file,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            age_mcmc=numpy.append(age_mcmc,float(x[6]))
+
+    age_mcmc_tuple=sorted([(x, len(list(y))) for x, y in itertools.groupby(age_mcmc)], key=lambda tup: tup[0])
+
+    age_mcmc_cummulative=cummulative_distribution(age_mcmc_tuple)
+
+    plt.plot(*zip(*age_mcmc_cummulative))
+
     plt.show()
 
 
+    plt.show()
+
+    """
+    t_value=numpy.linspace(3.0,5.0,10)
+    colors=['r','g','b','c','m','y','k','lime','gray','gold']
+    for t,c in zip(t_value,colors):
+
+        logQ_uniform=numpy.linspace(logQ_min,logQ_max,1000)
+        #integrand = numpy.exp( - ((logQ_uniform-logQ_mean)/(sigma_logQ))**2 - (((t*logQ_uniform)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2 )
+
+        integrand=reduced_integrand(t)
+        plt.semilogy(logQ_uniform,integrand,color=c,label=t)
+
+        plt.plot()
+    plt.ylim(10e-10,1)
+    plt.legend()
+    plt.show()
+    """

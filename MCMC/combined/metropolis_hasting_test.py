@@ -97,10 +97,10 @@ class MetropolisHastings:
         if self.test_case=='correlated_logQ':
             for key in ['logQ','age']:
                 L=L*self._norm(parameter_set[key],loc=self.sampling_parameters[key]['value'],sigma=self.model_width[key])
+                print('L_key = ',L)
             L=L*self._norm(parameter_set['logQ']*parameter_set['age'],loc=self.sampling_parameters['logQ']['value']*self.sampling_parameters['age']['value'],sigma=self.model_width['logQ'])*(self.model_width['age'])
 
             print('L = ',L)
-            print('arg = ',arg)
             return L
 
 

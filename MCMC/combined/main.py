@@ -33,7 +33,7 @@ sys.path.append(poet_path+'scripts')
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
-from metropolis_hasting import MetropolisHastings
+from metropolis_hasting_test import MetropolisHastings
 
 
 def cmdline_args():
@@ -189,7 +189,7 @@ with open(stepfilename,'w') as f:
         f.write(key + '\t' + repr(value['step']) + '\n')
 
 
-#test_case='correlated_logQ'
+test_case='correlated_logQ'
 mcmc = MetropolisHastings(system_number,
                           interpolator,
                           sampling_parameters,
@@ -200,8 +200,8 @@ mcmc = MetropolisHastings(system_number,
                           samples_file,
                           mass_ratio,
                           instance,
-                          output_directory)#,
-#                          test_case)
+                          output_directory,
+                          test_case)
 
 sys.stdout.flush()
 if args.start: mcmc.iterations()
