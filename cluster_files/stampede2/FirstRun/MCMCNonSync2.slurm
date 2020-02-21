@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -p skx-normal
-#SBATCH -J MCMC
-#SBATCH -o /scratch/06850/rpatel23/output/MCMC.o%j
+#SBATCH -J MCMCNonSync2
+#SBATCH -o /scratch/06850/rpatel23/output/MCMCNS2.o%j
 #SBATCH -N 1
 #SBATCH -n 45
 #SBATCH -t 2-00:00:00
@@ -10,7 +10,7 @@
 #SBATCH --mail-user=rxp153130@utdallas.edu
 #SBATCH --mail-type=all    
 
-ulimit -S -m $((5*1024*1024))
+ulimit -S -m $((2*1024*1024))
 
 module load gsl
 module load gcc
@@ -25,6 +25,6 @@ for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
 
-export LAUNCHER_JOB_FILE=JobFile
+export LAUNCHER_JOB_FILE=NonSynJob2
 
 $LAUNCHER_DIR/paramrun
