@@ -1,106 +1,139 @@
-#correlation between mass and age
-import sys
 import numpy
-from numpy import inf
+from scipy import special
+from scipy import integrate
 import matplotlib.pyplot as plt
 import itertools
+import sys
+
+class TestCorrelated:
+
+    def _cummulative_distribution(self,
+                                  x):
+
+        a=[]
+        v=0
+        value=[]
+
+        for tuples in x:
+            a=numpy.append(a,tuples[0])
+            v=v+tuples[1]
+            value=numpy.append(value,v)
+
+        return list(zip(a,value/max(value)))
 
 
-def norm(x,
-         loc=0.0,
-         sigma=1.0):
+    def __init__(self,
+                 param_values):
 
-    y=x-loc
-    y=y/sigma
-    return numpy.exp(-(y**2)/2)
+        for key,value in param_values.items():
+            setattr(self,key,value)
 
-
-param=sys.argv[1]
-
-parameters=dict(mass=dict(mean=1.024563030621552,
-                          sigma_theory=0.8,
-                          sigma_step=1.0,),
-                age=dict(mean=4.049835253026934,
-                          sigma_theory=0.8,
-                          sigma_step=1.0,),
-                feh=dict(mean=-0.0508939712472557,
-                          sigma_theory=0.2,
-                          sigma_step=0.3,),
-                logQ=dict(mean=7.125744153362705,
-                          sigma_theory=0.2,
-                          sigma_step=0.5)
-
-                )
-
-param_keys=['mass','age','feh']
-
-samples='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/MassAgeFehSamples_54.txt'
-reduced_samples='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_54.txt'
-mcmc_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/MCMC_TESTS/TEST5/AccetedParameters.txt'
-
-multiplicity=[]
-param_values=[]
-
-with open(reduced_samples,'r') as f:
-    next(f)
-    for lines in f:
-        x=lines.split()
-        mass_i=float(x[0])
-        age_i=float(x[1])
-        feh_i=float(x[2])
-        m_i=float(x[3])
-
-        if param=='age':
-            param_values=numpy.append(param_values,age_i)
-        if param=='mass':
-            param_values=numpy.append(param_values,mass_i)
-        if param=='feh':
-            param_values=numpy.append(param_values,feh_i)
-
-        factor1=norm(mass_i-parameters['mass']['mean'],loc=0,sigma=parameters['mass']['sigma_theory'])
-        factor2=norm(age_i-parameters['age']['mean'],loc=0,sigma=parameters['age']['sigma_theory'])
-        factor3=norm(mass_i*age_i-parameters['mass']['mean']*parameters['age']['mean'],loc=0,sigma=parameters['mass']['sigma_theory']*parameters['age']['sigma_theory'])
-        factor=factor1*factor2*factor3
-
-        multiplicity=numpy.append(multiplicity,m_i*factor)
+        self.mcmc_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/MCMC_TESTS/TEST5/AccetedParameters.txt'
+        self.age_mcmc_samples=[]
+        self.logQ_mcmc_samples=[]
+        with open(self.mcmc_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                self.age_mcmc_samples=numpy.append(self.age_mcmc_samples,float(x[6]))
+                self.logQ_mcmc_samples=numpy.append(self.logQ_mcmc_samples,float(x[4]))
 
 
-param_tuple=list(zip(param_values,multiplicity))
-param_tuple=sorted(param_tuple, key=lambda tup: tup[0])
-
-a=[]
-value=[]
-v=0
-for p in param_tuple:
-    a=numpy.append(a,p[0])
-    v=v+p[1]
-    value=numpy.append(value,v)
-
-plt.scatter(a,value/max(value),color='r')
-plt.axvline(x=parameters[param]['mean'])
+        self.samples_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_54.txt'
+        self.age_samples=[]
+        self.mulitplicity=[]
+        with open(self.samples_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                self.age_samples=numpy.append(self.age_samples,float(x[1]))
+                self.mulitplicity=numpy.append(self.mulitplicity,float(x[3]))
+        self.logQ_samples=numpy.linspace(self.logQ_min,self.logQ_max,1000)
 
 
 
-mcmc_param_values=[]
-with open(mcmc_file,'r') as f:
-    next(f)
-    for lines in f:
-        x=lines.split()
-        mcmc_param_values=numpy.append(mcmc_param_values,float(x[param_keys.index(param)+5]))
+    def intergand(self,
+                  t,
+                  logQ):
 
-mcmc_param_values=[(x, len(list(y))) for x, y in itertools.groupby(mcmc_param_values)]
-mcmc_param_values=sorted(mcmc_param_values, key=lambda tup: tup[0])
+        return  numpy.exp( - ((logQ-self.logQ_mean)/(self.sigma_logQ))**2 - (((t*logQ)-(self.t_mean*self.logQ_mean))/(self.sigma_t*self.sigma_logQ))**2 )
 
-value=[]
-multiplicity=[]
-m=0
-for a in mcmc_param_values:
-    value=numpy.append(value,a[0])
-    m=m+a[1]
-    multiplicity=numpy.append(multiplicity,m)
 
-multiplicity=multiplicity/max(multiplicity)
-plt.plot(value,multiplicity)
-plt.show()
+    def EvaluateProbability(self,
+                            t,
+                            m):
 
+        I = lambda logQ: self.intergand(t,logQ)
+        integral=integrate.quad(I,self.logQ_min,self.logQ_max)[0]
+        return m*numpy.exp(-((t-self.t_mean)**2)/(self.sigma_t**2))*integral
+
+
+    def CompareAge(self):
+
+        N=0
+        modified_multiplicity=[]
+        for t,m in zip(self.age_samples,self.mulitplicity):
+            P=self.EvaluateProbability(t,m)
+            modified_multiplicity=numpy.append(modified_multiplicity,P)
+            N=N+P
+
+        modified_multiplicity=modified_multiplicity/N
+        age_tuple=list(zip(self.age_samples,modified_multiplicity))
+        age_tuple=sorted(age_tuple, key=lambda tup: tup[0])
+        age_cummulative=self._cummulative_distribution(age_tuple)
+        plt.scatter(*zip(*age_cummulative),color='r',label='analytical')
+
+        age_mcmc_tuple=sorted([(x, len(list(y))) for x, y in itertools.groupby(self.age_mcmc_samples)], key=lambda tup: tup[0])
+        age_mcmc_cummulative=self._cummulative_distribution(age_mcmc_tuple)
+        plt.plot(*zip(*age_mcmc_cummulative),label='MCMC')
+
+        plt.legend()
+        plt.show()
+
+
+    def CompareLogQ(self):
+
+        Sum=numpy.zeros(len(self.logQ_samples))
+        for t,m in zip(self.age_samples,self.mulitplicity):
+            arg = ((t-self.t_mean)/self.sigma_t)**2 + ((t*self.logQ_samples - self.t_mean*self.logQ_mean)/(self.sigma_t*self.sigma_logQ))**2
+            Sum = Sum + m*numpy.exp(-arg)
+
+        logQ_dist=numpy.exp(-((self.logQ_samples-self.logQ_mean)/self.sigma_logQ)**2)*Sum
+        logQ_tuple=list(zip(self.logQ_samples,logQ_dist))
+        logQ_cummulative=self._cummulative_distribution(logQ_tuple)
+        plt.scatter(*zip(*logQ_cummulative),color='r',label='analytical')
+
+
+        logQ_mcmc_tuple=[(x, len(list(y))) for x, y in itertools.groupby(self.logQ_mcmc_samples)]
+        logQ_mcmc_tuple=sorted(logQ_mcmc_tuple, key=lambda tup: tup[0])
+        logQ_mcmc_cummulative=self._cummulative_distribution(logQ_mcmc_tuple)
+        plt.plot(*zip(*logQ_mcmc_cummulative),label='MCMC')
+
+        plt.legend()
+        plt.show()
+
+
+
+    def __call__(self,
+                 param):
+
+        if param=='logQ':self.CompareLogQ()
+        if param=='age':self.CompareAge()
+
+if __name__=='__main__':
+
+
+    param_values=dict(logQ_mean=7.125744153362705,
+                      t_mean=4.049835253026934,
+
+                      sigma_logQ=0.2,
+                      sigma_t=0.8,
+
+                      logQ_min=5.0,
+                      logQ_max=12.0
+                      )
+
+
+    Compare=TestCorrelated(param_values)
+    Compare(sys.argv[1])
 

@@ -17,11 +17,20 @@ logQ_min=5.0
 logQ_max=12.0
 
 
-def intergand(t,logQ):
+def cummulative_distribution(x):
 
-    I = numpy.exp( - ((logQ-logQ_mean)/(sigma_logQ))**2 - (((t*logQ)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2 )
+    a=[]
+    v=0
+    value=[]
 
-    return I
+    for tuples in x:
+        a=numpy.append(a,tuples[0])
+        v=v+tuples[1]
+        value=numpy.append(value,v)
+
+    return list(zip(a,value/max(value)))
+
+
 
 def EvaluateIntegral(t):
     A = (1/sigma_logQ**2)*(1 + (t**2)/(sigma_t**2))
@@ -80,28 +89,19 @@ def EvaluateIntegral(t):
     return I
 
 
+def intergand(t,logQ):
+
+    I = numpy.exp( - ((logQ-logQ_mean)/(sigma_logQ))**2 - (((t*logQ)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2 )
+
+    return I
+
+
 def EvaluateProbability(t,m):
 
     I = lambda logQ: intergand(t,logQ)
-    print('for t = {} I = {}'.format(t,integrate.quad(I,logQ_min,logQ_max)[0]))
     P =    m*numpy.exp(-((t-t_mean)**2)/(sigma_t**2))*integrate.quad(I,logQ_min,logQ_max)[0]
 
     return P
-
-
-def cummulative_distribution(x):
-
-    a=[]
-    v=0
-    value=[]
-
-    for tuples in x:
-        a=numpy.append(a,tuples[0])
-        v=v+tuples[1]
-        value=numpy.append(value,v)
-
-    return list(zip(a,value/max(value)))
-
 
 
 def MarginalizeLogQ(age,multiplicity):
@@ -119,6 +119,9 @@ def MarginalizeLogQ(age,multiplicity):
     age_tuple=sorted(age_tuple, key=lambda tup: tup[0])
 
     age_cummulative=cummulative_distribution(age_tuple)
+
+    for ac in age_cummulative:
+        print(ac)
 
     return age_cummulative
 
@@ -186,7 +189,6 @@ if __name__=='__main__':
 
     age_cummulative=MarginalizeLogQ(age,multiplicity)
 
-    age_cummulative=cummulative_distribution(age_cummulative)
     plt.scatter(*zip(*age_cummulative))
 
 
@@ -207,22 +209,3 @@ if __name__=='__main__':
 
     plt.show()
 
-
-    plt.show()
-
-    """
-    t_value=numpy.linspace(3.0,5.0,10)
-    colors=['r','g','b','c','m','y','k','lime','gray','gold']
-    for t,c in zip(t_value,colors):
-
-        logQ_uniform=numpy.linspace(logQ_min,logQ_max,1000)
-        #integrand = numpy.exp( - ((logQ_uniform-logQ_mean)/(sigma_logQ))**2 - (((t*logQ_uniform)-(t_mean*logQ_mean))/(sigma_t*sigma_logQ))**2 )
-
-        integrand=reduced_integrand(t)
-        plt.semilogy(logQ_uniform,integrand,color=c,label=t)
-
-        plt.plot()
-    plt.ylim(10e-10,1)
-    plt.legend()
-    plt.show()
-    """
