@@ -101,7 +101,15 @@ def FindSolution(key,
     PspinSol=PspinInterpolated[zero_crossing][0]
 
     PspinMin=PspinObserved-PspinError
-    PspinMax=PspinObserved-PspinError
+    PspinMax=PspinObserved+PspinError
+
+    if key=='94':
+        print('For 94 :')
+        print('Error = ', PspinError)
+        print('Max = ', PspinMax)
+        print('Min = ',PspinMin)
+        print('PspinObserved = ',PspinObserved)
+
 
     if numpy.logical_and(Porb>PspinMin,
                          Porb<PspinMax):
