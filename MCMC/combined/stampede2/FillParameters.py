@@ -8,6 +8,7 @@ directory=os.getcwd()
 directory=directory+'/MCMC_'+system
 
 combined_filename='AcceptedParameters.txt'
+if os.path.exists(combined_filename):os.remove(combined_filename)
 Path(combined_filename).touch()
 
 for file in os.listdir(directory):
