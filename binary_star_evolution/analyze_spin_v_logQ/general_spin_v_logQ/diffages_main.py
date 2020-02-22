@@ -211,6 +211,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
+    parser.add_argument('-p',
+                        action='store',
+                        dest='percentile',
+                        help='percentile of age'
+                        )
+
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -223,6 +229,8 @@ if __name__ == '__main__':
 
     system=args.index
     print('System = ' ,system)
+    percentile=int(args.percentile)//10
+    print('Percntile = ',percentile)
 
     data_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
 
@@ -261,36 +269,32 @@ if __name__ == '__main__':
 
     logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
-    ages=[]
     PercentileFile=current_directory+'/PercentileAges.txt'
+
     with open(PercentileFile,'r') as f:
         next(f)
         for lines in f:
             x=lines.split()
             if x[0]==system:
-                for i in range(1,5):
-                    ages.append(float(x[i]))
+                parameters['age']=float(x[percentile])
                 break
-    percentiles=['10','20','30','40']
 
-    for p,age in zip(percentiles,ages):
-        parameters['age']=age
-        print('\nCalculating for age = ', age)
-        print('parameters:', parameters)
-        spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+p+'.txt'
-        with open(spin_vs_logQ_file,'w') as f:
-            f.write('logQ'+'\t'+
-                    'spin'+'\t'+
-                    'Porb_initial'+'\t'+
-                    'e_initial'+'\t'+
-                    'Porb_current'+'\t'+
-                    'e_current'+'\t'+
-                    'delta_p'+'\t'+
-                    'detla_e'+'\n')
+    print('\nCalculating for age = ', parameters['age'])
+    print('parameters:', parameters)
+    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+str(percentile)+'.txt'
+    with open(spin_vs_logQ_file,'w') as f:
+        f.write('logQ'+'\t'+
+                'spin'+'\t'+
+                'Porb_initial'+'\t'+
+                'e_initial'+'\t'+
+                'Porb_current'+'\t'+
+                'e_current'+'\t'+
+                'delta_p'+'\t'+
+                'detla_e'+'\n')
 
-        for q in logQ:
+    for q in logQ:
 
-            print('\nCalculating for logQ = ', q)
-            evolve = evolution(interpolator,parameters)
-            evolve(q,spin_vs_logQ_file)
+        print('\nCalculating for logQ = ', q)
+        evolve = evolution(interpolator,parameters)
+        evolve(q,spin_vs_logQ_file)
 
