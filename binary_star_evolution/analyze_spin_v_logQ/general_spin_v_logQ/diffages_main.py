@@ -2,8 +2,26 @@
 
 
 import sys
-sys.path.append('home/ruskin/projects/poet/PythonPackage')
-sys.path.append('home/ruskin/projects/poet/scripts')
+import os
+import os.path
+
+from pathlib import Path
+home_dir=str(Path.home())
+
+git_dir='/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ'
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet/'
+    current_directory=home_dir+git_dir
+    samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet/'
+    current_directory=home_dir+'/projects'+git_dir
+    samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+
+sys.path.append(poet_path+'PythonPackage')
+sys.path.append(poet_path+'scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -193,7 +211,6 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
-    parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
     args = parser.parse_args()
 
     serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
@@ -207,10 +224,9 @@ if __name__ == '__main__':
     system=args.index
     print('System = ' ,system)
 
-    data_file='SpinlogQCatalog_el0.4.txt'
+    data_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
 
     parameters=dict()
-
 
     with open(data_file,'r') as f:
         next(f)
@@ -243,35 +259,34 @@ if __name__ == '__main__':
 
                 break
 
-    logQ=[5.0,12.0]
+    logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
-    ages=[0.3]
-    #with open('PercentileAges.txt','r') as f:
-    #    next(f)
-    #    for lines in f:
-    #        x=lines.split()
-    #        if x[0]==system:
-    #            for i in range(1,5):
-    #                ages.append(float(x[i]))
-    #            break
+    ages=[]
+    PercentileFile=current_directory+'/PercentileAges.txt'
+    with open(PercentileFile,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            if x[0]==system:
+                for i in range(1,5):
+                    ages.append(float(x[i]))
+                break
+    percentiles=['10','20','30','40']
 
-    #a=['0.1','0.2','0.3','0.4']
-    a=['age3e-1']
-    for ai,age in zip(a,ages):
+    for p,age in zip(percentiles,ages):
         parameters['age']=age
-        print('Calculating for age = ', age)
+        print('\nCalculating for age = ', age)
         print('parameters:', parameters)
-        spin_vs_logQ_file='break0.0/PercentileAges/SpinLogQ_'+system+'_'+ai+'.txt'
-        if args.new:
-            with open(spin_vs_logQ_file,'w') as f:
-                f.write('logQ'+'\t'+
-                        'spin'+'\t'+
-                        'Porb_initial'+'\t'+
-                        'e_initial'+'\t'+
-                        'Porb_current'+'\t'+
-                        'e_current'+'\t'+
-                        'delta_p'+'\t'+
-                        'detla_e'+'\n')
+        spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+p+'.txt'
+        with open(spin_vs_logQ_file,'w') as f:
+            f.write('logQ'+'\t'+
+                    'spin'+'\t'+
+                    'Porb_initial'+'\t'+
+                    'e_initial'+'\t'+
+                    'Porb_current'+'\t'+
+                    'e_current'+'\t'+
+                    'delta_p'+'\t'+
+                    'detla_e'+'\n')
 
         for q in logQ:
 

@@ -19,7 +19,8 @@ missing=list(sorted(set1-set2))
 kmissing=[str(i) for i in missing]
 print('Missing Systems:')
 print('number of systems= ',len(missing))
-print('system numbers= ',','.join(kmissing))
+print(kmissing)
+print('system numbers= ',' '.join(kmissing))
 
 
 m.sort()

@@ -241,8 +241,7 @@ if __name__ == '__main__':
             at_system=x[0]
             if at_system==system:
                 parameters['primary_mass']=float(x[15])
-                #parameters['age']=float(x[16])
-                parameters['age']= 0.5224849205504497
+                parameters['age']=float(x[16])
                 parameters['feh']=float(x[17])
 
                 parameters['eccentricity']=float(x[8])
