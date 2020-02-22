@@ -268,19 +268,19 @@ if __name__ == '__main__':
 
                 break
 
-    logQ=[5.0,10.0,12.0]
+    logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
     PercentileFile=current_directory+'/PercentileAges.txt'
 
-    #with open(PercentileFile,'r') as f:
-    #    next(f)
-    #    for lines in f:
-    #        x=lines.split()
-    #        if x[0]==system:
-    #            parameters['age']=float(x[percentile_index])
-    #            break
+    with open(PercentileFile,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            if x[0]==system:
+                parameters['age']=float(x[percentile_index])
+                break
 
-    parameters['age']=0.05034693018300723
+    #parameters['age']=0.05034693018300723
 
     print('\nCalculating for age = ', parameters['age'])
     print('parameters:', parameters)
