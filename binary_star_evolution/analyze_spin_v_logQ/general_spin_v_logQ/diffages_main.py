@@ -229,8 +229,10 @@ if __name__ == '__main__':
 
     system=args.index
     print('System = ' ,system)
+    print(args.percentile)
     percentile=args.percentile
-    percentile_index=int(args.percentile)//10
+    perecntile_array=['1','2','3','4','5','10','20','30','40']
+    percentile_index=perecntile_array.index(args.percentile)+1
     print('Percntile = ',percentile)
 
     data_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
@@ -270,7 +272,7 @@ if __name__ == '__main__':
 
     logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
-    PercentileFile=current_directory+'/PercentileAges.txt'
+    PercentileFile=current_directory+'/Ages.txt'
 
     with open(PercentileFile,'r') as f:
         next(f)
@@ -279,8 +281,6 @@ if __name__ == '__main__':
             if x[0]==system:
                 parameters['age']=float(x[percentile_index])
                 break
-
-    #parameters['age']=0.05034693018300723
 
     print('\nCalculating for age = ', parameters['age'])
     print('parameters:', parameters)
