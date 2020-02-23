@@ -81,7 +81,7 @@ class TestCorrelated:
         age_tuple=list(zip(self.age_samples,modified_multiplicity))
         age_tuple=sorted(age_tuple, key=lambda tup: tup[0])
         age_cummulative=self._cummulative_distribution(age_tuple)
-        plt.scatter(*zip(*age_cummulative),color='r',label='analytical')
+        #plt.scatter(*zip(*age_cummulative),color='r',label='analytical')
 
         age_mcmc_tuple=sorted([(x, len(list(y))) for x, y in itertools.groupby(self.age_mcmc_samples)], key=lambda tup: tup[0])
         age_mcmc_cummulative=self._cummulative_distribution(age_mcmc_tuple)
@@ -101,7 +101,7 @@ class TestCorrelated:
         logQ_dist=numpy.exp(-((self.logQ_samples-self.logQ_mean)/self.sigma_logQ)**2)*Sum
         logQ_tuple=list(zip(self.logQ_samples,logQ_dist))
         logQ_cummulative=self._cummulative_distribution(logQ_tuple)
-        plt.scatter(*zip(*logQ_cummulative),color='r',label='analytical')
+        #plt.scatter(*zip(*logQ_cummulative),color='r',label='analytical')
 
 
         logQ_mcmc_tuple=[(x, len(list(y))) for x, y in itertools.groupby(self.logQ_mcmc_samples)]

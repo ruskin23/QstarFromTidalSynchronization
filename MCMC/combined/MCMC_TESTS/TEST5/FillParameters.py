@@ -3,7 +3,7 @@
 
 
 with open('AccetedParameters.txt','w') as f1:
-    with open('accepted_parameters_2.txt','r') as f2:
+    with open('accepted_parameters_1.txt','r') as f2:
         for i,lines in enumerate(f2):
             if i==0:
                 f1.write(lines)
