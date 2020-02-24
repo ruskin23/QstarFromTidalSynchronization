@@ -226,6 +226,11 @@ if __name__ == '__main__':
     eccentricity_path=os.path.join(poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
 
 
+    orbital_evolution_library.read_eccentricity_expansion_coefficients(
+        eccentricity_path
+    )
+
+
     system=args.index
     print('System = ' ,system)
     print(args.percentile)
