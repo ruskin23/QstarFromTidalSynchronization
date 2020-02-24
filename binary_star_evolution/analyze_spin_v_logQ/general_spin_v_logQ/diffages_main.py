@@ -219,7 +219,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    serialized_dir ="/home/ruskin/projects/poet/stellar_evolution_interpolators"
+    serialized_dir =poet_path+"stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -231,7 +231,7 @@ if __name__ == '__main__':
     print('System = ' ,system)
     print(args.percentile)
     percentile=args.percentile
-    perecntile_array=['1','2','3','4','5','10','20','30','40']
+    perecntile_array=['1','2','3','4','5','10','20','30','40','50']
     percentile_index=perecntile_array.index(args.percentile)+1
     print('Percntile = ',percentile)
 
