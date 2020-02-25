@@ -249,15 +249,10 @@ if __name__ == '__main__':
             x=lines.split()
             at_system=x[0]
             if at_system==system:
-                parameters['primary_mass']=float(x[15])
-                parameters['feh']=float(x[17])
-
                 parameters['eccentricity']=float(x[8])
                 parameters['Porb']=float(x[6])
                 mass_ratio=float(x[14])
-                parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
                 parameters['Pspin']=float(x[12])
-
 
                 parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
@@ -276,8 +271,10 @@ if __name__ == '__main__':
 
     logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
-    PercentileFile=current_directory+'/Ages.txt'
 
+
+    PercentileFile=current_directory+'/Ages.txt'
+    print(PercentileFile)
     with open(PercentileFile,'r') as f:
         next(f)
         for lines in f:
@@ -286,6 +283,22 @@ if __name__ == '__main__':
                 parameters['age']=float(x[percentile_index])
                 break
 
+    print('age  = ',parameters['age'])
+
+
+    sampleFile=samples_directory+'/MassAgeFehSamples_'+system+'.txt'
+    with open(sampleFile,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            a=float(x[1])
+            print(a)
+            if a==parameters['age']:
+                parameters['primary_mass']=float(x[0])
+                parameters['feh']=float(x[2])
+                break
+
+    parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
     print('\nCalculating for age = ', parameters['age'])
     print('parameters:', parameters)
     spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+str(percentile)+'.txt'
