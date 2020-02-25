@@ -274,7 +274,6 @@ if __name__ == '__main__':
 
 
     PercentileFile=current_directory+'/Ages.txt'
-    print(PercentileFile)
     with open(PercentileFile,'r') as f:
         next(f)
         for lines in f:
@@ -292,7 +291,6 @@ if __name__ == '__main__':
         for lines in f:
             x=lines.split()
             a=float(x[1])
-            print(a)
             if a==parameters['age']:
                 parameters['primary_mass']=float(x[0])
                 parameters['feh']=float(x[2])

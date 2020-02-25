@@ -1,0 +1,13 @@
+ 48738 ?        R    935:23 python3 diffages_main.py 18 -p 40
+ 63974 ?        R    829:19 python3 diffages_main.py 23 -p 2
+ 63981 ?        R    829:19 python3 diffages_main.py 23 -p 40
+ 87858 pts/6    R      0:05 python3 diffages_main.py 27 -p 1
+ 87859 pts/6    R      0:06 python3 diffages_main.py 27 -p 2
+ 87860 pts/6    R      0:05 python3 diffages_main.py 27 -p 3
+ 87861 pts/6    R      0:06 python3 diffages_main.py 27 -p 4
+ 87862 pts/6    R      0:05 python3 diffages_main.py 27 -p 5
+ 87863 pts/6    R      0:05 python3 diffages_main.py 27 -p 10
+ 87864 pts/6    R      0:05 python3 diffages_main.py 27 -p 20
+ 87865 pts/6    R      0:06 python3 diffages_main.py 27 -p 30
+ 87866 pts/6    R      0:06 python3 diffages_main.py 27 -p 40
+ 88483 pts/6    S+     0:00 grep --color=auto diff
