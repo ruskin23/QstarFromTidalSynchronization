@@ -3,7 +3,7 @@
 /binary_star_evolution/output_data/*.txt
 /binary_star_evolution/unwanted_data/
 *.txt
-!/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/ganymede/MCMC*/*.txt
+!/MCMC/combined/ganymede/MCMC*/*.txt
 *.pickle
 *.out
 

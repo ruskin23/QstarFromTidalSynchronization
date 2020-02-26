@@ -1,0 +1,7 @@
+Porb	7.4e-06
+eccentricity	0.01
+Wdisk	0.5
+logQ	0.5
+primary_mass	1.0
+age	1.0
+feh	0.3

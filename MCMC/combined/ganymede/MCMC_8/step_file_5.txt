@@ -1,0 +1,7 @@
+Porb	0.0001451
+eccentricity	0.001
+Wdisk	0.5
+logQ	0.5
+primary_mass	1.0
+age	1.0
+feh	0.3
