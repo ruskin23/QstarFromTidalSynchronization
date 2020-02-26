@@ -1,0 +1,2 @@
+Iteration_step	Porb	eccentricity	Wdisk	logQ	primary_mass	age	feh	secondary_mass	posterior_probability	acceptance_ratio	inital_orbital_period	initial_eccentricity	current_orbital_period	current_eccentricity	current_spin	delta_e	delta_p	bad_solution_flag	gsl_flag	
+1	11.028	0.0405	4.1	8.598859885988599	1.0803563623748549	4.45798515468177	-0.21523052437085785	0.8926984622303427	8.528959958305167	0.0	11.036312325347835	0.04058504650677898	11.027999999976517	0.04049999999467956	13.290665069609007	-2.348343741687131e-11	-5.320438534184291e-12	False	False
