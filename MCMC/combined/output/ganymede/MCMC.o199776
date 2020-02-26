@@ -364,3 +364,4 @@ general error: GSL rkf45 step size control requires zero step size, aborting!
 general error: GSL rkf45 step size control requires zero step size, aborting!
 general error: GSL rkf45 step size control requires zero step size, aborting!
 general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
