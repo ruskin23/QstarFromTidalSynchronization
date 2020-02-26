@@ -1,0 +1,366 @@
+WARNING (02/25/20 09:45:18): LAUNCHER_WORKDIR variable not set. Using current directory.
+Launcher: Setup complete.
+
+------------- SUMMARY ---------------
+   Number of hosts:    9
+   Working directory:  /home/rxp163130/QstarFromTidalSynchronization/cluster_files/ganymede/MCMC
+   Processes per host: 14
+   Total processes:    126
+   Total jobs:         130
+   Scheduling method:  dynamic
+
+-------------------------------------
+Launcher: Starting parallel tasks...
+using /tmp/launcher.199776.hostlist.LuYjRcjW to get hosts
+starting job on compute-7-2-36
+starting job on compute-7-3-9
+starting job on compute-7-6-10
+starting job on compute-7-6-11
+starting job on compute-7-6-15
+starting job on compute-7-6-16
+starting job on compute-7-6-21
+starting job on compute-7-6-22
+starting job on compute-7-6-23
+Launcher: Task 8 running job 9 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 6 running job 2 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 1 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 11 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 6 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 3 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 running job 8 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 0 running job 4 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 10 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 5 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 5 running job 7 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 12 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 4 running job 13 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 21 running job 18 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 17 running job 20 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 26 running job 19 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 24 running job 17 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 16 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 15 running job 15 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 19 running job 14 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 18 running job 22 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 16 running job 25 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 22 running job 24 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 20 running job 21 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 25 running job 23 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 27 running job 26 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 23 running job 27 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 28 on compute-7-2-36 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 104 running job 30 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 99 running job 34 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 107 running job 32 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 105 running job 29 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 85 running job 31 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 88 running job 33 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 63 running job 36 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 59 running job 40 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 64 running job 35 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 66 running job 37 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 69 running job 39 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 68 running job 38 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 39 running job 44 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 31 running job 45 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 32 running job 41 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 34 running job 42 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 28 running job 43 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 33 running job 46 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 116 running job 56 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 121 running job 53 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 123 running job 49 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 112 running job 54 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 122 running job 55 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 117 running job 50 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 120 running job 52 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 115 running job 48 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 124 running job 47 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 79 running job 65 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 82 running job 64 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 78 running job 59 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 75 running job 57 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 72 running job 61 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 113 running job 51 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 77 running job 63 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 83 running job 58 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 71 running job 60 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 70 running job 62 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 52 running job 72 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 53 running job 66 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 42 running job 70 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 55 running job 69 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 43 running job 71 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 46 running job 67 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 51 running job 68 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 109 running job 74 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 110 running job 75 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 111 running job 78 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 100 running job 77 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 102 running job 82 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 98 running job 79 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 103 running job 90 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 101 running job 81 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 93 running job 89 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 86 running job 85 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 90 running job 73 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 84 running job 84 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 96 running job 87 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 94 running job 86 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 95 running job 91 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 108 running job 80 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 106 running job 76 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 97 running job 83 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 87 running job 88 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 65 running job 92 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 58 running job 94 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 57 running job 93 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 67 running job 96 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 62 running job 97 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 56 running job 95 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 35 running job 99 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 37 running job 102 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 36 running job 101 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 41 running job 100 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 29 running job 98 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 40 running job 103 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 81 running job 106 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 80 running job 107 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 73 running job 104 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 74 running job 105 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 114 running job 111 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 125 running job 109 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 119 running job 108 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 118 running job 110 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 48 running job 117 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 49 running job 112 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 54 running job 118 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 47 running job 113 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 45 running job 115 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 44 running job 116 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 50 running job 114 on compute-7-6-11 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 92 running job 120 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 91 running job 119 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 89 running job 121 on compute-7-6-21 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 61 running job 123 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 60 running job 122 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 30 running job 124 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 38 running job 125 on compute-7-6-10 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 76 running job 126 on compute-7-6-16 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Searching for extremum among monotonic stopping condition values in OrbitSolver::extremum_from_history_no_deriv.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Searching for extremum among monotonic stopping condition values in OrbitSolver::extremum_from_history_no_deriv.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+/opt/ohpc/pub/apps/launcher/launcher-3.4/launcher: line 103: 74555 Segmentation fault      python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 76 > /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out
+Launcher: Job 80 completed in 33607 seconds.
+Launcher: Task 108 running job 127 on compute-7-6-22 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Searching for extremum among monotonic stopping condition values in OrbitSolver::extremum_from_history_no_deriv.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+/opt/ohpc/pub/apps/launcher/launcher-3.4/launcher: line 103: 19998 Segmentation fault      python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 54 > /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out
+Launcher: Job 17 completed in 76554 seconds.
+Launcher: Task 24 running job 128 on compute-7-3-9 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+/opt/ohpc/pub/apps/launcher/launcher-3.4/launcher: line 103: 57018 Segmentation fault      python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 56 > /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out
+Launcher: Job 93 completed in 77418 seconds.
+Launcher: Task 57 running job 129 on compute-7-6-15 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Searching for extremum among monotonic stopping condition values in OrbitSolver::extremum_from_history_no_deriv.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Maximum available eccentricity expansion order of 50 is insufficient to ensure evolution to the specified precisoin.
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: Breaking due to condtions or NaNs has decreased maximum step size to zero! Aborting
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!
+general error: GSL rkf45 step size control requires zero step size, aborting!

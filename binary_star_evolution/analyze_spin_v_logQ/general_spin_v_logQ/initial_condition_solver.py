@@ -127,20 +127,7 @@ class InitialConditionSolver:
 
         print ("BINARY CONFIGURATION COMPLETE")
 
-        if self.print_cfile==True:
-            create_c_code='cfile_'+self.system+'_break'+str(self.breaks)+'.cpp'
-
-            self.binary.evolve(
-                self.target.age,
-                self.evolution_max_time_step,
-                self.evolution_precision,
-                None,
-                create_c_code=create_c_code,
-                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
-            )
-
-        else:
-            self.binary.evolve(
+        self.binary.evolve(
                 self.target.age,
                 self.evolution_max_time_step,
                 self.evolution_precision,
