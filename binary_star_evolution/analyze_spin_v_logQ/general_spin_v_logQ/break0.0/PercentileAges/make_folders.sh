@@ -1,4 +1,4 @@
 for i in 2 5 14 18 23 27 33 35 37 49 59 62 63 65 68 69 77 78 82 99 100 111 117 119 125 128 129 132 133 134 138 142
-do mkdir break0.0/PercentileAges/System_$i
+do mkdir System_$i/Wdisk/
 done
 
