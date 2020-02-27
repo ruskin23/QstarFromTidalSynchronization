@@ -14,11 +14,14 @@ if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
     current_directory=home_dir+git_dir
     samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+    sys.path.append(home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples')
 
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
     current_directory=home_dir+'/projects'+git_dir
     samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+    sys.path.append(home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples')
+
 
 sys.path.append(poet_path+'PythonPackage')
 sys.path.append(poet_path+'scripts')
@@ -31,6 +34,7 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from initial_condition_solver import  InitialConditionSolver
+from PercentileClass import PercentileAge
 from basic_utils import Structure
 import numpy
 import scipy
@@ -230,13 +234,9 @@ if __name__ == '__main__':
         eccentricity_path
     )
 
-
     system=args.index
     print('System = ' ,system)
-    print(args.percentile)
     percentile=args.percentile
-    perecntile_array=['1','2','3','4','5','10','20','30','40','50']
-    percentile_index=perecntile_array.index(args.percentile)+1
     print('Percntile = ',percentile)
 
     data_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
@@ -254,7 +254,7 @@ if __name__ == '__main__':
                 mass_ratio=float(x[14])
                 parameters['Pspin']=float(x[12])
 
-                parameters['Wdisk']=4.1
+                parameters['Wdisk']=5.1
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -269,10 +269,12 @@ if __name__ == '__main__':
 
                 break
 
-    logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
+    logQ=[6.0,7.0,8.0,9.0,10.0]
 
+    parameters['age']=PercentileAge(system,float(percentile))()
+
+    """
     PercentileFile=current_directory+'/Ages.txt'
-    print(PercentileFile)
     with open(PercentileFile,'r') as f:
         next(f)
         for lines in f:
@@ -282,6 +284,8 @@ if __name__ == '__main__':
                 break
 
     print('age  = ',parameters['age'])
+    """
+
 
 
     sampleFile=samples_directory+'/MassAgeFehSamples_'+system+'.txt'
@@ -290,16 +294,17 @@ if __name__ == '__main__':
         for lines in f:
             x=lines.split()
             a=float(x[1])
-            print(a)
             if a==parameters['age']:
                 parameters['primary_mass']=float(x[0])
                 parameters['feh']=float(x[2])
                 break
 
     parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
+
     print('\nCalculating for age = ', parameters['age'])
     print('parameters:', parameters)
-    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+str(percentile)+'.txt'
+
+    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/Wdisk/SpinLogQ_'+str(percentile)+'.txt'
     with open(spin_vs_logQ_file,'w') as f:
         f.write('logQ'+'\t'+
                 'spin'+'\t'+
