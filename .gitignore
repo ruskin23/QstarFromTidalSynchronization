@@ -2,7 +2,7 @@
 *.txt
 *.pickle
 *.out
-!/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/MCMC_*/*.txt
+!/MCMC/combined/SAVED_CHAINS/
 
 #vim swap files
 .*.swp
