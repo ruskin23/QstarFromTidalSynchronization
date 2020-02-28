@@ -2,7 +2,7 @@
 *.txt
 *.pickle
 *.out
-!/MCMC/combined/SAVED_CHAINS/
+!/MCMC/combined/SAVED_CHAINS/*
 
 #vim swap files
 .*.swp
