@@ -3,8 +3,6 @@
 /binary_star_evolution/output_data/*.txt
 /binary_star_evolution/unwanted_data/
 *.txt
-!/MCMC/combined/ganymede/MCMC*/*.txt
-!/MCMC/combined/stampede2/MCMC*/*.txt
 *.pickle
 *.out
 
