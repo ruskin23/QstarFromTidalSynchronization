@@ -3,6 +3,7 @@
 *.pickle
 *.out
 !MCMC/combined/SAVED_CHAINS/stampede/*
+!MCMC/combined/SAVED_CHAINS/stampede/MCMC_*/*.txt
 
 #vim swap files
 .*.swp
