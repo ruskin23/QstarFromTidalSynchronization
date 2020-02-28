@@ -1,10 +1,8 @@
 #ignoring large output files
-/binary_star_evolution/output_data/
-/binary_star_evolution/output_data/*.txt
-/binary_star_evolution/unwanted_data/
 *.txt
 *.pickle
 *.out
+!/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/*
 
 #vim swap files
 .*.swp
