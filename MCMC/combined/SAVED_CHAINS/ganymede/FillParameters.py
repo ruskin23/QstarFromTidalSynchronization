@@ -14,7 +14,9 @@ with open('AcceptedParameters.txt','a') as f1:
                 print('\nAt i = ', i)
                 x=lines.split()
                 current_state=x[1:-1]
-                IterationNumber=float(x[0])
+                IterationNumber=int(x[0])
+                if i>1:
+                    if previous_state[0]==x[0]:continue
                 if IterationNumber==1:
                     print('First Iteration')
                     Step=1
@@ -26,6 +28,8 @@ with open('AcceptedParameters.txt','a') as f1:
                     if IterationNumber!=Step:
                         while True:
                             if Step!=IterationNumber:
+                                print('Step = ',Step)
+                                print('IterationNumber = ',IterationNumber)
                                 state=[str(Step)]+previous_state
                                 Parameters='\t'.join(state)
                                 f1.write(Parameters+'\n')
