@@ -3,11 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 data=[]
-with open('MCMC_123/combined_accepted.txt','r') as f:
+with open('AcceptedParameters.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
-        i=1
         if x[15]=='nan':continue
         try:
             data.append(float(x[1]))
