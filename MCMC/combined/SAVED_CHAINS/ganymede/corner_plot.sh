@@ -22,5 +22,5 @@ wc -l combined_accepted.txt
 rm combined_rejected.txt
 rm combined_accepted.txt
 
-#python3 corner_plot.py
+python3 corner_plot.py
 
