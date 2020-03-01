@@ -1,9 +1,11 @@
+import sys
 
 
-
-
-with open('AccetedParameters.txt','w') as f1:
-    with open('accepted_parameters_1.txt','r') as f2:
+system=sys.argv[1]
+instance=sys.argv[2]
+system_filename='MCMC_'+system+'/accepted_parameters_'+instance+'.txt'
+with open('AcceptedParameters.txt','a') as f1:
+    with open(system_filename,'r') as f2:
         for i,lines in enumerate(f2):
             if i==0:
                 f1.write(lines)
