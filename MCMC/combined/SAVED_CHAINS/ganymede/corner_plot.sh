@@ -11,7 +11,7 @@ touch $FILE
 
 for I in 1 2 3 4 5
 do
-    python3 FillParameters.py $S $I >temp.out
+    python3 FillParameters.py $S $I >temp$I.out
 done
 
 cat MCMC_$1/rejected_parameters_* >combined_rejected.txt
