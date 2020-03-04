@@ -22,11 +22,11 @@ with open(parameter_file,'r') as f:
         feh=numpy.append(feh,float(x[7]))
 
 
-print(numpy.cov(numpy.stack((age,logQ,feh),axis=0)))
-C=numpy.cov(numpy.stack((age,logQ,feh),axis=0))
-R=numpy.zeros([3,3])
-for i in range(3):
-    for j in range(3):
+print(numpy.cov(numpy.stack((age,logQ),axis=0)))
+C=numpy.cov(numpy.stack((age,logQ),axis=0))
+R=numpy.zeros([2,2])
+for i in range(2):
+    for j in range(2):
         R[i,j]=C[i,j]/(numpy.sqrt(C[i,i]*C[j,j]))
 
 

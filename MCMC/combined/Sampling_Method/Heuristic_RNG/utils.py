@@ -34,4 +34,8 @@ class cummulative_distribution:
 
         return list(zip(sample_values,probability/max(probability)))
 
+class Norm:
+
+    def norm(x,mu,sigma):
+        return (1/sigma*numpy.sqrt(2*numpy.pi))*numpy.exp(-0.5*((x-mu)/(sigma))**2)
 
