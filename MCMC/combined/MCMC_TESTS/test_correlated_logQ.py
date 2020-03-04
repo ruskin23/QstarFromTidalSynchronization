@@ -39,7 +39,7 @@ class TestCorrelated:
                 self.logQ_mcmc_samples=numpy.append(self.logQ_mcmc_samples,float(x[4]))
 
 
-        self.samples_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_54.txt'
+        self.samples_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_103.txt'
         self.age_samples=[]
         self.mulitplicity=[]
         with open(self.samples_file,'r') as f:
@@ -85,7 +85,7 @@ class TestCorrelated:
 
         age_mcmc_tuple=sorted([(x, len(list(y))) for x, y in itertools.groupby(self.age_mcmc_samples)], key=lambda tup: tup[0])
         age_mcmc_cummulative=self._cummulative_distribution(age_mcmc_tuple)
-        plt.plot(*zip(*age_mcmc_cummulative),label='MCMC')
+        #plt.plot(*zip(*age_mcmc_cummulative),label='MCMC')
 
         plt.legend()
         plt.show()

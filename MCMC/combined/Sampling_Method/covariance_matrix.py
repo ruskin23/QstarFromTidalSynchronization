@@ -6,9 +6,33 @@ d=7
 
 X=numpy.zeros([d,k])
 
-parameter_file='ganymede/AcceptedParameters.txt'
+parameter_file='../SAVED_CHAINS/ganymede/AcceptedParameters.txt'
 
 
+
+
+age=[]
+logQ=[]
+feh=[]
+with open(parameter_file,'r') as f:
+    for lines in f:
+        x=lines.split()
+        age=numpy.append(age,float(x[6]))
+        logQ=numpy.append(logQ,float(x[4]))
+        feh=numpy.append(feh,float(x[7]))
+
+
+print(numpy.cov(numpy.stack((age,logQ,feh),axis=0)))
+C=numpy.cov(numpy.stack((age,logQ,feh),axis=0))
+R=numpy.zeros([3,3])
+for i in range(3):
+    for j in range(3):
+        R[i,j]=C[i,j]/(numpy.sqrt(C[i,i]*C[j,j]))
+
+
+print(R)
+
+"""
 with open(parameter_file,'r') as f:
     for i,lines in enumerate(f):
         x=lines.split()
@@ -28,3 +52,4 @@ print(numpy.dot(Sigma,numpy.transpose(Sigma)))
 
 Samples=numpy.random.multivariate_normal(numpy.transpose(X_mean)[0],Sigma)
 #print(Samples)
+"""
