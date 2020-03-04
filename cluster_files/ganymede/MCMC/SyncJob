@@ -1,170 +1,85 @@
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 73 >/home/rxp163130/scratch/third_run/73.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 92 >/home/rxp163130/scratch/third_run/92.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 93 >/home/rxp163130/scratch/third_run/93.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 79 >/home/rxp163130/scratch/third_run/79.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 47 >/home/rxp163130/scratch/third_run/47.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 109 >/home/rxp163130/scratch/third_run/109.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 44 >/home/rxp163130/scratch/third_run/44.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 48 >/home/rxp163130/scratch/third_run/48.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 17 >/home/rxp163130/scratch/third_run/17.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 8 >/home/rxp163130/scratch/third_run/8.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 12 >/home/rxp163130/scratch/third_run/12.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 20 >/home/rxp163130/scratch/third_run/20.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 31 >/home/rxp163130/scratch/third_run/31.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 57 >/home/rxp163130/scratch/third_run/57.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 120 >/home/rxp163130/scratch/third_run/120.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 28 >/home/rxp163130/scratch/third_run/28.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 13 >/home/rxp163130/scratch/third_run/13.1.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 73 >/home/rxp163130/scratch/third_run/73.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 92 >/home/rxp163130/scratch/third_run/92.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 93 >/home/rxp163130/scratch/third_run/93.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 79 >/home/rxp163130/scratch/third_run/79.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 47 >/home/rxp163130/scratch/third_run/47.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 109 >/home/rxp163130/scratch/third_run/109.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 44 >/home/rxp163130/scratch/third_run/44.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 48 >/home/rxp163130/scratch/third_run/48.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 17 >/home/rxp163130/scratch/third_run/17.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 8 >/home/rxp163130/scratch/third_run/8.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 12 >/home/rxp163130/scratch/third_run/12.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 20 >/home/rxp163130/scratch/third_run/20.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 31 >/home/rxp163130/scratch/third_run/31.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 57 >/home/rxp163130/scratch/third_run/57.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 120 >/home/rxp163130/scratch/third_run/120.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 28 >/home/rxp163130/scratch/third_run/28.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 13 >/home/rxp163130/scratch/third_run/13.2.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 73 >/home/rxp163130/scratch/third_run/73.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 92 >/home/rxp163130/scratch/third_run/92.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 93 >/home/rxp163130/scratch/third_run/93.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 79 >/home/rxp163130/scratch/third_run/79.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 47 >/home/rxp163130/scratch/third_run/47.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 109 >/home/rxp163130/scratch/third_run/109.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 44 >/home/rxp163130/scratch/third_run/44.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 48 >/home/rxp163130/scratch/third_run/48.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 17 >/home/rxp163130/scratch/third_run/17.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 8 >/home/rxp163130/scratch/third_run/8.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 12 >/home/rxp163130/scratch/third_run/12.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 20 >/home/rxp163130/scratch/third_run/20.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 31 >/home/rxp163130/scratch/third_run/31.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 57 >/home/rxp163130/scratch/third_run/57.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 120 >/home/rxp163130/scratch/third_run/120.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 28 >/home/rxp163130/scratch/third_run/28.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 13 >/home/rxp163130/scratch/third_run/13.3.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 73 >/home/rxp163130/scratch/third_run/73.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 92 >/home/rxp163130/scratch/third_run/92.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 93 >/home/rxp163130/scratch/third_run/93.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 79 >/home/rxp163130/scratch/third_run/79.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 47 >/home/rxp163130/scratch/third_run/47.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 109 >/home/rxp163130/scratch/third_run/109.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 44 >/home/rxp163130/scratch/third_run/44.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 48 >/home/rxp163130/scratch/third_run/48.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 17 >/home/rxp163130/scratch/third_run/17.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 8 >/home/rxp163130/scratch/third_run/8.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 12 >/home/rxp163130/scratch/third_run/12.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 20 >/home/rxp163130/scratch/third_run/20.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 31 >/home/rxp163130/scratch/third_run/31.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 57 >/home/rxp163130/scratch/third_run/57.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 120 >/home/rxp163130/scratch/third_run/120.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 28 >/home/rxp163130/scratch/third_run/28.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 13 >/home/rxp163130/scratch/third_run/13.4.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 73 >/home/rxp163130/scratch/third_run/73.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 92 >/home/rxp163130/scratch/third_run/92.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 93 >/home/rxp163130/scratch/third_run/93.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 79 >/home/rxp163130/scratch/third_run/79.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 47 >/home/rxp163130/scratch/third_run/47.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 109 >/home/rxp163130/scratch/third_run/109.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 44 >/home/rxp163130/scratch/third_run/44.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 48 >/home/rxp163130/scratch/third_run/48.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 17 >/home/rxp163130/scratch/third_run/17.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 8 >/home/rxp163130/scratch/third_run/8.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 12 >/home/rxp163130/scratch/third_run/12.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 20 >/home/rxp163130/scratch/third_run/20.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 31 >/home/rxp163130/scratch/third_run/31.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 57 >/home/rxp163130/scratch/third_run/57.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 120 >/home/rxp163130/scratch/third_run/120.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 28 >/home/rxp163130/scratch/third_run/28.5.out
-python3
-        /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 13 >/home/rxp163130/scratch/third_run/13.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 73 >/home/rxp163130/scratch/third_run/73.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 92 >/home/rxp163130/scratch/third_run/92.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 93 >/home/rxp163130/scratch/third_run/93.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 79 >/home/rxp163130/scratch/third_run/79.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 47 >/home/rxp163130/scratch/third_run/47.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 109 >/home/rxp163130/scratch/third_run/109.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 44 >/home/rxp163130/scratch/third_run/44.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 48 >/home/rxp163130/scratch/third_run/48.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 17 >/home/rxp163130/scratch/third_run/17.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 8 >/home/rxp163130/scratch/third_run/8.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 12 >/home/rxp163130/scratch/third_run/12.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 20 >/home/rxp163130/scratch/third_run/20.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 31 >/home/rxp163130/scratch/third_run/31.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 57 >/home/rxp163130/scratch/third_run/57.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 120 >/home/rxp163130/scratch/third_run/120.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 28 >/home/rxp163130/scratch/third_run/28.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 13 >/home/rxp163130/scratch/third_run/13.1.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 73 >/home/rxp163130/scratch/third_run/73.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 92 >/home/rxp163130/scratch/third_run/92.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 93 >/home/rxp163130/scratch/third_run/93.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 79 >/home/rxp163130/scratch/third_run/79.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 47 >/home/rxp163130/scratch/third_run/47.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 109 >/home/rxp163130/scratch/third_run/109.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 44 >/home/rxp163130/scratch/third_run/44.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 48 >/home/rxp163130/scratch/third_run/48.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 17 >/home/rxp163130/scratch/third_run/17.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 8 >/home/rxp163130/scratch/third_run/8.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 12 >/home/rxp163130/scratch/third_run/12.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 20 >/home/rxp163130/scratch/third_run/20.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 31 >/home/rxp163130/scratch/third_run/31.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 57 >/home/rxp163130/scratch/third_run/57.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 120 >/home/rxp163130/scratch/third_run/120.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 28 >/home/rxp163130/scratch/third_run/28.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 13 >/home/rxp163130/scratch/third_run/13.2.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 73 >/home/rxp163130/scratch/third_run/73.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 92 >/home/rxp163130/scratch/third_run/92.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 93 >/home/rxp163130/scratch/third_run/93.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 79 >/home/rxp163130/scratch/third_run/79.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 47 >/home/rxp163130/scratch/third_run/47.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 109 >/home/rxp163130/scratch/third_run/109.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 44 >/home/rxp163130/scratch/third_run/44.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 48 >/home/rxp163130/scratch/third_run/48.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 17 >/home/rxp163130/scratch/third_run/17.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 8 >/home/rxp163130/scratch/third_run/8.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 12 >/home/rxp163130/scratch/third_run/12.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 20 >/home/rxp163130/scratch/third_run/20.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 31 >/home/rxp163130/scratch/third_run/31.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 57 >/home/rxp163130/scratch/third_run/57.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 120 >/home/rxp163130/scratch/third_run/120.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 28 >/home/rxp163130/scratch/third_run/28.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 13 >/home/rxp163130/scratch/third_run/13.3.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 73 >/home/rxp163130/scratch/third_run/73.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 92 >/home/rxp163130/scratch/third_run/92.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 93 >/home/rxp163130/scratch/third_run/93.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 79 >/home/rxp163130/scratch/third_run/79.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 47 >/home/rxp163130/scratch/third_run/47.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 109 >/home/rxp163130/scratch/third_run/109.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 44 >/home/rxp163130/scratch/third_run/44.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 48 >/home/rxp163130/scratch/third_run/48.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 17 >/home/rxp163130/scratch/third_run/17.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 8 >/home/rxp163130/scratch/third_run/8.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 12 >/home/rxp163130/scratch/third_run/12.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 20 >/home/rxp163130/scratch/third_run/20.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 31 >/home/rxp163130/scratch/third_run/31.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 57 >/home/rxp163130/scratch/third_run/57.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 120 >/home/rxp163130/scratch/third_run/120.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 28 >/home/rxp163130/scratch/third_run/28.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 13 >/home/rxp163130/scratch/third_run/13.4.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 73 >/home/rxp163130/scratch/third_run/73.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 92 >/home/rxp163130/scratch/third_run/92.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 93 >/home/rxp163130/scratch/third_run/93.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 79 >/home/rxp163130/scratch/third_run/79.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 47 >/home/rxp163130/scratch/third_run/47.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 109 >/home/rxp163130/scratch/third_run/109.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 44 >/home/rxp163130/scratch/third_run/44.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 48 >/home/rxp163130/scratch/third_run/48.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 17 >/home/rxp163130/scratch/third_run/17.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 8 >/home/rxp163130/scratch/third_run/8.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 12 >/home/rxp163130/scratch/third_run/12.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 20 >/home/rxp163130/scratch/third_run/20.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 31 >/home/rxp163130/scratch/third_run/31.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 57 >/home/rxp163130/scratch/third_run/57.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 120 >/home/rxp163130/scratch/third_run/120.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 28 >/home/rxp163130/scratch/third_run/28.5.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 13 >/home/rxp163130/scratch/third_run/13.5.out
