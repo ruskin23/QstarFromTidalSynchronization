@@ -266,7 +266,7 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
-            f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+            f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t')
             f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
 
