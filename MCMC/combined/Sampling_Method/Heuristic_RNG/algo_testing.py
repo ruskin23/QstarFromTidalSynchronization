@@ -1,3 +1,5 @@
+#Testing for bivariate normal
+
 import numpy
 import matplotlib.pyplot as plt
 from utils import cummulative_distribution

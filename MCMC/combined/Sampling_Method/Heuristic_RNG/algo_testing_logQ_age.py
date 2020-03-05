@@ -30,8 +30,8 @@ def Algo(y1,y2,desired_corr,RMSE0):
     gamma=0.01
 
     RMSE_i=RMSE0
-    y2_best=y2
-    y2_best_prev=y2
+    y2_best=numpy.copy(y2)
+    y2_best_prev=numpy.copy(y2)
 
     N=0
     i=0
@@ -40,7 +40,6 @@ def Algo(y1,y2,desired_corr,RMSE0):
         n_total=0
         n_accepted=0
         for k in range(5*M):
-            print(y2[10])
             N=N+1
             n_total=n_total+1
 
@@ -56,25 +55,24 @@ def Algo(y1,y2,desired_corr,RMSE0):
             with open('analysis.txt','a',1) as f:
                 f.write(repr(i)+'\t'+
                         repr(N)+'\t'+
-                        repr(numpy.log10(RMSE_i))+'\n')
+                        repr(RMSE_i)+'\t'+
+                        repr(RMSE_new)+'\n')
 
             if delta>0 or delta==0:
                 RMSE_i=RMSE_new
                 n_accepted=n_accepted+1
-                continue
             else:
                 U=numpy.random.random(1)[0]
                 P=numpy.exp(delta/T)
                 if P>U:
                     RMSE_i=RMSE_new
                     n_accepted=n_accepted+1
-                    continue
                 else:
                     y2[i2],y2[i1]=y2[i1],y2[i2]
 
 
         if RMSE(y1,y2,desired_corr)<RMSE(y1,y2_best,desired_corr):
-            y2_best=y2
+            y2_best=numpy.copy(y2)
 
         if RMSE(y1,y2_best,desired_corr)<RMSE(y1,y2_best_prev,desired_corr):
             i=0
@@ -83,7 +81,7 @@ def Algo(y1,y2,desired_corr,RMSE0):
         if r<gamma:
             i=i+1
 
-        y2_best_prev=y2_best
+        y2_best_prev=numpy.copy(y2_best)
 
         T=dT*T
 
