@@ -2,6 +2,8 @@ import numpy
 import matplotlib.pyplot as plt
 from utils import cummulative_distribution
 from scipy.stats.stats import pearsonr
+import time
+import sys
 
 class HeuristicRNG:
 
@@ -47,9 +49,12 @@ class HeuristicRNG:
             c_qa=numpy.corrcoef(self.phi_matrix[1],samples)[0][1]
             c_qz=numpy.corrcoef(self.phi_matrix[2],samples)[0][1]
 
+
+
         R=(1/numpy.sqrt(6))*numpy.sqrt((c_qm-self.desired_correlation[3,0])**2 +
                                        (c_qa-self.desired_correlation[3,1])**2 +
                                        (c_qz-self.desired_correlation[3,2])**2)
+
 
         return R
 
@@ -85,9 +90,9 @@ class HeuristicRNG:
         probabilities=probabilities/N
         values=numpy.reshape(values,(len(values)//3,3))
 
-        U=numpy.random.random(1)[0]
 
         for k in range(self.constants['sample_size']):
+            U=numpy.random.random(1)[0]
             for i,p in enumerate(probabilities):
                 if p>U:
                     self.phi_matrix=numpy.append(self.phi_matrix,values[i])
@@ -96,6 +101,8 @@ class HeuristicRNG:
 
         self.phi_matrix=numpy.transpose(numpy.reshape(self.phi_matrix,(self.constants['sample_size'],3)))
 
+
+        print('Mass_age =',numpy.corrcoef(self.phi_matrix[0],self.phi_matrix[1])[0][1]-self.desired_correlation[2,1])
 
     def sample_logQ(self):
 
@@ -129,6 +136,8 @@ class HeuristicRNG:
             for k in range(beta*M):
                 N=N+1
                 n_total=n_total+1
+
+                temp_logQ_samples=numpy.copy(self.logQ_samples)
 
                 i1=numpy.random.randint(0,M)
                 i2=numpy.random.randint(0,M)
@@ -164,10 +173,11 @@ class HeuristicRNG:
                         with open(self.analysis_file,'a') as f:
                             f.write('rejected'+'\n')
 
+
             if self.RMSE()<self.RMSE(samples=logQ_best):
                 logQ_best=numpy.copy(self.logQ_samples)
 
-            if self.RMSE(samples=logQ_best)<self.RMSE(logQ_best_prev):
+            if self.RMSE(samples=logQ_best)<self.RMSE(samples=logQ_best_prev):
                 i=0
 
             r=n_accepted/n_total
@@ -180,11 +190,14 @@ class HeuristicRNG:
 
 
     def __init__(self,
+                 instance,
                  system,
                  parameters,
                  desired_covariance,
                  constants):
 
+
+        self.instance=instance
         self.system=system
         self.parameters=parameters
         self.constants=constants
@@ -200,11 +213,13 @@ class HeuristicRNG:
         self.phi_matrix=[]
         self.logQ_samples=[]
 
-        self.analysis_file='/mnt/md0/ruskin/QstarFromTidalSynchronization/sampling_algo/analysis.txt'
+        self.analysis_file='/mnt/md0/ruskin/QstarFromTidalSynchronization/sampling_algo/analysis_'+self.instance+'.txt'
 
 
 
     def __call__(self):
+
+        start_time = time.time()
 
         self.sample_phi()
         self.sample_logQ()
@@ -220,10 +235,26 @@ class HeuristicRNG:
                     'a or r'+'\n'
                     )
 
+        print('Phi = ',self.phi_matrix)
+        print('R = ',self.desired_correlation)
         self.Algo(RMSE0)
 
         print(self.RMSE())
 
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        C=numpy.cov(numpy.stack((self.phi_matrix[0],self.phi_matrix[1],self.phi_matrix[2],self.logQ_samples),axis=0))
+
+        print(C)
+
+        R=numpy.zeros(C.shape)
+        l=int(numpy.sqrt(C.size))
+
+        for i in range(l):
+            for j in range(l):
+                R[i,j]=self.desired_covariance[i,j]/(numpy.sqrt(self.desired_covariance[i,i]*self.desired_covariance[j,j]))
+
+        print(R)
         return self.phi_matrix,self.logQ_samples
 
 
@@ -231,7 +262,7 @@ class HeuristicRNG:
 
 if __name__=='__main__':
 
-
+    instance=sys.argv[1]
     system='137'
     accepted_filename='../../SAVED_CHAINS/ganymede/MCMC_'+system+'/accepted_parameters_1.txt'
 
@@ -254,14 +285,15 @@ if __name__=='__main__':
                                     [0.00930119,-0.12771926,0.0307736,0.00915663],
                                     [0.01271759,0.08551816,0.00915663 ,0.08012553]])
 
-    constants=dict(sample_size=100,
+    constants=dict(sample_size=1000,
                    T=0.01,
                    dT=0.9,
-                   alpha=10,
+                   alpha=5,
                    beta=5,
                    gamma=0.01)
 
-    O=HeuristicRNG(system,
+    O=HeuristicRNG(instance,
+                    system,
                         parameters,
                         desired_covariance,
                         constants)

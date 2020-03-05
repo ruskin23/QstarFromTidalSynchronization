@@ -47,7 +47,7 @@ def Algo(y1,y2,desired_corr,RMSE0):
             i2=numpy.random.randint(0,M)
 
             y2[i1],y2[i2]=y2[i2],y2[i1]
-
+            #import pdb; pdb.set_trace()
             RMSE_new=RMSE(y1,y2,desired_corr)
 
             delta=RMSE_i-RMSE_new

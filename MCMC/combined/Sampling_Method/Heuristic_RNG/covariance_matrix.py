@@ -1,58 +1,49 @@
 import numpy
 
+class Covariance:
 
-k=1148
-d=7
+    def __init__(self,
+                 system):
 
-X=numpy.zeros([d,k])
+        self.system=system
+        self.parameters_keys=['Porb','e','Wdisk','logQ','mass','age','feh']
 
-parameter_file='../../SAVED_CHAINS/ganymede/AcceptedParameters.txt'
+        self.parameters=dict()
+        for key in self.parameters_keys:
+            self.parameters[key]=[]
 
+    def get_samples(self):
 
+        parameter_file='../../SAVED_CHAINS/ganymede/AcceptedParameters.txt'
 
+        with open(parameter_file,'r') as f:
+            for lines in f:
+                x=lines.split()
 
-age=[]
-logQ=[]
-feh=[]
-mass=[]
-with open(parameter_file,'r') as f:
-    for lines in f:
-        x=lines.split()
-        mass=numpy.append(mass,float(x[5]))
-        age=numpy.append(age,float(x[6]))
-        logQ=numpy.append(logQ,float(x[4]))
-        feh=numpy.append(feh,float(x[7]))
-
-
-print(numpy.cov(numpy.stack((mass,age,feh,logQ),axis=0)))
-C=numpy.cov(numpy.stack((mass,age,feh,logQ),axis=0))
-
-R=numpy.zeros([4,4])
-for i in range(4):
-    for j in range(4):
-        R[i,j]=C[i,j]/(numpy.sqrt(C[i,i]*C[j,j]))
+                for i, key in enumerate(self.parameters_keys):
+                    self.parameters[key]=numpy.append(self.parameters[key],float(x[i+1]))
 
 
-print(R)
+    def Calculate(self,
+                  required):
 
-"""
-with open(parameter_file,'r') as f:
-    for i,lines in enumerate(f):
-        x=lines.split()
-        parameters=numpy.array([float(x[k]) for k in range(1,8)])
-        X[0:d,i]=parameters
+        self.get_samples()
+        parameters_matrix=numpy.array([self.parameters['mass'],
+                                       self.parameters['age'],
+                                       self.parameters['feh'],
+                                       self.parameters['Porb'],
+                                       self.parameters['e'],
+                                       self.parameters['Wdisk'],
+                                       self.parameters['logQ']
+                                       ])
 
-X_mean=numpy.zeros([d,1])
+        C=numpy.cov(parameters_matrix)
+        L=7
+        R=numpy.zeros([L,L])
+        for i in range(L):
+            for j in range(L):
+                R[i,j]=C[i,j]/(numpy.sqrt(C[i,i]*C[j,j]))
 
-for i in range(0,d-1):
-    X_mean[i,0]=numpy.mean(X[i,0:k-1])
+        if required=='Covariance':return C
+        if required=='Correlation':return R
 
-X1=X-X_mean
-X2=numpy.transpose(X1)
-
-Sigma=(1/(k-1))*numpy.dot(X1,X2)
-print(numpy.dot(Sigma,numpy.transpose(Sigma)))
-
-Samples=numpy.random.multivariate_normal(numpy.transpose(X_mean)[0],Sigma)
-#print(Samples)
-"""
