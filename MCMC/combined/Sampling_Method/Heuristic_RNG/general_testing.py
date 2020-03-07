@@ -38,7 +38,6 @@ class HeuristicRNG:
         return C_phi
 
     def RMSE(self,
-             theta,
              samples=None):
 
         r=self.current_theta_index+1
@@ -46,15 +45,22 @@ class HeuristicRNG:
 
         R=numpy.zeros([r,c])
 
-        for i in range(r):
-            for j in range(3+i):
-                R[i,j]=numpy.corrcoef(self.Y_matrix[j],self.Y_matrix[3+i])-self.desired_correlation[j,3+i                           ]
+        if samples is None:
+            for i in range(r):
+                for j in range(3+i):
+                    R[i,j]=numpy.corrcoef(self.Y_matrix[j],self.Y_matrix[3+i])[0][1]-self.desired_correlation[j,3+i                           ]
+
+
+        else:
+            for i in range(r):
+                for j in range(3+i):
+                    R[i,j]=numpy.corrcoef(self.Y_matrix[j],samples)[0][1]-self.desired_correlation[j,3+i                           ]
 
         RT=numpy.transpose(R)
 
         rmse=0
         for i in range(r):
-            rmse=Rmse+numpy.dot(R[i,:],RT[:,i])
+            rmse=rmse+numpy.dot(R[i,:],RT[:,i])
 
         return rmse
 
@@ -148,6 +154,8 @@ class HeuristicRNG:
 
                 delta=RMSE_i-RMSE_new
 
+
+
                 with open(self.analysis_file,'a') as f:
                     f.write(repr(i)+'\t'+
                             repr(N)+'\t'+
@@ -175,16 +183,16 @@ class HeuristicRNG:
 
 
             if self.RMSE()<self.RMSE(samples=theta_best):
-                theta_best=numpy.copy(self.logQ_samples)
+                theta_best=numpy.copy(self.Y_matrix[yk])
 
-            if self.RMSE(samples=theta_best)<self.RMSE(samples=logQ_best_prev):
+            if self.RMSE(samples=theta_best)<self.RMSE(samples=theta_best_prev):
                 i=0
 
             r=n_accepted/n_total
             if r<gamma:
                 i=i+1
 
-            theta_best_prev=numpy.copy(logQ_best)
+            theta_best_prev=numpy.copy(theta_best)
 
             T=dT*T
 
@@ -244,11 +252,11 @@ class HeuristicRNG:
             self.theta_samples=[]
 
             self.current_theta=keys
-            self.current_theta_index=self.theta.index(keys)
+            self.current_theta_index=self.theta_keys.index(keys)
 
             self.sample_theta()
 
-            self.Y_matrix=numpy.vstack(self.Y_matrix,self.theta_samples)
+            self.Y_matrix=numpy.vstack((self.Y_matrix,self.theta_samples))
 
             RMSE0=self.RMSE()
 
@@ -286,7 +294,13 @@ if __name__=='__main__':
         for lines in f:
             x=lines.split()
 
-    parameters=dict(theta=dict(mean=float(x[4]),
+    parameters=dict(Porb=dict(mean=float(x[1]),
+                              sigma=0.00001),
+                    eccentricity=dict(mean=float(x[2]),
+                                      sigma=0.1),
+                    Wdisk=dict(mean=float(x[3]),
+                               sigma=0.5),
+                    logQ=dict(mean=float(x[4]),
                               sigma=0.5),
                     mass=dict(mean=float(x[5]),
                               sigma=1.0),
