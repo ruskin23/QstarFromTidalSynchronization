@@ -6,11 +6,13 @@ import sys
 import os
 import os.path
 
+from metropolis_hasting import MetropolisHastings
+
 from pathlib import Path
 home_dir=str(Path.home())
 
 poet_path=home_dir+'/projects/poet/'
-current_directory=home_dir+'/projects'+git_dir
+current_directory=os.getcwd()
 samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 def cmdline_args():
@@ -50,13 +52,10 @@ def cmdline_args():
 
 
     parser.add_argument('-t',
-                        action-'store',
+                        action='store',
                         dest='test_case',
-                        help='choose from following cases:
-                        prior:L=1.0
-                        gp:L=N(phi;sigma_phi)
-                        gpt:L=N(phi;sigma_phi)N(theta;sigma_theta)
-                        gptc:L=N(phi,theta;sigma_phi_theta)')
+                        help='choose from following cases: prior:L=1.0 gp:L=N(phi;sigma_phi) gpt:L=N(phi;sigma_phi)N(theta;sigma_theta) gptc:L=N(phi,theta;sigma_phi_theta)')
+
 
     parser.add_argument('-b',
                         action='store',
@@ -78,10 +77,10 @@ if __name__ == '__main__':
     sampling_method=args.sampling_method
     if sampling_method=='uncorrelated':
         sys.path.append('../Uncorrelated_Phi')
-        output_directory='../Uncorrelated_Phi/'+test_case
+        output_directory='../Uncorrelated_Phi/'+test_case+'/'
     if sampling_method=='adaptive':
         sys.path.append('../Adaptive')
-        output_directory='../Adaptive/'+test_case
+        output_directory='../Adaptive/'+test_case+'/'
     if os.path.isdir(output_directory)==False:os.mkdir(output_directory)
 
     catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
@@ -98,9 +97,6 @@ if __name__ == '__main__':
                 Porb_error=float(x[7])
                 eccentricity_value=float(x[8])
                 eccentricity_error=float(x[9])
-                Pspin_value=float(x[12])
-                Pspin_error=float(x[13])
-                mass_ratio=float(x[14])
                 primary_mass_value=float(x[15])
                 age_value=float(x[16])
                 feh_value=float(x[17])
@@ -157,13 +153,14 @@ if __name__ == '__main__':
 
 
 mcmc = MetropolisHastings(system_number,
-                          interpolator,
                           sampling_parameters,
-                          mass_ratio,
                           instance,
                           sampling_method,
                           test_case,
-                          output_directory)
+                          output_directory,
+                          catalog_file,
+                          solution_file,
+                          samples_file)
 
 sys.stdout.flush()
 if args.start: mcmc.iterations()

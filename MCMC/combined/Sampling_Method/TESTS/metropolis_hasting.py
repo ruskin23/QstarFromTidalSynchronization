@@ -8,7 +8,8 @@ import random
 import csv
 
 import sys
-sys.path.append('../../')
+sys.path.append('../Uncorrelated_Phi/')
+from uncorrelated_sampling import UncorrelatedSampling
 from utils import Norm
 import os
 import os.path
@@ -24,31 +25,29 @@ class MetropolisHastings:
                    parameter_set):
 
 
-
-
         L=1.0
+
+        normal=Norm()
 
         if self.test_case=='prior':return 1
 
-        if self.test_case=='gp':
-            for key in self.sampled_keys:
-                param_value=parameter_set[key]
-                L=L*self.Norm(param_value,loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
+        elif self.test_case=='gp':
+            key=self.phi_key
+            L=normal.N(param_value,loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
             return L
 
-        if self.test_case=='gpt':
-            for key in ['primary_mass','age']:
-                L=L*self.Norm(parameter_set[key],loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
-            arg=(parameter_set['primary_mass']*parameter_set['age']-self.sampling_parameters['primary_mass']['value']*self.sampling_parameters['age']['value'])/(self.model_width['primary_mass'])*(self.model_width['age'])
-            return L*numpy.exp(-(arg**2)/2)
+        else:
+            if self.test_case=='gpp':
+                key1=self.phi_key1
+                key2=self.phi_key2
 
-        if self.test_case=='gptc':
-            for key in ['logQ','age']:
-                L=L*self.Norm(parameter_set[key],loc=self.sampling_parameters[key]['value'],sigma=self.model_width[key])
-                print('L_key = ',L)
-            L=L*self.Norm(parameter_set['logQ']*parameter_set['age'],loc=self.sampling_parameters['logQ']['value']*self.sampling_parameters['age']['value'],sigma=self.model_width['logQ'])*(self.model_width['age'])
-
-            print('L = ',L)
+            if self.test_case=='gpt':
+                key1=self.phi_key
+                key2='logQ'
+            Norm1=Norm.N(parameter_set[phi_key1],loc=self.sampled_parameters[phi_key1]['value'],sigma=self.sampled_parameters[phi_key1]['sigma'])
+            Norm2=Norm.N(parameter_set[phi_key1],loc=self.sampled_parameters[phi_key2]['value'],sigma=self.sampled_parameters[pehi_key2]['sigma'])
+            Norm3=numpy.exp(-(parameter_set[phi_key1]-self.sampled_parameters[phi_key1]['value'])*(parameter_set[phi_key1]-self.sampled_parameters[phi_key2]['value'])/(rho*self.sampled_parameters[phi_key1]['sigma']*self.sampled_parameters[pehi_key2]['sigma']))
+            L=Norm1*Norm2*Norm3
             return L
 
 
@@ -74,12 +73,14 @@ class MetropolisHastings:
         sys.stdout.flush()
 
         #Calculate Stepping Probability
-        phi_vector=numpy.array([self.current_parameters[key] for key in self.sampled_keys])
-        if self.sampling_method='uncorrelated':
-            sampling=UncorrelatedSampling(self.sampling_parameters,
+        phi_vector=numpy.array([parameter_set[key] for key in self.sampled_keys])
+        if self.sampling_method=='uncorrelated':
+            sampling=UncorrelatedSampling(self.system,
+                                          self.sampling_parameters,
                                           self.current_parameters)
-        if self.sampling_method='uncorrelated':
-            sampling=UncorrelatedSampling(self.sampling_parameters,
+        if self.sampling_method=='uncorrelated':
+            sampling=UncorrelatedSampling(self.system,
+                                          self.sampling_parameters,
                                           self.current_parameters)
         S=sampling.stepping_function_normalization(phi_vector)
         print('Transition Probability = ', S)
@@ -107,11 +108,12 @@ class MetropolisHastings:
 
         proposed=dict()
         if self.sampling_method=='uncorrelated':
-            proposed_samples=UncorrelatedSampling(self.sampling_parameters,self.current_parameters)
+            proposed_samples=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
         if self.sampling_method=='adaptive':
-            proposed_samples=Adaptive(self.sampling_parameters,self.current_parameters)
-        proposed=propose_sample()
+            proposed_samples=Adaptive(self.system,self.sampling_parameters,self.current_parameters)
+        proposed=proposed_samples()
         self.proposed_parameters=proposed
+
 
 
     def write_output(self):
@@ -136,16 +138,14 @@ class MetropolisHastings:
             if self.iteration_step==1:
                 for key, value in self.current_parameters.items():
                     f.write('%s\t' % value)
-                f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t'+
-                        repr(self.current_posterior)+'\t'+
-                        repr(self.p_acceptance)+'\t')
+                f.write(repr(self.current_posterior)+'\t'+
+                        repr(self.p_acceptance)+'\n')
 
             else:
                 for key, value in self.proposed_parameters.items():
                     f.write('%s\t' % value)
-                f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t'+
-                        repr(self.proposed_posterior)+'\t'+
-                        repr(self.p_acceptance)+'\t')
+                f.write(repr(self.proposed_posterior)+'\t'+
+                        repr(self.p_acceptance)+'\n')
 
 
     def save_current_parameter(self):
@@ -155,8 +155,7 @@ class MetropolisHastings:
             f.write(repr(self.iteration_step) + '\t')
             for key, value in self.current_parameters.items():
                 f.write('%s\t' % value)
-            f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
-            f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
+            f.write(repr(self.current_posterior)+'\n')
         f.close()
 
 
@@ -183,7 +182,7 @@ class MetropolisHastings:
         sys.stdout.flush()
 
         self.current_parameters = initial_parameters
-
+        print(self.current_parameters)
         if self.iteration_step==1:self.write_header()
 
 
@@ -218,8 +217,9 @@ class MetropolisHastings:
 
             #draw a random value from proposal function. The values will be proposed again if a negative age is encountered
             #while self.check_age_neg is True: self.values_proposed()
+            print('\nProposing Parameters from: ',self.current_parameters)
             self.propose_sample()
-            print ('\nPROPOSED VALUES')
+            print ('PROPOSED VALUES')
             print (self.proposed_parameters)
             sys.stdout.flush()
             if self.proposed_parameters['eccentricity']<0:
@@ -251,9 +251,9 @@ class MetropolisHastings:
             self.write_output()
             self.save_current_parameter()
 
-
             self.iteration_step = self.iteration_step + 1
 
+            if self.iteration_step>100000:break
 
     def continue_last(self):
 
@@ -309,26 +309,32 @@ class MetropolisHastings:
             with open(f_name, 'w', 1) as fheader:
                 for name in header:
                     fheader.write('%s\t' % name)
-                fheader.write('\n')
+                fheader.write('posterior'+'\t'+'p_acceptance'+'\n')
 
 
 
 
     def __init__(self,
                  system_number,
-                 interpolator,
                  sampling_parameters,
-                 fixed_parameters,
-                 mass_ratio,
                  instance,
+                 sampling_method,
+                 test_case,
                  output_directory,
-                 test_case):
+                 catalog_file,
+                 solution_file,
+                 samples_file):
 
         self.system=system_number
-        self.interpolator=interpolator
         self.sampling_parameters=sampling_parameters
+        self.instance=instance
+        self.sampling_method=sampling_method
+        self.test_case=test_case
+        self.output_directory=output_directory
+        self.catalog_file=catalog_file
+        self.solution_file=solution_file
+        self.samples_file=samples_file
         self.iteration_step=1
-        self.mass_ratio=mass_ratio
 
         self.sampled_keys=[]
         self.sampled_parameters=dict()
@@ -352,17 +358,11 @@ class MetropolisHastings:
         self.proposed_parameters = dict()
 
         self.isAccepted = None
-        self.observed_spin=observed_spin
         self.check_age_neg = None
 
         self.proposed_posterior = 0.0
         self.current_posterior = 0.0
         self.p_acceptance = 0.0
-        self.spin_value = 0.0
-
-        self.instance = instance
-
-        self.output_directory=output_directory
 
         self.save_filename = [
             self.output_directory+'accepted_parameters_'+self.instance+'.txt',
@@ -371,9 +371,3 @@ class MetropolisHastings:
 
 
         self.current_filename = self.output_directory+'current_parameters_'+ self.instance +'.txt'
-
-        self.test_case=test_case
-
-        self.time_stamp = 0.0
-        self.time_elapsed = 0.0
-
