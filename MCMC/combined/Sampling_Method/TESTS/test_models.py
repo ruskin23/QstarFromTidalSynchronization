@@ -1,6 +1,5 @@
 #All Test Models between phi and logQ
 
-
 import sys
 sys.path.append('../../')
 from utils import cummulative_distribution
@@ -8,44 +7,25 @@ from utils import Norm
 from utils import multivariate_gaussian
 
 import numpy
-
+from scipy import integrate
+import random
 
 
 class TestModels:
 
 
     def prior_model(self,
+                    phi_key,
                     parameter):
 
         p=[]
 
-        if parameter=='phi':bounds=self.phi_bounds
+        if parameter=='phi':bounds=numpy.array([self.sampling_parameters[phi_key]['min'],self.sampling_parameters[phi_key]['max']])
         if parameter=='logQ':bounds=self.logQ_bounds
-        for i in range(self.sample_space):
-            p=numpy.append(m,random.uniform(bounds[0],bounds[1]))
+        for i in range(1000):
+            p=numpy.append(p,random.uniform(bounds[0],bounds[1]))
         return cummulative_distribution(p)()
 
-
-    """
-    def gaussian_phi_model(self,
-                           parameter,
-                           phi_key):
-
-        p=[]
-        parameter_values=[]
-        if parameter='phi':
-            with open(self.sample_file,'r') as f:
-                next(f)
-                for lines in f:
-                    m_i=float(x[3])
-                    s_vector=[]
-                    parameter_values=numpy.append(parameter_values,float(x[self.phi_keys.index(phi_key)]))
-                    for key in self.phi_keys:
-                        s_vector=numpy.append(s_vector,float(x[self.phi_keys.index(key)]))
-                    p=numpy.append(m,m_i*multivariate_gaussian.multi*(s_vector,self.phi_mean_vector,s_vector,self.phi_mean_vector,self.phi_sigminv_matrix))
-            cdf=cummulative_distribution(parameter_values,p)
-            return cdf()
-    """
 
     def gaussian_phi_model(self,
                            phi_key):
@@ -61,132 +41,195 @@ class TestModels:
             next(f)
             for lines in f:
                 x=lines.split()
-                phi_values=numpy.append(phi_values,float(x[self.phi_keys.index(phi_key)]))
-                P=numpy.append(P,Norm.N(phi_value,loc=phi_mean,sigma=phi_sigma))
+                m_i=float(x[3])
+                phi_value=float(x[self.phi_keys.index(phi_key)])
+                phi_values=numpy.append(phi_values,phi_value)
+                P=numpy.append(P,m_i*Norm().N(phi_value,loc=phi_mean,sigma=phi_sigma))
 
+        print(numpy.mean(phi_values))
         cdf=cummulative_distribution(phi_values,P)
         return cdf()
 
 
-    def gaussian_phi_phi_model(self,
-                               phi,
-                               phi_key1,
-                               phi_key2):
-
-        rho=self.rho[self.phi_keys.index(phi_key1),self.phi_keys.index(phi_key2)]
-        phi1_mean=self.phi_mean_vector[self.phi_keys.index(phi_key1)]
-        phi2_mean=self.phi_mean_vector[self.phi_keys.index(phi_key2)]
-        phi1_sigma=self.phi_sigma_vector[self.phi_keys.index(phi_key1)]
-        phi2_sigma=self.phi_sigma_vector[self.phi_keys.index(phi_key2)]
+    def gaussian_phi_theta_model(self,
+                                 parameter,
+                                 phi_key):
 
 
-        phi_values=[]
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                phi_values=numpy.append(phi_values,float(x[self.phi_keys.index(phi)]))
+        phi_mean=self.phi_mean_vector[self.phi_keys.index(phi_key)]
+        phi_sigma=self.phi_sigma_vector[self.phi_keys.index(phi_key)]
 
-        P=numpy.zeros(len(phi_values))
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                phi2=float(x[self.phi_keys.index(phi_key2)])
-                P=P+Norm.N(phi_values,loc=phi1_mean,sigma=phi1_sigma)*Norm.N(phi2,loc=phi2_mean,sigma=phi2_sigma)*numpy.exp(-(phi_values-phi1_mean)*(phi2-phi2_mean)/(rho*phi1_sigma*phi2_sigma))
+        print(phi_mean)
+        print(phi_sigma)
 
-        cdf=cummulative_distribution(phi_values,P)
-        return cdf()
+        P=[]
+
+        if parameter in self.phi_keys:return self.gaussian_phi_model(phi_key)
+
+        if parameter=='logQ':
+            print('MEAN  = ',self.logQ_mean)
+            logQ_values=numpy.linspace(self.logQ_bounds[0],self.logQ_bounds[1],1000)
+            P=Norm().N(logQ_values,loc=self.logQ_mean,sigma=self.logQ_sigma)
+
+            cdf=cummulative_distribution(logQ_values,P)
+            return cdf()
 
 
-
-    def integrand(self,
-                  phi,
-                  logQ,
-                  logQ_mean,
-                  logQ_sigma,
-                  phi_mean):
-
-        return Norm.N(logQ,loc=logQ_mean,scale=logQ_sigma)*numpy.exp(-(logQ-logQ_mean)*(phi-phi_mean)/(self.rho*logQ_mean*phi_mean))
-
-    def Porbablity(self,
-                   phi,
-                   logQ_mean,
-                   logQ_sigma,
-                   phi_mean,
-                   phi_sigma,
+    def Probability(self,
+                   vN,
+                   x_mean,
+                   x_sigma,
+                   vN_mean,
+                   vN_sigma,
                    bounds):
 
-        I=lambda logQ: self.integrand(phi,logQ,logQ_mean,logQ_sigma,phi_mean)
-        Integral = integrate.quad(I,bounds[0],bounds[1])[0]
 
-        return Norm.N(phi,loc=phi_mean,scale=phi_sigma)
+        I=lambda x:Norm().N(x,loc=x_mean,sigma=x_sigma)*numpy.exp(-(x-x_mean)*(vN-vN_mean)/(self.rho*x_sigma*vN_sigma))
+        Integral = integrate.quad(I,bounds[0],bounds[1])[0]
+        return Norm().N(vN,loc=vN_mean,sigma=vN_sigma)*Integral
 
 
     def correlated_phi_theta(self,
                              parameter,
                              phi_key):
 
-
         phi_mean=self.phi_mean_vector[self.phi_keys.index(phi_key)]
         phi_sigma=self.phi_sigma_vector[self.phi_keys.index(phi_key)]
-
-        phi_logQ_sigma=self.rho[len(self.phi_keys),self.phi_keys.index(phi_key)]*phi_sigma*self.logQ_mean
+        phi_logQ_sigma=self.rho*phi_sigma*self.logQ_sigma
 
         bounds=self.logQ_bounds
 
         if parameter=='logQ':
-            logQ_samples=numpy.linspace(bound[0],bound[1],1000)
+            logQ_samples=numpy.linspace(bounds[0],bounds[1],1000)
             P=numpy.zeros(len((logQ_samples)))
-            with open(self.sample_file,'r') as f:
+            with open(self.samples_file,'r') as f:
                 next(f)
                 for lines in f:
                     x=lines.split()
                     phi_value=float(x[self.phi_keys.index(phi_key)])
-                    P=P+(Norm.N(phi_value,loc=phi_mean,sigma=phi_sigma)*Norm.N(logQ_samples,loc=self.logQ_mean,sigma=self.logQ_sigma)*numpy.exp(-0.5*(phi_value-phi_mean)*(logQ_samples-self.logQ_mean)/phi_logQ_sigma))
+                    P=P+(Norm().N(phi_value,loc=phi_mean,sigma=phi_sigma)*Norm().N(logQ_samples,loc=self.logQ_mean,sigma=self.logQ_sigma)*numpy.exp(-(phi_value-phi_mean)*(logQ_samples-self.logQ_mean)/phi_logQ_sigma))
             cdf=cummulative_distribution(logQ_samples,P)()
             return cdf
 
-        if parameter=='phi':
+        if parameter in self.phi_keys:
 
             P=[]
             phi_values=[]
-            with open(self.sample_file,'r') as f:
+            N=0
+            with open(self.samples_file,'r') as f:
                 next(f)
                 for lines in f:
                     x=lines.split()
+                    m_i=float(x[3])
                     phi_value=float(x[self.phi_keys.index(phi_key)])
                     phi_values=numpy.append(phi_values,phi_value)
-                    P=numpy.append(P,self.Probability(phi_value,self.logQ_mean,self.logQ_sigma,phi_mean,phi_sigma,bounds))
-
+                    p=m_i*self.Probability(phi_value,self.logQ_mean,self.logQ_sigma,phi_mean,phi_sigma,bounds)
+                    P=numpy.append(P,p)
+                    N=N+p
+            P=P/N
             cdf=cummulative_distribution(phi_values,P)()
 
             return cdf
 
 
 
+    def gaussian_theta_theta_model(self,
+                                   theta_key,
+                                   parameter):
+
+
+        if parameter=='logQ':
+
+            logQ_samples=numpy.linspace(self.logQ_bounds[0],self.logQ_bounds[1],1000)
+            p=numpy.zeros(1000)
+            for i,q in enumerate(logQ_samples):
+                p[i]=Norm().N(q,loc=self.logQ_mean,sigma=self.logQ_sigma)
+            cdf=cummulative_distribution(logQ_samples,p)()
+            return cdf
+
+        else:
+            theta_mean=self.sampling_parameters[theta_key]['value']
+            theta_sigma=self.model_width[theta]
+            if self.sampling_parameters[theta_key]['dist']=='Uniform':
+                bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
+            else:
+                bounds=[theta_mean-3*theta_sigma,theta_mean+3*theta_sigma]
+            theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
+            p=numpy.zeros(1000)
+            for i,q in enumerate(theta_samples):
+                p[i]=Norm().N(q,loc=theta_mean,sigma=theta_sigma)
+            cdf=cummulative_distribution(theta_samples,p)()
+            return cdf
+
+
+    def correlated_theta_theta(self,
+                               theta_key,
+                               parameter):
+
+        if parameter=='logQ':
+            logQ_samples=numpy.linspace(self.logQ_bounds[0],self.logQ_bounds[1],1000)
+            p=numpy.zeros(1000)
+            theta_mean=self.sampling_parameters[theta_key]['value']
+            theta_sigma=self.model_width[theta_key]
+            if self.sampling_parameters[theta_key]['dist']=='Uniform':
+                bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
+                for i,q in enumerate(logQ_samples):
+                    p[i]=self.Probability(q,theta_mean,theta_sigma,self.logQ_mean,self.logQ_sigma)
+                cdf=cummulative_distribution(logQ_samples,p)()
+                return cdf
+            else:
+                for i,q in enumerate(logQ_samples):
+                    p[i]=Norm().N(q,loc=self.logQ_mean,sigma=self.logQ_sigma)
+                cdf=cummulative_distribution(logQ_samples,p)()
+                return cdf
+
+
+        else:
+
+            theta_mean=self.sampling_parameters[theta_key]['value']
+            theta_sigma=self.model_width[theta]
+            if self.sampling_parameters[theta_key]['dist']=='Uniform':
+                bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
+            else:
+                bounds=[theta_mean-3*theta_sigma,theta_mean+3*theta_sigma]
+            theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
+            p=numpy.zeros(1000)
+            for i,q in enumerate(theta_samples):
+                p[i]=self.Probability(q,self.logQ_mean,self.logQ_sigma,theta_mean,theta_sigma,self.logQ_bounds)
+            cdf=cummulative_distribution(theta_samples,p)()
+            return cdf
+
+
+
+
+
     def __init__(self,
                  samples_file,
-                 logQ_mean,
-                 logQ_sigma,
-                 logQ_bounds,
-                 rho,
-                 phi_keys,
-                 phi_mean_vector,
-                 phi_sigma_vector,
-                 phi_bounds=None):
+                 sampling_parameters,
+                 model_width,
+                 rho):
+
+
 
         self.samples_file=samples_file
-        self.logQ_mean=logQ_mean
-        self.logQ_sigma=logQ_sigma
-        self.logQ_bounds=logQ_bounds
-
-        self.phi_keys=phi_keys,
-        self.phi_mean_vector=phi_mean_vector
-        self.phi_sigma_vector=self.phi_sigma_vector
-
-        d=numpy.diag_indices(3)
-        self.phi_sigmainv_matrix=numpy.zeros(len(phi_keys),len(phi_keys))
-        self.phi_sigmainv_matrix[d]=1/(phi_mean_vector**2)
-
+        self.sampling_parameters=sampling_parameters
+        self.model_width=model_width
         self.rho=rho
+
+        print(sampling_parameters)
+        self.logQ_mean=self.sampling_parameters['logQ']['value']
+        print(self.logQ_mean)
+        self.logQ_sigma=self.model_width['logQ']
+        self.logQ_bounds=numpy.array([self.sampling_parameters['logQ']['min'],self.sampling_parameters['logQ']['max']])
+
+
+        self.phi_keys=[]
+        self.phi_mean_vector=[]
+        self.phi_sigma_vector=[]
+        for key,value in self.sampling_parameters.items():
+            if value['dist']=='Samples':
+                self.phi_keys.append(key)
+                self.phi_mean_vector=numpy.append(self.phi_mean_vector,value['value'])
+                self.phi_sigma_vector=numpy.append(self.phi_sigma_vector,self.model_width[key])
+
+

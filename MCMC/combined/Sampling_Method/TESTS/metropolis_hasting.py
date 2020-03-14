@@ -8,8 +8,13 @@ import random
 import csv
 
 import sys
+
 sys.path.append('../Uncorrelated_Phi/')
 from uncorrelated_sampling import UncorrelatedSampling
+
+sys.path.append('../Adaptive/')
+from adaptive_sampling import AdaptiveSampling
+from covariance_matrix import Covariance
 from utils import Norm
 import os
 import os.path
@@ -18,7 +23,6 @@ import time
 start_time = time.time()
 
 class MetropolisHastings:
-
 
 
     def test_model(self,
@@ -33,22 +37,22 @@ class MetropolisHastings:
 
         elif self.test_case=='gp':
             key=self.phi_key
-            L=normal.N(param_value,loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
+            L=normal.N(parameter_set[self.phi_key],loc=self.sampled_parameters[key]['value'],sigma=self.model_width[key])
             return L
 
         else:
-            if self.test_case=='gpp':
-                key1=self.phi_key1
-                key2=self.phi_key2
-
-            if self.test_case=='gpt':
-                key1=self.phi_key
-                key2='logQ'
-            Norm1=Norm.N(parameter_set[phi_key1],loc=self.sampled_parameters[phi_key1]['value'],sigma=self.sampled_parameters[phi_key1]['sigma'])
-            Norm2=Norm.N(parameter_set[phi_key1],loc=self.sampled_parameters[phi_key2]['value'],sigma=self.sampled_parameters[pehi_key2]['sigma'])
-            Norm3=numpy.exp(-(parameter_set[phi_key1]-self.sampled_parameters[phi_key1]['value'])*(parameter_set[phi_key1]-self.sampled_parameters[phi_key2]['value'])/(rho*self.sampled_parameters[phi_key1]['sigma']*self.sampled_parameters[pehi_key2]['sigma']))
+            if self.test_case in ['gpt','gptc']:key1=self.phi_key
+            if self.test_case in ['gtt','gttc']:key1=self.theta_key
+            key2='logQ'
+            Norm1=normal.N(parameter_set[key1],loc=self.sampling_parameters[key1]['value'],sigma=self.model_width[key1])
+            Norm2=normal.N(parameter_set[key2],loc=self.sampling_parameters[key2]['value'],sigma=self.model_width[key2])
+            if self.test_case in ['gpt','gtt']:Norm3=1.0
+            if self.test_case in ['gptc','gttc']:
+                Norm3=numpy.exp(-(parameter_set[key1]-self.sampling_parameters[key1]['value'])*(parameter_set[key2]-self.sampling_parameters[key2]['value'])/(self.rho*self.model_width[key1]*self.model_width[key2]))
+                #Norm3=numpy.exp(-(parameter_set[key1]*parameter_set[key2] - self.sampling_parameters[key1]['value']*self.sampling_parameters[key2]['value'])/(self.model_width[key1]*self.model_width[key2]))
             L=Norm1*Norm2*Norm3
             return L
+
 
 
     def posterior_probability(self,
@@ -77,11 +81,12 @@ class MetropolisHastings:
         if self.sampling_method=='uncorrelated':
             sampling=UncorrelatedSampling(self.system,
                                           self.sampling_parameters,
-                                          self.current_parameters)
-        if self.sampling_method=='uncorrelated':
-            sampling=UncorrelatedSampling(self.system,
-                                          self.sampling_parameters,
-                                          self.current_parameters)
+                                          parameter_set)
+        if self.sampling_method=='adaptive':
+            sampling=AdaptiveSampling(self.system,
+                                      self.sampling_parameters,
+                                      parameter_set,
+                                      self.covariance_matrix)
         S=sampling.stepping_function_normalization(phi_vector)
         print('Transition Probability = ', S)
 
@@ -110,7 +115,7 @@ class MetropolisHastings:
         if self.sampling_method=='uncorrelated':
             proposed_samples=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
         if self.sampling_method=='adaptive':
-            proposed_samples=Adaptive(self.system,self.sampling_parameters,self.current_parameters)
+            proposed_samples=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
         proposed=proposed_samples()
         self.proposed_parameters=proposed
 
@@ -253,8 +258,6 @@ class MetropolisHastings:
 
             self.iteration_step = self.iteration_step + 1
 
-            if self.iteration_step>100000:break
-
     def continue_last(self):
 
         if  os.path.isfile(self.current_filename) == False or os.stat(self.current_filename).st_size == 0:
@@ -348,11 +351,15 @@ class MetropolisHastings:
                 self.sampled_keys.append(key)
         print(self.sampled_parameters)
 
+        self.phi_key='age'
+        self.theta_key='eccentricity'
         self.model_width=dict(primary_mass=0.8,
                               age=0.8,
                               feh=0.2,
+                              eccentricity=0.2,
                               logQ=0.2)
 
+        self.rho=1.5
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
@@ -371,3 +378,24 @@ class MetropolisHastings:
 
 
         self.current_filename = self.output_directory+'current_parameters_'+ self.instance +'.txt'
+
+        self.covariance_matrix=numpy.zeros([7,7])
+        self.step_vector=numpy.zeros(7)
+        k=0
+        for key,item in self.sampling_parameters.items():
+            self.step_vector[k]=item['step']
+            k=k+1
+
+        for i in range(7):
+            for j in range(7):
+                if i!=j:r=1/((i+1)*(j+1))
+                else:r=1
+                self.covariance_matrix[i,j]=r*self.step_vector[i]*self.step_vector[j]
+
+
+        print('Covariance Matrix = ',self.covariance_matrix)
+
+
+
+        #if sampling_method=='adaptive':
+        #    self.covariance_matrix=Covariance(self.system).Calculate('Covariance')
