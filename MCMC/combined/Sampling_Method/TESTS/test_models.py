@@ -10,7 +10,6 @@ import numpy
 from scipy import integrate
 import random
 
-
 class TestModels:
 
 
@@ -149,7 +148,7 @@ class TestModels:
 
         else:
             theta_mean=self.sampling_parameters[theta_key]['value']
-            theta_sigma=self.model_width[theta]
+            theta_sigma=self.model_width[theta_key]
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
@@ -157,7 +156,9 @@ class TestModels:
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):
-                p[i]=Norm().N(q,loc=theta_mean,sigma=theta_sigma)
+                if q>0:
+                    p[i]=Norm().N(q,loc=theta_mean,sigma=theta_sigma)*Norm().N(q,loc=theta_mean,sigma=self.sampling_parameters[theta_key]['sigma'])
+                else:p[i]=0
             cdf=cummulative_distribution(theta_samples,p)()
             return cdf
 
@@ -187,15 +188,17 @@ class TestModels:
         else:
 
             theta_mean=self.sampling_parameters[theta_key]['value']
-            theta_sigma=self.model_width[theta]
+            theta_sigma=self.model_width[theta_key]
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
-                bounds=[theta_mean-3*theta_sigma,theta_mean+3*theta_sigma]
+                bounds=[0,theta_mean+theta_sigma]
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):
-                p[i]=self.Probability(q,self.logQ_mean,self.logQ_sigma,theta_mean,theta_sigma,self.logQ_bounds)
+                if q>0:
+                    p[i]=self.Probability(q,self.logQ_mean,self.logQ_sigma,theta_mean,theta_sigma,self.logQ_bounds)*Norm().N(q,loc=theta_mean,sigma=self.sampling_parameters[theta_key]['sigma'])
+                else:p[i]=0
             cdf=cummulative_distribution(theta_samples,p)()
             return cdf
 

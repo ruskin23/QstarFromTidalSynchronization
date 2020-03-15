@@ -10,6 +10,7 @@ class GetCDF:
                               test_case,
                               parameter):
 
+
         mcmc_file='../Adaptive/'+test_case+'/AcceptedParameters.txt'
         p=[]
         with open(mcmc_file,'r') as f:
@@ -17,9 +18,9 @@ class GetCDF:
                 x=lines.split()
                 if parameter=='age':p=numpy.append(p,float(x[6]))
                 if parameter=='logQ':p=numpy.append(p,float(x[4]))
+                if parameter=='eccentricity':p=numpy.append(p,float(x[2]))
 
         cdf=cummulative_distribution(p)
-
         return cdf()
 
     def get_model_distribution(self,

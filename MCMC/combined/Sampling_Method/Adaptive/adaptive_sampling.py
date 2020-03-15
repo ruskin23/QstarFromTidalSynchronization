@@ -2,9 +2,11 @@ import numpy
 from covariance_matrix import Covariance
 import random
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('../../')
 from utils import cummulative_distribution
 
-class Sampling:
+class AdaptiveSampling:
 
     def _multivariate_gaussian(self,
                                x_vector,
@@ -49,8 +51,10 @@ class Sampling:
         mean=theta_mean - numpy.matmul(self.SIGMA_theta_theta,numpy.matmul(self.SIGMAINV_theta_phi,numpy.transpose(phi_N-phi_mean)))
         cov=self.SIGMA_theta_theta
 
-        return numpy.random.multivariate_normal(mean,cov)
+        samples=numpy.random.multivariate_normal(mean,cov)
 
+        for i,key in enumerate(self.theta_keys):
+            self.proposed[key]=samples[i]
 
     def phi_summation(self,phi_0):
 
@@ -91,32 +95,38 @@ class Sampling:
                 Samples.append(sample_vector)
 
         U=random.uniform(0,1)
-        for i in range(len(modified_multiplicity)):
-            if U<modified_multiplicity[i]:return Samples[i]
-            else:U=U-modified_multiplicity[i]
+        for mm,s in zip(modified_multiplicity,Samples):
+            if U<mm:
+                return s
+            else:U=U-mm
 
     def __call__(self):
 
-        self.phi_samples=self.get_phi_samples()
-        self.theta_samples=self.get_theta_samples()
 
+        self.phi_samples=self.get_phi_samples()
+        self.get_theta_samples()
+        for k,keys in enumerate(self.phi_keys):
+            self.proposed[keys]=self.phi_samples[k]
+        return self.proposed
 
     def __init__(self,
                  system,
-                 parameters
+                 sampling_parameters,
+                 parameters,
+                 covariance_matrix
                  ):
 
 
         self.system=system
         self.parameters=parameters
+        self.sampling_parameters=sampling_parameters
 
         self.samples_file='../../../mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
 
-        self.phi_keys=['mass','age','feh']
-        self.theta_keys=['Porb','e','Wdisk','logQ']
+        self.phi_keys=['primary_mass','age','feh']
+        self.theta_keys=['Porb','eccentricity','Wdisk','logQ']
 
-        C=Covariance(system)
-        self.covariance_matrix=C.Calculate('Covariance')
+        self.covariance_matrix=covariance_matrix
         self.covariance_inverse=numpy.linalg.inv(self.covariance_matrix)
 
         n_theta=len(self.theta_keys)
@@ -130,18 +140,4 @@ class Sampling:
         self.SIGMAINV_phi_phi=self.covariance_inverse[n_theta:n_theta+n_phi,n_theta:n_theta+n_phi].copy()
         self.SIGMAINV_theta_phi=self.covariance_inverse[0:n_theta,n_theta:n_theta+n_phi].copy()
 
-
-
-
-if __name__=='__main__':
-
-    system='137'
-    parameters=dict(mass=1.0,
-                    age=4.0,
-                    feh=-0.5,
-                    Porb=8.0,
-                    e=0.1,
-                    Wdisk=4.1,
-                    logQ=6)
-
-    Sampling(system,parameters)()
+        self.proposed=dict()

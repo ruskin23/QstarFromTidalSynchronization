@@ -101,10 +101,10 @@ if __name__=='__main__':
                      age=0.8,
                      feh=0.2,
                      logQ=0.2,
-                     eccentricity=0.2)
+                     eccentricity=0.05)
 
 
-    rho=1.5
+    rho=50
 
     Distrbution=GetCDF(system_number,
                        sampling_parameters,
@@ -113,18 +113,37 @@ if __name__=='__main__':
 
     fig,(ax1,ax2)=plt.subplots(1,2)
 
-    age_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'age')
-    age_model_cdf=Distrbution.get_model_distribution(test_case,parameter='age',phi='age')
+    if test_case in ['gp','gpt','gptc']:
+        age_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'age')
+        age_model_cdf=Distrbution.get_model_distribution(test_case,parameter='age',phi='age')
 
-    ax1.scatter(*zip(*age_mcmc_cdf))
-    ax1.plot(*zip(*age_model_cdf))
-    ax1.set_title('age')
+        ax1.scatter(*zip(*age_mcmc_cdf))
+        ax1.plot(*zip(*age_model_cdf))
+        ax1.set_title('age')
 
-    logQ_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'logQ')
-    logQ_model_cdf=Distrbution.get_model_distribution(test_case,parameter='logQ',phi='age')
+        logQ_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'logQ')
+        logQ_model_cdf=Distrbution.get_model_distribution(test_case,parameter='logQ',phi='age')
 
-    ax2.scatter(*zip(*logQ_mcmc_cdf))
-    ax2.plot(*zip(*logQ_model_cdf))
-    ax2.set_title('logQ')
+        ax2.scatter(*zip(*logQ_mcmc_cdf))
+        ax2.plot(*zip(*logQ_model_cdf))
+        ax2.set_title('logQ')
 
-    plt.show()
+        plt.show()
+
+    else:
+        eccentricity_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'eccentricity')
+        eccentricity_model_cdf=Distrbution.get_model_distribution(test_case,parameter='eccentricity',theta='eccentricity')
+
+        ax1.scatter(*zip(*eccentricity_mcmc_cdf))
+        ax1.plot(*zip(*eccentricity_model_cdf))
+        ax1.set_title('eccentricity')
+
+        logQ_mcmc_cdf=Distrbution.get_mcmc_distribution(test_case,'logQ')
+        logQ_model_cdf=Distrbution.get_model_distribution(test_case,parameter='logQ',theta='eccentricity')
+
+        ax2.scatter(*zip(*logQ_mcmc_cdf))
+        ax2.plot(*zip(*logQ_model_cdf))
+        ax2.set_title('logQ')
+
+        plt.show()
+

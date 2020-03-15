@@ -49,7 +49,7 @@ class MetropolisHastings:
             if self.test_case in ['gpt','gtt']:Norm3=1.0
             if self.test_case in ['gptc','gttc']:
                 Norm3=numpy.exp(-(parameter_set[key1]-self.sampling_parameters[key1]['value'])*(parameter_set[key2]-self.sampling_parameters[key2]['value'])/(self.rho*self.model_width[key1]*self.model_width[key2]))
-                #Norm3=numpy.exp(-(parameter_set[key1]*parameter_set[key2] - self.sampling_parameters[key1]['value']*self.sampling_parameters[key2]['value'])/(self.model_width[key1]*self.model_width[key2]))
+                #Norm3=numpy.exp(-(parameter_set[key1]*parameter_set[key2]-self.sampling_parameters[key1]['value']*self.sampling_parameters[key2]['value'])/(self.rho*self.model_width[key1]*self.model_width[key2]))
             L=Norm1*Norm2*Norm3
             return L
 
@@ -356,10 +356,10 @@ class MetropolisHastings:
         self.model_width=dict(primary_mass=0.8,
                               age=0.8,
                               feh=0.2,
-                              eccentricity=0.2,
+                              eccentricity=0.001,
                               logQ=0.2)
 
-        self.rho=1.5
+        self.rho=50
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
