@@ -1,0 +1,826 @@
+WARNING (01/29/20 11:11:52): LAUNCHER_WORKDIR variable not set. Using current directory.
+Launcher: Setup complete.
+
+------------- SUMMARY ---------------
+   Number of hosts:    8
+   Working directory:  /home/rxp163130
+   Processes per host: 15
+   Total processes:    120
+   Total jobs:         124
+   Scheduling method:  dynamic
+
+-------------------------------------
+Launcher: Starting parallel tasks...
+using /tmp/launcher.184255.hostlist.JCUwX61O to get hosts
+starting job on compute-7-6-6
+starting job on compute-7-6-7
+starting job on compute-7-6-18
+starting job on compute-7-6-19
+starting job on compute-7-6-23
+starting job on compute-7-6-27
+starting job on compute-7-6-28
+starting job on compute-7-6-29
+Launcher: Task 9 running job 1 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 12 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 12 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 9 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 12 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 11 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 12 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 10 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 12 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 running job 2 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 4 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 3 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 1 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 0 running job 7 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 8 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 5 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 8 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 6 running job 8 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 8 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 6 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 8 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 2 completed in 0 seconds.
+Launcher: Job 12 completed in 0 seconds.
+Launcher: Job 9 completed in 0 seconds.
+Launcher: Job 1 completed in 0 seconds.
+Launcher: Job 11 completed in 0 seconds.
+Launcher: Job 8 completed in 0 seconds.
+Launcher: Job 5 completed in 0 seconds.
+Launcher: Job 10 completed in 0 seconds.
+Launcher: Job 4 completed in 0 seconds.
+Launcher: Job 7 completed in 0 seconds.
+Launcher: Job 3 completed in 0 seconds.
+Launcher: Job 6 completed in 0 seconds.
+Launcher: Task 7 running job 14 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 13 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 16 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 13 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 13 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 13 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 15 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 13 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 18 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 0 running job 21 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 6 running job 17 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 20 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 23 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 19 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 25 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 22 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 24 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 32 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 24 completed in 1 seconds.
+Launcher: Job 19 completed in 1 seconds.
+Launcher: Job 22 completed in 1 seconds.
+Launcher: Job 18 completed in 1 seconds.
+Launcher: Job 21 completed in 1 seconds.
+Launcher: Job 17 completed in 1 seconds.
+Launcher: Job 15 completed in 1 seconds.
+Launcher: Job 14 completed in 1 seconds.
+Launcher: Job 20 completed in 1 seconds.
+Launcher: Job 23 completed in 1 seconds.
+Launcher: Job 16 completed in 1 seconds.
+Launcher: Job 13 completed in 1 seconds.
+Launcher: Task 3 running job 26 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 29 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 28 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 31 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 30 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 27 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 running job 25 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 36 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 32 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 39 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 33 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 34 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 31 completed in 0 seconds.
+Launcher: Job 32 completed in 0 seconds.
+Launcher: Job 27 completed in 0 seconds.
+Launcher: Job 34 completed in 0 seconds.
+Launcher: Job 30 completed in 0 seconds.
+Launcher: Job 26 completed in 0 seconds.
+Launcher: Job 29 completed in 0 seconds.
+Launcher: Job 33 completed in 0 seconds.
+Launcher: Job 25 completed in 0 seconds.
+Launcher: Job 28 completed in 0 seconds.
+Launcher: Task 5 running job 35 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 8 running job 36 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 43 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 39 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 47 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 37 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 47 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 40 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 47 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 41 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 38 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 47 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 43 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 45 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 42 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 running job 44 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 50 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 46 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 35 completed in 0 seconds.
+Launcher: Job 36 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 39 completed in 0 seconds.
+Launcher: Job 44 completed in 0 seconds.
+Launcher: Job 43 completed in 0 seconds.
+Launcher: Job 38 completed in 0 seconds.
+Launcher: Job 41 completed in 0 seconds.
+Launcher: Job 37 completed in 0 seconds.
+Launcher: Job 40 completed in 0 seconds.
+Launcher: Job 45 completed in 0 seconds.
+Launcher: Job 46 completed in 0 seconds.
+Launcher: Job 42 completed in 0 seconds.
+Launcher: Task 8 running job 48 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 5 running job 47 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 54 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 49 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 53 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 51 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 running job 50 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 52 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 56 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 56 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 54 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 57 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 55 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 67 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 58 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 23 running job 61 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 16 running job 62 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 19 running job 64 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 27 running job 60 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 21 running job 59 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 70 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 18 running job 63 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 76 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 17 running job 65 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 48 completed in 0 seconds.
+Launcher: Job 47 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 49 completed in 0 seconds.
+Launcher: Job 52 completed in 0 seconds.
+Launcher: Job 50 completed in 0 seconds.
+Launcher: Job 53 completed in 0 seconds.
+Launcher: Job 54 completed in 0 seconds.
+Launcher: Job 57 completed in 0 seconds.
+Launcher: Job 56 completed in 0 seconds.
+Launcher: Job 58 completed in 0 seconds.
+Launcher: Job 55 completed in 0 seconds.
+Launcher: Job 51 completed in 0 seconds.
+Launcher: Task 8 running job 66 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 5 running job 67 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 7 running job 69 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 10 running job 71 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 2 running job 74 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 12 running job 75 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 14 running job 70 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 11 running job 73 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 9 running job 68 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 80 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 3 running job 76 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 83 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 1 running job 72 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 81 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 13 running job 77 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Job 59 completed in 0 seconds.
+Launcher: Job 65 completed in 0 seconds.
+Launcher: Job 64 completed in 0 seconds.
+Launcher: Job 61 completed in 0 seconds.
+Launcher: Job 62 completed in 0 seconds.
+Launcher: Job 60 completed in 0 seconds.
+Launcher: Job 63 completed in 0 seconds.
+Launcher: Task 19 running job 79 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 21 running job 80 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 23 running job 81 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 17 running job 83 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 27 running job 78 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 84 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 16 running job 82 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 18 running job 84 on compute-7-6-7 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 85 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 101 running job 85 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 98 running job 90 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 97 running job 89 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 103 running job 87 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 95 running job 88 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 93 running job 86 on compute-7-6-28 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 86 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Job 66 completed in 0 seconds.
+Launcher: Job 67 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 63 running job 97 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 60 running job 91 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 71 running job 93 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 65 running job 94 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 69 running job 96 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 64 running job 95 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 94 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 74 running job 92 on compute-7-6-23 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 88 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 71 completed in 0 seconds.
+Launcher: Job 69 completed in 0 seconds.
+Launcher: Job 75 completed in 0 seconds.
+Launcher: Task 82 running job 104 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 79 running job 105 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 88 running job 101 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 77 running job 100 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 75 running job 99 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 84 running job 98 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 95 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 83 running job 102 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 76 running job 103 on compute-7-6-27 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 96 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Job 74 completed in 0 seconds.
+Launcher: Job 70 completed in 0 seconds.
+Launcher: Job 68 completed in 0 seconds.
+Launcher: Job 72 completed in 0 seconds.
+Launcher: Job 76 completed in 0 seconds.
+Launcher: Job 73 completed in 0 seconds.
+Launcher: Job 77 completed in 0 seconds.
+Launcher: Task 8 running job 106 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 5 running job 107 on compute-7-6-6 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 7 done. Exiting.
+Launcher: Task 12 done. Exiting.
+Launcher: Task 2 done. Exiting.
+Launcher: Task 14 done. Exiting.
+Launcher: Task 9 done. Exiting.
+Launcher: Task 10 done. Exiting.
+Launcher: Task 1 done. Exiting.
+Launcher: Task 3 done. Exiting.
+Launcher: Task 13 done. Exiting.
+Launcher: Task 11 done. Exiting.
+Launcher: Task 0 done. Exiting.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 49 running job 117 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 45 running job 119 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 57 running job 121 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 55 running job 116 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 52 running job 122 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 47 running job 123 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 108 running job 111 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 109 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 111 running job 108 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 106 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 117 running job 113 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 107 running job 110 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 109 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 106 running job 115 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 118 running job 114 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 123 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 119 running job 112 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 109 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 110 running job 109 on compute-7-6-29 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 109 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 53 running job 124 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 137 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 58 running job 120 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Task 59 running job 118 on compute-7-6-19 (python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 126 >/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/output/ganymede/$LAUNCHER_TSK_ID.out)
+Launcher: Job 80 completed in 0 seconds.
+Launcher: Job 84 completed in 0 seconds.
+Launcher: Job 83 completed in 0 seconds.
+Launcher: Job 81 completed in 0 seconds.
+Launcher: Job 79 completed in 0 seconds.
+Launcher: Job 78 completed in 0 seconds.
+Launcher: Job 82 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 85 completed in 0 seconds.
+Launcher: Job 90 completed in 0 seconds.
+Launcher: Job 86 completed in 0 seconds.
+Launcher: Job 89 completed in 0 seconds.
+Launcher: Job 88 completed in 0 seconds.
+Launcher: Job 87 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 18 done. Exiting.
+Launcher: Task 21 done. Exiting.
+Launcher: Task 17 done. Exiting.
+Launcher: Task 23 done. Exiting.
+Launcher: Task 19 done. Exiting.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 16 done. Exiting.
+Launcher: Task 27 done. Exiting.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 93 completed in 0 seconds.
+Launcher: Job 92 completed in 0 seconds.
+Launcher: Job 97 completed in 0 seconds.
+Launcher: Job 96 completed in 0 seconds.
+Launcher: Job 94 completed in 0 seconds.
+Launcher: Job 95 completed in 0 seconds.
+Launcher: Job 91 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 104 completed in 0 seconds.
+Launcher: Job 100 completed in 0 seconds.
+Launcher: Job 105 completed in 0 seconds.
+Launcher: Job 102 completed in 0 seconds.
+Launcher: Job 99 completed in 0 seconds.
+Launcher: Job 101 completed in 0 seconds.
+Launcher: Job 98 completed in 0 seconds.
+Launcher: Job 103 completed in 0 seconds.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Job 106 completed in 0 seconds.
+Launcher: Task 93 done. Exiting.
+Launcher: Task 95 done. Exiting.
+Launcher: Task 101 done. Exiting.
+Launcher: Task 98 done. Exiting.
+Launcher: Task 97 done. Exiting.
+Launcher: Task 103 done. Exiting.
+Launcher: Job 107 completed in 0 seconds.
+Launcher: Task 71 done. Exiting.
+Launcher: Task 64 done. Exiting.
+Launcher: Task 65 done. Exiting.
+Launcher: Task 74 done. Exiting.
+Launcher: Task 63 done. Exiting.
+Launcher: Task 69 done. Exiting.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 76 done. Exiting.
+Launcher: Task 83 done. Exiting.
+Launcher: Task 77 done. Exiting.
+Launcher: Task 79 done. Exiting.
+Launcher: Task 84 done. Exiting.
+Launcher: Task 75 done. Exiting.
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+  File "/home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py", line 91
+    output_direcotry=current_directory+'/ganymede/MCMC_'+system_number+'/'
+                                                                         ^
+TabError: inconsistent use of tabs and spaces in indentation
+Launcher: Task 88 done. Exiting.
+Launcher: Task 82 done. Exiting.
+Launcher: Task 8 done. Exiting.
+Launcher: Task 5 done. Exiting.
+Launcher: Job 117 completed in 0 seconds.
+Launcher: Job 116 completed in 0 seconds.
+Launcher: Job 118 completed in 0 seconds.
+Launcher: Job 120 completed in 0 seconds.
+Launcher: Job 122 completed in 0 seconds.
+Launcher: Job 123 completed in 0 seconds.
+Launcher: Job 119 completed in 0 seconds.
+Launcher: Job 124 completed in 0 seconds.
+Launcher: Job 108 completed in 0 seconds.
+Launcher: Job 110 completed in 0 seconds.
+Launcher: Job 112 completed in 0 seconds.
+Launcher: Job 113 completed in 0 seconds.
+Launcher: Job 115 completed in 0 seconds.
+Launcher: Job 114 completed in 0 seconds.
+Launcher: Job 111 completed in 0 seconds.
+Launcher: Job 121 completed in 0 seconds.
+Launcher: Job 109 completed in 0 seconds.
+Launcher: Task 55 done. Exiting.
+Launcher: Task 52 done. Exiting.
+Launcher: Task 47 done. Exiting.
+Launcher: Task 45 done. Exiting.
+Launcher: Task 58 done. Exiting.
+Launcher: Task 118 done. Exiting.
+Launcher: Task 59 done. Exiting.
+Launcher: Task 111 done. Exiting.
+Launcher: Task 119 done. Exiting.
+Launcher: Task 108 done. Exiting.
+Launcher: Task 53 done. Exiting.
+Launcher: Task 106 done. Exiting.
+Launcher: Task 117 done. Exiting.
+Launcher: Task 107 done. Exiting.
+Launcher: Task 110 done. Exiting.
+Launcher: Task 60 done. Exiting.
+Launcher: Task 49 done. Exiting.
+Launcher: Task 6 done. Exiting.
+Launcher: Task 57 done. Exiting.
+Launcher: Done. Job exited without errors

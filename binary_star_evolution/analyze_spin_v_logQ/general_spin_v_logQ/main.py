@@ -181,6 +181,9 @@ class evolution:
             sol.append(repr(value))
 
         sol='\t'.join(sol)
+
+        if self.breakPower<0:q=logQ1
+
         with open(sol_file,'a',1) as f:
             f.write(repr(q)+'\t'+sol+'\n')
 
@@ -247,15 +250,6 @@ if __name__ == '__main__':
                 parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
                 parameters['Pspin']=float(x[12])
 
-                if breakPower==0.0:
-                    TidalFrequencyBreaks=None
-                    TidalFrequencyPowers=numpy.array([0.0])
-                else:
-                    TidalFrequencyBreaks=numpy.array([2*numpy.pi])
-                    TidalFrequencyPowers=numpy.array([breakPower,breakPower])
-
-                parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
-                parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
                 parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
@@ -269,14 +263,45 @@ if __name__ == '__main__':
                 parameters['breaks']=breakPower
 
                 print('Mass Ratio = ', mass_ratio)
-                print('Parameters: ', parameters)
 
-                evolve = evolution(interpolator,parameters)
+                logQ=numpy.linspace(5.0,7.0,5)
+                #logQ=[8.2,8.3,8.4,8.5]
 
-                logQ=numpy.linspace(6.0,12.0,10)
+                print(breakPower)
+
                 for q in logQ:
 
+                    if breakPower==0.0:
+                        TidalFrequencyBreaks=None
+                        TidalFrequencyPowers=numpy.array([0.0])
+                    elif breakPower>0.0:
+                        TidalFrequencyBreaks=numpy.array([2*numpy.pi])
+                        TidalFrequencyPowers=numpy.array([breakPower,breakPower])
+                    elif breakPower<0.0:
+
+                        #Calculate reference frequency
+                        logQMax=4.0
+                        PhaseLagMax=phase_lag(logQMax)
+                        logQ1=q
+                        PhaseLag1=phase_lag(logQ1)
+                        omega1=2*numpy.pi
+                        omegaRef=omega1*((PhaseLagMax/PhaseLag1)**(1.0/breakPower))
+
+                        #set logQ to logQMax and define logQ1 parameter
+                        parameters['logQ1']=q
+                        q=logQMax
+
+                        TidalFrequencyBreaks=numpy.array([omegaRef])
+                        TidalFrequencyPowers=numpy.array([0.0,breakPower])
+
+                    parameters['breakPower']=breakPower
+                    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+                    parameters['tidal_frequency_powers']=TidalFrequencyPowers
+
+                    print('parameters:', parameters)
+
                     print('\nCalculating for logQ = ', q)
+                    evolve = evolution(interpolator,parameters)
                     evolve(q,spin_vs_logQ_file)
 
                 break

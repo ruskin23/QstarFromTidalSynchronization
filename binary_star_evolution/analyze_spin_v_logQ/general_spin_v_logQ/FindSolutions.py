@@ -1,8 +1,10 @@
 import os
 import numpy
+import sys
 
+breakPower=sys.argv[1]
 
-with open('SolutionFile.txt','w') as f:
+with open('SolutionFileBreaks'+breakPower+'.txt','w') as f:
     f.write('system'+'\t'+
             'logq'+'\t'+
             'pspin'+'\t'+
@@ -29,7 +31,7 @@ def FindSynchronizationLimit(key,
     LogQArray=numpy.linspace(logQValues[0],logQValues[-1],1000)
     PspinInterpolated=numpy.interp(LogQArray,logQValues,PspinValues)
 
-    with open('break0.0/PspinInterpolated/SpinlogQ_'+key+'.txt','w') as f:
+    with open('break'+breakPower+'/PspinInterpolated/SpinlogQ_'+key+'.txt','w') as f:
         for q,s in zip(LogQArray,PspinInterpolated):
             f.write(repr(q)+'\t'+repr(s)+'\t'+repr(s-Porb)+'\n')
 
@@ -55,7 +57,7 @@ def FindSynchronizationLimit(key,
     tidal_frequency=2*(spin_frequency-orbital_frequency)
     tidal_period=2*numpy.pi/(tidal_frequency)
 
-    with open('SolutionFile.txt','a') as f1:
+    with open('SolutionFileBreaks'+breakPower+'.txt','a') as f1:
         f1.write(key+'\t'+
                 repr(LogQLimit)+'\t'+
                 repr(PspinSol)+'\t'+
@@ -83,10 +85,10 @@ def FindSolution(key,
 
     synchronized=None
 
-    LogQArray=numpy.linspace(logQValues[0],logQValues[-1],1000)
+    LogQArray=numpy.linspace(logQValues[0],logQValues[-1],10000)
     PspinInterpolated=numpy.interp(LogQArray,logQValues,PspinValues)
 
-    with open('break0.0/PspinInterpolated/SpinlogQ_'+key+'.txt','w') as f:
+    with open('break'+breakPower+'/PspinInterpolated/SpinlogQ_'+key+'.txt','w') as f:
         for q,s in zip(LogQArray,PspinInterpolated):
             f.write(repr(q)+'\t'+repr(s)+'\n')
 
@@ -99,7 +101,15 @@ def FindSolution(key,
     PspinSol=PspinInterpolated[zero_crossing][0]
 
     PspinMin=PspinObserved-PspinError
-    PspinMax=PspinObserved-PspinError
+    PspinMax=PspinObserved+PspinError
+
+    if key=='94':
+        print('For 94 :')
+        print('Error = ', PspinError)
+        print('Max = ', PspinMax)
+        print('Min = ',PspinMin)
+        print('PspinObserved = ',PspinObserved)
+
 
     if numpy.logical_and(Porb>PspinMin,
                          Porb<PspinMax):
@@ -110,7 +120,7 @@ def FindSolution(key,
     tidal_frequency=2*(spin_frequency-orbital_frequency)
     tidal_period=2*numpy.pi/(tidal_frequency)
 
-    with open('SolutionFile.txt','a') as f1:
+    with open('SolutionFileBreaks'+breakPower+'.txt','a') as f1:
         f1.write(key+'\t'+
                 repr(LogQArray[zero_crossing][0])+'\t'+
                 repr(PspinSol)+'\t'+
@@ -135,6 +145,7 @@ def SearchSolution(SystemDict):
                 x=lines.split()
                 at_system=x[0]
                 if at_system==key:
+                    print('Searchin for system = ',x[0])
                     PspinObserved=float(x[12])
                     Porb=float(x[6])
                     PspinError=float(x[13])
@@ -154,20 +165,24 @@ def SearchSolution(SystemDict):
                                      PrimaryMass,
                                      Age)
                     elif abs(PspinValues[0]-Porb)<0.01:
-                        print('Limit for = ', key)
-                        FindSynchronizationLimit(key,
-                                                 logQValues,
-                                                 PspinValues,
-                                                 PspinObserved,
-                                                 PspinError,
-                                                 Porb,
-                                                 PrimaryMass,
-                                                 Age)
+                        if numpy.logical_and(Porb>PspinObserved-PspinError,
+                                             Porb<PspinObserved+PspinError):
+                            print('Limit for = ', key)
+                            FindSynchronizationLimit(key,
+                                                     logQValues,
+                                                     PspinValues,
+                                                     PspinObserved,
+                                                     PspinError,
+                                                     Porb,
+                                                     PrimaryMass,
+                                                     Age)
+                        else:
+                            print('System Number: ', key)
                     else:
                         print('No Solution for : ', key)
                     break
 
-directory='break0.0/'
+directory='break'+breakPower+'/'
 systems=[]
 for files in os.listdir(directory):
     x=files.split('_')
@@ -183,7 +198,9 @@ for s in systems:
     number=str(s)
     lgq=[]
     spin=[]
-    with open('break0.0/SpinLogQ_'+s+'.txt','r') as f:
+    if s=='35':continue
+    with open('break'+breakPower+'/SpinLogQ_'+s+'.txt','r') as f:
+        if s=='59':print('Found system 59')
         for i,lines in enumerate(f):
             x=lines.split()
             if x[0]=='logQ':continue
@@ -198,5 +215,5 @@ for s in systems:
         SystemDict[number]['logQ']=lgq
         SystemDict[number]['spin']=spin
 
-
+print(SystemDict['59'])
 SearchSolution(SystemDict)

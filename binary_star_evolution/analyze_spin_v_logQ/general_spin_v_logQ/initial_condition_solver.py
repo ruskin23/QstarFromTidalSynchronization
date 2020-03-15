@@ -3,9 +3,26 @@
 import pickle
 
 import sys
+import os
+import os.path
 
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
+from pathlib import Path
+home_dir=str(Path.home())
+
+git_dir='/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ'
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet/'
+    current_directory=home_dir+git_dir
+    samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet/'
+    current_directory=home_dir+'/projects'+git_dir
+    samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
+
+sys.path.append(poet_path+'PythonPackage')
+sys.path.append(poet_path+'scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -110,20 +127,7 @@ class InitialConditionSolver:
 
         print ("BINARY CONFIGURATION COMPLETE")
 
-        if self.print_cfile==True:
-            create_c_code='cfile_'+self.system+'_break'+str(self.breaks)+'.cpp'
-
-            self.binary.evolve(
-                self.target.age,
-                self.evolution_max_time_step,
-                self.evolution_precision,
-                None,
-                create_c_code=create_c_code,
-                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt"
-            )
-
-        else:
-            self.binary.evolve(
+        self.binary.evolve(
                 self.target.age,
                 self.evolution_max_time_step,
                 self.evolution_precision,

@@ -24,7 +24,7 @@ for system in AllSystems:
 
     print('\nSystem = ',system)
     SampleFile='MassAgeFehSamples_'+system+'.txt'
-    N=Nominal(SampleFile,parameterKey)
+    N=Nominal(SampleFile,parameterKey,0.5)
     NominalValuesObtained=N()
     print('Values Obtained = ',NominalValuesObtained)
 
