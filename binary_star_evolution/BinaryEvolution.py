@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
-
-import argparse
+  
 import shelve
 import matplotlib
-
+from matplotlib import pyplot
 matplotlib.use('TkAgg')
 
 import sys
 sys.path.append('home/ruskin/projects/poet/PythonPackage')
 sys.path.append('home/ruskin/projects/poet/scripts')
 
-
-from matplotlib import pyplot
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
