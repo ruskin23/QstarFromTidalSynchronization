@@ -143,18 +143,17 @@ class metropolis_hasting:
 
     def write_output(self):
 
-        if self.instance==1:
-            if self.iteration_step==1:
-                print('writing header')
-                header=['Iteration_Step']
-                for key in self.parameters:
-                    header.append(key)
-                for key in self.constraints:
-                    header.append(key)
-                for fname in self.filenames:
-                    with open(fname,'w+') as f:
-                        f.write('\t'.join(header))
-                        f.write('\n')
+        if self.iteration_step==1:
+            print('writing header')
+            header=['Iteration_Step']
+            for key in self.parameters:
+                header.append(key)
+            for key in self.constraints:
+                header.append(key)
+            for fname in self.filenames:
+                with open(fname,'w+') as f:
+                    f.write('\t'.join(header))
+                    f.write('\n')
 
         print('in write output: CurrentResults = ', self.current_results)
         self.write_on_file(self.filenames[0],
@@ -202,7 +201,7 @@ class metropolis_hasting:
     def iterations(self):
         #MCMC iterations
 
-        max_step=100000
+        max_step=1000000
 
         while True:
 
@@ -271,8 +270,7 @@ class metropolis_hasting:
                  parameters,
                  constraints,
                  step_size,
-                 system,
-                 instance):
+                 system):
 
         self.interpolator=interpolator
         self.parameters=parameters
@@ -287,27 +285,21 @@ class metropolis_hasting:
         self.current_results=dict()
 
         self.system=system
-        self.instance=instance
 
         self.isAccepted=None
 
-        #output_path = '/mnt/md0/ruskin/QstarFromTidalSynchronization/mcmc_mass_output/'
 
         self.filenames=['samples/MassAgeFehSamples_'+self.system+'.txt',
                         'rejected_parameters/rejected_parameters_'+self.system+'.txt']
-
 
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser()
     parser.add_argument('-l',action='store',dest='data_line',
                         help='specify the system from data_file.txt')
-    parser.add_argument('-i',action='store',dest='instance',
-                        help='specify instance')
     args=parser.parse_args()
 
     system=args.data_line
-    instance=args.instance
     print('System = ', system)
 
     #interpolator
@@ -358,8 +350,7 @@ if __name__ == '__main__':
                             parameters,
                             constraints,
                             step_size,
-                            system,
-                            instance)
+                            system)
 
     #metropolis_hasting
     MCMC.iterations()
