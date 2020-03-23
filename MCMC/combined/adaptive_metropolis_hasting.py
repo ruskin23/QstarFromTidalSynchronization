@@ -9,6 +9,10 @@ import pickle
 import csv
 
 import sys
+sys.path.append('Sampling_Method/Adaptive/')
+from adaptive_sampling import AdaptiveSampling
+sys.path.append('kartof/')
+from covariance_kartof import Covariance
 import os
 import os.path
 
@@ -83,6 +87,7 @@ class MetropolisHastings:
         if numpy.isnan(self.spin):return scipy.nan
 
         print('Current Spin Value = ', self.spin)
+        print('observed Spin = ',self.observed_spin)
         sys.stdout.flush()
 
         prior = 1.0
@@ -99,24 +104,20 @@ class MetropolisHastings:
                     break
 
         #Calculate Likelihood
-        print('observed Spin = ',self.observed_spin)
         likelihood=scipy.stats.norm(self.observed_spin['value'],self.observed_spin['sigma']).pdf(self.spin)
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
         #Calculate Transition Probability
-        S=0
-        phi_N=[parameter_set[key]/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                phi_i=[float(x[self.sampled_keys.index(key)])/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
-                arg=numpy.subtract(phi_N,phi_i)
-                S=S+float(x[3])*numpy.exp(-numpy.dot(arg,arg)/2)
-
+        phi_vector=numpy.array([parameter_set[key] for key in self.sampled_keys])
+        sampling=AdaptiveSampling(self.system,
+                                  self.sampling_parameters,
+                                  parameter_set,
+                                  self.covariance_matrix)
+        S=sampling.stepping_function_normalization(phi_vector)
         print('Transition Probability = ', S)
+
+
         posterior = (prior*likelihood)/S
 
         return posterior
@@ -135,61 +136,12 @@ class MetropolisHastings:
             sys.stdout.flush()
 
 
-    def propose_from_samples(self):
-
-
-        N=0
-        current_values=[self.current_parameters[key]/self.sampled_parameters[key]['step'] for key in
-                        self.sampled_keys]
-
-        print('\nCurrent Values = ', current_values)
-        SampleSet=[]
-        MM=[]
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-
-                sample_set=[float(x[self.sampled_keys.index(key)]) for key in self.sampled_keys]
-                sample_values=[float(x[self.sampled_keys.index(key)])/self.sampled_parameters[key]['step'] for key in
-                        self.sampled_keys]
-
-
-                mulitplicity=float(x[3])
-                distance=numpy.subtract(sample_values,current_values)
-                arg=numpy.dot(distance,distance)
-                modified_mulitplicity=mulitplicity*numpy.exp(-arg)
-                N=N+modified_mulitplicity
-
-                MM.append(modified_mulitplicity)
-                SampleSet.append(sample_set)
-
-        U=random.uniform(0, 1)
-        for s,mm in zip(SampleSet,MM):
-            mm=mm/N
-            if mm>U:return s
-            else:U=U-mm
 
     def values_proposed(self):
 
         proposed = dict()
-
-        for key,value in self.sampling_parameters.items():
-            if value['dist']=='Normal' or value['dist']=='Uniform':
-                proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
-
-
-        s=self.propose_from_samples()
-
-        proposed['primary_mass']=s[0]
-        proposed['age']=s[1]
-        proposed['feh']=s[2]
-
-        for index,key in enumerate(self.sampled_keys):
-            proposed[key]=s[index]
-
-
+        proposed_samples=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
+        proposed=proposed_samples()
         self.proposed_parameters=proposed
 
     def write_output(self):
@@ -210,7 +162,6 @@ class MetropolisHastings:
 
 
         load_solver_file = self.output_directory+'solver_results_'+self.instance+'.pickle'
-
 
         if os.path.isfile(load_solver_file) == True:
             with open(load_solver_file,'rb') as f:
@@ -264,9 +215,9 @@ class MetropolisHastings:
         name = self.current_filename
         with open(name, 'w',1) as f:
             f.write(repr(self.iteration_step) + '\t')
-            for key, value in self.current_parameters.items():
-                f.write('%s\t' % value)
-            f.write(repr(self.proposed_parameters['primary_mass']*self.mass_ratio)+'\t')
+            for key, value in self.sampling_parameters.items():
+                f.write('%s\t' % self.current_parameters[key])
+            f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t')
             f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
 
@@ -430,14 +381,15 @@ class MetropolisHastings:
         for key,value in self.sampling_parameters.items():
             if value['dist']=='Samples':
                 self.sampled_parameters[key]=dict()
-                while True:
-                    self.sampled_parameters[key]['value']=value['value']
-                    self.sampled_parameters[key]['step']=value['step']
-                    break
+                self.sampled_parameters[key]['value']=value['value']
+                self.sampled_parameters[key]['step']=value['step']
                 self.sampled_keys.append(key)
         print(self.sampled_parameters)
         self.current_parameters= dict()
         self.proposed_parameters = dict()
+
+        self.covariance_matrix=Covariance(self.system).Calculate('Covariance')
+        print('Covariance_Matrix = ',self.covariance_matrix)
 
         self.isAccepted = None
         self.observed_spin=observed_spin

@@ -152,7 +152,8 @@ class TestModels:
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
-                bounds=[theta_mean-3*theta_sigma,theta_mean+3*theta_sigma]
+                #bounds=[theta_mean-5*theta_sigma,theta_mean+5*theta_sigma]
+                bounds =[-3*theta_mean,3*theta_mean]
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):
@@ -192,7 +193,8 @@ class TestModels:
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
-                bounds=[0,theta_mean+theta_sigma]
+                #bounds=[0,theta_mean+theta_sigma]
+                bounds =[-3*theta_mean,3*theta_mean]
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):

@@ -69,7 +69,7 @@ class AdaptiveSampling:
                 for keys in self.phi_keys:
                     sample_vector=numpy.append(sample_vector,float(x[self.phi_keys.index(keys)]))
                 arg=numpy.matmul(numpy.transpose(sample_vector-mean_vector),numpy.matmul(self.SIGMAINV_phi_phi,(sample_vector-mean_vector)))
-                P=P+m_i*numpy.exp(-arg)
+                P=P+m_i*numpy.exp(-0.5*arg)
 
         return P
 
@@ -91,13 +91,12 @@ class AdaptiveSampling:
                 for keys in self.phi_keys:
                     sample_vector=numpy.append(sample_vector,float(x[self.phi_keys.index(keys)]))
                 arg=numpy.matmul(numpy.transpose(sample_vector-mean_vector),numpy.matmul(self.SIGMAINV_phi_phi,(sample_vector-mean_vector)))
-                modified_multiplicity=numpy.append(modified_multiplicity,(m_i*numpy.exp(-arg))/N)
+                modified_multiplicity=numpy.append(modified_multiplicity,(m_i*numpy.exp(-0.5*arg))/N)
                 Samples.append(sample_vector)
 
         U=random.uniform(0,1)
         for mm,s in zip(modified_multiplicity,Samples):
-            if U<mm:
-                return s
+            if U<mm:return s
             else:U=U-mm
 
     def __call__(self):
@@ -121,7 +120,7 @@ class AdaptiveSampling:
         self.parameters=parameters
         self.sampling_parameters=sampling_parameters
 
-        self.samples_file='../../../mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
+        self.samples_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
 
         self.phi_keys=['primary_mass','age','feh']
         self.theta_keys=['Porb','eccentricity','Wdisk','logQ']

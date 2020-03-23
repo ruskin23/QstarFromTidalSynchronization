@@ -101,7 +101,7 @@ if __name__=='__main__':
                      age=0.8,
                      feh=0.2,
                      logQ=0.2,
-                     eccentricity=0.05)
+                     eccentricity=0.001)
 
 
     rho=50

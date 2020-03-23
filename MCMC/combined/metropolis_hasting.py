@@ -264,8 +264,8 @@ class MetropolisHastings:
         name = self.current_filename
         with open(name, 'w',1) as f:
             f.write(repr(self.iteration_step) + '\t')
-            for key, value in self.current_parameters.items():
-                f.write('%s\t' % value)
+            for key, value in self.sampling_parameters.items():
+                f.write('%s\t' % self.current_parameters[key])
             f.write(repr(self.current_parameters['primary_mass']*self.mass_ratio)+'\t')
             f.write(repr(self.current_posterior)+ '\t' + repr(self.spin_value) +'\n')
         f.close()
@@ -320,6 +320,8 @@ class MetropolisHastings:
 
         while True:
 
+            self.time_stamp = time.time()
+
             self.isAccepted = None
 
             #initialising the set of parameters
@@ -359,17 +361,38 @@ class MetropolisHastings:
             sys.stdout.flush()
 
             self.time_elapsed = time.time() - self.time_stamp
-            self.time_stamp = time.time()
 
             self.write_output()
             self.save_current_parameter()
-
 
             self.iteration_step = self.iteration_step + 1
 
 
     def continue_last(self):
 
+        with open(self.save_filename[1],'r') as f:
+            line=list(f)[-1]
+            x=line.split()
+            iter_step_r=int(x[0])
+
+        with open(self.save_filename[0],'r') as f:
+            line=list(f)[-1]
+            x=line.split()
+            iter_step_a=int(x[0])
+            self.current_parameters['primary_mass'] = float(x[5])
+            self.current_parameters['age'] = float(x[6])
+            self.current_parameters['feh'] = float(x[7])
+            self.current_parameters['Porb'] = float(x[1])
+            self.current_parameters['eccentricity'] = float(x[2])
+            self.current_parameters['Wdisk'] = float(x[3])
+            self.current_parameters['logQ'] = float(x[4])
+            self.current_posterior = float(x[9])
+
+        self.iteration_step=max(iter_step_r,iter_step_a) + 1
+
+        print('Continuing from {} and {}'.format(self.iteration_step,self.current_parameters))
+
+        """
         if  os.path.isfile(self.current_filename) == False or os.stat(self.current_filename).st_size == 0:
             name = self.save_filename[0]
             self.current_file_exist = False
@@ -388,19 +411,10 @@ class MetropolisHastings:
             for row in reader:
                 step = row
         self.iteration_step = int(step[0]) + 1
-
-        self.current_parameters['primary_mass'] = float(array[5])
-        self.current_parameters['age'] = float(array[6])
-        self.current_parameters['feh'] = float(array[7])
-        self.current_parameters['Porb'] = float(array[1])
-        self.current_parameters['eccentricity'] = float(array[2])
-        self.current_parameters['Wdisk'] = float(array[3])
-        self.current_parameters['logQ'] = float(array[4])
-
-        if self.current_file_exist: self.current_posterior = float(array[9])
-        else : self.current_posterior = self.posterior_probability(self.current_parameters)
+        """
 
         self.iterations()
+
 
     def __init__(self,
                  system_number,

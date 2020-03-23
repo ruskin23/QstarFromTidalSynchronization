@@ -88,7 +88,6 @@ if __name__ == '__main__':
         eccentricity_path
     )
 
-
     args = cmdline_args()
     instance = args.instance
     system_number=args.system

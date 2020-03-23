@@ -11,9 +11,9 @@ touch $FILE
 
 for I in 1 2 3 4 5
 do
-    python3 FillParameters.py $S $I >temp$I.out
+    python3 FillParameters.py $S $I 
 done
 
 python3 corner_plot.py
 
-rm temp*.out
+#rm temp*.out

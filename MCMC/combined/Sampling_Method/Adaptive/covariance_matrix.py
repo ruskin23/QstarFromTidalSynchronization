@@ -14,7 +14,7 @@ class Covariance:
 
     def get_samples(self):
 
-        parameter_file='../../SAVED_CHAINS/ganymede/AcceptedParameters.txt'
+        parameter_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/AcceptedParameters.txt'
 
         with open(parameter_file,'r') as f:
             for lines in f:

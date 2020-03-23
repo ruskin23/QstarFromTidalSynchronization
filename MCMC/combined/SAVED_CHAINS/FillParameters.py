@@ -10,8 +10,6 @@ for C in cluster:
 
     system_filename=C+'/MCMC_'+system+'/accepted_parameters_'+instance+'.txt'
 
-
-
     RepeatCheck=[]
     with open('AcceptedParameters.txt','a') as f1:
         with open(system_filename,'r') as f2:
@@ -19,8 +17,6 @@ for C in cluster:
                 if i==0:
                     continue
                 if i>0:
-
-                    print('\nAt i = ', i)
                     x=lines.split()
                     current_state=x[1:-1]
                     IterationNumber=int(x[0])
@@ -29,7 +25,7 @@ for C in cluster:
                     if i>1:
                         if previous_state[0]==x[0]:continue
                     if IterationNumber==1:
-                        print('First Iteration')
+                        #print('First Iteration')
                         Step=1
                         previous_state=current_state
                         f1.write(lines)
@@ -40,8 +36,8 @@ for C in cluster:
                             while True:
                                 if IterationNumber<Step:break
                                 if Step!=IterationNumber:
-                                    print('Step = ',Step)
-                                    print('IterationNumber = ',IterationNumber)
+                                    #print('Step = ',Step)
+                                    #print('IterationNumber = ',IterationNumber)
                                     state=[str(Step)]+previous_state
                                     Parameters='\t'.join(state)
                                     f1.write(Parameters+'\n')
@@ -58,3 +54,4 @@ for C in cluster:
                             f1.write(Parameters+'\n')
                             previous_state=current_state
 
+    print('For cluster = {}, instance = {}, N = {}'.format(C,instance,Step))

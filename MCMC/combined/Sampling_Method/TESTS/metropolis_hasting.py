@@ -73,6 +73,7 @@ class MetropolisHastings:
 
         #Calculate Likelihood
         likelihood=self.test_model(parameter_set)
+        if scipy.isinf(likelihood):return 0
         print('likelihood = ', likelihood)
         sys.stdout.flush()
 
@@ -356,10 +357,10 @@ class MetropolisHastings:
         self.model_width=dict(primary_mass=0.8,
                               age=0.8,
                               feh=0.2,
-                              eccentricity=0.001,
+                              eccentricity=0.01,
                               logQ=0.2)
 
-        self.rho=50
+        self.rho=0.05
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()

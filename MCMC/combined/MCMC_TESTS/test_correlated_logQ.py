@@ -65,6 +65,7 @@ class TestCorrelated:
 
         I = lambda logQ: self.intergand(t,logQ)
         integral=integrate.quad(I,self.logQ_min,self.logQ_max)[0]
+        print(integral)
         return m*numpy.exp(-((t-self.t_mean)**2)/(self.sigma_t**2))*integral
 
 
@@ -81,11 +82,11 @@ class TestCorrelated:
         age_tuple=list(zip(self.age_samples,modified_multiplicity))
         age_tuple=sorted(age_tuple, key=lambda tup: tup[0])
         age_cummulative=self._cummulative_distribution(age_tuple)
-        plt.scatter(*zip(*age_cummulative),color='r',label='analytical')
+        #plt.scatter(*zip(*age_cummulative),color='r',label='analytical')
 
         age_mcmc_tuple=sorted([(x, len(list(y))) for x, y in itertools.groupby(self.age_mcmc_samples)], key=lambda tup: tup[0])
         age_mcmc_cummulative=self._cummulative_distribution(age_mcmc_tuple)
-        #plt.plot(*zip(*age_mcmc_cummulative),label='MCMC')
+        plt.plot(*zip(*age_mcmc_cummulative),label='MCMC')
 
         plt.legend()
         plt.show()

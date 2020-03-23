@@ -35,3 +35,27 @@ class cummulative_distribution:
         return list(zip(sample_values,probability/max(probability)))
 
 
+
+class multivariate_gaussian:
+
+    def multi(self,
+              x_vector,
+              x_mean,
+              y_vector,
+              y_mean,
+              sigma_xy):
+
+        arg=numpy.matmul(numpy.transpose(x_vector-x_mean),numpy.matmul(sigma_xy,(y_vector-y_mean)))
+        return numpy.exp(-0.5*arg)
+
+
+class  Norm:
+
+    def N(self,
+          value,
+          loc=0.0,
+          sigma=1.0):
+
+        arg=(value-loc)/sigma
+        return numpy.exp(-(arg**2)/2)
+

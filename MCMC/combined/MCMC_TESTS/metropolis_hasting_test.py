@@ -386,7 +386,7 @@ class MetropolisHastings:
 
 
             self.iteration_step = self.iteration_step + 1
-
+            if self.iteration_step>20000:break
 
     def continue_last(self):
 
