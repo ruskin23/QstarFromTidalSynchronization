@@ -14,7 +14,7 @@ class Covariance:
 
     def get_samples(self):
 
-        parameter_file='kartof/AcceptedParameters.txt'
+        parameter_file='AcceptedParameters.txt'
 
         with open(parameter_file,'r') as f:
             for lines in f:

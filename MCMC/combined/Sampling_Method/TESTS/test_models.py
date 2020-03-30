@@ -8,6 +8,7 @@ from utils import multivariate_gaussian
 
 import numpy
 from scipy import integrate
+from scipy import special
 import random
 
 class TestModels:
@@ -106,7 +107,11 @@ class TestModels:
                 for lines in f:
                     x=lines.split()
                     phi_value=float(x[self.phi_keys.index(phi_key)])
-                    P=P+(Norm().N(phi_value,loc=phi_mean,sigma=phi_sigma)*Norm().N(logQ_samples,loc=self.logQ_mean,sigma=self.logQ_sigma)*numpy.exp(-(phi_value-phi_mean)*(logQ_samples-self.logQ_mean)/phi_logQ_sigma))
+                    arg1=(phi_value-phi_sigma)/phi_sigma
+                    arg2=(logQ_samples-self.logQ_mean)/self.logQ_sigma
+                    arg3=2*self.rho*arg1*arg2
+                    P=P+numpy.exp(-0.5*(1/(1-self.rho**2))*(arg1**2 + arg2**2 - arg3))
+                    #P=P+(Norm().N(phi_value,loc=phi_mean,sigma=phi_sigma)*Norm().N(logQ_samples,loc=self.logQ_mean,sigma=self.logQ_sigma)*numpy.exp(-(phi_value-phi_mean)*(logQ_samples-self.logQ_mean)/phi_logQ_sigma))
             cdf=cummulative_distribution(logQ_samples,P)()
             return cdf
 
@@ -122,7 +127,12 @@ class TestModels:
                     m_i=float(x[3])
                     phi_value=float(x[self.phi_keys.index(phi_key)])
                     phi_values=numpy.append(phi_values,phi_value)
-                    p=m_i*self.Probability(phi_value,self.logQ_mean,self.logQ_sigma,phi_mean,phi_sigma,bounds)
+                    b=(phi_value-phi_mean)/phi_sigma
+                    x=(self.logQ_bounds-self.logQ_mean)/self.logQ_sigma
+                    y=x-self.rho*b
+                    z=y/(1-self.rho**2)
+                    p=m_i*numpy.exp(-0.5*b*b)*(special.erf(z[1])-special.erf(z[0]))
+                    #p=m_i*self.Probability(phi_value,self.logQ_mean,self.logQ_sigma,phi_mean,phi_sigma,bounds)
                     P=numpy.append(P,p)
                     N=N+p
             P=P/N
@@ -153,7 +163,7 @@ class TestModels:
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
                 #bounds=[theta_mean-5*theta_sigma,theta_mean+5*theta_sigma]
-                bounds =[-3*theta_mean,3*theta_mean]
+                bounds =[0,1]
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):
@@ -168,38 +178,58 @@ class TestModels:
                                theta_key,
                                parameter):
 
+        theta_mean=self.sampling_parameters[theta_key]['value']
+        theta_sigma=self.model_width[theta_key]
+
         if parameter=='logQ':
             logQ_samples=numpy.linspace(self.logQ_bounds[0],self.logQ_bounds[1],1000)
             p=numpy.zeros(1000)
-            theta_mean=self.sampling_parameters[theta_key]['value']
-            theta_sigma=self.model_width[theta_key]
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
                 for i,q in enumerate(logQ_samples):
-                    p[i]=self.Probability(q,theta_mean,theta_sigma,self.logQ_mean,self.logQ_sigma)
+                    p[i]=self.Probability(q,theta_mean,theta_sigma,self.logQ_mean,self.logQ_sigma,bounds)
                 cdf=cummulative_distribution(logQ_samples,p)()
                 return cdf
             else:
                 for i,q in enumerate(logQ_samples):
-                    p[i]=Norm().N(q,loc=self.logQ_mean,sigma=self.logQ_sigma)
+                    b=(q-self.logQ_mean)/self.logQ_sigma
+                    theta_lim=numpy.array([0,1])
+                    x=(theta_lim-theta_mean)/theta_sigma
+                    y=x-self.rho*b
+                    z=y/(1-self.rho**2)
+                    p[i]=numpy.exp(-b**2/2)*(special.erf(z[1])-special.erf(z[0]))
+                    #arg=(q-self.logQ_mean)/self.logQ_sigma
+                    #l=(arg/self.rho) - (theta_mean/theta_sigma)
+                    #h=(arg/self.rho) + ((1-theta_mean)/theta_sigma)
+                    #Integral=numpy.sqrt(2*numpy.pi)*(special.erf(h)-special.erf(l))
+                    #p[i]=numpy.exp(-0.5*arg*arg*(1-(1/self.rho)**2))*theta_sigma*Integral
+                    #print('q={},q_0={},sigma={},qrg={},l={},h={},i={}'.format(q,self.logQ_mean,self.logQ_sigma,arg,l,h,Integral))
+                    #I=lambda x:numpy.exp(-0.5*x*x)
+                    #Integral = integrate.quad(I,l,h)[0]
+                    #p[i]=self.Probability(q,theta_mean,theta_sigma,self.logQ_mean,self.logQ_sigma,[0,0.5])
+                    #p[i]=Norm().N(q,loc=self.logQ_mean,sigma=self.logQ_sigma)
                 cdf=cummulative_distribution(logQ_samples,p)()
+                print('Q_mean = ',self.logQ_mean)
                 return cdf
 
 
         else:
 
-            theta_mean=self.sampling_parameters[theta_key]['value']
-            theta_sigma=self.model_width[theta_key]
             if self.sampling_parameters[theta_key]['dist']=='Uniform':
                 bounds=[self.sampling_parameters[theta_key]['min'],self.sampling_parameters[theta_key]['max']]
             else:
-                #bounds=[0,theta_mean+theta_sigma]
-                bounds =[-3*theta_mean,3*theta_mean]
+                bounds =[-10*theta_mean,10*theta_mean]
             theta_samples=numpy.linspace(bounds[0],bounds[1],1000)
             p=numpy.zeros(1000)
             for i,q in enumerate(theta_samples):
                 if q>0:
-                    p[i]=self.Probability(q,self.logQ_mean,self.logQ_sigma,theta_mean,theta_sigma,self.logQ_bounds)*Norm().N(q,loc=theta_mean,sigma=self.sampling_parameters[theta_key]['sigma'])
+                    b=(q-theta_mean)/theta_sigma
+                    theta_lim=numpy.array([5,12])
+                    x=(theta_lim-self.logQ_mean)/self.logQ_sigma
+                    y=x-self.rho*b
+                    z=y/(1-self.rho**2)
+                    p[i]=numpy.exp(-b**2/2)*(special.erf(z[1])-special.erf(z[0]))*Norm().N(q,loc=theta_mean,sigma=self.sampling_parameters[theta_key]['sigma'])
+                    #p[i]=self.Probability(q,self.logQ_mean,self.logQ_sigma,theta_mean,theta_sigma,self.logQ_bounds)*Norm().N(q,loc=theta_mean,sigma=self.sampling_parameters[theta_key]['sigma'])
                 else:p[i]=0
             cdf=cummulative_distribution(theta_samples,p)()
             return cdf
@@ -221,9 +251,7 @@ class TestModels:
         self.model_width=model_width
         self.rho=rho
 
-        print(sampling_parameters)
         self.logQ_mean=self.sampling_parameters['logQ']['value']
-        print(self.logQ_mean)
         self.logQ_sigma=self.model_width['logQ']
         self.logQ_bounds=numpy.array([self.sampling_parameters['logQ']['min'],self.sampling_parameters['logQ']['max']])
 

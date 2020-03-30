@@ -101,10 +101,10 @@ if __name__=='__main__':
                      age=0.8,
                      feh=0.2,
                      logQ=0.2,
-                     eccentricity=0.001)
+                     eccentricity=0.01)
 
 
-    rho=50
+    rho=0.8
 
     Distrbution=GetCDF(system_number,
                        sampling_parameters,

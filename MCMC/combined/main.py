@@ -66,10 +66,10 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
 
-    parser.add_argument('-b',
+    parser.add_argument('-m',
                         action='store',
-                        dest='breaks',
-                        help='flag this to include tidal frequency breaks'
+                        dest='sampling_method',
+                        help='select a sampling method for mcmc: uncorrelated or adaptive'
                         )
 
     return parser.parse_args()
@@ -96,7 +96,6 @@ if __name__ == '__main__':
     if home_dir=='/home/rxp163130':output_directory=current_directory+'/Cluster_Results/ganymede/MCMC_'+system_number+'/'
     if home_dir=='/home/ruskin':output_directory=current_directory+'/kartof/MCMC_'+system_number+'/'
     if home_dir=='/home1/06850/rpatel23':output_directory=current_directory+'/Cluster_Results/stampede2/MCMC_'+system_number+'/'
-    #if os.path.isdir(output_directory)==False:os.mkdir(output_directory)
 
     catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
     solution_file=current_directory+'/SolutionFileBreaks0.0.txt'
@@ -184,6 +183,8 @@ if __name__ == '__main__':
     print('Observed Spin: ',observed_spin)
 
 
+sampling_method=args.sampling_method
+
 with open(stepfilename,'w') as f:
     for key,value in sampling_parameters.items():
         f.write(key + '\t' + repr(value['step']) + '\n')
@@ -191,14 +192,15 @@ with open(stepfilename,'w') as f:
 
 mcmc = MetropolisHastings(system_number,
                           interpolator,
+                          sampling_method,
                           sampling_parameters,
                           fixed_parameters,
                           observed_spin,
-                          catalog_file,
                           solution_file,
                           samples_file,
                           mass_ratio,
                           instance,
+                          current_directory,
                           output_directory)
 
 sys.stdout.flush()

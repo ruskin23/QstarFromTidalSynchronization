@@ -44,13 +44,17 @@ class MetropolisHastings:
             if self.test_case in ['gpt','gptc']:key1=self.phi_key
             if self.test_case in ['gtt','gttc']:key1=self.theta_key
             key2='logQ'
-            Norm1=normal.N(parameter_set[key1],loc=self.sampling_parameters[key1]['value'],sigma=self.model_width[key1])
-            Norm2=normal.N(parameter_set[key2],loc=self.sampling_parameters[key2]['value'],sigma=self.model_width[key2])
-            if self.test_case in ['gpt','gtt']:Norm3=1.0
+            arg1=((parameter_set[key1]-self.sampling_parameters[key1]['value'])/(self.model_width[key1]))**2
+            arg2=((parameter_set[key2]-self.sampling_parameters[key2]['value'])/(self.model_width[key2]))**2
+            if self.test_case in ['gpt','gtt']:
+                rho=0.0
+                arg3=0.0
             if self.test_case in ['gptc','gttc']:
-                Norm3=numpy.exp(-(parameter_set[key1]-self.sampling_parameters[key1]['value'])*(parameter_set[key2]-self.sampling_parameters[key2]['value'])/(self.rho*self.model_width[key1]*self.model_width[key2]))
-                #Norm3=numpy.exp(-(parameter_set[key1]*parameter_set[key2]-self.sampling_parameters[key1]['value']*self.sampling_parameters[key2]['value'])/(self.rho*self.model_width[key1]*self.model_width[key2]))
-            L=Norm1*Norm2*Norm3
+                rho=self.rho
+                arg3=-2*rho*(parameter_set[key1]-self.sampling_parameters[key1]['value'])*(parameter_set[key2]-self.sampling_parameters[key2]['value'])/(self.model_width[key1]*self.model_width[key2])
+            z=arg1+arg2+arg3
+            Z=1/(2*numpy.pi*self.model_width[key1]*self.model_width[key2]*numpy.sqrt(1-rho**2))
+            L=Z*numpy.exp(-z/(2*(1-rho**2)))
             return L
 
 
@@ -79,18 +83,20 @@ class MetropolisHastings:
 
         #Calculate Stepping Probability
         phi_vector=numpy.array([parameter_set[key] for key in self.sampled_keys])
-        if self.sampling_method=='uncorrelated':
-            sampling=UncorrelatedSampling(self.system,
+        theta_vector=numpy.array([parameter_set[key] for key in self.theta_keys])
+        if self.iteration_step==1:
+            if self.sampling_method=='uncorrelated':
+                sampling=UncorrelatedSampling(self.system,
+                                              self.sampling_parameters,
+                                              parameter_set)
+            if self.sampling_method=='adaptive':
+                sampling=AdaptiveSampling(self.system,
                                           self.sampling_parameters,
-                                          parameter_set)
-        if self.sampling_method=='adaptive':
-            sampling=AdaptiveSampling(self.system,
-                                      self.sampling_parameters,
-                                      parameter_set,
-                                      self.covariance_matrix)
-        S=sampling.stepping_function_normalization(phi_vector)
+                                          parameter_set,
+                                          self.covariance_matrix)
+            S=sampling.stepping_function_normalization(phi_vector,theta_vector)
+        else:S=self.proposing.stepping_function_normalization(phi_vector,theta_vector)
         print('Transition Probability = ', S)
-
 
         posterior = (prior*likelihood)/S
 
@@ -114,10 +120,13 @@ class MetropolisHastings:
 
         proposed=dict()
         if self.sampling_method=='uncorrelated':
-            proposed_samples=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
+            #proposed_samples=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
+            self.proposing=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
         if self.sampling_method=='adaptive':
-            proposed_samples=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
-        proposed=proposed_samples()
+            #proposed_samples=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
+            self.proposing=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
+        #proposed=proposed_samples()
+        proposed=self.proposing()
         self.proposed_parameters=proposed
 
 
@@ -128,7 +137,7 @@ class MetropolisHastings:
             print('ACCEPTED')
             sys.stdout.flush()
             if self.iteration_step>1:
-                self.current_parameters = self.proposed_parameters
+                self.current_parameters = self.proposed_parameters.copy()
                 self.current_posterior = self.proposed_posterior
             f_name = self.save_filename[0]
 
@@ -228,11 +237,11 @@ class MetropolisHastings:
             print ('PROPOSED VALUES')
             print (self.proposed_parameters)
             sys.stdout.flush()
-            if self.proposed_parameters['eccentricity']<0:
+            if self.proposed_parameters['eccentricity']<0 or self.proposed_parameters['eccentricity']>1:
                 self.isAccepted = False
                 self.write_output()
                 self.iteration_step = self.iteration_step + 1
-                print('e<0')
+                print('e not in range: e = ',self.proposed_parameters['eccentricity'])
                 sys.stdout.flush()
                 continue
 
@@ -341,8 +350,11 @@ class MetropolisHastings:
         self.iteration_step=1
 
         self.sampled_keys=[]
+        self.theta_keys=[]
         self.sampled_parameters=dict()
         for key,value in self.sampling_parameters.items():
+            if value['dist'] in ['Normal','Uniform']:
+                self.theta_keys.append(key)
             if value['dist']=='Samples':
                 self.sampled_parameters[key]=dict()
                 while True:
@@ -351,6 +363,8 @@ class MetropolisHastings:
                     break
                 self.sampled_keys.append(key)
         print(self.sampled_parameters)
+        print(self.theta_keys)
+
 
         self.phi_key='age'
         self.theta_key='eccentricity'
@@ -360,14 +374,14 @@ class MetropolisHastings:
                               eccentricity=0.01,
                               logQ=0.2)
 
-        self.rho=0.05
+        self.rho=0.8
 
         self.current_parameters= dict()
         self.proposed_parameters = dict()
 
         self.isAccepted = None
         self.check_age_neg = None
-
+        self.proposing=None
         self.proposed_posterior = 0.0
         self.current_posterior = 0.0
         self.p_acceptance = 0.0

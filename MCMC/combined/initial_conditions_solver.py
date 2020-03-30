@@ -219,10 +219,6 @@ class InitialConditionSolver:
                                 method='lm'
                                 )
                 break
-            except ValueError:
-                p=p+10.0
-                e=e+0.1
-                continue
             except AssertionError:
                 self.spin=scipy.nan
                 self.gsl_flag=True

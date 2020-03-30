@@ -4,13 +4,22 @@ import scipy
 from scipy.stats import norm
 import numpy
 import random
+import shelve
 
 import pickle
 import csv
 
 import sys
-import os
-import os.path
+from pathlib import Path
+home_dir=str(Path.home())
+git_dir='/QstarFromTidalSynchronization/MCMC/combined'
+if home_dir=='/home/rxp163130':current_directory=home_dir+git_dir
+if home_dir=='/home/ruskin':current_directory=home_dir+'/projects'+git_dir
+if home_dir=='/home1/06850/rpatel23':current_directory=work_dir+git_dir
+sys.path.append(current_directory+'/Sampling_Method/Uncorrelated_Phi')
+from uncorrelated_sampling import UncorrelatedSampling
+sys.path.append(current_directory+'/Sampling_Method/Adaptive')
+from adaptive_sampling import AdaptiveSampling
 
 
 from evolution_class import evolution
@@ -105,18 +114,23 @@ class MetropolisHastings:
         sys.stdout.flush()
 
         #Calculate Transition Probability
-        S=0
-        phi_N=[parameter_set[key]/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                phi_i=[float(x[self.sampled_keys.index(key)])/self.sampling_parameters[key]['step'] for key in self.sampled_keys]
-                arg=numpy.subtract(phi_N,phi_i)
-                S=S+float(x[3])*numpy.exp(-numpy.dot(arg,arg)/2)
-
+        phi_vector=numpy.array([parameter_set[key] for key in self.phi_keys])
+        theta_vector=numpy.array([parameter_set[key] for key in self.theta_keys])
+        if self.iteration_step==1:
+            if self.sampling_method=='uncorrelated':
+                sampling=UncorrelatedSampling(self.system,
+                                              self.sampling_parameters,
+                                              parameter_set)
+            if self.sampling_method=='adaptive':
+                sampling=AdaptiveSampling(self.system,
+                                          self.sampling_parameters,
+                                          parameter_set,
+                                          self.covariance_matrix)
+            S=sampling.stepping_function_normalization(phi_vector,theta_vector)
+        else:S=self.proposing.stepping_function_normalization(phi_vector,theta_vector)
         print('Transition Probability = ', S)
+
+
         posterior = (prior*likelihood)/S
 
         return posterior
@@ -135,62 +149,17 @@ class MetropolisHastings:
             sys.stdout.flush()
 
 
-    def propose_from_samples(self):
-
-
-        N=0
-        current_values=[self.current_parameters[key]/self.sampled_parameters[key]['step'] for key in
-                        self.sampled_keys]
-
-        print('\nCurrent Values = ', current_values)
-        SampleSet=[]
-        MM=[]
-
-        with open(self.samples_file,'r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-
-                sample_set=[float(x[self.sampled_keys.index(key)]) for key in self.sampled_keys]
-                sample_values=[float(x[self.sampled_keys.index(key)])/self.sampled_parameters[key]['step'] for key in
-                        self.sampled_keys]
-
-
-                mulitplicity=float(x[3])
-                distance=numpy.subtract(sample_values,current_values)
-                arg=numpy.dot(distance,distance)
-                modified_mulitplicity=mulitplicity*numpy.exp(-arg)
-                N=N+modified_mulitplicity
-
-                MM.append(modified_mulitplicity)
-                SampleSet.append(sample_set)
-
-        U=random.uniform(0, 1)
-        for s,mm in zip(SampleSet,MM):
-            mm=mm/N
-            if mm>U:return s
-            else:U=U-mm
-
     def values_proposed(self):
 
         proposed = dict()
 
-        for key,value in self.sampling_parameters.items():
-            if value['dist']=='Normal' or value['dist']=='Uniform':
-                proposed[key]=scipy.stats.norm.rvs(loc=self.current_parameters[key],scale=value['step'])
-
-
-        s=self.propose_from_samples()
-
-        proposed['primary_mass']=s[0]
-        proposed['age']=s[1]
-        proposed['feh']=s[2]
-
-        for index,key in enumerate(self.sampled_keys):
-            proposed[key]=s[index]
-
-
+        if self.sampling_method=='uncorrelated':
+            self.proposing=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
+        if self.sampling_method=='adaptive':
+            self.proposing=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
+        proposed=self.proposing()
         self.proposed_parameters=proposed
+
 
     def write_output(self):
 
@@ -392,64 +361,46 @@ class MetropolisHastings:
 
         print('Continuing from {} and {}'.format(self.iteration_step,self.current_parameters))
 
-        """
-        if  os.path.isfile(self.current_filename) == False or os.stat(self.current_filename).st_size == 0:
-            name = self.save_filename[0]
-            self.current_file_exist = False
-        else :
-            name = self.current_filename
-            self.current_file_exist = True
-
-        with open(name, 'r') as f:
-            reader = csv.reader(f, dialect='excel-tab')
-            for row in reader:
-                array = row
-            print(array)
-            sys.stdout.flush()
-        with open(self.save_filename[1], 'r') as f:
-            reader = csv.reader(f, dialect='excel-tab')
-            for row in reader:
-                step = row
-        self.iteration_step = int(step[0]) + 1
-        """
-
         self.iterations()
 
 
     def __init__(self,
                  system_number,
                  interpolator,
+                 sampling_method,
                  sampling_parameters,
                  fixed_parameters,
                  observed_spin,
-                 catalog_file,
                  solution_file,
                  samples_file,
                  mass_ratio,
                  instance,
+                 current_directory,
                  output_directory):
 
         self.system=system_number
         self.interpolator=interpolator
+        self.sampling_method=sampling_method
         self.sampling_parameters=sampling_parameters
         self.fixed_parameters=fixed_parameters
         self.iteration_step=1
         self.mass_ratio=mass_ratio
-        self.catalog_file=catalog_file
         self.solution_file=solution_file
         self.samples_file=samples_file
 
-        self.sampled_keys=[]
-        self.sampled_parameters=dict()
+
+        if self.sampling_method=='adaptive':
+            s=shelve.open('covariance.db')
+            self.covariance_matrix=s[self.system]
+            s.close()
+
+        self.phi_keys=[]
+        self.theta_keys=[]
         for key,value in self.sampling_parameters.items():
+            if value['dist'] in ['Normal','Uniform']:
+                self.theta_keys.append(key)
             if value['dist']=='Samples':
-                self.sampled_parameters[key]=dict()
-                while True:
-                    self.sampled_parameters[key]['value']=value['value']
-                    self.sampled_parameters[key]['step']=value['step']
-                    break
-                self.sampled_keys.append(key)
-        print(self.sampled_parameters)
+                self.phi_keys.append(key)
         self.current_parameters= dict()
         self.proposed_parameters = dict()
 
