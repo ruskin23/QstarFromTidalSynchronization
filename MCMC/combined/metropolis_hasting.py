@@ -9,6 +9,8 @@ import shelve
 import pickle
 import csv
 
+import os
+import os.path
 import sys
 from pathlib import Path
 home_dir=str(Path.home())
