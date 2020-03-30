@@ -9,7 +9,7 @@ fi
 S=$1
 touch $FILE
 
-for I in 1 2 3 4 5
+for I in 3
 do
     python3 FillParameters.py $S $I >temp.out
 done

@@ -14,6 +14,7 @@ do
     python3 FillParameters.py $S $I 
 done
 
+#python3 save_covariance.py $S
 python3 corner_plot.py
 
 #rm temp*.out
