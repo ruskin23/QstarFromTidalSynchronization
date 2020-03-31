@@ -1,11 +1,15 @@
 import corner
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+
 
 data=[]
 
 logQ=[]
 age=[]
+
+system=sys.argv[1]
 with open('AcceptedParameters.txt','r') as f:
     next(f)
     for lines in f:
@@ -32,5 +36,5 @@ figure=corner.corner(d,
 
 
 plt.figure(1)
-plt.savefig('corner.eps')
+plt.savefig('CornerPlot'+system+'.eps')
 

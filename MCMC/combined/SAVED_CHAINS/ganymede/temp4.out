@@ -4,108 +4,2856 @@ First Iteration
 
 At i =  2
 Step =  2
-IterationNumber =  55
-Step =  3
-IterationNumber =  55
-Step =  4
-IterationNumber =  55
-Step =  5
-IterationNumber =  55
+IterationNumber =  3
+
+At i =  3
+
+At i =  4
+
+At i =  5
 Step =  6
-IterationNumber =  55
+IterationNumber =  10
 Step =  7
-IterationNumber =  55
+IterationNumber =  10
 Step =  8
-IterationNumber =  55
+IterationNumber =  10
 Step =  9
-IterationNumber =  55
-Step =  10
-IterationNumber =  55
+IterationNumber =  10
+
+At i =  6
 Step =  11
-IterationNumber =  55
+IterationNumber =  13
 Step =  12
-IterationNumber =  55
-Step =  13
-IterationNumber =  55
+IterationNumber =  13
+
+At i =  7
 Step =  14
-IterationNumber =  55
-Step =  15
-IterationNumber =  55
-Step =  16
-IterationNumber =  55
-Step =  17
-IterationNumber =  55
-Step =  18
-IterationNumber =  55
-Step =  19
-IterationNumber =  55
+IterationNumber =  15
+
+At i =  8
+
+At i =  9
+
+At i =  10
+
+At i =  11
+
+At i =  12
 Step =  20
-IterationNumber =  55
-Step =  21
-IterationNumber =  55
+IterationNumber =  21
+
+At i =  13
 Step =  22
-IterationNumber =  55
-Step =  23
-IterationNumber =  55
-Step =  24
-IterationNumber =  55
-Step =  25
-IterationNumber =  55
-Step =  26
-IterationNumber =  55
+IterationNumber =  23
+
+At i =  14
+
+At i =  15
+
+At i =  16
+
+At i =  17
 Step =  27
-IterationNumber =  55
-Step =  28
-IterationNumber =  55
-Step =  29
-IterationNumber =  55
+IterationNumber =  28
+
+At i =  18
+
+At i =  19
 Step =  30
-IterationNumber =  55
-Step =  31
-IterationNumber =  55
+IterationNumber =  31
+
+At i =  20
 Step =  32
-IterationNumber =  55
+IterationNumber =  35
 Step =  33
-IterationNumber =  55
+IterationNumber =  35
 Step =  34
-IterationNumber =  55
-Step =  35
-IterationNumber =  55
+IterationNumber =  35
+
+At i =  21
 Step =  36
-IterationNumber =  55
-Step =  37
-IterationNumber =  55
+IterationNumber =  37
+
+At i =  22
 Step =  38
-IterationNumber =  55
-Step =  39
-IterationNumber =  55
+IterationNumber =  39
+
+At i =  23
 Step =  40
-IterationNumber =  55
+IterationNumber =  43
 Step =  41
-IterationNumber =  55
+IterationNumber =  43
 Step =  42
-IterationNumber =  55
-Step =  43
-IterationNumber =  55
-Step =  44
-IterationNumber =  55
-Step =  45
-IterationNumber =  55
+IterationNumber =  43
+
+At i =  24
+
+At i =  25
+
+At i =  26
 Step =  46
-IterationNumber =  55
+IterationNumber =  48
 Step =  47
-IterationNumber =  55
-Step =  48
-IterationNumber =  55
-Step =  49
-IterationNumber =  55
+IterationNumber =  48
+
+At i =  27
+
+At i =  28
 Step =  50
-IterationNumber =  55
+IterationNumber =  52
 Step =  51
-IterationNumber =  55
-Step =  52
-IterationNumber =  55
+IterationNumber =  52
+
+At i =  29
 Step =  53
-IterationNumber =  55
-Step =  54
-IterationNumber =  55
+IterationNumber =  54
+
+At i =  30
+Step =  55
+IterationNumber =  56
+
+At i =  31
+Step =  57
+IterationNumber =  58
+
+At i =  32
+
+At i =  33
+Step =  60
+IterationNumber =  61
+
+At i =  34
+
+At i =  35
+
+At i =  36
+Step =  64
+IterationNumber =  66
+Step =  65
+IterationNumber =  66
+
+At i =  37
+Step =  67
+IterationNumber =  68
+
+At i =  38
+
+At i =  39
+
+At i =  40
+
+At i =  41
+
+At i =  42
+Step =  73
+IterationNumber =  75
+Step =  74
+IterationNumber =  75
+
+At i =  43
+
+At i =  44
+
+At i =  45
+
+At i =  46
+
+At i =  47
+Step =  80
+IterationNumber =  82
+Step =  81
+IterationNumber =  82
+
+At i =  48
+Step =  83
+IterationNumber =  84
+
+At i =  49
+
+At i =  50
+Step =  86
+IterationNumber =  90
+Step =  87
+IterationNumber =  90
+Step =  88
+IterationNumber =  90
+Step =  89
+IterationNumber =  90
+
+At i =  51
+Step =  91
+IterationNumber =  93
+Step =  92
+IterationNumber =  93
+
+At i =  52
+Step =  94
+IterationNumber =  95
+
+At i =  53
+Step =  96
+IterationNumber =  97
+
+At i =  54
+Step =  98
+IterationNumber =  100
+Step =  99
+IterationNumber =  100
+
+At i =  55
+
+At i =  56
+Step =  102
+IterationNumber =  103
+
+At i =  57
+Step =  104
+IterationNumber =  109
+Step =  105
+IterationNumber =  109
+Step =  106
+IterationNumber =  109
+Step =  107
+IterationNumber =  109
+Step =  108
+IterationNumber =  109
+
+At i =  58
+Step =  110
+IterationNumber =  112
+Step =  111
+IterationNumber =  112
+
+At i =  59
+Step =  113
+IterationNumber =  114
+
+At i =  60
+Step =  115
+IterationNumber =  117
+Step =  116
+IterationNumber =  117
+
+At i =  61
+
+At i =  62
+
+At i =  63
+Step =  120
+IterationNumber =  122
+Step =  121
+IterationNumber =  122
+
+At i =  64
+Step =  123
+IterationNumber =  124
+
+At i =  65
+Step =  125
+IterationNumber =  132
+Step =  126
+IterationNumber =  132
+Step =  127
+IterationNumber =  132
+Step =  128
+IterationNumber =  132
+Step =  129
+IterationNumber =  132
+Step =  130
+IterationNumber =  132
+Step =  131
+IterationNumber =  132
+
+At i =  66
+
+At i =  67
+Step =  134
+IterationNumber =  142
+Step =  135
+IterationNumber =  142
+Step =  136
+IterationNumber =  142
+Step =  137
+IterationNumber =  142
+Step =  138
+IterationNumber =  142
+Step =  139
+IterationNumber =  142
+Step =  140
+IterationNumber =  142
+Step =  141
+IterationNumber =  142
+
+At i =  68
+
+At i =  69
+
+At i =  70
+Step =  145
+IterationNumber =  155
+Step =  146
+IterationNumber =  155
+Step =  147
+IterationNumber =  155
+Step =  148
+IterationNumber =  155
+Step =  149
+IterationNumber =  155
+Step =  150
+IterationNumber =  155
+Step =  151
+IterationNumber =  155
+Step =  152
+IterationNumber =  155
+Step =  153
+IterationNumber =  155
+Step =  154
+IterationNumber =  155
+
+At i =  71
+Step =  156
+IterationNumber =  157
+
+At i =  72
+
+At i =  73
+Step =  159
+IterationNumber =  160
+
+At i =  74
+Step =  161
+IterationNumber =  163
+Step =  162
+IterationNumber =  163
+
+At i =  75
+Step =  164
+IterationNumber =  167
+Step =  165
+IterationNumber =  167
+Step =  166
+IterationNumber =  167
+
+At i =  76
+
+At i =  77
+Step =  169
+IterationNumber =  173
+Step =  170
+IterationNumber =  173
+Step =  171
+IterationNumber =  173
+Step =  172
+IterationNumber =  173
+
+At i =  78
+Step =  174
+IterationNumber =  175
+
+At i =  79
+
+At i =  80
+Step =  177
+IterationNumber =  178
+
+At i =  81
+Step =  179
+IterationNumber =  180
+
+At i =  82
+
+At i =  83
+Step =  182
+IterationNumber =  183
+
+At i =  84
+Step =  184
+IterationNumber =  186
+Step =  185
+IterationNumber =  186
+
+At i =  85
+Step =  187
+IterationNumber =  188
+
+At i =  86
+
+At i =  87
+Step =  190
+IterationNumber =  191
+
+At i =  88
+
+At i =  89
+Step =  193
+IterationNumber =  194
+
+At i =  90
+
+At i =  91
+Step =  196
+IterationNumber =  197
+
+At i =  92
+
+At i =  93
+Step =  199
+IterationNumber =  200
+
+At i =  94
+Step =  201
+IterationNumber =  204
+Step =  202
+IterationNumber =  204
+Step =  203
+IterationNumber =  204
+
+At i =  95
+Step =  205
+IterationNumber =  206
+
+At i =  96
+
+At i =  97
+
+At i =  98
+Step =  209
+IterationNumber =  212
+Step =  210
+IterationNumber =  212
+Step =  211
+IterationNumber =  212
+
+At i =  99
+Step =  213
+IterationNumber =  215
+Step =  214
+IterationNumber =  215
+
+At i =  100
+Step =  216
+IterationNumber =  217
+
+At i =  101
+Step =  218
+IterationNumber =  220
+Step =  219
+IterationNumber =  220
+
+At i =  102
+Step =  221
+IterationNumber =  222
+
+At i =  103
+Step =  223
+IterationNumber =  224
+
+At i =  104
+
+At i =  105
+
+At i =  106
+Step =  227
+IterationNumber =  228
+
+At i =  107
+Step =  229
+IterationNumber =  231
+Step =  230
+IterationNumber =  231
+
+At i =  108
+
+At i =  109
+
+At i =  110
+Step =  234
+IterationNumber =  235
+
+At i =  111
+
+At i =  112
+
+At i =  113
+Step =  238
+IterationNumber =  243
+Step =  239
+IterationNumber =  243
+Step =  240
+IterationNumber =  243
+Step =  241
+IterationNumber =  243
+Step =  242
+IterationNumber =  243
+
+At i =  114
+Step =  244
+IterationNumber =  249
+Step =  245
+IterationNumber =  249
+Step =  246
+IterationNumber =  249
+Step =  247
+IterationNumber =  249
+Step =  248
+IterationNumber =  249
+
+At i =  115
+
+At i =  116
+Step =  251
+IterationNumber =  252
+
+At i =  117
+Step =  253
+IterationNumber =  256
+Step =  254
+IterationNumber =  256
+Step =  255
+IterationNumber =  256
+
+At i =  118
+
+At i =  119
+
+At i =  120
+Step =  259
+IterationNumber =  260
+
+At i =  121
+
+At i =  122
+Step =  262
+IterationNumber =  264
+Step =  263
+IterationNumber =  264
+
+At i =  123
+Step =  265
+IterationNumber =  267
+Step =  266
+IterationNumber =  267
+
+At i =  124
+
+At i =  125
+
+At i =  126
+Step =  270
+IterationNumber =  275
+Step =  271
+IterationNumber =  275
+Step =  272
+IterationNumber =  275
+Step =  273
+IterationNumber =  275
+Step =  274
+IterationNumber =  275
+
+At i =  127
+Step =  276
+IterationNumber =  280
+Step =  277
+IterationNumber =  280
+Step =  278
+IterationNumber =  280
+Step =  279
+IterationNumber =  280
+
+At i =  128
+Step =  281
+IterationNumber =  282
+
+At i =  129
+
+At i =  130
+
+At i =  131
+
+At i =  132
+Step =  286
+IterationNumber =  288
+Step =  287
+IterationNumber =  288
+
+At i =  133
+Step =  289
+IterationNumber =  291
+Step =  290
+IterationNumber =  291
+
+At i =  134
+
+At i =  135
+Step =  293
+IterationNumber =  295
+Step =  294
+IterationNumber =  295
+
+At i =  136
+Step =  296
+IterationNumber =  299
+Step =  297
+IterationNumber =  299
+Step =  298
+IterationNumber =  299
+
+At i =  137
+Step =  300
+IterationNumber =  306
+Step =  301
+IterationNumber =  306
+Step =  302
+IterationNumber =  306
+Step =  303
+IterationNumber =  306
+Step =  304
+IterationNumber =  306
+Step =  305
+IterationNumber =  306
+
+At i =  138
+Step =  307
+IterationNumber =  309
+Step =  308
+IterationNumber =  309
+
+At i =  139
+Step =  310
+IterationNumber =  312
+Step =  311
+IterationNumber =  312
+
+At i =  140
+Step =  313
+IterationNumber =  315
+Step =  314
+IterationNumber =  315
+
+At i =  141
+
+At i =  142
+
+At i =  143
+Step =  318
+IterationNumber =  320
+Step =  319
+IterationNumber =  320
+
+At i =  144
+Step =  321
+IterationNumber =  322
+
+At i =  145
+Step =  323
+IterationNumber =  328
+Step =  324
+IterationNumber =  328
+Step =  325
+IterationNumber =  328
+Step =  326
+IterationNumber =  328
+Step =  327
+IterationNumber =  328
+
+At i =  146
+
+At i =  147
+
+At i =  148
+Step =  331
+IterationNumber =  336
+Step =  332
+IterationNumber =  336
+Step =  333
+IterationNumber =  336
+Step =  334
+IterationNumber =  336
+Step =  335
+IterationNumber =  336
+
+At i =  149
+
+At i =  150
+Step =  338
+IterationNumber =  340
+Step =  339
+IterationNumber =  340
+
+At i =  151
+Step =  341
+IterationNumber =  343
+Step =  342
+IterationNumber =  343
+
+At i =  152
+Step =  344
+IterationNumber =  348
+Step =  345
+IterationNumber =  348
+Step =  346
+IterationNumber =  348
+Step =  347
+IterationNumber =  348
+
+At i =  153
+Step =  349
+IterationNumber =  352
+Step =  350
+IterationNumber =  352
+Step =  351
+IterationNumber =  352
+
+At i =  154
+Step =  353
+IterationNumber =  358
+Step =  354
+IterationNumber =  358
+Step =  355
+IterationNumber =  358
+Step =  356
+IterationNumber =  358
+Step =  357
+IterationNumber =  358
+
+At i =  155
+Step =  359
+IterationNumber =  361
+Step =  360
+IterationNumber =  361
+
+At i =  156
+
+At i =  157
+Step =  363
+IterationNumber =  364
+
+At i =  158
+Step =  365
+IterationNumber =  368
+Step =  366
+IterationNumber =  368
+Step =  367
+IterationNumber =  368
+
+At i =  159
+Step =  369
+IterationNumber =  371
+Step =  370
+IterationNumber =  371
+
+At i =  160
+Step =  372
+IterationNumber =  374
+Step =  373
+IterationNumber =  374
+
+At i =  161
+Step =  375
+IterationNumber =  377
+Step =  376
+IterationNumber =  377
+
+At i =  162
+Step =  378
+IterationNumber =  380
+Step =  379
+IterationNumber =  380
+
+At i =  163
+Step =  381
+IterationNumber =  382
+
+At i =  164
+
+At i =  165
+
+At i =  166
+
+At i =  167
+Step =  386
+IterationNumber =  387
+
+At i =  168
+Step =  388
+IterationNumber =  390
+Step =  389
+IterationNumber =  390
+
+At i =  169
+
+At i =  170
+
+At i =  171
+Step =  393
+IterationNumber =  394
+
+At i =  172
+Step =  395
+IterationNumber =  398
+Step =  396
+IterationNumber =  398
+Step =  397
+IterationNumber =  398
+
+At i =  173
+Step =  399
+IterationNumber =  400
+
+At i =  174
+Step =  401
+IterationNumber =  402
+
+At i =  175
+
+At i =  176
+Step =  404
+IterationNumber =  406
+Step =  405
+IterationNumber =  406
+
+At i =  177
+Step =  407
+IterationNumber =  408
+
+At i =  178
+Step =  409
+IterationNumber =  412
+Step =  410
+IterationNumber =  412
+Step =  411
+IterationNumber =  412
+
+At i =  179
+
+At i =  180
+Step =  414
+IterationNumber =  421
+Step =  415
+IterationNumber =  421
+Step =  416
+IterationNumber =  421
+Step =  417
+IterationNumber =  421
+Step =  418
+IterationNumber =  421
+Step =  419
+IterationNumber =  421
+Step =  420
+IterationNumber =  421
+
+At i =  181
+
+At i =  182
+Step =  423
+IterationNumber =  424
+
+At i =  183
+Step =  425
+IterationNumber =  426
+
+At i =  184
+
+At i =  185
+
+At i =  186
+
+At i =  187
+Step =  430
+IterationNumber =  431
+
+At i =  188
+Step =  432
+IterationNumber =  436
+Step =  433
+IterationNumber =  436
+Step =  434
+IterationNumber =  436
+Step =  435
+IterationNumber =  436
+
+At i =  189
+
+At i =  190
+Step =  438
+IterationNumber =  439
+
+At i =  191
+
+At i =  192
+Step =  441
+IterationNumber =  449
+Step =  442
+IterationNumber =  449
+Step =  443
+IterationNumber =  449
+Step =  444
+IterationNumber =  449
+Step =  445
+IterationNumber =  449
+Step =  446
+IterationNumber =  449
+Step =  447
+IterationNumber =  449
+Step =  448
+IterationNumber =  449
+
+At i =  193
+Step =  450
+IterationNumber =  454
+Step =  451
+IterationNumber =  454
+Step =  452
+IterationNumber =  454
+Step =  453
+IterationNumber =  454
+
+At i =  194
+Step =  455
+IterationNumber =  456
+
+At i =  195
+Step =  457
+IterationNumber =  460
+Step =  458
+IterationNumber =  460
+Step =  459
+IterationNumber =  460
+
+At i =  196
+Step =  461
+IterationNumber =  462
+
+At i =  197
+Step =  463
+IterationNumber =  464
+
+At i =  198
+Step =  465
+IterationNumber =  467
+Step =  466
+IterationNumber =  467
+
+At i =  199
+Step =  468
+IterationNumber =  474
+Step =  469
+IterationNumber =  474
+Step =  470
+IterationNumber =  474
+Step =  471
+IterationNumber =  474
+Step =  472
+IterationNumber =  474
+Step =  473
+IterationNumber =  474
+
+At i =  200
+Step =  475
+IterationNumber =  478
+Step =  476
+IterationNumber =  478
+Step =  477
+IterationNumber =  478
+
+At i =  201
+
+At i =  202
+Step =  480
+IterationNumber =  481
+
+At i =  203
+Step =  482
+IterationNumber =  486
+Step =  483
+IterationNumber =  486
+Step =  484
+IterationNumber =  486
+Step =  485
+IterationNumber =  486
+
+At i =  204
+
+At i =  205
+
+At i =  206
+Step =  489
+IterationNumber =  490
+
+At i =  207
+
+At i =  208
+
+At i =  209
+
+At i =  210
+Step =  494
+IterationNumber =  499
+Step =  495
+IterationNumber =  499
+Step =  496
+IterationNumber =  499
+Step =  497
+IterationNumber =  499
+Step =  498
+IterationNumber =  499
+
+At i =  211
+Step =  500
+IterationNumber =  503
+Step =  501
+IterationNumber =  503
+Step =  502
+IterationNumber =  503
+
+At i =  212
+
+At i =  213
+Step =  505
+IterationNumber =  507
+Step =  506
+IterationNumber =  507
+
+At i =  214
+
+At i =  215
+
+At i =  216
+
+At i =  217
+
+At i =  218
+Step =  512
+IterationNumber =  515
+Step =  513
+IterationNumber =  515
+Step =  514
+IterationNumber =  515
+
+At i =  219
+Step =  516
+IterationNumber =  520
+Step =  517
+IterationNumber =  520
+Step =  518
+IterationNumber =  520
+Step =  519
+IterationNumber =  520
+
+At i =  220
+Step =  521
+IterationNumber =  522
+
+At i =  221
+Step =  523
+IterationNumber =  524
+
+At i =  222
+Step =  525
+IterationNumber =  527
+Step =  526
+IterationNumber =  527
+
+At i =  223
+
+At i =  224
+Step =  529
+IterationNumber =  531
+Step =  530
+IterationNumber =  531
+
+At i =  225
+Step =  532
+IterationNumber =  540
+Step =  533
+IterationNumber =  540
+Step =  534
+IterationNumber =  540
+Step =  535
+IterationNumber =  540
+Step =  536
+IterationNumber =  540
+Step =  537
+IterationNumber =  540
+Step =  538
+IterationNumber =  540
+Step =  539
+IterationNumber =  540
+
+At i =  226
+
+At i =  227
+
+At i =  228
+Step =  543
+IterationNumber =  544
+
+At i =  229
+Step =  545
+IterationNumber =  546
+
+At i =  230
+
+At i =  231
+
+At i =  232
+
+At i =  233
+Step =  550
+IterationNumber =  551
+
+At i =  234
+Step =  552
+IterationNumber =  553
+
+At i =  235
+Step =  554
+IterationNumber =  557
+Step =  555
+IterationNumber =  557
+Step =  556
+IterationNumber =  557
+
+At i =  236
+Step =  558
+IterationNumber =  559
+
+At i =  237
+Step =  560
+IterationNumber =  561
+
+At i =  238
+Step =  562
+IterationNumber =  565
+Step =  563
+IterationNumber =  565
+Step =  564
+IterationNumber =  565
+
+At i =  239
+Step =  566
+IterationNumber =  567
+
+At i =  240
+Step =  568
+IterationNumber =  569
+
+At i =  241
+Step =  570
+IterationNumber =  571
+
+At i =  242
+Step =  572
+IterationNumber =  573
+
+At i =  243
+
+At i =  244
+
+At i =  245
+
+At i =  246
+Step =  577
+IterationNumber =  578
+
+At i =  247
+
+At i =  248
+Step =  580
+IterationNumber =  581
+
+At i =  249
+Step =  582
+IterationNumber =  584
+Step =  583
+IterationNumber =  584
+
+At i =  250
+
+At i =  251
+
+At i =  252
+Step =  587
+IterationNumber =  588
+
+At i =  253
+
+At i =  254
+
+At i =  255
+Step =  591
+IterationNumber =  593
+Step =  592
+IterationNumber =  593
+
+At i =  256
+
+At i =  257
+
+At i =  258
+
+At i =  259
+
+At i =  260
+Step =  598
+IterationNumber =  599
+
+At i =  261
+Step =  600
+IterationNumber =  602
+Step =  601
+IterationNumber =  602
+
+At i =  262
+
+At i =  263
+
+At i =  264
+
+At i =  265
+Step =  606
+IterationNumber =  609
+Step =  607
+IterationNumber =  609
+Step =  608
+IterationNumber =  609
+
+At i =  266
+
+At i =  267
+Step =  611
+IterationNumber =  615
+Step =  612
+IterationNumber =  615
+Step =  613
+IterationNumber =  615
+Step =  614
+IterationNumber =  615
+
+At i =  268
+Step =  616
+IterationNumber =  617
+
+At i =  269
+
+At i =  270
+Step =  619
+IterationNumber =  623
+Step =  620
+IterationNumber =  623
+Step =  621
+IterationNumber =  623
+Step =  622
+IterationNumber =  623
+
+At i =  271
+
+At i =  272
+Step =  625
+IterationNumber =  626
+
+At i =  273
+Step =  627
+IterationNumber =  631
+Step =  628
+IterationNumber =  631
+Step =  629
+IterationNumber =  631
+Step =  630
+IterationNumber =  631
+
+At i =  274
+
+At i =  275
+
+At i =  276
+
+At i =  277
+Step =  635
+IterationNumber =  636
+
+At i =  278
+Step =  637
+IterationNumber =  638
+
+At i =  279
+Step =  639
+IterationNumber =  641
+Step =  640
+IterationNumber =  641
+
+At i =  280
+Step =  642
+IterationNumber =  643
+
+At i =  281
+Step =  644
+IterationNumber =  646
+Step =  645
+IterationNumber =  646
+
+At i =  282
+
+At i =  283
+
+At i =  284
+
+At i =  285
+
+At i =  286
+Step =  651
+IterationNumber =  653
+Step =  652
+IterationNumber =  653
+
+At i =  287
+Step =  654
+IterationNumber =  656
+Step =  655
+IterationNumber =  656
+
+At i =  288
+Step =  657
+IterationNumber =  665
+Step =  658
+IterationNumber =  665
+Step =  659
+IterationNumber =  665
+Step =  660
+IterationNumber =  665
+Step =  661
+IterationNumber =  665
+Step =  662
+IterationNumber =  665
+Step =  663
+IterationNumber =  665
+Step =  664
+IterationNumber =  665
+
+At i =  289
+
+At i =  290
+
+At i =  291
+Step =  668
+IterationNumber =  669
+
+At i =  292
+
+At i =  293
+Step =  671
+IterationNumber =  672
+
+At i =  294
+Step =  673
+IterationNumber =  675
+Step =  674
+IterationNumber =  675
+
+At i =  295
+
+At i =  296
+Step =  677
+IterationNumber =  678
+
+At i =  297
+
+At i =  298
+Step =  680
+IterationNumber =  684
+Step =  681
+IterationNumber =  684
+Step =  682
+IterationNumber =  684
+Step =  683
+IterationNumber =  684
+
+At i =  299
+Step =  685
+IterationNumber =  686
+
+At i =  300
+
+At i =  301
+Step =  688
+IterationNumber =  689
+
+At i =  302
+
+At i =  303
+Step =  691
+IterationNumber =  692
+
+At i =  304
+
+At i =  305
+
+At i =  306
+
+At i =  307
+Step =  696
+IterationNumber =  697
+
+At i =  308
+
+At i =  309
+Step =  699
+IterationNumber =  700
+
+At i =  310
+Step =  701
+IterationNumber =  703
+Step =  702
+IterationNumber =  703
+
+At i =  311
+Step =  704
+IterationNumber =  712
+Step =  705
+IterationNumber =  712
+Step =  706
+IterationNumber =  712
+Step =  707
+IterationNumber =  712
+Step =  708
+IterationNumber =  712
+Step =  709
+IterationNumber =  712
+Step =  710
+IterationNumber =  712
+Step =  711
+IterationNumber =  712
+
+At i =  312
+Step =  713
+IterationNumber =  717
+Step =  714
+IterationNumber =  717
+Step =  715
+IterationNumber =  717
+Step =  716
+IterationNumber =  717
+
+At i =  313
+
+At i =  314
+Step =  719
+IterationNumber =  726
+Step =  720
+IterationNumber =  726
+Step =  721
+IterationNumber =  726
+Step =  722
+IterationNumber =  726
+Step =  723
+IterationNumber =  726
+Step =  724
+IterationNumber =  726
+Step =  725
+IterationNumber =  726
+
+At i =  315
+Step =  727
+IterationNumber =  728
+
+At i =  316
+Step =  729
+IterationNumber =  732
+Step =  730
+IterationNumber =  732
+Step =  731
+IterationNumber =  732
+
+At i =  317
+
+At i =  318
+Step =  734
+IterationNumber =  735
+
+At i =  319
+Step =  736
+IterationNumber =  740
+Step =  737
+IterationNumber =  740
+Step =  738
+IterationNumber =  740
+Step =  739
+IterationNumber =  740
+
+At i =  320
+
+At i =  321
+Step =  742
+IterationNumber =  745
+Step =  743
+IterationNumber =  745
+Step =  744
+IterationNumber =  745
+
+At i =  322
+
+At i =  323
+
+At i =  324
+Step =  748
+IterationNumber =  751
+Step =  749
+IterationNumber =  751
+Step =  750
+IterationNumber =  751
+
+At i =  325
+
+At i =  326
+Step =  753
+IterationNumber =  754
+
+At i =  327
+Step =  755
+IterationNumber =  759
+Step =  756
+IterationNumber =  759
+Step =  757
+IterationNumber =  759
+Step =  758
+IterationNumber =  759
+
+At i =  328
+Step =  760
+IterationNumber =  765
+Step =  761
+IterationNumber =  765
+Step =  762
+IterationNumber =  765
+Step =  763
+IterationNumber =  765
+Step =  764
+IterationNumber =  765
+
+At i =  329
+Step =  766
+IterationNumber =  768
+Step =  767
+IterationNumber =  768
+
+At i =  330
+
+At i =  331
+Step =  770
+IterationNumber =  771
+
+At i =  332
+Step =  772
+IterationNumber =  773
+
+At i =  333
+Step =  774
+IterationNumber =  778
+Step =  775
+IterationNumber =  778
+Step =  776
+IterationNumber =  778
+Step =  777
+IterationNumber =  778
+
+At i =  334
+
+At i =  335
+
+At i =  336
+
+At i =  337
+Step =  782
+IterationNumber =  785
+Step =  783
+IterationNumber =  785
+Step =  784
+IterationNumber =  785
+
+At i =  338
+Step =  786
+IterationNumber =  787
+
+At i =  339
+
+At i =  340
+Step =  789
+IterationNumber =  790
+
+At i =  341
+Step =  791
+IterationNumber =  794
+Step =  792
+IterationNumber =  794
+Step =  793
+IterationNumber =  794
+
+At i =  342
+
+At i =  343
+
+At i =  344
+
+At i =  345
+Step =  798
+IterationNumber =  801
+Step =  799
+IterationNumber =  801
+Step =  800
+IterationNumber =  801
+
+At i =  346
+
+At i =  347
+Step =  803
+IterationNumber =  805
+Step =  804
+IterationNumber =  805
+
+At i =  348
+Step =  806
+IterationNumber =  808
+Step =  807
+IterationNumber =  808
+
+At i =  349
+
+At i =  350
+
+At i =  351
+Step =  811
+IterationNumber =  814
+Step =  812
+IterationNumber =  814
+Step =  813
+IterationNumber =  814
+
+At i =  352
+Step =  815
+IterationNumber =  818
+Step =  816
+IterationNumber =  818
+Step =  817
+IterationNumber =  818
+
+At i =  353
+
+At i =  354
+Step =  820
+IterationNumber =  823
+Step =  821
+IterationNumber =  823
+Step =  822
+IterationNumber =  823
+
+At i =  355
+Step =  824
+IterationNumber =  825
+
+At i =  356
+Step =  826
+IterationNumber =  827
+
+At i =  357
+Step =  828
+IterationNumber =  834
+Step =  829
+IterationNumber =  834
+Step =  830
+IterationNumber =  834
+Step =  831
+IterationNumber =  834
+Step =  832
+IterationNumber =  834
+Step =  833
+IterationNumber =  834
+
+At i =  358
+Step =  835
+IterationNumber =  837
+Step =  836
+IterationNumber =  837
+
+At i =  359
+Step =  838
+IterationNumber =  841
+Step =  839
+IterationNumber =  841
+Step =  840
+IterationNumber =  841
+
+At i =  360
+Step =  842
+IterationNumber =  844
+Step =  843
+IterationNumber =  844
+
+At i =  361
+Step =  845
+IterationNumber =  847
+Step =  846
+IterationNumber =  847
+
+At i =  362
+Step =  848
+IterationNumber =  850
+Step =  849
+IterationNumber =  850
+
+At i =  363
+Step =  851
+IterationNumber =  862
+Step =  852
+IterationNumber =  862
+Step =  853
+IterationNumber =  862
+Step =  854
+IterationNumber =  862
+Step =  855
+IterationNumber =  862
+Step =  856
+IterationNumber =  862
+Step =  857
+IterationNumber =  862
+Step =  858
+IterationNumber =  862
+Step =  859
+IterationNumber =  862
+Step =  860
+IterationNumber =  862
+Step =  861
+IterationNumber =  862
+
+At i =  364
+Step =  863
+IterationNumber =  867
+Step =  864
+IterationNumber =  867
+Step =  865
+IterationNumber =  867
+Step =  866
+IterationNumber =  867
+
+At i =  365
+Step =  868
+IterationNumber =  869
+
+At i =  366
+Step =  870
+IterationNumber =  871
+
+At i =  367
+Step =  872
+IterationNumber =  874
+Step =  873
+IterationNumber =  874
+
+At i =  368
+Step =  875
+IterationNumber =  876
+
+At i =  369
+
+At i =  370
+
+At i =  371
+
+At i =  372
+Step =  880
+IterationNumber =  881
+
+At i =  373
+Step =  882
+IterationNumber =  883
+
+At i =  374
+Step =  884
+IterationNumber =  886
+Step =  885
+IterationNumber =  886
+
+At i =  375
+
+At i =  376
+
+At i =  377
+
+At i =  378
+Step =  890
+IterationNumber =  892
+Step =  891
+IterationNumber =  892
+
+At i =  379
+Step =  893
+IterationNumber =  894
+
+At i =  380
+Step =  895
+IterationNumber =  904
+Step =  896
+IterationNumber =  904
+Step =  897
+IterationNumber =  904
+Step =  898
+IterationNumber =  904
+Step =  899
+IterationNumber =  904
+Step =  900
+IterationNumber =  904
+Step =  901
+IterationNumber =  904
+Step =  902
+IterationNumber =  904
+Step =  903
+IterationNumber =  904
+
+At i =  381
+Step =  905
+IterationNumber =  906
+
+At i =  382
+Step =  907
+IterationNumber =  909
+Step =  908
+IterationNumber =  909
+
+At i =  383
+
+At i =  384
+
+At i =  385
+Step =  912
+IterationNumber =  914
+Step =  913
+IterationNumber =  914
+
+At i =  386
+Step =  915
+IterationNumber =  916
+
+At i =  387
+
+At i =  388
+Step =  918
+IterationNumber =  921
+Step =  919
+IterationNumber =  921
+Step =  920
+IterationNumber =  921
+
+At i =  389
+
+At i =  390
+Step =  923
+IterationNumber =  926
+Step =  924
+IterationNumber =  926
+Step =  925
+IterationNumber =  926
+
+At i =  391
+Step =  927
+IterationNumber =  928
+
+At i =  392
+Step =  929
+IterationNumber =  938
+Step =  930
+IterationNumber =  938
+Step =  931
+IterationNumber =  938
+Step =  932
+IterationNumber =  938
+Step =  933
+IterationNumber =  938
+Step =  934
+IterationNumber =  938
+Step =  935
+IterationNumber =  938
+Step =  936
+IterationNumber =  938
+Step =  937
+IterationNumber =  938
+
+At i =  393
+Step =  939
+IterationNumber =  941
+Step =  940
+IterationNumber =  941
+
+At i =  394
+
+At i =  395
+
+At i =  396
+
+At i =  397
+Step =  945
+IterationNumber =  949
+Step =  946
+IterationNumber =  949
+Step =  947
+IterationNumber =  949
+Step =  948
+IterationNumber =  949
+
+At i =  398
+Step =  950
+IterationNumber =  952
+Step =  951
+IterationNumber =  952
+
+At i =  399
+Step =  953
+IterationNumber =  954
+
+At i =  400
+Step =  955
+IterationNumber =  956
+
+At i =  401
+Step =  957
+IterationNumber =  958
+
+At i =  402
+Step =  959
+IterationNumber =  964
+Step =  960
+IterationNumber =  964
+Step =  961
+IterationNumber =  964
+Step =  962
+IterationNumber =  964
+Step =  963
+IterationNumber =  964
+
+At i =  403
+Step =  965
+IterationNumber =  973
+Step =  966
+IterationNumber =  973
+Step =  967
+IterationNumber =  973
+Step =  968
+IterationNumber =  973
+Step =  969
+IterationNumber =  973
+Step =  970
+IterationNumber =  973
+Step =  971
+IterationNumber =  973
+Step =  972
+IterationNumber =  973
+
+At i =  404
+Step =  974
+IterationNumber =  977
+Step =  975
+IterationNumber =  977
+Step =  976
+IterationNumber =  977
+
+At i =  405
+
+At i =  406
+
+At i =  407
+
+At i =  408
+Step =  981
+IterationNumber =  983
+Step =  982
+IterationNumber =  983
+
+At i =  409
+Step =  984
+IterationNumber =  985
+
+At i =  410
+
+At i =  411
+Step =  987
+IterationNumber =  988
+
+At i =  412
+Step =  989
+IterationNumber =  990
+
+At i =  413
+
+At i =  414
+Step =  992
+IterationNumber =  993
+
+At i =  415
+
+At i =  416
+
+At i =  417
+
+At i =  418
+Step =  997
+IterationNumber =  998
+
+At i =  419
+
+At i =  420
+
+At i =  421
+
+At i =  422
+Step =  1002
+IterationNumber =  1003
+
+At i =  423
+
+At i =  424
+Step =  1005
+IterationNumber =  1007
+Step =  1006
+IterationNumber =  1007
+
+At i =  425
+
+At i =  426
+Step =  1009
+IterationNumber =  1013
+Step =  1010
+IterationNumber =  1013
+Step =  1011
+IterationNumber =  1013
+Step =  1012
+IterationNumber =  1013
+
+At i =  427
+
+At i =  428
+
+At i =  429
+
+At i =  430
+
+At i =  431
+
+At i =  432
+
+At i =  433
+Step =  1020
+IterationNumber =  1022
+Step =  1021
+IterationNumber =  1022
+
+At i =  434
+Step =  1023
+IterationNumber =  1025
+Step =  1024
+IterationNumber =  1025
+
+At i =  435
+Step =  1026
+IterationNumber =  1027
+
+At i =  436
+Step =  1028
+IterationNumber =  1038
+Step =  1029
+IterationNumber =  1038
+Step =  1030
+IterationNumber =  1038
+Step =  1031
+IterationNumber =  1038
+Step =  1032
+IterationNumber =  1038
+Step =  1033
+IterationNumber =  1038
+Step =  1034
+IterationNumber =  1038
+Step =  1035
+IterationNumber =  1038
+Step =  1036
+IterationNumber =  1038
+Step =  1037
+IterationNumber =  1038
+
+At i =  437
+Step =  1039
+IterationNumber =  1040
+
+At i =  438
+Step =  1041
+IterationNumber =  1042
+
+At i =  439
+Step =  1043
+IterationNumber =  1044
+
+At i =  440
+
+At i =  441
+Step =  1046
+IterationNumber =  1048
+Step =  1047
+IterationNumber =  1048
+
+At i =  442
+Step =  1049
+IterationNumber =  1054
+Step =  1050
+IterationNumber =  1054
+Step =  1051
+IterationNumber =  1054
+Step =  1052
+IterationNumber =  1054
+Step =  1053
+IterationNumber =  1054
+
+At i =  443
+Step =  1055
+IterationNumber =  1058
+Step =  1056
+IterationNumber =  1058
+Step =  1057
+IterationNumber =  1058
+
+At i =  444
+
+At i =  445
+Step =  1060
+IterationNumber =  1064
+Step =  1061
+IterationNumber =  1064
+Step =  1062
+IterationNumber =  1064
+Step =  1063
+IterationNumber =  1064
+
+At i =  446
+Step =  1065
+IterationNumber =  1068
+Step =  1066
+IterationNumber =  1068
+Step =  1067
+IterationNumber =  1068
+
+At i =  447
+
+At i =  448
+Step =  1070
+IterationNumber =  1072
+Step =  1071
+IterationNumber =  1072
+
+At i =  449
+Step =  1073
+IterationNumber =  1075
+Step =  1074
+IterationNumber =  1075
+
+At i =  450
+Step =  1076
+IterationNumber =  1077
+
+At i =  451
+Step =  1078
+IterationNumber =  1080
+Step =  1079
+IterationNumber =  1080
+
+At i =  452
+
+At i =  453
+
+At i =  454
+
+At i =  455
+Step =  1084
+IterationNumber =  1087
+Step =  1085
+IterationNumber =  1087
+Step =  1086
+IterationNumber =  1087
+
+At i =  456
+Step =  1088
+IterationNumber =  1096
+Step =  1089
+IterationNumber =  1096
+Step =  1090
+IterationNumber =  1096
+Step =  1091
+IterationNumber =  1096
+Step =  1092
+IterationNumber =  1096
+Step =  1093
+IterationNumber =  1096
+Step =  1094
+IterationNumber =  1096
+Step =  1095
+IterationNumber =  1096
+
+At i =  457
+
+At i =  458
+Step =  1098
+IterationNumber =  1099
+
+At i =  459
+Step =  1100
+IterationNumber =  1105
+Step =  1101
+IterationNumber =  1105
+Step =  1102
+IterationNumber =  1105
+Step =  1103
+IterationNumber =  1105
+Step =  1104
+IterationNumber =  1105
+
+At i =  460
+
+At i =  461
+
+At i =  462
+Step =  1108
+IterationNumber =  1112
+Step =  1109
+IterationNumber =  1112
+Step =  1110
+IterationNumber =  1112
+Step =  1111
+IterationNumber =  1112
+
+At i =  463
+Step =  1113
+IterationNumber =  1116
+Step =  1114
+IterationNumber =  1116
+Step =  1115
+IterationNumber =  1116
+
+At i =  464
+
+At i =  465
+Step =  1118
+IterationNumber =  1120
+Step =  1119
+IterationNumber =  1120
+
+At i =  466
+Step =  1121
+IterationNumber =  1122
+
+At i =  467
+
+At i =  468
+Step =  1124
+IterationNumber =  1125
+
+At i =  469
+Step =  1126
+IterationNumber =  1127
+
+At i =  470
+
+At i =  471
+Step =  1129
+IterationNumber =  1135
+Step =  1130
+IterationNumber =  1135
+Step =  1131
+IterationNumber =  1135
+Step =  1132
+IterationNumber =  1135
+Step =  1133
+IterationNumber =  1135
+Step =  1134
+IterationNumber =  1135
+
+At i =  472
+Step =  1136
+IterationNumber =  1137
+
+At i =  473
+Step =  1138
+IterationNumber =  1139
+
+At i =  474
+Step =  1140
+IterationNumber =  1141
+
+At i =  475
+Step =  1142
+IterationNumber =  1153
+Step =  1143
+IterationNumber =  1153
+Step =  1144
+IterationNumber =  1153
+Step =  1145
+IterationNumber =  1153
+Step =  1146
+IterationNumber =  1153
+Step =  1147
+IterationNumber =  1153
+Step =  1148
+IterationNumber =  1153
+Step =  1149
+IterationNumber =  1153
+Step =  1150
+IterationNumber =  1153
+Step =  1151
+IterationNumber =  1153
+Step =  1152
+IterationNumber =  1153
+
+At i =  476
+Step =  1154
+IterationNumber =  1155
+
+At i =  477
+
+At i =  478
+Step =  1157
+IterationNumber =  1158
+
+At i =  479
+Step =  1159
+IterationNumber =  1161
+Step =  1160
+IterationNumber =  1161
+
+At i =  480
+Step =  1162
+IterationNumber =  1163
+
+At i =  481
+
+At i =  482
+Step =  1165
+IterationNumber =  1175
+Step =  1166
+IterationNumber =  1175
+Step =  1167
+IterationNumber =  1175
+Step =  1168
+IterationNumber =  1175
+Step =  1169
+IterationNumber =  1175
+Step =  1170
+IterationNumber =  1175
+Step =  1171
+IterationNumber =  1175
+Step =  1172
+IterationNumber =  1175
+Step =  1173
+IterationNumber =  1175
+Step =  1174
+IterationNumber =  1175
+
+At i =  483
+
+At i =  484
+Step =  1177
+IterationNumber =  1178
+
+At i =  485
+
+At i =  486
+Step =  1180
+IterationNumber =  1181
+
+At i =  487
+Step =  1182
+IterationNumber =  1183
+
+At i =  488
+
+At i =  489
+
+At i =  490
+
+At i =  491
+
+At i =  492
+
+At i =  493
+
+At i =  494
+
+At i =  495
+
+At i =  496
+
+At i =  497
+Step =  1193
+IterationNumber =  1194
+
+At i =  498
+
+At i =  499
+Step =  1196
+IterationNumber =  1206
+Step =  1197
+IterationNumber =  1206
+Step =  1198
+IterationNumber =  1206
+Step =  1199
+IterationNumber =  1206
+Step =  1200
+IterationNumber =  1206
+Step =  1201
+IterationNumber =  1206
+Step =  1202
+IterationNumber =  1206
+Step =  1203
+IterationNumber =  1206
+Step =  1204
+IterationNumber =  1206
+Step =  1205
+IterationNumber =  1206
+
+At i =  500
+Step =  1207
+IterationNumber =  1208
+
+At i =  501
+Step =  1209
+IterationNumber =  1211
+Step =  1210
+IterationNumber =  1211
+
+At i =  502
+
+At i =  503
+
+At i =  504
+
+At i =  505
+
+At i =  506
+Step =  1216
+IterationNumber =  1222
+Step =  1217
+IterationNumber =  1222
+Step =  1218
+IterationNumber =  1222
+Step =  1219
+IterationNumber =  1222
+Step =  1220
+IterationNumber =  1222
+Step =  1221
+IterationNumber =  1222
+
+At i =  507
+
+At i =  508
+Step =  1224
+IterationNumber =  1227
+Step =  1225
+IterationNumber =  1227
+Step =  1226
+IterationNumber =  1227
+
+At i =  509
+Step =  1228
+IterationNumber =  1229
+
+At i =  510
+Step =  1230
+IterationNumber =  1235
+Step =  1231
+IterationNumber =  1235
+Step =  1232
+IterationNumber =  1235
+Step =  1233
+IterationNumber =  1235
+Step =  1234
+IterationNumber =  1235
+
+At i =  511
+Step =  1236
+IterationNumber =  1242
+Step =  1237
+IterationNumber =  1242
+Step =  1238
+IterationNumber =  1242
+Step =  1239
+IterationNumber =  1242
+Step =  1240
+IterationNumber =  1242
+Step =  1241
+IterationNumber =  1242
+
+At i =  512
+
+At i =  513
+Step =  1244
+IterationNumber =  1246
+Step =  1245
+IterationNumber =  1246
+
+At i =  514
+Step =  1247
+IterationNumber =  1248
+
+At i =  515
+Step =  1249
+IterationNumber =  1253
+Step =  1250
+IterationNumber =  1253
+Step =  1251
+IterationNumber =  1253
+Step =  1252
+IterationNumber =  1253
+
+At i =  516
+
+At i =  517
+Step =  1255
+IterationNumber =  1256
+
+At i =  518
+Step =  1257
+IterationNumber =  1260
+Step =  1258
+IterationNumber =  1260
+Step =  1259
+IterationNumber =  1260
+
+At i =  519
+
+At i =  520
+Step =  1262
+IterationNumber =  1264
+Step =  1263
+IterationNumber =  1264
+
+At i =  521
+Step =  1265
+IterationNumber =  1267
+Step =  1266
+IterationNumber =  1267
+
+At i =  522
+Step =  1268
+IterationNumber =  1270
+Step =  1269
+IterationNumber =  1270
+
+At i =  523
+Step =  1271
+IterationNumber =  1274
+Step =  1272
+IterationNumber =  1274
+Step =  1273
+IterationNumber =  1274
+
+At i =  524
+Step =  1275
+IterationNumber =  1278
+Step =  1276
+IterationNumber =  1278
+Step =  1277
+IterationNumber =  1278
+
+At i =  525
+Step =  1279
+IterationNumber =  1281
+Step =  1280
+IterationNumber =  1281
+
+At i =  526
+Step =  1282
+IterationNumber =  1290
+Step =  1283
+IterationNumber =  1290
+Step =  1284
+IterationNumber =  1290
+Step =  1285
+IterationNumber =  1290
+Step =  1286
+IterationNumber =  1290
+Step =  1287
+IterationNumber =  1290
+Step =  1288
+IterationNumber =  1290
+Step =  1289
+IterationNumber =  1290
+
+At i =  527
+Step =  1291
+IterationNumber =  1294
+Step =  1292
+IterationNumber =  1294
+Step =  1293
+IterationNumber =  1294
+
+At i =  528
+
+At i =  529
+Step =  1296
+IterationNumber =  1298
+Step =  1297
+IterationNumber =  1298
+
+At i =  530
+Step =  1299
+IterationNumber =  1300
+
+At i =  531
+Step =  1301
+IterationNumber =  1304
+Step =  1302
+IterationNumber =  1304
+Step =  1303
+IterationNumber =  1304
+
+At i =  532
+Step =  1305
+IterationNumber =  1307
+Step =  1306
+IterationNumber =  1307
+
+At i =  533
+Step =  1308
+IterationNumber =  1310
+Step =  1309
+IterationNumber =  1310
+
+At i =  534
+Step =  1311
+IterationNumber =  1313
+Step =  1312
+IterationNumber =  1313
+
+At i =  535
+Step =  1314
+IterationNumber =  1315
+
+At i =  536
+
+At i =  537
+Step =  1317
+IterationNumber =  1318
+
+At i =  538
+Step =  1319
+IterationNumber =  1320
+
+At i =  539
+
+At i =  540
+
+At i =  541
+Step =  1323
+IterationNumber =  1325
+Step =  1324
+IterationNumber =  1325
+
+At i =  542
+Step =  1326
+IterationNumber =  1327
+
+At i =  543
+Step =  1328
+IterationNumber =  1329
+
+At i =  544
+Step =  1330
+IterationNumber =  1331
+
+At i =  545
+
+At i =  546
+Step =  1333
+IterationNumber =  1334
+
+At i =  547
+Step =  1335
+IterationNumber =  1336
+
+At i =  548
+Step =  1337
+IterationNumber =  1348
+Step =  1338
+IterationNumber =  1348
+Step =  1339
+IterationNumber =  1348
+Step =  1340
+IterationNumber =  1348
+Step =  1341
+IterationNumber =  1348
+Step =  1342
+IterationNumber =  1348
+Step =  1343
+IterationNumber =  1348
+Step =  1344
+IterationNumber =  1348
+Step =  1345
+IterationNumber =  1348
+Step =  1346
+IterationNumber =  1348
+Step =  1347
+IterationNumber =  1348
+
+At i =  549
+Step =  1349
+IterationNumber =  1352
+Step =  1350
+IterationNumber =  1352
+Step =  1351
+IterationNumber =  1352
+
+At i =  550
+Step =  1353
+IterationNumber =  1358
+Step =  1354
+IterationNumber =  1358
+Step =  1355
+IterationNumber =  1358
+Step =  1356
+IterationNumber =  1358
+Step =  1357
+IterationNumber =  1358
+
+At i =  551
+Step =  1359
+IterationNumber =  1361
+Step =  1360
+IterationNumber =  1361
+
+At i =  552
+
+At i =  553
+Step =  1363
+IterationNumber =  1364
+
+At i =  554
+Step =  1365
+IterationNumber =  1368
+Step =  1366
+IterationNumber =  1368
+Step =  1367
+IterationNumber =  1368
+
+At i =  555
+Step =  1369
+IterationNumber =  1371
+Step =  1370
+IterationNumber =  1371
+
+At i =  556
+
+At i =  557
+Step =  1373
+IterationNumber =  1376
+Step =  1374
+IterationNumber =  1376
+Step =  1375
+IterationNumber =  1376
+
+At i =  558
+
+At i =  559
+
+At i =  560
+
+At i =  561
+Step =  1380
+IterationNumber =  1382
+Step =  1381
+IterationNumber =  1382
+
+At i =  562
+Step =  1383
+IterationNumber =  1384
+
+At i =  563
+Step =  1385
+IterationNumber =  1390
+Step =  1386
+IterationNumber =  1390
+Step =  1387
+IterationNumber =  1390
+Step =  1388
+IterationNumber =  1390
+Step =  1389
+IterationNumber =  1390
+
+At i =  564
+Step =  1391
+IterationNumber =  1392
+
+At i =  565
+
+At i =  566
+
+At i =  567
+Step =  1395
+IterationNumber =  1397
+Step =  1396
+IterationNumber =  1397
+
+At i =  568
+
+At i =  569
+Step =  1399
+IterationNumber =  1401
+Step =  1400
+IterationNumber =  1401
+
+At i =  570
+Step =  1402
+IterationNumber =  1403
+
+At i =  571
+Step =  1404
+IterationNumber =  1406
+Step =  1405
+IterationNumber =  1406
+
+At i =  572
+Step =  1407
+IterationNumber =  1409
+Step =  1408
+IterationNumber =  1409
+
+At i =  573
+Step =  1410
+IterationNumber =  1415
+Step =  1411
+IterationNumber =  1415
+Step =  1412
+IterationNumber =  1415
+Step =  1413
+IterationNumber =  1415
+Step =  1414
+IterationNumber =  1415
+
+At i =  574
+Step =  1416
+IterationNumber =  1419
+Step =  1417
+IterationNumber =  1419
+Step =  1418
+IterationNumber =  1419
+
+At i =  575
+Step =  1420
+IterationNumber =  1423
+Step =  1421
+IterationNumber =  1423
+Step =  1422
+IterationNumber =  1423
+
+At i =  576
+Step =  1424
+IterationNumber =  1429
+Step =  1425
+IterationNumber =  1429
+Step =  1426
+IterationNumber =  1429
+Step =  1427
+IterationNumber =  1429
+Step =  1428
+IterationNumber =  1429

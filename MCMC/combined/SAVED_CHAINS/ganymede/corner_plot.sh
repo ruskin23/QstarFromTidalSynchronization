@@ -12,6 +12,8 @@ touch $FILE
 for I in 1 2 3 4 5
 do
     python3 FillParameters.py $S $I >temp$I.out
+    python3 corner_plot.py $S $I
+
 done
 
 cat MCMC_$1/rejected_parameters_* >combined_rejected.txt
@@ -22,5 +24,5 @@ wc -l combined_accepted.txt
 rm combined_rejected.txt
 rm combined_accepted.txt
 
-python3 corner_plot.py
+#python3 corner_plot.py
 
