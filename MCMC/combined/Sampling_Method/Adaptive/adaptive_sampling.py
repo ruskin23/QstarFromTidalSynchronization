@@ -1,26 +1,11 @@
 import numpy
-from covariance_matrix import Covariance
 import random
 import matplotlib.pyplot as plt
-import sys
-sys.path.append('../../')
-from utils import cummulative_distribution
 import scipy
 from scipy import integrate
 from scipy import special
 
 class AdaptiveSampling:
-
-    def _multivariate_gaussian(self,
-                               x_vector,
-                               x_mean,
-                               y_vector,
-                               y_mean,
-                               sigma_xy):
-
-        arg=numpy.matmul(numpy.transpose(x_vector-x_mean),numpy.matmul(sigma_xy,(y_vector-y_mean)))
-        if x_vector.all()!=y_vector.all():return numpy.exp(-2*arg)
-        else:return numpy.exp(-arg)
 
     def phi_summation(self,phi_0):
 
@@ -193,6 +178,7 @@ class AdaptiveSampling:
 
     def __init__(self,
                  system,
+                 samples_file,
                  sampling_parameters,
                  parameters,
                  covariance_matrix
@@ -203,7 +189,7 @@ class AdaptiveSampling:
         self.parameters=parameters
         self.sampling_parameters=sampling_parameters
 
-        self.samples_file='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
+        self.samples_file=samples_file
 
         self.phi_keys=['primary_mass','age','feh']
         self.theta_keys=['Porb','eccentricity','Wdisk','logQ']

@@ -11,6 +11,7 @@ import csv
 
 import os
 import os.path
+
 import sys
 from pathlib import Path
 home_dir=str(Path.home())
@@ -118,18 +119,23 @@ class MetropolisHastings:
         #Calculate Transition Probability
         phi_vector=numpy.array([parameter_set[key] for key in self.phi_keys])
         theta_vector=numpy.array([parameter_set[key] for key in self.theta_keys])
-        if self.iteration_step==1:
-            if self.sampling_method=='uncorrelated':
+        if self.sampling_method=='uncorrelated':
+            if self.iteration_step==1:
                 sampling=UncorrelatedSampling(self.system,
+                                              self.samples_file,
                                               self.sampling_parameters,
                                               parameter_set)
-            if self.sampling_method=='adaptive':
+                S=sampling.stepping_function_normalization(phi_vector)
+            else:S=self.proposing.stepping_function_normalization(phi_vector)
+        if self.sampling_method=='adaptive':
+            if self.iteration_step==1:
                 sampling=AdaptiveSampling(self.system,
+                                          self.samples_file,
                                           self.sampling_parameters,
                                           parameter_set,
                                           self.covariance_matrix)
-            S=sampling.stepping_function_normalization(phi_vector,theta_vector)
-        else:S=self.proposing.stepping_function_normalization(phi_vector,theta_vector)
+                S=sampling.stepping_function_normalization(phi_vector,theta_vector)
+            else:S=self.proposing.stepping_function_normalization(phi_vector,theta_vector)
         print('Transition Probability = ', S)
 
 
@@ -156,9 +162,9 @@ class MetropolisHastings:
         proposed = dict()
 
         if self.sampling_method=='uncorrelated':
-            self.proposing=UncorrelatedSampling(self.system,self.sampling_parameters,self.current_parameters)
+            self.proposing=UncorrelatedSampling(self.system,self.samples_file,self.sampling_parameters,self.current_parameters)
         if self.sampling_method=='adaptive':
-            self.proposing=AdaptiveSampling(self.system,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
+            self.proposing=AdaptiveSampling(self.system,self.samples_file,self.sampling_parameters,self.current_parameters,self.covariance_matrix)
         proposed=self.proposing()
         self.proposed_parameters=proposed
 
@@ -370,11 +376,11 @@ class MetropolisHastings:
                  system_number,
                  interpolator,
                  sampling_method,
+                 samples_file,
                  sampling_parameters,
                  fixed_parameters,
                  observed_spin,
                  solution_file,
-                 samples_file,
                  mass_ratio,
                  instance,
                  current_directory,
@@ -383,6 +389,7 @@ class MetropolisHastings:
         self.system=system_number
         self.interpolator=interpolator
         self.sampling_method=sampling_method
+        self.samples_file=samples_file
         self.sampling_parameters=sampling_parameters
         self.fixed_parameters=fixed_parameters
         self.iteration_step=1

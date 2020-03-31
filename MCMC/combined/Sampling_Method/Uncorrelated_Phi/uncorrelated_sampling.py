@@ -1,11 +1,19 @@
 import numpy
 import scipy
-import sys
-sys.path.append('../../')
-from utils import multivariate_gaussian
 import random
 
 class UncorrelatedSampling:
+
+    def matrix_multiplication(self,
+                               x_vector,
+                               x_mean,
+                               y_vector,
+                               y_mean,
+                               sigma_xy):
+
+        arg=numpy.matmul(numpy.transpose(x_vector-x_mean),numpy.matmul(sigma_xy,(y_vector-y_mean)))
+        if x_vector.all()!=y_vector.all():return numpy.exp(-2*arg)
+        else:return numpy.exp(-arg)
 
 
     def stepping_function_normalization(self,
@@ -21,7 +29,7 @@ class UncorrelatedSampling:
                 s_vector=[]
                 for key in self.phi_keys:
                     s_vector=numpy.append(s_vector,float(x[self.phi_keys.index(key)]))
-                P=P+m_i*multivariate_gaussian().multi(s_vector,phi_vector,s_vector,phi_vector,self.phi_sigma_matrix)
+                P=P+m_i*self.matrix_multiplication(s_vector,phi_vector,s_vector,phi_vector,self.phi_sigma_matrix)
 
         return P
 
@@ -44,7 +52,7 @@ class UncorrelatedSampling:
                 for key in self.phi_keys:
                     s_vector=numpy.append(s_vector,float(x[self.phi_keys.index(key)]))
                 samples.append(s_vector)
-                modified_multiplicity.append(m_i*multivariate_gaussian().multi(s_vector,mean_vector,s_vector,mean_vector,self.phi_sigma_matrix))
+                modified_multiplicity.append(m_i*self.matrix_multiplication(s_vector,mean_vector,s_vector,mean_vector,self.phi_sigma_matrix))
                 #arg_vector=((s_vector-mean_vector)/sigma_vector)**2
                 #arg=0
                 #for a in arg_vector:
@@ -77,6 +85,7 @@ class UncorrelatedSampling:
 
     def __init__(self,
                  system,
+                 samples_file,
                  sampling_parameters,
                  parameters):
 
@@ -84,7 +93,7 @@ class UncorrelatedSampling:
         self.sampling_parameters=sampling_parameters
         self.current_parameters=parameters
 
-        self.samples_file='../../../mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+self.system+'.txt'
+        self.samples_file=samples_file
 
         self.phi_keys=[]
         for key,value in self.sampling_parameters.items():
