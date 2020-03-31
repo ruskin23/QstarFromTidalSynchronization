@@ -58,7 +58,7 @@ for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 13
         \end{center}" >> temp.tex
         
         echo "\begin{figure}[h] 
-        \includegraphics[width=15cm]{CornerPlot_$S.eps}
+        \includegraphics[width=15cm]{CornerPlot$S.eps}
         \caption{$T}
         \label{S$S}
         \centering
