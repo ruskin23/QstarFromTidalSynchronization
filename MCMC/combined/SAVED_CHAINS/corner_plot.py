@@ -6,9 +6,6 @@ import sys
 
 data=[]
 
-logQ=[]
-age=[]
-
 system=sys.argv[1]
 with open('AcceptedParameters.txt','r') as f:
     next(f)
@@ -21,15 +18,13 @@ with open('AcceptedParameters.txt','r') as f:
         data.append(float(x[5]))
         data.append(float(x[6]))
         data.append(float(x[7]))
-        #data.append(float(x[15]))
-        logQ=np.append(logQ,float(x[4]))
-        age=np.append(age,float(x[6]))
+        data.append(float(x[15]))
 
 data=np.array(data)
-d=data.reshape([len(data)//7,7])
+d=data.reshape([len(data)//8,8])
 
 figure=corner.corner(d,
-                     labels=[r"$Porb$",r"eccentricity",r"$Wdisk$",r"$logQ$",r"$mass$",r"$age$",r"$feh$"],
+                     labels=[r"$Porb$",r"eccentricity",r"$Wdisk$",r"$logQ$",r"$mass$",r"$age$",r"$feh$",r"$Pspin$"],
                      color='k',
                      show_titles=True)
 

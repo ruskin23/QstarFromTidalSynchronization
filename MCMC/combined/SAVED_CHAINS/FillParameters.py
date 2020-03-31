@@ -54,4 +54,4 @@ for C in cluster:
                             f1.write(Parameters+'\n')
                             previous_state=current_state
 
-    print('For cluster = {}, instance = {}, N = {}'.format(C,instance,IterationNumber))
+    #print('For cluster = {}, instance = {}, N = {}'.format(C,instance,IterationNumber))
