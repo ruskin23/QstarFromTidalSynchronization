@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH -J NonSyncMCMC 
-#SBATCH -n 130  #Total number of tasks to run at one time
-#SBATCH -N 9  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/fourth_run/MCMCNonSync.o%j
+#SBATCH -n 125  #Total number of tasks to run at one time
+#SBATCH -N 8  #Number of nodes on which to distribute the tasks evenly
+#SBATCH -o /home/rxp163130/scratch/fifth_run/MCMCNonSync.o%j
 #SBATCH -t 4-00:00:00
 
 module load launcher 
