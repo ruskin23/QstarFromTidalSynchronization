@@ -2,7 +2,7 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J MCMCNonSync1
-#SBATCH -o /scratch/06850/rpatel23/output/MCMCNS1.5R
+#SBATCH -o /scratch/06850/rpatel23/output/MCMCNS1.6R
 #SBATCH -N 1
 #SBATCH -n 45
 #SBATCH -t 2-00:00:00
