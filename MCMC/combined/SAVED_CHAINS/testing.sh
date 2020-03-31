@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm temp.tex
+rm CornerPlots.tex
 
 echo "\documentclass[10pt]{article}
 \usepackage{algorithmic}
@@ -17,7 +17,7 @@ echo "\documentclass[10pt]{article}
 
 \begin{document}
 
-\listoffigures" >> temp.tex
+\listoffigures" >> CornerPlots.tex
 
 for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 137 1 86 43 73 92 93 79 47 109 44 48 17 8 12 20 57 120 28 13
     do
@@ -43,15 +43,17 @@ for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 13
         
         r=$(bc <<<"scale=2;$A/$sum")
         
-        T="System=$S|Accepted=${A}|Rejected=${R}|AcceptanceRatio=$r"
+        T="System=$S Accepted=${A} Rejected=${R} AcceptanceRatio=$r"
        
         b="\\"
-        
+       
+        echo "\newpage" >> CornerPlots.tex 
+
         spin=($(python3 print_spin_period.py $S | tr -d '[],'))
         echo "$spin" 
         echo "\begin{center}
         Spin Period = ${spin[0]} $\pm$ ${spin[1]}
-        \end{center}" >> temp.tex
+        \end{center}" >> CornerPlots.tex
         
 
         echo "\begin{figure}[h] 
@@ -59,10 +61,10 @@ for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 13
         \caption{$T}
         \label{S$S}
         \centering
-        \end{figure}" >> temp.tex
+        \end{figure}" >> CornerPlots.tex
 
 
 
 done
 
-echo "\end{document}" >>temp.tex
+echo "\end{document}" >>CornerPlots.tex
