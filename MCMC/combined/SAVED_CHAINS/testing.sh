@@ -48,15 +48,9 @@ for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 13
         b="\\"
         
         echo "\begin{center}
-        \begin{tabular}{|c|c|c|}
-        \hline" >> temp.tex
+        Spin Period = $\pm$ " >> temp.tex
 
-        printf 'Orbital Period & Spin Period & $\sigma_{spin}$ %s%s\n ' "$b$b" >> temp.tex
 
-        echo "\hline
-        \end{tabular}
-        \end{center}" >> temp.tex
-        
         echo "\begin{figure}[h] 
         \includegraphics[width=15cm]{CornerPlot$S.eps}
         \caption{$T}
