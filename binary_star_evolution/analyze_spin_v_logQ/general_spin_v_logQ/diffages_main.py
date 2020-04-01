@@ -254,7 +254,7 @@ if __name__ == '__main__':
                 mass_ratio=float(x[14])
                 parameters['Pspin']=float(x[12])
 
-                parameters['Wdisk']=5.1
+                parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -269,23 +269,10 @@ if __name__ == '__main__':
 
                 break
 
-    logQ=[6.0,7.0,8.0,9.0,10.0]
+    #logQ=[5.0,6.0,7.0,8.0,9.0,10.0]
 
-    parameters['age']=PercentileAge(system,float(percentile))()
-
-    """
-    PercentileFile=current_directory+'/Ages.txt'
-    with open(PercentileFile,'r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            if x[0]==system:
-                parameters['age']=float(x[percentile_index])
-                break
-
-    print('age  = ',parameters['age'])
-    """
-
+    logQ=[5.2,5.4,5.6,5.8,6.2,6.4,6.6,6.8,7.5,8.5]
+    parameters['age']=PercentileAge(system)(float(percentile))
 
 
     sampleFile=samples_directory+'/MassAgeFehSamples_'+system+'.txt'
@@ -304,16 +291,16 @@ if __name__ == '__main__':
     print('\nCalculating for age = ', parameters['age'])
     print('parameters:', parameters)
 
-    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/Wdisk/SpinLogQ_'+str(percentile)+'.txt'
-    with open(spin_vs_logQ_file,'w') as f:
-        f.write('logQ'+'\t'+
-                'spin'+'\t'+
-                'Porb_initial'+'\t'+
-                'e_initial'+'\t'+
-                'Porb_current'+'\t'+
-                'e_current'+'\t'+
-                'delta_p'+'\t'+
-                'detla_e'+'\n')
+    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+str(percentile)+'.txt'
+    #with open(spin_vs_logQ_file,'w') as f:
+    #    f.write('logQ'+'\t'+
+    #            'spin'+'\t'+
+    #            'Porb_initial'+'\t'+
+    #            'e_initial'+'\t'+
+    #            'Porb_current'+'\t'+
+    #            'e_current'+'\t'+
+    #            'delta_p'+'\t'+
+    #            'detla_e'+'\n')
 
     for q in logQ:
 
