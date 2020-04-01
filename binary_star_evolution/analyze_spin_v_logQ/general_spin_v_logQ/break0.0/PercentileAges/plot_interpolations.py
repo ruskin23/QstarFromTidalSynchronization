@@ -1,11 +1,39 @@
 import sys
 import numpy
 import matplotlib.pyplot as plt
+import argparse
 
-system = sys.argv[1]
-#extra_age=['3.2','3.4','3.6','3.8']
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-s',
+                    action='store_const',
+                    dest='save',
+                    const='save',
+                    help='save plot'
+                    )
+
+parser.add_argument('-p',
+                    action='store_const',
+                    dest='plot',
+                    const='plot',
+                    help='show plot'
+                    )
+
+parser.add_argument('-l',
+                    action='store',
+                    dest='system',
+                    help='select a system'
+                    )
+
+
+
+args=parser.parse_args()
+
+
+
+system = args.system
 age=['1','2','3','4','5','10','20','30','40','50']
-#age=age+extra_age
 for a in age:
     spinvlogQfilename='System_'+system+'/SpinLogQ_'+a+'.txt'
     p=[]
@@ -48,5 +76,10 @@ with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
 
 plt.hlines(Pspin,5,10,linestyles='dashed',label='Pspin')
 plt.hlines(Porb,5,10,linestyles='dotted',label='Porb')
-plt.legend(loc='upper left')
-plt.show()
+plt.legend(loc='upper right')
+plt.title('Spin vs logQ for System '+system)
+plt.xlabel('logQ')
+plt.ylabel('Spin (days)')
+plt.savefig('SpinVsLogQ_'+system+'.pdf')
+if args.plot:plt.show()
+if args.save:plt.savefig('SpinVsLogQ_'+system+'.pdf')

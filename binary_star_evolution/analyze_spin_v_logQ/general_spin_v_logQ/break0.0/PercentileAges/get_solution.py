@@ -19,7 +19,7 @@ with open(solution_file,'w') as f:
             'Pspin'+'\t'+
             'error'+'\n')
 
-def observed_values(case):
+def observed_values():
 
     with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
         for i,lines in enumerate(f):
@@ -35,10 +35,7 @@ def observed_values(case):
                     Porb=float(x[orbital_index])
                     break
 
-    if case=='plot':
-        plt.hlines(Pspin,5,10,linestyles='dashed',label='Pspin')
-        plt.hlines(Porb,5,10,linestyles='dotted',label='Porb')
-    else: return Pspin
+    return Pspin
 
 
 
@@ -70,7 +67,7 @@ def get_solution(percentile,age):
     q_array=numpy.linspace(qmin,qmax,10000)
     p_interpolated=numpy.interp(q_array,q_values,p_values)
 
-    p_observed=observed_values(case='spin')
+    p_observed=observed_values()
     p_diff=numpy.array(p_interpolated)-p_observed
 
     zero_crossing=numpy.where(numpy.diff(numpy.sign(p_diff)))[0]
@@ -85,18 +82,8 @@ def get_solution(percentile,age):
                 repr(sol_p)+'\t'+
                 repr(error_sol_p)+'\n')
 
-    plt.plot(q_array,p_interpolated,label='p='+str(percentile))
-
-
-
 for p in percentiles:
     percentile=int(p)
     age=Age(percentile)
     get_solution(percentile,age)
 
-observed_values(case='plot')
-plt.legend(loc='upper right')
-plt.title('Spin vs logQ for System '+system)
-plt.xlabel('logQ')
-plt.ylabel('Spin (days)')
-plt.savefig('SpinVsLogQ_'+system+'.pdf')
