@@ -18,14 +18,16 @@ class PercentileAge:
         return list(zip(a,values/max(values)))
 
     def __init__(self,
-                 system,
-                 percentile):
+                 system):
         self.system=system
-        self.percentile=percentile/100
+        self.percentile=0
         self.samplefile='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
 
-    def __call__(self):
+    def __call__(self,
+                 percentile):
 
+
+        self.percentile=percentile/100
         ages=[]
         multiplicity=[]
         with open(self.samplefile,'r') as f:
