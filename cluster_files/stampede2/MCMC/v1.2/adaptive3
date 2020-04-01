@@ -1,0 +1,5 @@
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 20  -m adaptive >/scratch/06850/rpatel23/output/sixth_run/20.1.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 20  -m adaptive >/scratch/06850/rpatel23/output/sixth_run/20.2.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 20  -m adaptive >/scratch/06850/rpatel23/output/sixth_run/20.3.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 20  -m adaptive >/scratch/06850/rpatel23/output/sixth_run/20.4.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 20  -m adaptive >/scratch/06850/rpatel23/output/sixth_run/20.5.out
