@@ -74,12 +74,12 @@ with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
                 Porb=float(x[orbital_index])
                 break
 
+
 plt.hlines(Pspin,5,10,linestyles='dashed',label='Pspin')
 plt.hlines(Porb,5,10,linestyles='dotted',label='Porb')
-plt.legend(loc='upper right')
+plt.legend(loc='upper left',fontsize='xx-small')
 plt.title('Spin vs logQ for System '+system)
 plt.xlabel('logQ')
 plt.ylabel('Spin (days)')
-plt.savefig('SpinVsLogQ_'+system+'.pdf')
 if args.plot:plt.show()
 if args.save:plt.savefig('SpinVsLogQ_'+system+'.pdf')
