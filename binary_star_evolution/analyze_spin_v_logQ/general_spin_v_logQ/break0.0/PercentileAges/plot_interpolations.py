@@ -2,6 +2,8 @@ import sys
 import numpy
 import matplotlib.pyplot as plt
 import argparse
+sys.path.append('../../../../../MCMC/mcmc_mass_age/samples/')
+from PercentileClass import PercentileAge
 
 
 parser = argparse.ArgumentParser()
@@ -33,9 +35,18 @@ args=parser.parse_args()
 
 
 system = args.system
-age=['1','2','3','4','5','10','20','30','40','50']
-for a in age:
-    spinvlogQfilename='System_'+system+'/SpinLogQ_'+a+'.txt'
+Age=PercentileAge(system)
+
+
+percentiles=['1','2','3','4','5','10','20','30','40','50']
+for per in percentiles:
+
+    age=round(Age(int(per)),3)
+    if age<1:
+        age=age*1e3
+        approx_age=str(age)+'Myr'
+    else:approx_age=str(age)+'Gyr'
+    spinvlogQfilename='System_'+system+'/SpinLogQ_'+per+'.txt'
     p=[]
     q=[]
     with open(spinvlogQfilename,'r') as f:
@@ -46,20 +57,18 @@ for a in age:
                                  abs(float(x[7]))<1e-3):
                 q=numpy.append(q,float(x[0]))
                 p=numpy.append(p,float(x[1]))
-
-        data=zip(q,p)
-        data=sorted(data,key=lambda tup: tup[0])
-        q_values=[]
-        p_values=[]
-        for t in data:
-            q_values=numpy.append(q_values,t[0])
-            p_values=numpy.append(p_values,t[1])
-        qmin=min(q_values)
-        qmax=max(q_values)
-        print('For age {} q0={} qn={}'.format(a,qmin,qmax))
-        q_array=numpy.linspace(qmin,qmax,10000)
-        p_interpolated=numpy.interp(q_array,q_values,p_values)
-        plt.plot(q_array,p_interpolated,label='age='+a)
+    data=zip(q,p)
+    data=sorted(data,key=lambda tup: tup[0])
+    q_values=[]
+    p_values=[]
+    for t in data:
+        q_values=numpy.append(q_values,t[0])
+        p_values=numpy.append(p_values,t[1])
+    qmin=min(q_values)
+    qmax=max(q_values)
+    q_array=numpy.linspace(qmin,qmax,10000)
+    p_interpolated=numpy.interp(q_array,q_values,p_values)
+    plt.plot(q_array,p_interpolated,label='age='+approx_age)
 
 with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
     for i,lines in enumerate(f):
@@ -74,12 +83,13 @@ with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
                 Porb=float(x[orbital_index])
                 break
 
-
 plt.hlines(Pspin,5,10,linestyles='dashed',label='Pspin')
 plt.hlines(Porb,5,10,linestyles='dotted',label='Porb')
-plt.legend(loc='upper left',fontsize='xx-small')
+f='xx-small'
+plt.legend(loc='upper left',fontsize=f)
 plt.title('Spin vs logQ for System '+system)
 plt.xlabel('logQ')
 plt.ylabel('Spin (days)')
+plt.savefig('SpinVsLogQ_'+system+'.pdf')
 if args.plot:plt.show()
 if args.save:plt.savefig('SpinVsLogQ_'+system+'.pdf')
