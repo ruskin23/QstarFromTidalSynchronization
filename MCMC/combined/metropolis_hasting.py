@@ -18,7 +18,9 @@ home_dir=str(Path.home())
 git_dir='/QstarFromTidalSynchronization/MCMC/combined'
 if home_dir=='/home/rxp163130':current_directory=home_dir+git_dir
 if home_dir=='/home/ruskin':current_directory=home_dir+'/projects'+git_dir
-if home_dir=='/home1/06850/rpatel23':current_directory=work_dir+git_dir
+if home_dir=='/home1/06850/rpatel23':
+    work_dir='/work/06850/rpatel23/stampede2'
+    current_directory=work_dir+git_dir
 sys.path.append(current_directory+'/Sampling_Method/Uncorrelated_Phi')
 from uncorrelated_sampling import UncorrelatedSampling
 sys.path.append(current_directory+'/Sampling_Method/Adaptive')
@@ -257,13 +259,13 @@ class MetropolisHastings:
         for key, value in self.sampling_parameters.items():
             initial_parameters[key]=value['value']
 
-        with  open(self.solution_file) as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                at_system=x[0]
-                if at_system==self.system:
-                    initial_parameters['logQ']=float(x[1])
+        #with  open(self.solution_file) as f:
+        #    next(f)
+        #    for lines in f:
+        #        x=lines.split()
+        #        at_system=x[0]
+        #        if at_system==self.system:
+        #            initial_parameters['logQ']=float(x[1])
 
         print ('\nINITIAL PARAMETERS SET:')
         for key,value in initial_parameters.items():
@@ -380,7 +382,6 @@ class MetropolisHastings:
                  sampling_parameters,
                  fixed_parameters,
                  observed_spin,
-                 solution_file,
                  mass_ratio,
                  instance,
                  current_directory,
@@ -394,7 +395,6 @@ class MetropolisHastings:
         self.fixed_parameters=fixed_parameters
         self.iteration_step=1
         self.mass_ratio=mass_ratio
-        self.solution_file=solution_file
         self.samples_file=samples_file
 
 

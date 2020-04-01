@@ -66,6 +66,13 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
 
+    parser.add_argument('-p',
+                        action='store',
+                        dest='percentile_age',
+                        help='select the percentile of age if solution is at diff age'
+                        )
+
+
     parser.add_argument('-m',
                         action='store',
                         dest='sampling_method',
@@ -121,14 +128,25 @@ if __name__ == '__main__':
                 break
 
 
-    with open(solution_file,'r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            at_system=x[0]
-            if system_number==at_system:
-                logQ_value=float(x[1])
-                break
+    if args.percentile_age:
+        solution_file=current_directory+'/Solutions_'+system_number+'.txt'
+        with open(solution_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                if x[0]==args.percentile_age:
+                    age_value=float(x[1])
+                    logQ_value=float(x[2])
+                    break
+    else:
+        with open(solution_file,'r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                at_system=x[0]
+                if system_number==at_system:
+                    logQ_value=float(x[1])
+                    break
 
     sampling_parameters=dict(Porb=dict(value=Porb_value,
                                        sigma=Porb_error,
@@ -151,7 +169,6 @@ if __name__ == '__main__':
                                        max=12.0,
                                        dist='Uniform',
                                        step=0.5),
-
                              primary_mass=dict(value=primary_mass_value,
                                                dist='Samples',
                                                step=1.0),
@@ -159,7 +176,6 @@ if __name__ == '__main__':
                              age=dict(value=age_value,
                                       dist='Samples',
                                       step=1.0),
-
                              feh=dict(value=feh_value,
                                       dist='Samples',
                                       step=0.3)
@@ -197,7 +213,6 @@ mcmc = MetropolisHastings(system_number,
                           sampling_parameters,
                           fixed_parameters,
                           observed_spin,
-                          solution_file,
                           mass_ratio,
                           instance,
                           current_directory,
