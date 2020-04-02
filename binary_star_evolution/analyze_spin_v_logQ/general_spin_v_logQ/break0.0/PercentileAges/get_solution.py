@@ -17,7 +17,9 @@ with open(solution_file,'w') as f:
             'age'+'\t'+
             'logQ'+'\t'+
             'Pspin'+'\t'+
-            'error'+'\n')
+            'error'+'\t'+
+            'mass'+'\t'+
+            'feh'+'\n')
 
 def observed_values():
 
@@ -45,11 +47,11 @@ def get_solution(percentile,age):
     q=[]
     p=[]
     with open(spinvlogQfile,'r') as f:
-        next(f)
         for lines in f:
             x=lines.split()
-            if numpy.logical_and(abs(float(x[6]))<1e-3,
-                                 abs(float(x[7]))<1e-3):
+            if x[0]=='logQ':continue
+            if numpy.logical_and(abs(float(x[6]))<1e-2,
+                                 abs(float(x[7]))<1e-2):
                 q=numpy.append(q,float(x[0]))
                 p=numpy.append(p,float(x[1]))
 
@@ -75,15 +77,29 @@ def get_solution(percentile,age):
     sol_q=q_array[zero_crossing][0]
     error_sol_p=abs(sol_p-p_observed)
 
+
+    samples_file='../../../../../MCMC/mcmc_mass_age/samples/updated_samples/MassAgeFehSamples_'+system+'.txt'
+    with open(samples_file,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            a=float(x[1])
+            if a==age:
+                mass=float(x[0])
+                feh=float(x[2])
     with open(solution_file,'a') as f:
         f.write(repr(percentile)+'\t'+
                 repr(age)+'\t'+
                 repr(sol_q)+'\t'+
                 repr(sol_p)+'\t'+
-                repr(error_sol_p)+'\n')
+                repr(error_sol_p)+'\t'+
+                repr(mass)+'\t'+
+                repr(feh)+'\n')
 
 for p in percentiles:
-    percentile=int(p)
+    print('For p = ',p)
+    try:percentile=int(p)
+    except:percentile=float(p)
     age=Age(percentile)
     get_solution(percentile,age)
 

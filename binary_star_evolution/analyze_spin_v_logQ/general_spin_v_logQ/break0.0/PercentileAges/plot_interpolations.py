@@ -1,4 +1,6 @@
+import os
 import sys
+import re
 import numpy
 import matplotlib.pyplot as plt
 import argparse
@@ -37,11 +39,29 @@ args=parser.parse_args()
 system = args.system
 Age=PercentileAge(system)
 
+directory='System_'+system
+regex=re.compile(r'\d+')
+percentiles=[]
 
-percentiles=['1','2','3','4','5','10','20','30','40','50']
+for filename in os.listdir(directory):
+    if filename.endswith(".txt"):
+        p=regex.findall(filename)
+        if len(p)==1:
+            percentiles.append(p[0])
+        elif len(p)==2:
+            p1=p[0]
+            p2=p[1]
+            a=(p1+'.'+p2)
+            print(a)
+            percentiles.append(a)
+        else:continue
+percentiles.sort(key=float)
+
+#percentiles=['1','2','3','4','5','10','20','30','40','50']
+print(percentiles)
 for per in percentiles:
 
-    age=round(Age(int(per)),3)
+    age=round(Age(float(per)),3)
     if age<1:
         age=age*1e3
         approx_age=str(age)+'Myr'
@@ -50,9 +70,9 @@ for per in percentiles:
     p=[]
     q=[]
     with open(spinvlogQfilename,'r') as f:
-        next(f)
         for lines in f:
             x=lines.split()
+            if x[0]=='logQ':continue
             if numpy.logical_and(abs(float(x[6]))<1e-3,
                                  abs(float(x[7]))<1e-3):
                 q=numpy.append(q,float(x[0]))
@@ -68,7 +88,7 @@ for per in percentiles:
     qmax=max(q_values)
     q_array=numpy.linspace(qmin,qmax,10000)
     p_interpolated=numpy.interp(q_array,q_values,p_values)
-    plt.plot(q_array,p_interpolated,label='age='+approx_age)
+    plt.plot(q_array,p_interpolated,label='age_'+per+'='+approx_age)
 
 with open('../../SpinlogQCatalog_el0.4.txt','r') as f:
     for i,lines in enumerate(f):
@@ -90,6 +110,5 @@ plt.legend(loc='upper left',fontsize=f)
 plt.title('Spin vs logQ for System '+system)
 plt.xlabel('logQ')
 plt.ylabel('Spin (days)')
-plt.savefig('SpinVsLogQ_'+system+'.pdf')
 if args.plot:plt.show()
 if args.save:plt.savefig('SpinVsLogQ_'+system+'.pdf')
