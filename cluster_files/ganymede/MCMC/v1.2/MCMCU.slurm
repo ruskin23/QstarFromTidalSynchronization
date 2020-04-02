@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J MCMCU 
-#SBATCH -n 175  #Total number of tasks to run at one time
+#SBATCH -n 170  #Total number of tasks to run at one time
 #SBATCH -N 11  #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /home/rxp163130/scratch/fifth_run/MCMCNonSync.o%j
 #SBATCH -t 4-00:00:00

@@ -23,23 +23,23 @@ python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combin
 python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 31  -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/31.3.out
 python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 31  -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/31.4.out
 python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 31  -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/31.5.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 111 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/111.1.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 111 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/111.2.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 111 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/111.3.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 111 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/111.4.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 111 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/111.5.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 129 -p 1 -m uncorrelated >/home/rxp163130/scratch/fifth_run/129.1.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 129 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/129.2.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 129 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/129.3.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 129 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/129.4.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 129 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/129.5.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 132 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/132.1.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 132 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/132.2.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 132 -p 4 -m uncorrelated >/home/rxp163130/scratch/fifth_run/132.3.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 132 -p 4 -m uncorrelated >/home/rxp163130/scratch/fifth_run/132.4.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 132 -p 4 -m uncorrelated >/home/rxp163130/scratch/fifth_run/132.5.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 1 -l 18 -p 2 -m uncorrelated >/home/rxp163130/scratch/fifth_run/18.1.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 2 -l 18 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/18.2.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 3 -l 18 -p 3 -m uncorrelated >/home/rxp163130/scratch/fifth_run/18.3.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 4 -l 18 -p 4 -m uncorrelated >/home/rxp163130/scratch/fifth_run/18.4.out
-python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -s -i 5 -l 18 -p 4 -m uncorrelated >/home/rxp163130/scratch/fifth_run/18.5.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 111  -p 1 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/111.1.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 111  -p 2 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/111.2.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 111  -p 3 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/111.3.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 111  -p 4 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/111.4.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 111  -p 5 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/111.5.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 128  -p 1 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/128.1.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 128  -p 2 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/128.2.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 128  -p 3 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/128.3.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 128  -p 4 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/128.4.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 128  -p 5 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/128.5.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 132  -p 1 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/132.1.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 132  -p 2 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/132.2.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 132  -p 3 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/132.3.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 132  -p 4 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/132.4.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 132  -p 5 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/132.5.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 1 -l 18  -p 1 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/18.1.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 2 -l 18  -p 2 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/18.2.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 3 -l 18  -p 3 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/18.3.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 4 -l 18  -p 4 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/18.4.out
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 5 -l 18  -p 5 -m uncorrelated >/scratch/06850/rpatel23/output/sixth_run/18.5.out
