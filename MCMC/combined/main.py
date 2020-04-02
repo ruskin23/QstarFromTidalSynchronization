@@ -129,13 +129,15 @@ if __name__ == '__main__':
 
 
     if args.percentile_age:
-        solution_file=current_directory+'/Solutions_'+system_number+'.txt'
+        solution_file=current_directory+'/diffAgeSolutions/Solutions_'+system_number+'.csv'
         with open(solution_file,'r') as f:
-            next(f)
-            for lines in f:
+            for i,lines in enumerate(f):
+                if i==0:continue
                 x=lines.split()
-                if x[0]==args.percentile_age:
+                if i==int(args.percentile_age):
                     age_value=float(x[1])
+                    primary_mass_value=float(x[5])
+                    feh_value=float(x[6])
                     logQ_value=float(x[2])
                     break
     else:
