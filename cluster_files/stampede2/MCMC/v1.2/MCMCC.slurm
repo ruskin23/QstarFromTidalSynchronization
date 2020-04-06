@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH -p skx-normal
-#SBATCH -J MCMCA3
-#SBATCH -o /scratch/06850/rpatel23/output/MCMCA3.6R
+#SBATCH -J MCMCA1
+#SBATCH -o /scratch/06850/rpatel23/output/MCMCA1.6R
 #SBATCH -N 1
-#SBATCH -n 5
+#SBATCH -n 30
 #SBATCH -t 2-00:00:00
 
 #SBATCH --mail-user=rxp153130@utdallas.edu
@@ -25,6 +25,6 @@ for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
 
-export LAUNCHER_JOB_FILE=adaptive3
+export LAUNCHER_JOB_FILE=common
 
 $LAUNCHER_DIR/paramrun

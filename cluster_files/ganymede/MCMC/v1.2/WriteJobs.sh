@@ -27,13 +27,13 @@ do
     done
 done >uncorrelated
 
-for B in 1 2 3 4 5
-do
-    for A in 111 128 132 18 27 33 49 5 62 68 99 
-    do
-        echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $B -l $A -p $B -m uncorrelated >/home/rxp163130/scratch/fifth_run/$A.$B.out" >> uncorrelated
-    done
-done 
+#for B in 1 2 3 4 5
+#do
+#    for A in 111 128 132 18 27 33 49 5 62 68 99 
+#    do
+#        echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $B -l $A -p $B -m uncorrelated >/home/rxp163130/scratch/fifth_run/$A.$B.out" >> uncorrelated
+#    done
+#done 
 
 
 
