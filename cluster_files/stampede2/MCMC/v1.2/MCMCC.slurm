@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -p skx-normal
-#SBATCH -J MCMCA1
-#SBATCH -o /scratch/06850/rpatel23/output/MCMCA1.6R
+#SBATCH -J MCMCC
+#SBATCH -o /scratch/06850/rpatel23/output/MCMCC.6R
 #SBATCH -N 1
 #SBATCH -n 30
 #SBATCH -t 2-00:00:00
