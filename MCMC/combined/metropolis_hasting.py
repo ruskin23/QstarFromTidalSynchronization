@@ -399,7 +399,7 @@ class MetropolisHastings:
 
 
         if self.sampling_method=='adaptive':
-            s=shelve.open('covariance.db')
+            s=shelve.open(current_directory+'/covariance.db')
             self.covariance_matrix=s[self.system]
             s.close()
 
