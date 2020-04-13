@@ -399,9 +399,13 @@ class MetropolisHastings:
 
 
         if self.sampling_method=='adaptive':
-            s=shelve.open(current_directory+'/covariance.db')
-            self.covariance_matrix=s[self.system]
-            s.close()
+            try:
+                s=shelve.open(current_directory+'/covariance.db')
+                self.covariance_matrix=s[self.system]
+                s.close()
+            except:
+                s=pickle.load(open('covariance.pickle','rb'))
+                self.covariance_matrix=s[self.system]
 
         self.phi_keys=[]
         self.theta_keys=[]
