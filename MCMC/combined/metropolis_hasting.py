@@ -404,7 +404,7 @@ class MetropolisHastings:
                 self.covariance_matrix=s[self.system]
                 s.close()
             except:
-                s=pickle.load(open('covariance.pickle','rb'))
+                s=pickle.load(open(current_directory+'/covariance.pickle','rb'))
                 self.covariance_matrix=s[self.system]
 
         self.phi_keys=[]
