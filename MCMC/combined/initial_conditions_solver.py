@@ -193,6 +193,7 @@ class InitialConditionSolver:
         self.initial_eccentricity_sol=None
         self.bad_solution=False
         self.gsl_flag=False
+        self.binary_destroyed=False
 
     def __call__(self, target, primary, secondary):
         """
@@ -227,10 +228,19 @@ class InitialConditionSolver:
                 self.orbital_period=p
                 self.eccentricity=e
                 break
+            except ValueError:
+                self.spin=scipy.inf
+                self.delta_e=scipy.nan
+                self.delta_p=scipy.nan
+                self.orbital_period=p
+                self.eccentricity=e
+                self.binary_destroyed=True
+                break
+
 
         print(self.spin)
 
-        if numpy.isnan(self.spin):
+        if numpy.isnan(self.spin) or numpy.isinf(self.spin):
             self.initial_orbital_period_sol=scipy.nan
             self.initial_eccentricity_sol=scipy.nan
 
@@ -254,6 +264,7 @@ class InitialConditionSolver:
             pickle.dump(self.delta_e,f)
             pickle.dump(self.bad_solution,f)
             pickle.dump(self.gsl_flag,f)
+            pickle.dump(self.binary_destroyed,f)
 
         sys.stdout.flush()
         return self.spin
