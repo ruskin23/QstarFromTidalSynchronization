@@ -2,7 +2,7 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J MCMCA1
-#SBATCH -o /scratch/06850/rpatel23/output/MCMCA1.7R
+#SBATCH -o /scratch/06850/rpatel23/output/MCMCA1.8R
 #SBATCH -N 1
 #SBATCH -n 45
 #SBATCH -t 2-00:00:00
