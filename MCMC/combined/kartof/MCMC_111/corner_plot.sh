@@ -9,7 +9,7 @@ fi
 
 touch $FILE
 
-for I in 1 2 3 4 5
+for I in 1 2 4 5
 do
     python3 FillParameters.py $I 
 done

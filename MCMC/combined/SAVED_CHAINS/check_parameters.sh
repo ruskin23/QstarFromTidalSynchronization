@@ -29,5 +29,5 @@ for S in 85 76 96 81 80 36 83 84 94 32 106 123 50 39 56 126 54 70 88 67 95 25 13
         r=$(bc <<<"scale=2;$A/$sum")
         echo "Acceptance Ratio = $r "
         #printf "\n"
-	done | sort -g -k13 
+	done | sort -g -k6 
 

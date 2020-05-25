@@ -31,5 +31,6 @@ figure=corner.corner(d,
 
 
 plt.figure(1)
-plt.savefig('CornerPlot'+system+'.eps')
+plt.show()
+#plt.savefig('CornerPlot'+system+'.eps')
 
