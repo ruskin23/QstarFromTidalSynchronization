@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH -J MCMCU 
-#SBATCH -n 105  #Total number of tasks to run at one time
-#SBATCH -N 8  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/eighth_run/MCMCNonSync.o%j
+#SBATCH -n 90  #Total number of tasks to run at one time
+#SBATCH -N 6  #Number of nodes on which to distribute the tasks evenly
+#SBATCH -o /home/rxp163130/scratch/ninth_run/MCMCNonSync.o%j
 #SBATCH -t 4-00:00:00
 
 module load launcher 

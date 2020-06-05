@@ -2,9 +2,9 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J MCMCU1
-#SBATCH -o /scratch/06850/rpatel23/output/ninth_run/MCMCU1.9R
+#SBATCH -o /scratch/06850/rpatel23/output/tenth_run/MCMCU1.10R
 #SBATCH -N 1
-#SBATCH -n 45
+#SBATCH -n 40 
 #SBATCH -t 2-00:00:00
 
 #SBATCH --mail-user=rxp153130@utdallas.edu
