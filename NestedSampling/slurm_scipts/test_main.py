@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 
+import numpy
 import scipy
 import matplotlib.pyplot as plt
 
@@ -10,7 +11,7 @@ from dynesty import utils as dyfunc
 from dynesty import plotting as dyplot
 
 
-#import ipyparallel as ipp
+import ipyparallel as ipp
 
 class Pool(object):
     """A simple wrapper for `dview`."""
@@ -33,9 +34,15 @@ def cmdline_args():
                         )
 
 
+    parser.add_argument('-p',
+                        action='store',
+                        dest='profile',
+                        help='profile for ipyparallel'
+                        )
+
     return parser.parse_args()
 
-def loglike(x):
+def loglikelihood(x):
 
     L= (-0.5*(((x[6]-1.0)/0.5)**2)
         -0.5*(((x[4]-6.0)/0.2)**2)
@@ -45,7 +52,7 @@ def loglike(x):
     return L
 
 
-def ptform(u):
+def prior_transform(u):
 
     x=numpy.array(u)
 
@@ -77,7 +84,8 @@ def ptform(u):
 
 args = cmdline_args()
 system_number=args.system
-
+profile=args.profile
+print(profile)
 catalog_file='SpinlogQCatalog_el0.4.txt'
 
 with open(catalog_file,'r') as f:
@@ -135,32 +143,31 @@ print('Sampling Parameters: ',sampling_parameters)
 
 ndim=len(sampling_parameters)
 
-#rc = ipp.Client()
-#nprocs = len(rc.ids)
-#print(rc.ids)
-#
-#
-#dview = rc[:]
-#dview.use_dill();
-#
-#dview['sampling_parameters']=sampling_parameters
-#
-#with dview.sync_imports():
-#    import numpy
-#    import scipy
-#    from scipy import stats
+rc = ipp.Client(profile=profile)
+nprocs = len(rc.ids)
+print(rc.ids)
 
-#pool=Pool(dview,nprocs)
+
+dview = rc[:]
+#dview.use_dill();
+
+dview['sampling_parameters']=sampling_parameters
+
+with dview.sync_imports():
+    import numpy
+    import scipy
+    from scipy import stats
+
+pool=Pool(dview,nprocs)
 
 print('\nStarting')
-dsampler=dynesty.NestedSampler(loglike, ptform,
-                               ndim,nlive=500)#,pool=pool)
+dsampler=dynesty.NestedSampler(loglikelihood, prior_transform,
+                               ndim,nlive=500,pool=pool,use_pool={'prior_transform':False})
 
 dsampler.run_nested()
 dresults=dsampler.results
 print('Keys:', dresults.keys(),'\n')  # print accessible keys
 dresults.summary()  # print a summary
-#print('\nRESULTS = ',dresults)
 
 # Plot a summary of the run.
 #rfig, raxes = dyplot.runplot(dresults)
