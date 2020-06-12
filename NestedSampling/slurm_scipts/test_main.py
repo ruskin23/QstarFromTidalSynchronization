@@ -162,7 +162,7 @@ pool=Pool(dview,nprocs)
 
 print('\nStarting')
 dsampler=dynesty.NestedSampler(loglikelihood, prior_transform,
-                               ndim,nlive=500,pool=pool,use_pool={'prior_transform':False})
+                               ndim,nlive=500,pool=pool)
 
 dsampler.run_nested()
 dresults=dsampler.results

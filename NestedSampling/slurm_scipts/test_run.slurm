@@ -5,7 +5,7 @@
 #SBATCH -n 4
 #SBATCH -N 1
 #SBATCH -t 00:30:00
-#SBATCH -o /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/output.out
+#SBATCH -o /home/rxp163130/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/output.out
 
 profile=job_${SLURM_JOB_ID}_$(hostname)
 
