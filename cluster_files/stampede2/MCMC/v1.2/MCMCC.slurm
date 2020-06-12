@@ -2,7 +2,7 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J MCMCC
-#SBATCH -o /scratch/06850/rpatel23/output/tenth_run/MCMCC.10R
+#SBATCH -o /scratch/06850/rpatel23/output/eleventh_run/MCMCC.11R
 #SBATCH -N 1
 #SBATCH -n 20
 #SBATCH -t 2-00:00:00

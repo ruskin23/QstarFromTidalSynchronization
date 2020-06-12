@@ -2,7 +2,7 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J MCMCU1
-#SBATCH -o /scratch/06850/rpatel23/output/tenth_run/MCMCU1.10R
+#SBATCH -o /scratch/06850/rpatel23/output/eleventh_run/MCMCU1.11R
 #SBATCH -N 1
 #SBATCH -n 40 
 #SBATCH -t 2-00:00:00
