@@ -10,7 +10,7 @@ rm uncorrelated
 
 for B in 1 2 3 4 5
 do
-    echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $B -l 1 -m adaptive >/home/rxp163130/scratch/eleventh_run/1.$B.out"
+    echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $B -l 1 -m adaptive >/home/rxp163130/scratch/eleventh_run/$A.$B.out"
 	for A in 39 137 54 80 126 76 1 32 67 81 95 96 50 85 56 73 86 92 20
 	do
 		echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $B -l $A -m adaptive >/home/rxp163130/scratch/eleventh_run/$A.$B.out"
