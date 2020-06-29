@@ -86,6 +86,24 @@ class MetropolisHastings:
                               parameter_set=None):
 
 
+        prior = 1.0
+
+        #Calclate Priors
+        for key,value in self.sampling_parameters.items():
+            if value['dist']=='Normal':
+                prior=prior*scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])
+                print('prior for {} = {}'.format(key,scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])))
+            if value['dist']=='Uniform':
+                if numpy.logical_or(parameter_set[key]<self.sampling_parameters[key]['min'],
+                                    parameter_set[key]>self.sampling_parameters[key]['max']):
+                    prior=0
+                    break
+
+
+        if prior==0:
+            print('proposed paramters are out of bounds')
+            return 0
+
         model_calculations = evolution(self.interpolator,
                                        parameter_set,
                                        self.fixed_parameters,
@@ -100,18 +118,6 @@ class MetropolisHastings:
         print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
 
-        prior = 1.0
-
-        #Calclate Priors
-        for key,value in self.sampling_parameters.items():
-            if value['dist']=='Normal':
-                prior=prior*scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])
-                print('prior for {} = {}'.format(key,scipy.stats.norm(value['value'],value['sigma']).pdf(parameter_set[key])))
-            if value['dist']=='Uniform':
-                if numpy.logical_or(parameter_set[key]<self.sampling_parameters[key]['min'],
-                                    parameter_set[key]>self.sampling_parameters[key]['max']):
-                    prior=0
-                    break
 
         #Calculate Likelihood
         print('observed Spin = ',self.observed_spin)
