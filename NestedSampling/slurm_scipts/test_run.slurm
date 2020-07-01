@@ -8,4 +8,4 @@
 #SBATCH -o /home/rxp163130/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/output.out
 
 
-/work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/test_run.sh
+/home/rxp163130/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/test_run.sh
