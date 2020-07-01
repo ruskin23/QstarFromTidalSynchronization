@@ -8,4 +8,4 @@
 #SBATCH -o /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/output.out
 
 
-/work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/test_run.sh
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/pathos_test_main.py -l 111
