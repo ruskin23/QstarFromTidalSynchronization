@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #SBATCH -J TestRun
-#SBATCH -p debug
 #SBATCH -n 4
 #SBATCH -N 1
 #SBATCH -t 00:30:00
