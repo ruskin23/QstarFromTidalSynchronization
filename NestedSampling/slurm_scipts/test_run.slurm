@@ -2,8 +2,8 @@
 
 #SBATCH -J NestedTest
 #SBATCH -n 4
-#SBATCH -N 1
-#SBATCH -t 1:00:00
+#SBATCH -N 4
+#SBATCH -t 5:00:00
 #SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output.out
 
 module load gsl
