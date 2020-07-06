@@ -5,8 +5,10 @@ import sys
 import matplotlib.pyplot as plt
 
 import numpy
+from numpy import linalg
 import scipy
 from scipy import stats
+
 import dynesty
 from dynesty import plotting as dyplot
 
@@ -25,6 +27,12 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
 
+    parser.add_argument('-n',
+                        action='store',
+                        dest='num_threads',
+                        help='number of parallel processes'
+                        )
+
 
     return parser.parse_args()
 
@@ -32,18 +40,24 @@ class DahiyaChutiya:
 
     def loglikelihood(self,x):
 
-        sigma1=1.0
-        sigma2=0.5
-        rho=0.8
+        #sigma1=1.0
+        #sigma2=0.5
+        #rho=0.01
 
-        z=((x[6]-1.0)**2/sigma1) + ((x[4]-6.0)**2/sigma2) - (2*rho*(x[6]-1.0)*(x[4]-6.0)/sigma1*sigma2)
+        #z=((x[6]-1.0)**2/sigma1) + ((x[4]-6.0)**2/sigma2) - (2*rho*(x[6]-1.0)*(x[4]-6.0)/sigma1*sigma2)
 
-        L = -(z/2*(1-rho**2)) - numpy.log(2*numpy.pi*sigma1*sigma2*numpy.sqrt(1-rho**2))
+        #L = -(z/2*(1-rho**2)) - numpy.log(2*numpy.pi*sigma1*sigma2*numpy.sqrt(1-rho**2))
 
-        values=[]
-        for i in range(5000):
-            values=numpy.append(values,random.random())
+        # define likelihood constants
+        ndim = 3
+        C = numpy.identity(ndim)
+        C[C==0] = 0.95
+        Cinv = linalg.inv(C)
+        lnorm = -0.5 * (numpy.log(2 * numpy.pi) * ndim + numpy.log(linalg.det(C)))
 
+        y=numpy.array([x[4],x[5],x[6]])
+
+        return -0.5 * numpy.dot(y, numpy.dot(Cinv, y)) + lnorm
 
         return L
 
@@ -74,15 +88,24 @@ class DahiyaChutiya:
         ndim=len(self.sampling_parameters)
 
         dsampler=dynesty.NestedSampler(self.loglikelihood, self.prior_transform,
-                                       ndim,nlive=5500,pool=self.pool,queue_size=4)
+                                       ndim,nlive=5500,pool=self.pool,queue_size=queue_size)
 
         dsampler.run_nested()
         dresults=dsampler.results
         dresults.summary()
 
+        # Plot a summary of the run.
+        #rfig, raxes = dyplot.runplot(dresults)
+
+        # Plot traces and 1-D marginalized posteriors.
+        #tfig, taxes = dyplot.traceplot(dresults)
+
         # Plot the 2-D marginalized posteriors.
         #cfig, caxes = dyplot.cornerplot(dresults,show_titles=True)
 
+
+        #rfig.tight_layout()
+        #tfig.tight_layout()
         #cfig.tight_layout()
         #plt.show()
 
@@ -90,17 +113,21 @@ class DahiyaChutiya:
 
     def __init__(self,
                  sampling_parameters,
-                 pool):
+                 pool,
+                 queue_size):
 
         self.sampling_parameters=sampling_parameters
         self.pool=pool
+        self.queue_size=queue_size
 
-pool=ProcessPool(nodes=4)
 
 args = cmdline_args()
 system_number=args.system
-
+num_threads=int(args.num_threads)
 catalog_file='SpinlogQCatalog_el0.4.txt'
+
+queue_size=num_threads
+pool=ProcessPool(nodes=num_threads)
 
 with open(catalog_file,'r') as f:
     next(f)
@@ -136,5 +163,5 @@ sampling_parameters = [('Porb',Porb_value,Porb_error,'Normal'),
 ndim=len(sampling_parameters)
 
 
-S=DahiyaChutiya(sampling_parameters,pool)
+S=DahiyaChutiya(sampling_parameters,pool,queue_size)
 S.sampler()
