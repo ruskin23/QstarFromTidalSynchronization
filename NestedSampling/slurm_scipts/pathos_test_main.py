@@ -57,9 +57,10 @@ class DahiyaChutiya:
 
         y=numpy.array([x[4],x[5],x[6]])
 
-        return -0.5 * numpy.dot(y, numpy.dot(Cinv, y)) + lnorm
+        for i in range(1000000):
+            u=random.random()
 
-        return L
+        return -0.5 * numpy.dot(y, numpy.dot(Cinv, y)) + lnorm
 
 
     def prior_transform(self,u):
@@ -88,7 +89,7 @@ class DahiyaChutiya:
         ndim=len(self.sampling_parameters)
 
         dsampler=dynesty.NestedSampler(self.loglikelihood, self.prior_transform,
-                                       ndim,nlive=5500,pool=self.pool,queue_size=queue_size)
+                                       ndim,nlive=1500,pool=self.pool,queue_size=queue_size)
 
         dsampler.run_nested()
         dresults=dsampler.results
