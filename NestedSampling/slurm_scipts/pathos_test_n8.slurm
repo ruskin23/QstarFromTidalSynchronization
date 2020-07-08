@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH -J NestedN8
+#SBATCH -J Nestedn8
 #SBATCH -n 8
-#SBATCH -N 8
-#SBATCH -t 00:30:00
-#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output.out
+#SBATCH -N 1
+#SBATCH -t 06:30:00
+#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output_n8.out
 
 module load gsl
 

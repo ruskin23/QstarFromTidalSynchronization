@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH -J NestedN12
+#SBATCH -J Nestedn12
 #SBATCH -n 12
-#SBATCH -N 12
-#SBATCH -t 00:30:00
-#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output.out
+#SBATCH -N 1
+#SBATCH -t 03:30:00
+#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output_n12.out
 
 module load gsl
 

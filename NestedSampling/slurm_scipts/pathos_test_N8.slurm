@@ -3,7 +3,7 @@
 #SBATCH -J NestedN8
 #SBATCH -n 8
 #SBATCH -N 8
-#SBATCH -t 00:30:00
+#SBATCH -t 06:30:00
 #SBATCH -o /home/rxp163130/scratch/Nested_Sampling/slurm_output_N8.out
 
 module load gsl

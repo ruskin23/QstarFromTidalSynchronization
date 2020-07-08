@@ -75,6 +75,7 @@ class NestedSampling():
         #    -numpy.log(0.5*numpy.sqrt(2*numpy.pi))
         #    -numpy.log(0.2*numpy.sqrt(2*numpy.pi))
         #    )
+
         print('loglike: ',L)
         return L
 
@@ -142,7 +143,7 @@ class NestedSampling():
 
 
         cfig.tight_layout()
-        plt.savefig('cornerplot_111.png')
+        plt.savefig(self.current_directory+'cornerplot_84.png')
 
 
 
@@ -154,7 +155,8 @@ class NestedSampling():
                  observed_parameters,
                  mass_ratio,
                  pool,
-                 queue_size):
+                 queue_size,
+                 current_directory):
         self.system=system_number
         self.interpolator=interpolator
         self.sampling_parameters=sampling_parameters
@@ -165,5 +167,6 @@ class NestedSampling():
         self.ndim=len(self.sampling_parameters)
         self.pool=pool
         self.queue_size=queue_size
+        self.current_directory=current_directory
 
 

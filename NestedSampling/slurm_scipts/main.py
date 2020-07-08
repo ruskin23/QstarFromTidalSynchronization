@@ -9,27 +9,23 @@ import sys
 from pathlib import Path
 home_dir=str(Path.home())
 
-git_dir='/QstarFromTidalSynchronization/MCMC/combined'
+git_dir='/QstarFromTidalSynchronization/NestedSampling/slurm_scipts'
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
     current_directory=home_dir+git_dir
-    samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
     current_directory=home_dir+'/projects'+git_dir
-    samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 if home_dir=='/home1/06850/rpatel23':
     work_dir='/work/06850/rpatel23/stampede2'
     poet_path=work_dir+'/poet'
     current_directory=work_dir+git_dir
-    samples_directory=work_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 sys.path.append(poet_path+'PythonPackage')
 sys.path.append(poet_path+'scripts')
-
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -140,6 +136,7 @@ sampling = NestedSampling(system_number,
                           observed_parameters,
                           mass_ratio,
                           pool,
-                          queue_size)
+                          queue_size,
+                          current_directory)
 
 sampling.start()
