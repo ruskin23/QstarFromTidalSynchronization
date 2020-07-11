@@ -62,9 +62,11 @@ class InitialConditionSolver:
         #print('\nTrying P0 = %s, Pdisk = %s' %(repr(initial_orbital_period), repr(disk_period)))
         print('\nTrying Porb_initial = %s, e_initial =%s'
               %(repr(initial_condition[0]), repr(initial_condition[1])))
+        sys.stdout.flush()
         #if hasattr(self, 'binary'): self.binary.delete()
         if initial_condition[1]>0.45 or initial_condition[1]<0:
             print('unacceptable values in initial_condition')
+            sys.stdout.flush()
             return scipy.nan,scipy.nan
 
         if self.is_secondary_star is True:
@@ -122,6 +124,7 @@ class InitialConditionSolver:
         )
 
         print ("BINARY CONFIGURATION COMPLETE")
+        sys.stdout.flush()
 
         self.binary.evolve(
                 self.target.age,
@@ -137,6 +140,7 @@ class InitialConditionSolver:
 
         self.final_state = self.binary.final_state()
         print('Current Age = ', self.final_state.age)
+        sys.stdout.flush()
         assert (self.final_state.age == self.target.age)
 
         self.orbital_period = self.binary.orbital_period(self.final_state.semimajor)
@@ -155,7 +159,7 @@ class InitialConditionSolver:
               %(repr(self.delta_p),repr(self.delta_e)))
 
 
-
+        sys.stdout.flush()
         self.spin =  (
                 2.0 * pi
                 *
@@ -166,6 +170,7 @@ class InitialConditionSolver:
 
         self.binary.delete()
         print(self.spin)
+        sys.stdout.flush()
         return self.delta_p,self.delta_e
 
     def __init__(self,
@@ -270,6 +275,7 @@ class InitialConditionSolver:
 
             except Exception as err:
                 print('err = ', err)
+                sys.stdout.flush()
                 #break
                 return solutions
 

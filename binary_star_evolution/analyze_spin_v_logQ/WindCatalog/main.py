@@ -187,9 +187,11 @@ class evolution:
 
         print('Wdisk: ',self.Wdisk)
         print('secondary_angmom_initial = ',IntialSecondaryAngmom)
+        sys.stdout.flush()
         solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
 
         print('Solution: ',solutions )
+        sys.stdout.flush()
 
         sol=[]
 
@@ -231,7 +233,7 @@ if __name__ == '__main__':
 
     system=args.index
     print('System = ' ,system)
-
+    sys.stdout.flush()
     data_file=current_directory+'/NewCatalog.txt'
 
     parameters=dict()
@@ -280,7 +282,7 @@ if __name__ == '__main__':
                 parameters['print_cfile']=False
                 parameters['breaks']=breakPower
 
-                logQ=numpy.linspace(6.0,12.0,8)
+                logQ=numpy.linspace(6.0,12.0,12)
                 print(breakPower)
 
                 for q in logQ:
@@ -313,8 +315,10 @@ if __name__ == '__main__':
                     parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
                     print('parameters:', parameters)
-
+                    sys.stdout.flush()                  
+                    
                     print('\nCalculating for logQ = ', q)
+                    sys.stdout.flush()
                     evolve = evolution(interpolator,parameters)
                     evolve(q,spin_vs_logQ_file)
 
