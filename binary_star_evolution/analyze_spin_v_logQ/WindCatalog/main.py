@@ -1,30 +1,32 @@
 #!/usr/bin/env python3
 
-
-import sys
 import os
-import os.path
+import sys
+#sys.path.append('home/ruskin/projects/poet/PythonPackage')
+#sys.path.append('home/ruskin/projects/poet/scripts')
+
 
 from pathlib import Path
 home_dir=str(Path.home())
 
-git_dir='/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/general_spin_v_logQ'
+git_dir='/QstarFromTidalSynchronization/binary_star_evolution/analyze_spin_v_logQ/WindCatalog'
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
     current_directory=home_dir+git_dir
-    samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
-    sys.path.append(home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples')
 
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
     current_directory=home_dir+'/projects'+git_dir
-    samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
-    sys.path.append(home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples')
 
+if home_dir=='/home1/06850/rpatel23':
+    work_dir='/work/06850/rpatel23/stampede2'
+    poet_path=work_dir+'/poet'
+    current_directory=work_dir+git_dir
 
 sys.path.append(poet_path+'PythonPackage')
 sys.path.append(poet_path+'scripts')
+
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -34,7 +36,6 @@ from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 from initial_condition_solver import  InitialConditionSolver
-from PercentileClass import PercentileAge
 from basic_utils import Structure
 import numpy
 import scipy
@@ -171,41 +172,37 @@ class evolution:
 
         self.convective_phase_lag=phase_lag(q)
 
-        while True:
-            IntialSecondaryAngmom=self.initial_secodnary_angmom()
+        IntialSecondaryAngmom=self.initial_secodnary_angmom()
 
-            primary=self.create_star(self.primary_mass)
-            secondary=self.create_star(self.secondary_mass)
-            find_ic=InitialConditionSolver(system=self.system,
-                                           print_cfile=self.print_cfile,
-                                           disk_dissipation_age=self.disk_dissipation_age,
-                                           evolution_max_time_step=1e-3,
-                                           secondary_angmom=IntialSecondaryAngmom,
-                                           is_secondary_star=True)
+        primary=self.create_star(self.primary_mass)
+        secondary=self.create_star(self.secondary_mass)
+        find_ic=InitialConditionSolver(system=self.system,
+                                       print_cfile=self.print_cfile,
+                                       breaks=self.breaks,
+                                       disk_dissipation_age=self.disk_dissipation_age,
+                                       evolution_max_time_step=1e-3,
+                                       secondary_angmom=IntialSecondaryAngmom,
+                                       is_secondary_star=True)
 
 
-            print('Wdisk: ',self.Wdisk)
-            print('secondary_angmom_initial = ',IntialSecondaryAngmom)
-            solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
-
-            if bool(solutions)==False:
-                self.Wdisk=numpy.random.uniform(low=numpy.pi/14,
-                                                 high=numpy.pi/1.4)
-                continue
-            else:break
+        print('Wdisk: ',self.Wdisk)
+        print('secondary_angmom_initial = ',IntialSecondaryAngmom)
+        solutions = find_ic(target=self.target, primary=primary,secondary=secondary)
 
         print('Solution: ',solutions )
 
         sol=[]
 
-        for key,value in solutions.items():
-            sol.append(repr(value))
+        if bool(solutions)==True:
+            for key,value in solutions.items():
+                sol.append(repr(value))
 
-        sol='\t'.join(sol)
+            sol='\t'.join(sol)
 
+            if self.breakPower<0:q=logQ1
 
-        with open(sol_file,'a',1) as f:
-            f.write(repr(q)+'\t'+sol+'\n')
+            with open(sol_file,'a',1) as f:
+                f.write(repr(q)+'\t'+sol+'\n')
 
         primary.delete()
         secondary.delete()
@@ -215,33 +212,46 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('index',help='select system to run')
-    parser.add_argument('-p',
-                        action='store',
-                        dest='percentile',
-                        help='percentile of age'
-                        )
-
+    parser.add_argument('-b',action='store',dest='breaks',
+                        help='decide if breaks needed or not')
+    parser.add_argument('-a',action = 'store_const',dest='add',const='add',help='add to logQvsPspin')
+    parser.add_argument('-n',action = 'store_const',dest='new',const='new',help='make new table')
     args = parser.parse_args()
 
-    serialized_dir =poet_path+"stellar_evolution_interpolators"
+    serialized_dir = poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
     eccentricity_path=os.path.join(poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
 
-
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         eccentricity_path
     )
 
+
     system=args.index
     print('System = ' ,system)
-    percentile=args.percentile
-    print('Percntile = ',percentile)
 
-    data_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
+    data_file=current_directory+'/NewCatalog.txt'
 
     parameters=dict()
+
+    spin_vs_logQ_file=current_directory+'/break'+args.breaks+'/SpinLogQ_'+system+'.txt'
+
+    if args.new:action='w'
+    if args.add:action='a'
+
+    breakPower=float(args.breaks)
+
+    with open(spin_vs_logQ_file,action) as f:
+        f.write('logQ'+'\t'+
+                'spin'+'\t'+
+                'Porb_initial'+'\t'+
+                'e_initial'+'\t'+
+                'Porb_current'+'\t'+
+                'e_current'+'\t'+
+                'delta_p'+'\t'+
+                'detla_e'+'\n')
 
     with open(data_file,'r') as f:
         next(f)
@@ -249,10 +259,15 @@ if __name__ == '__main__':
             x=lines.split()
             at_system=x[0]
             if at_system==system:
-                parameters['eccentricity']=float(x[8])
-                parameters['Porb']=float(x[6])
-                mass_ratio=float(x[14])
-                parameters['Pspin']=float(x[12])
+                parameters['primary_mass']=float(x[6])
+                parameters['age']=float(x[10])
+                parameters['feh']=float(x[12])
+
+                parameters['eccentricity']=float(x[4])
+                parameters['Porb']=float(x[2])
+                parameters['secondary_mass']=float(x[8])
+                parameters['Pspin']=float(x[14])
+
 
                 parameters['Wdisk']=4.1
                 parameters['disk_dissipation_age']=5e-3
@@ -261,51 +276,47 @@ if __name__ == '__main__':
                 parameters['diff_rot_coupling_timescale']=5e-3
                 parameters['wind_strength']=0.17
 
-                parameters['tidal_frequency_breaks']=None
-                parameters['tidal_frequency_powers']=numpy.array([0.0])
-
                 parameters['system']=system
                 parameters['print_cfile']=False
+                parameters['breaks']=breakPower
+
+                logQ=numpy.linspace(6.0,12.0,8)
+                print(breakPower)
+
+                for q in logQ:
+
+                    if breakPower==0.0:
+                        TidalFrequencyBreaks=None
+                        TidalFrequencyPowers=numpy.array([0.0])
+                    elif breakPower>0.0:
+                        TidalFrequencyBreaks=numpy.array([2*numpy.pi])
+                        TidalFrequencyPowers=numpy.array([breakPower,breakPower])
+                    elif breakPower<0.0:
+
+                        #Calculate reference frequency
+                        logQMax=4.0
+                        PhaseLagMax=phase_lag(logQMax)
+                        logQ1=q
+                        PhaseLag1=phase_lag(logQ1)
+                        omega1=2*numpy.pi
+                        omegaRef=omega1*((PhaseLagMax/PhaseLag1)**(1.0/breakPower))
+
+                        #set logQ to logQMax and define logQ1 parameter
+                        parameters['logQ1']=q
+                        q=logQMax
+
+                        TidalFrequencyBreaks=numpy.array([omegaRef])
+                        TidalFrequencyPowers=numpy.array([0.0,breakPower])
+
+                    parameters['breakPower']=breakPower
+                    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+                    parameters['tidal_frequency_powers']=TidalFrequencyPowers
+
+                    print('parameters:', parameters)
+
+                    print('\nCalculating for logQ = ', q)
+                    evolve = evolution(interpolator,parameters)
+                    evolve(q,spin_vs_logQ_file)
 
                 break
-
-    #logQ=[5.0,5.5,6.0,6.5,7.0,8.0,9.0,10.0]
-    #logQ=[5.6,5.8,6.2,6.4,6.6,6.8,7.5,8.0]
-    logQ=[7.5,8.0,8.5,9.0,9.5,10.0]
-
-    parameters['age']=PercentileAge(system)(float(percentile))
-
-
-    sampleFile=samples_directory+'/MassAgeFehSamples_'+system+'.txt'
-    with open(sampleFile,'r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            a=float(x[1])
-            if a==parameters['age']:
-                parameters['primary_mass']=float(x[0])
-                parameters['feh']=float(x[2])
-                break
-
-    parameters['secondary_mass']=parameters['primary_mass']*mass_ratio
-
-    print('\nCalculating for age = ', parameters['age'])
-    print('parameters:', parameters)
-
-    spin_vs_logQ_file=current_directory+'/break0.0/PercentileAges/System_'+system+'/SpinLogQ_'+str(percentile)+'.txt'
-    #with open(spin_vs_logQ_file,'w') as f:
-    #    f.write('logQ'+'\t'+
-    #            'spin'+'\t'+
-    #            'Porb_initial'+'\t'+
-    #            'e_initial'+'\t'+
-    #            'Porb_current'+'\t'+
-    #            'e_current'+'\t'+
-    #            'delta_p'+'\t'+
-    #            'detla_e'+'\n')
-
-    for q in logQ:
-
-        print('\nCalculating for logQ = ', q)
-        evolve = evolution(interpolator,parameters)
-        evolve(q,spin_vs_logQ_file)
 
