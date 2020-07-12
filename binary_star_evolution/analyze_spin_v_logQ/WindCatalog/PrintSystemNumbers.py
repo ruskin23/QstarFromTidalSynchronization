@@ -1,6 +1,6 @@
 import numpy
 s=[]
-with open('NewCatalog.txt','r') as f:
+with open('WindeCatalog.txt','r') as f:
     next(f)
     for lines in f :
         x=lines.split()

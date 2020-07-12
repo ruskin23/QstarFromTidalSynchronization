@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH -J QvsS 
-#SBATCH -n 81  #Total number of tasks to run at one time
-#SBATCH -N 6  #Number of nodes on which to distribute the tasks evenly
+#SBATCH -n 32  #Total number of tasks to run at one time
+#SBATCH -N 3  #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /home/rxp163130/scratch/bianry_evolution_analysis/binaries.out
-#SBATCH -t 1-00:00:00
+#SBATCH -t 1-12:00:00
 
 module load launcher 
 module load gsl

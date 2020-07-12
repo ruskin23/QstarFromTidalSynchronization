@@ -234,7 +234,7 @@ if __name__ == '__main__':
     system=args.index
     print('System = ' ,system)
     sys.stdout.flush()
-    data_file=current_directory+'/NewCatalog.txt'
+    data_file=current_directory+'/WindeCatalog.txt'
 
     parameters=dict()
 
@@ -282,7 +282,8 @@ if __name__ == '__main__':
                 parameters['print_cfile']=False
                 parameters['breaks']=breakPower
 
-                logQ=numpy.linspace(6.0,12.0,12)
+                logQ=numpy.linspace(6.0,10.0,12)
+                #logQ=[8.1]
                 print(breakPower)
 
                 for q in logQ:
@@ -315,8 +316,8 @@ if __name__ == '__main__':
                     parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
                     print('parameters:', parameters)
-                    sys.stdout.flush()                  
-                    
+                    sys.stdout.flush()
+
                     print('\nCalculating for logQ = ', q)
                     sys.stdout.flush()
                     evolve = evolution(interpolator,parameters)
