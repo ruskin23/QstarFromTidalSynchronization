@@ -56,16 +56,15 @@ modified_multiplicity=modified_multiplicity/N
 #modified_multiplicity=modified_multiplicity/max(modified_multiplicity)
 no_multiplicity=no_multiplicity/N1
 #no_multiplicity=no_multiplicity/max(no_multiplicity)
-
-
+cdf_m=CDF(list(zip(age,multiplicity))).cummulative_distribution()
 
 cdf_modiified_multiplicity=CDF(list(zip(age,modified_multiplicity))).cummulative_distribution()
 cdf_no_mutiplicity=CDF(list(zip(age,no_multiplicity))).cummulative_distribution()
 
-inverse_cdf_modiified_multiplicity=norm.ppf(cdf_modiified_multiplicity)
-inverse_cdf_no_mutiplicity=norm.ppf(cdf_no_mutiplicity)
+#inverse_cdf_modiified_multiplicity=norm.ppf(cdf_modiified_multiplicity)
+#inverse_cdf_no_mutiplicity=norm.ppf(cdf_no_mutiplicity)
 
 #plt.scatter(age,multiplicity)
-plt.plot(*zip(*inverse_cdf_modiified_multiplicity))
-plt.plot(*zip(*inverse_cdf_no_mutiplicity))
+plt.plot(*zip(*cdf_m))
+#plt.plot(*zip(*inverse_cdf_no_mutiplicity))
 plt.show()

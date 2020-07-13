@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
-param=2
+param=3
 
-sample_file_name='AccetedParameters.txt'
+sample_file_name='AcceptedParameters.txt'
 multiplicity=0
 N=-1
 DATA=[]

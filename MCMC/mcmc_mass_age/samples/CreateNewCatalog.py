@@ -17,6 +17,7 @@ with open(CatalogFile,'r') as f:
 
 UpdatedHead=Header+'\t'+'\t'.join(parameterKey)+'\n'
 UpdatedCataogFile='catalog_l0.4.txt'
+
 with open(UpdatedCataogFile,'w',1) as f:
     f.write(UpdatedHead)
 

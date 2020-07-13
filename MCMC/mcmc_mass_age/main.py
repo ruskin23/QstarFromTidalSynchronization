@@ -201,7 +201,7 @@ class metropolis_hasting:
     def iterations(self):
         #MCMC iterations
 
-        max_step=1000000
+        #max_step=1000000
 
         while True:
 
@@ -231,7 +231,7 @@ class metropolis_hasting:
                 self.isAccepted=False
                 self.write_output()
                 self.iteration_step=self.iteration_step+1
-                if self.iteration_step>max_step:break
+                #if self.iteration_step>max_step:break
                 continue
             if numpy.logical_or(self.proposed_parameters['age']<0.001,
                                 self.proposed_parameters['age']>12.0):
@@ -239,7 +239,7 @@ class metropolis_hasting:
                 self.isAccepted=False
                 self.write_output()
                 self.iteration_step=self.iteration_step+1
-                if self.iteration_step>max_step:break
+                #if self.iteration_step>max_step:break
                 continue
 
 
@@ -249,7 +249,7 @@ class metropolis_hasting:
                 isAccepted=False
                 self.write_output()
                 self.iteration_step=self.iteration_step+1
-                if self.iteration_step>max_step:break
+                #if self.iteration_step>max_step:break
                 continue
 
             #calculate acceptance probability
@@ -261,7 +261,7 @@ class metropolis_hasting:
             #increment iteration step:
             self.iteration_step=self.iteration_step+1
 
-            if self.iteration_step>max_step:break
+            #if self.iteration_step>max_step:break
 
 
 
