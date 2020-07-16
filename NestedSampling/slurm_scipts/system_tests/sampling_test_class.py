@@ -115,13 +115,13 @@ class NestedSampling():
         if self.sampling_type=='Internally':
 
             dsampler.run_nested()
-            with open('complete_dynamic_sampler_results.dill','wb') as f:
-                dill.dump(dsampler.results,f)
+            with open(self.current_directory+'/complete_dynamic_sampler_results.dill','wb') as f:
+                dill.dump(dsampler,f)
 
         else:
 
             #intialize sampler parameters
-            nlive_init=100
+            nlive_init=250
             dlogz_init=0.01
             logl_max_init=numpy.inf
             n_effective_init=numpy.inf
@@ -152,8 +152,8 @@ class NestedSampling():
                     print_func(results,self.niter,self.ncall,nbatch=0,dlogz=dlogz_init,logl_max=logl_max_init)
 
             res = dsampler.results
-            with open(NestedSampling/slurm_scipts/system_tests+'/initial_sample_results.dill','wb') as f:
-                dill.dump(dsampler.results,f)
+            with open(self.current_directory+'/initial_sample_results.dill','wb') as f:
+                dill.dump(dsampler,f)
 
 
 

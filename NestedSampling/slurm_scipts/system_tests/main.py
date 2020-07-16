@@ -14,26 +14,22 @@ git_dir='/QstarFromTidalSynchronization/NestedSampling/slurm_scipts/system_tests
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
     current_directory=home_dir+git_dir
-    samples_directory=home_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet/'
     current_directory=home_dir+'/projects'+git_dir
-    samples_directory=home_dir+'/projects/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
 if home_dir=='/home1/06850/rpatel23':
     work_dir='/work/06850/rpatel23/stampede2'
     poet_path=work_dir+'/poet'
     current_directory=work_dir+git_dir
-    samples_directory=work_dir+'/QstarFromTidalSynchronization/MCMC/mcmc_mass_age/samples/updated_samples'
 
-sys.path.append(poet_path+'PythonPackage')
-sys.path.append(poet_path+'scripts')
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
-
 
 from sampling_test_class import NestedSampling
 
@@ -62,7 +58,7 @@ def cmdline_args():
 
 if __name__ == '__main__':
 
-    serialized_dir = poet_path +  "stellar_evolution_interpolators"
+    serialized_dir = poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -77,7 +73,7 @@ if __name__ == '__main__':
     system_number=args.system
     sampling_type=args.sampling_type
 
-    catalog_file='SpinlogQCatalog_el0.4.txt'
+    catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
 
     with open(catalog_file,'r') as f:
         next(f)
@@ -132,7 +128,7 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-number_threads=90
+number_threads=200
 
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
