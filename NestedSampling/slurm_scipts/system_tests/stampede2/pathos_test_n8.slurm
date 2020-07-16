@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#SBATCH -p skx-normal
 #SBATCH -J Nested84
 #SBATCH -n 90
 #SBATCH -N 2
@@ -7,6 +8,7 @@
 #SBATCH -o /scratch/06850/rpatel23/output/NestedSampling/test_sampleinit.out
 
 module load gsl
+module load python3
 
 ulimit -S -m $((2*1024*1024))
 
