@@ -76,12 +76,12 @@ if __name__ == '__main__':
 
 
     sampling_parameters = [('Porb',Porb_value,Porb_error,'Normal'),
-                       ('feh',feh_value,feh_error,-1.014,0.537,'Turncated_Normal'),
-                       ('eccentricity',eccentricity_value,eccentricity_error,0.0,0.45,'Turncated_Normal'),
-                       ('Wdisk',2*scipy.pi/14,2*scipy.pi/1.4,'Uniform'),
-                       ('logQ',5.0,12.0,'Uniform'),
-                       ('primary_mass',0.5,1.2,'Uniform'),
-                       ('age',1e-3,10.0,'Uniform')]
+                           ('feh',feh_value,feh_error,-1.014,0.537,'Turncated_Normal'),
+                           ('eccentricity',eccentricity_value,eccentricity_error,0.0,0.45,'Turncated_Normal'),
+                           ('Wdisk',2*scipy.pi/14,2*scipy.pi/1.4,'Uniform'),
+                           ('logQ',5.0,12.0,'Uniform'),
+                           ('primary_mass',0.5,1.2,'Uniform'),
+                           ('age',1e-3,10.0,'Uniform')]
 
 
     observed_parameters=dict(teff=dict(value=teff_value,
