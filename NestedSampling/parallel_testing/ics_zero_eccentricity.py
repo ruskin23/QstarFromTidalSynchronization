@@ -4,8 +4,19 @@ import pickle
 
 import sys
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+from pathlib import Path
+home_dir=str(Path.home())
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet'
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet'
+if home_dir=='/home1/06850/rpatel23':
+    work_dir='/work/06850/rpatel23/stampede2'
+    poet_path=work_dir+'/poet'
+
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -91,7 +102,7 @@ class InitialConditionSolver:
         self.binary.primary.detect_stellar_wind_saturation()
 
         self.binary.secondary.configure(
-            age=self.target.disk_dissipation_age,
+            age=self.disk_dissipation_age,
             companion_mass=self.binary.primary.mass,
             semimajor=self.binary.semimajor(initial_orbital_period),
             eccentricity=0.0,
@@ -103,7 +114,7 @@ class InitialConditionSolver:
             zero_outer_periapsis=True
         )
 
-        #print ("BINARY CONFIGURATION COMPLETE")
+        print ("BINARY CONFIGURATION COMPLETE")
 
         self.binary.evolve(
             self.target.age,
@@ -112,7 +123,7 @@ class InitialConditionSolver:
             None
         )
 
-        #print ("BINARY EVOLUTION COMPLETE")
+        print ("BINARY EVOLUTION COMPLETE")
 
         final_state = self.binary.final_state()
 
@@ -132,20 +143,6 @@ class InitialConditionSolver:
         return orbital_period, stellar_spin_period
 
     def _find_porb_range(self, guess_porb_initial, disk_period):
-        """
-        Find initial orbital period range where final porb error flips sign.
-
-        Args:
-            - guess_porb_initial:
-                An initial guess for where the sign change occurs.
-
-            - disk_period:
-                The disk locking period to assume during the search.
-
-        Returns:
-            A pair of initial orbital periods for which the sign of the final
-            orbital period error changes.
-        """
 
         porb_min, porb_max = numpy.nan, numpy.nan
         porb_initial = guess_porb_initial
@@ -187,43 +184,14 @@ class InitialConditionSolver:
                  disk_dissipation_age=None,
                  evolution_max_time_step=None,
                  evolution_precision=1e-6,
-                 orbital_period_tolerance=1e-6,
-                 spin_tolerance=1e-6,
                  secondary_angmom=None,
-                 is_secondary_star=None,
-                 instance=None):
-        """
-        Initialize the object.
+                 is_secondary_star=None):
 
-        Args:
-            - planet_formation_age:
-                If not None, the planet is assumed to form at the given age
-                (in Gyr). Otherwise, the starting age must be specified each
-                time this object is called.
-
-            - disk_dissipation_age:
-                The age at which the disk dissipates in Gyrs.
-
-            - evolution_max_time_step:
-                The maximum timestep the evolution is allowed to make.
-
-            - evolution_precision:
-                The precision to require of the evolution.
-
-        Returns: None.
-        """
-
-        if planet_formation_age:
-            self.planet_formation_age = planet_formation_age
-        if disk_dissipation_age is not None:
-            self.disk_dissipation_age = disk_dissipation_age
+        self.disk_dissipation_age = disk_dissipation_age
         self.evolution_max_time_step = evolution_max_time_step
         self.evolution_precision = evolution_precision
-        self.orbital_period_tolerance = orbital_period_tolerance
-        self.spin_tolerance = spin_tolerance
         self.secondary_angmom = secondary_angmom
         self.is_secondary_star = is_secondary_star
-        self.instance = instance
 
 
     def stellar_period(self,
@@ -235,11 +203,11 @@ class InitialConditionSolver:
         porb_min, porb_max = self._find_porb_range(orbital_period_guess,
                                                    disk_period)
 
+
         if numpy.isnan(porb_min):
             assert (numpy.isnan(porb_max))
-            return (numpy.nan if return_difference else (numpy.nan,
-                                                         numpy.nan,
-                                                         numpy.nan))
+            return numpy.nan,numpy.nan
+
         try:
             porb_initial = brentq(
                 lambda porb_initial: self._try_initial_conditions(
@@ -247,19 +215,17 @@ class InitialConditionSolver:
                     disk_period,
                 )[0] - self.target.Porb,
                 porb_min,
-                porb_max,
-                xtol=self.orbital_period_tolerance,
-                rtol=self.orbital_period_tolerance
+                porb_max
             )
         except ValueError:
-            return scipy.nan
+            return scipy.nan.scipy.nan
 
         porb_final, spin_period = self._try_initial_conditions(
             porb_initial,
             disk_period,
         )
 
-        return spin_period
+        return spin_period,porb_initial
 
     def __call__(self, target, primary, secondary):
 
@@ -268,9 +234,9 @@ class InitialConditionSolver:
         self.secondary = secondary
 
         Wdisk = target.Wdisk
-        spin_period, Porb_initial, Porb_now = self.stellar_period(Wdisk,target.Porb)
+        spin_period, Porb_initial= self.stellar_period(Wdisk,target.Porb)
 
-        print ("\n Results Spin_period = %s, Porb_initial = %s, Porb_now = %s" % (repr(spin),repr(Porb_initial),repr(Porb_now)))
+        print ("\n Results Spin_period = %s, Porb_initial = %s, Porb_now = %s" % (repr(spin_period),repr(Porb_initial),repr(target.Porb)))
 
         return spin_period
 

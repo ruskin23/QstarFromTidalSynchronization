@@ -16,8 +16,6 @@ if home_dir=='/home1/06850/rpatel23':
 sys.path.append(poet_path+'/PythonPackage')
 sys.path.append(poet_path+'/scripts')
 
-import sys
-
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
@@ -31,6 +29,7 @@ from stellar_evolution.derived_stellar_quantities import\
     LogGCGS,\
     RhoCGS
 from initial_conditions_solver import  InitialConditionSolver
+#from ics_zero_eccentricity import InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy

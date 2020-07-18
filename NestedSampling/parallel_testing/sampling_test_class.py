@@ -101,7 +101,7 @@ class NestedSampling():
                 x[i]=(s[2]-s[1])*u[i] + s[1]
 
         for i,s in enumerate(self.sampling_parameters):
-            print('{} = {}'.format(s[0],x[i]))
+            print('For {} = {}'.format(s[0],x[i]))
         #for i,key in enumerate(self.sampling_parameters):
 
         #    if self.sampling_parameters[key]['dist']=='Normal':
@@ -127,7 +127,7 @@ class NestedSampling():
 
         print('\nStarting')
         dsampler=dynesty.NestedSampler(self.loglike, self.ptform,
-                                       self.ndim,nllive=500,pool=self.pool,queue_size=self.queue_size)
+                                       self.ndim,nlive=100,pool=self.pool,queue_size=self.queue_size)
         dsampler.run_nested()
         dresults=dsampler.results
         dresults.summary()  # print a summary
@@ -143,7 +143,7 @@ class NestedSampling():
 
 
         cfig.tight_layout()
-        plt.savefig('cornerplot_84.png')
+        plt.savefig('zero_ecc_sys_1_parallel_4.png')
 
 
 
