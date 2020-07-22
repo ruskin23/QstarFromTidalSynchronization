@@ -592,18 +592,25 @@ class DahiyaChutiya:
 
         ndim=len(self.sampling_parameters)
 
+
+
         dsampler=dynesty.DynamicNestedSampler(self.loglikelihood, self.prior_transform,
                                        ndim,pool=self.pool,queue_size=queue_size)
 
+        #dsampler.run_nested()
+        #with open('complete_sampler.dill','wb') as f:
+        #    dill.dump(dsampler,f)
+
+        #print(dsampler.n_effective)
 
         #intialize sampler parameters
-        nlive_init=250
+        nlive_init=500
         dlogz_init=0.01
         logl_max_init=numpy.inf
         n_effective_init=numpy.inf
         live_points=None
 
-        nlive_batch=250
+        nlive_batch=500
 
         print_func=None
         print_progress=True
@@ -630,25 +637,33 @@ class DahiyaChutiya:
                 print_func(results,self.niter,self.ncall,nbatch=0,dlogz=dlogz_init,logl_max=logl_max_init)
 
         #Update stopping Criteria
-        res=dsampler.results
-        mcall=min(self.maxcall - self.ncall, self.maxcall_batch)
-        miter=min(self.maxiter - self.niter, self.maxiter_batch)
         use_stop=True
         M=self.pool.map
         stop_kwargs=dict()
         save_bounds=True
 
+        ncall=self.ncall
+        niter=self.niter
 
-        while True:
+        for n in range(dsampler.batch,self.maxbatch):
 
-            stop,stop_vals = stopping_function(res, stop_kwargs,
+            print('\nBatch = {}'.format(dsampler.batch))
+            res=dsampler.results
+            mcall=min(self.maxcall-self.ncall,self.maxcall_batch)
+            miter=min(self.maxiter-self.niter,self.maxiter_batch)
+            neff=dsampler.n_effective
+
+            print('\nmcall = {}, miter = {}, neff = {}'.format(mcall,miter,neff))
+
+            if mcall > 0  and miter > 0 and neff < numpy.inf:
+                stop,stop_vals = stopping_function(res, stop_kwargs,
                                            rstate=dsampler.rstate, M=M,
                                            return_vals=True)
 
 
-            stop_post, stop_evid, stop_val = stop_vals
+                stop_post, stop_evid, stop_val = stop_vals
 
-            if not stop:
+            if mcall>0 and miter>0 and neff<numpy.inf and not stop:
                 addBatch = dsampler.add_batch(nlive=nlive_batch,
                                               wt_function=self.wt_function,
                                               wt_kwargs=self.wt_kwargs,
@@ -657,12 +672,18 @@ class DahiyaChutiya:
                                               save_bounds=save_bounds,
                                               print_progress=print_progress,
                                               print_func=print_func,
-                                                stop_val=stop_val)
+                                              stop_val=stop_val)
 
+
+                self.ncall,self.niter,logl_bounds,results=addBatch
+                with open('sampler_at_batch_'+str(dsampler.batch)+'.dill','wb') as f:
+                    dill.dump(dsampler,f)
+            elif logl_bounds[1]!=numpy.inf:
+                break
             else:break
 
         print(dsampler.ncall)
-        with open('sample_initial.dill','wb') as f:
+        with open('custom_sampler.dill','wb') as f:
             dill.dump(dsampler,f)
 
     def __init__(self,

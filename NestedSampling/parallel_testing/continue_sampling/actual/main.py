@@ -19,7 +19,6 @@ from sampling_test_class import NestedSampling
 
 from pathos.pools import ProcessPool
 
-
 def cmdline_args():
 
     parser = argparse.ArgumentParser()
@@ -116,7 +115,6 @@ number_threads=4
 
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
-
 
 sampling = NestedSampling(system_number,
                           interpolator,
