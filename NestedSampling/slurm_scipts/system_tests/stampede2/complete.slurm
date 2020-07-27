@@ -2,8 +2,8 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J DNested84
-#SBATCH -n 200
-#SBATCH -N 5
+#SBATCH -n 45
+#SBATCH -N 1
 #SBATCH -t 2-00:00:00
 #SBATCH -o /scratch/06850/rpatel23/output/NestedSampling/84.dynamicCompleteSlurm.out
 

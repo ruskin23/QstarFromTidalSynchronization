@@ -128,7 +128,7 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-number_threads=200
+number_threads=45
 
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
