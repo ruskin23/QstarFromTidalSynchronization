@@ -3,7 +3,7 @@
 #SBATCH -J MCMCU 
 #SBATCH -n 65  #Total number of tasks to run at one time
 #SBATCH -N 5  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/Run18/MCMCNonSync.o%j
+#SBATCH -o /home/rxp163130/scratch/Run19/MCMCNonSync.o%j
 #SBATCH -t 4-00:00:00
 
 module load launcher 
