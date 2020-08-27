@@ -185,7 +185,7 @@ class MetropolisHastings:
 
             if self.iteration_step==1:posterior=self.current_posterior
             else:posterior=self.proposed_posterior
-            for key, value in self.current_parameters.items():
+            for key, value in self.proposed_parameters.items():
                 f.write('%s\t' % value)
             f.write(repr(posterior)+'\t'+
                     repr(self.p_acceptance)+'\t')

@@ -2,7 +2,7 @@ import numpy
 
 s=[]
 ts=[]
-with open('NewCatalog.txt','r') as f:
+with open('WindeCatalog.txt','r') as f:
     next(f)
     for lines in f:
         x=lines.split()
@@ -20,3 +20,6 @@ print('Total Systems = ',len(ts))
 print(' '.join(ts))
 print('Synchronized Systems = ',len(s))
 print(' '.join(s))
+non_sync_systems=set(ts)-set(s)
+print('Non Synchronized systems = ',len(non_sync_systems))
+print(' '.join(non_sync_systems))

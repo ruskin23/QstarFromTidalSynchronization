@@ -224,7 +224,7 @@ class Evolution:
         self.Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
 
         tidal_frequency=[]
-        for orbf,spinf in zip(Frequencies['orbitalfrequncy'],Frequencies['wenv_primary']):
+        for orbf,spinf in zip(self.Frequencies['orbitalfrequncy'],self.Frequencies['wenv_primary']):
             tidal_frequency.append(abs(2*(orbf-spinf)))
         self.Frequencies['tidal_frequency']=tidal_frequency
 
@@ -283,4 +283,6 @@ class Evolution:
         self.Frequencies=dict()
         self.convective_phase_lag=phase_lag(self.logQ)
         print('Convective Phase lag = ',self.convective_phase_lag)
+
+
 

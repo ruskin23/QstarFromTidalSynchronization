@@ -144,6 +144,18 @@ def fit_rv_data(rv_data_fname):
 if __name__ == '__main__':
     cmdline_args = parse_command_line()
     fit_results, measured_rvs = fit_rv_data(cmdline_args.rv_fname)
+
+
+    param_filename='rv_fit.txt'
+    print(cmdline_args.rv_fname)
+    system_name=cmdline_args.rv_fname[25:29]
+    with open(param_filename,'a') as f:
+        f.write(system_name+'\t'+
+                repr(fit_results[0])+'\t'+
+                repr(fit_results[1])+'\t'+
+                repr(fit_results[2])+'\t'+
+                repr(fit_results[3])+'\n')
+
     print('Amplitude: ' + repr(fit_results[0]))
     print('eccentricity: ' + repr(fit_results[1]))
     print('arg of pericenter: ' + repr(fit_results[2]))
@@ -158,4 +170,4 @@ if __name__ == '__main__':
     calc_rv = scipy.vectorize(best_fit_orbit.calc_radial_velocity)
 
     pyplot.plot(plot_x, calc_rv(2.0 * scipy.pi * plot_x), '-', linewidth=3)
-    pyplot.show()
+    pyplot.savefig(cmdline_args.rv_fname+'.png')

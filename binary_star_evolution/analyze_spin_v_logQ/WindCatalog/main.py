@@ -271,7 +271,7 @@ if __name__ == '__main__':
                 parameters['Pspin']=float(x[14])
 
 
-                parameters['Wdisk']=4.1
+                parameters['Wdisk']=0.45
                 parameters['disk_dissipation_age']=5e-3
                 parameters['wind']=True
                 parameters['wind_saturation_frequency']=2.54
@@ -282,8 +282,8 @@ if __name__ == '__main__':
                 parameters['print_cfile']=False
                 parameters['breaks']=breakPower
 
-                logQ=numpy.linspace(6.0,10.0,12)
-                #logQ=[8.1]
+                logQ=numpy.linspace(5.0,7.0,8)
+                #logQ=[8]
                 print(breakPower)
 
                 for q in logQ:

@@ -55,10 +55,10 @@ if __name__=='__main__':
 
 
     parameters['system']=system
-    parameters['primary_mass']=0.545822492469885
-    parameters['secondary_mass']= 0.4290164790813296
-    #parameters['age']=2.865279224238208
-    parameters['feh']=-0.9286157087094026
+    parameters['primary_mass']=primary_mass
+    parameters['secondary_mass']=secondary_mass
+    parameters['age']=age
+    parameters['feh']=feh
     parameters['PorbInitial']= PorbCurrent
     parameters['EccentricityInitial']=EccentricityCurrent
     parameters['PorbCurrent']=PorbCurrent
@@ -82,24 +82,43 @@ if __name__=='__main__':
     parameters['evolution_precision']=1e-6
     parameters['print_cfile']=False
 
-    parameters['GetEvolution']=False
-    parameters['GetInitialCondtion']=True
+    parameters['GetEvolution']=True
+    parameters['GetInitialCondtion']=False
 
-    parameters['ReturnResutls']=True
+    parameters['ReturnResutls']=False
 
-    parameters['plot']=False
+    parameters['plot']=True
     parameters['plot_primary_envelope']=True
     parameters['plot_primary_core']=False
     parameters['plot_secondary_envelope']=False
     parameters['plot_secondary_core']=False
     parameters['plot_key']='logQ'
-    parameters['plot_color']='b'
+    #parameters['plot_color']='b'
 
-    #parameters['logQ']=logQ1
+    TidalFrequencyBreaks=None
+    TidalFrequencyPowers=numpy.array([0.0])
+    parameters['breaks']=False
 
-    #q=[5.0,6.0,7.0,8.0,9.0]
-    q=[5.0]
+    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
+    parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
+    q=[5.5,10]
+    c=['r','g']
+
+    for Q,C in zip(q,c):
+        parameters['plot_color']=C
+        parameters['logQ']=Q
+        evolve=Evolution(interpolator,parameters)
+        evolve()
+
+    pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,linestyle=':',label='PSpinCurrent',color='r')
+    pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
+    pyplot.legend()
+    pyplot.show()
+
+
+
+    """
     ages=[0.1,0.5,1.0]
 
     for age in ages:
@@ -171,6 +190,8 @@ if __name__=='__main__':
         pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
         pyplot.legend()
         pyplot.show()
+    """
+
 
 ##################################################################################################################################################################################################################################################################################################################################################
 

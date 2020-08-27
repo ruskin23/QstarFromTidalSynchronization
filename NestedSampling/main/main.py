@@ -30,7 +30,7 @@ import random
 import copy
 
 import pickle
-import dill
+import pickle
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -173,12 +173,13 @@ class DahiyaChutiya:
 
         #Sample Initial Batch
         for results in dsampler.sample_initial(nlive=self.nlive_init,
-                                               dlogz=self.dlogz_init,
                                                maxcall=self.maxcall_init,
                                                maxiter=self.maxiter_init,
                                                logl_max=self.logl_max_init,
+                                               dlogz=self.dlogz_init,
                                                n_effective=self.n_effective_init,
                                                live_points=live_points):
+                                               #resume=True):
 
             (worst, ustar, vstar, loglstar, logvol,
              logwt, logz, logzvar, h, nc, worst_it,
@@ -189,13 +190,12 @@ class DahiyaChutiya:
 
             #print progress
             print_func(results,self.niter,self.ncall,nbatch=0,dlogz=self.dlogz_init,logl_max=self.logl_max_init)
-
-
-            #with open(current_directory+'/dill_directory/system_84/sample_initial.dill','wb') as f:
-            #    dill.dump(dsampler,f)
-            #    dill.dump(self.ncall,f)
-            #    dill.dump(self.niter,f)
-
+            #if self.ncall>400000:
+        with open(current_directory+'/pickle_directory/system_84/sample_initial.pickle','wb') as f:
+            pickle.dump(dsampler.sampler,f)
+            pickle.dump(self.ncall,f)
+            pickle.dump(self.niter,f)
+            #    break
 
         return results
 
@@ -240,10 +240,10 @@ class DahiyaChutiya:
 
 
                 self.ncall,self.niter,logl_bounds,results=addBatch
-                with open(current_directory+'/dill_directory/system_84/sampler_at_batch_'+str(dsampler.batch)+'.dill','wb') as f:
-                    dill.dump(dsampler,f)
-                    dill.dump(self.ncall,f)
-                    dill.dump(self.niter,f)
+                with open(current_directory+'/pickle_directory/system_84/sampler_at_batch_'+str(dsampler.batch)+'.pickle','wb') as f:
+                    pickle.dump(dsampler,f)
+                    pickle.dump(self.ncall,f)
+                    pickle.dump(self.niter,f)
             elif logl_bounds[1]!=numpy.inf:
                 break
             else:break
@@ -263,15 +263,23 @@ class DahiyaChutiya:
 
         if status=='start':
             dsampler=self.sampler()
+            #with open(current_directory+'/pickle_directory/system_84/sample_initial.pickle','rb') as f:
+            #    dsampler=pickle.load(f)
+            #    self.ncall=pickle.load(f)
+            #    self.niter=pickle.load(f)
+
+            #dsampler.sampler.rstate=numpy.random
+            #dsampler.sampler.pool=self.pool
+            #dsampler.sampler.M=self.pool.map
             print_func=None
             pbar,print_func=dsampler._get_print_func(print_func,self.print_progress)
             results=self.sample_initial(dsampler, print_func)
 
         elif status=='continue':
-            with open(current_directory+'/dill_directory/system_84/sample_initial.dill','rb') as f:
-                dsampler=dill.load(f)
-                self.ncall=dill.load(f)
-                self.niter=dill.load(f)
+            with open(current_directory+'/pickle_directory/system_84/sample_initial.pickle','rb') as f:
+                dsampler=pickle.load(f)
+                self.ncall=pickle.load(f)
+                self.niter=pickle.load(f)
 
             dsampler.sampler.rstate=numpy.random
             dsampler.sampler.pool=self.pool
