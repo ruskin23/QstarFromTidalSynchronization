@@ -38,33 +38,33 @@ if __name__=='__main__':
 
     system=args.system
 
-    with open('SpinlogQCatalog_el0.4.txt','r') as f:
-        for lines in f:
-            x=lines.split()
-            if x[0]==system:
-                primary_mass=float(x[15])
-                massratio=float(x[14])
-                secondary_mass=massratio*primary_mass
-                age=float(x[16])
-                feh=float(x[17])
-                PspinCurrent=float(x[12])
-                PorbCurrent=float(x[6])
-                EccentricityCurrent=float(x[8])
+    #with open('SpinlogQCatalog_el0.4.txt','r') as f:
+    #    for lines in f:
+    #        x=lines.split()
+    #        if x[0]==system:
+    #            primary_mass=float(x[15])
+    #            massratio=float(x[14])
+    #            secondary_mass=massratio*primary_mass
+    #            age=float(x[16])
+    #            feh=float(x[17])
+    #            PspinCurrent=float(x[12])
+    #            PorbCurrent=float(x[6])
+    #            EccentricityCurrent=float(x[8])
 
     parameters=dict()
 
 
     parameters['system']=system
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']=secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['PorbInitial']= PorbCurrent
-    parameters['EccentricityInitial']=EccentricityCurrent
-    parameters['PorbCurrent']=PorbCurrent
-    parameters['EccentricityCurrent']=EccentricityCurrent
+    parameters['primary_mass']=1.0
+    parameters['secondary_mass']=1.0
+    parameters['age']=10.0#age
+    parameters['feh']=-0.1#feh
+    parameters['PorbInitial']= 5.0#PorbCurrent
+    parameters['EccentricityInitial']=0.0#EccentricityCurrent
+    parameters['PorbCurrent']=12.0#PorbCurrent
+    parameters['EccentricityCurrent']=12.0#EccentricityCurrent
 
-    parameters['PspinCurrent']=PspinCurrent
+    parameters['PspinCurrent']=12.0#PspinCurrent
 
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
@@ -89,9 +89,9 @@ if __name__=='__main__':
 
     parameters['plot']=True
     parameters['plot_primary_envelope']=True
-    parameters['plot_primary_core']=False
-    parameters['plot_secondary_envelope']=False
-    parameters['plot_secondary_core']=False
+    parameters['plot_primary_core']=True
+    parameters['plot_secondary_envelope']=True
+    parameters['plot_secondary_core']=True
     parameters['plot_key']='logQ'
     #parameters['plot_color']='b'
 
@@ -102,7 +102,7 @@ if __name__=='__main__':
     parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
     parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
-    q=[5.5,10]
+    q=[6.0]
     c=['r','g']
 
     for Q,C in zip(q,c):
@@ -111,8 +111,8 @@ if __name__=='__main__':
         evolve=Evolution(interpolator,parameters)
         evolve()
 
-    pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,linestyle=':',label='PSpinCurrent',color='r')
-    pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
+    #pyplot.axhline(y=(2*numpy.pi/parameters['PspinCurrent'])/wsun,linestyle=':',label='PSpinCurrent',color='r')
+    #pyplot.axhline(y=2*numpy.pi/parameters['PorbCurrent']/wsun,linestyle=':',label='PorbCurrent',color='g')
     pyplot.legend()
     pyplot.show()
 

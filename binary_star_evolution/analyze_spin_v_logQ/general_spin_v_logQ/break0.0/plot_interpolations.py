@@ -66,6 +66,7 @@ with open('../SpinlogQCatalog_el0.4.txt','r') as f:
         else:
             x=lines.split()
             if x[0]==system:
+                kic=x[1]
                 Pspin=float(x[spin_index])
                 Porb=float(x[orbital_index])
                 break
@@ -74,8 +75,8 @@ with open('../SpinlogQCatalog_el0.4.txt','r') as f:
 plt.hlines(Pspin,5,12,linestyles='dashed',label='Pspin')
 plt.hlines(Porb,5,12,linestyles='dotted',label='Porb')
 plt.legend(loc='upper left')
-plt.title('Spin vs logQ for System '+system)
+plt.title('Spin vs logQ for KIC'+kic)
 plt.xlabel('logQ')
 plt.ylabel('Spin (days)')
 if args.plot:plt.show()
-if args.save:plt.savefig('SpinVsLogQ_'+system+'.pdf')
+if args.save:plt.savefig('SpinVsLogQ_'+system+'.eps')

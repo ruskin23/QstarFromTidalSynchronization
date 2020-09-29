@@ -134,19 +134,20 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     quantities = ['primary_envelope', 'primary_core', 'secondary_envelope', 'secondary_core']
 
-    pyplot.semilogx(evolution.age, wenv_primary, color="b", label='primary_envelope_spin_frequency')
-    pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='secondary_envelope_spin_frequency')
-    pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='primary_core_spin_frequency')
-    pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='secondary_core_spin_frequency')
+    pyplot.semilogx(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
+    pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
+    pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
+    pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
 
-    pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='orbital_frequency')
-    pyplot.legend(loc='upper right',prop={'size': 20})
-    pyplot.ylabel('spin_frequency')
+    pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
+    pyplot.legend(loc='upper right')
+    pyplot.ylabel('Spin Freuqncy')
     pyplot.xlabel('age')
     #pyplot.axhline(y=wsat/wsun)
     pyplot.ylim(top=100)
     pyplot.ylim(bottom=-20)
-    pyplot.show()
+    #pyplot.show()
+    pyplot.savefig('evolutionlogq6.pdf')
 
     return evolution
 
@@ -256,6 +257,5 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 7.0
-    print(phase_lag(logQ))
-    #test_evolution(interpolator,  phase_lag(logQ), True)
+    logQ = 6.0
+    test_evolution(interpolator,  phase_lag(logQ), True)

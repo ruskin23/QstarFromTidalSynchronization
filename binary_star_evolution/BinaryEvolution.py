@@ -116,25 +116,26 @@ class Evolution:
 
         if self.plot_primary_envelope==True:pyplot.semilogx(self.Frequencies['age'],
                                                             self.Frequencies['wenv_primary'],
-                                                            color=self.plot_color,
-                                                            label='PrimaryEnvelope_'+self.plot_key+'_'+PlotKey)
+                                                            color='r',#self.plot_color,
+                                                            label='Primary Envelope')#_'+self.plot_key+'_'+PlotKey)
 
         if self.plot_secondary_envelope==True:pyplot.semilogx(self.Frequencies['age'],
                                                             self.Frequencies['wenv_secondary'],
-                                                            color=self.plot_color,
-                                                            linestyle=':',
-                                                            label='SecondaryEnvelope_logQ'+self.plot_key+'_'+PlotKey)
+                                                            color='b',#self.plot_color,
+                                                            #linestyle=':',
+                                                            label='Secondary Envelope')#+self.plot_key+'_'+PlotKey)
 
         if self.plot_primary_core==True:pyplot.semilogx(self.Frequencies['age'],
                                                         self.Frequencies['wcore_primary'],
-                                                        color="b",
+                                                        color="r",
                                                         linestyle='--',
-                                                        label='PrimaryCore_logQ'+self.plot_key+'_'+PlotKey)
+                                                        label='Primary Core')#+self.plot_key+'_'+PlotKey)
 
         if self.plot_secondary_core==True:pyplot.semilogx(self.Frequencies['age'],
                                                           self.Frequencies['wcore_secondary'],
-                                                          color="r",linestyle='--',
-                                                          label='SecondaryCore_logQ'+self.plot_key+'_'+PlotKey)
+                                                          color="b",
+                                                          linestyle='--',
+                                                          label='Secondary Core')#+self.plot_key+'_'+PlotKey)
 
 
 
@@ -232,13 +233,6 @@ class Evolution:
 
         if  self.plot==True:
 
-            pyplot.semilogx(self.Frequencies['age'],
-                          self.Frequencies['orbitalfrequncy'],
-                          color=self.plot_color,
-                          linestyle='--',
-                          label='orbitalfrequncy'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
-
-
             #pyplot.semilogx(Frequencies['age'],
             #                Frequencies['tidal_frequency'],
             #                color=self.plot_color,
@@ -246,6 +240,13 @@ class Evolution:
             #                label='tidal_frequency'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
 
             self.plot_evolution(2.54)
+
+            pyplot.semilogx(self.Frequencies['age'],
+                          self.Frequencies['orbitalfrequncy'],
+                          linestyle='--',
+                          color='k',
+                            label='Orbital Frequency')#+self.plot_key+'_'+str(self.parameters[self.plot_key]))
+
 
 
     def __call__(self):
