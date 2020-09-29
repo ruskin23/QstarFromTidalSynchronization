@@ -146,8 +146,8 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
     #pyplot.axhline(y=wsat/wsun)
     pyplot.ylim(top=100)
     pyplot.ylim(bottom=-20)
-    #pyplot.show()
-    pyplot.savefig('evolutionlogq6.pdf')
+    pyplot.show()
+    #pyplot.savefig('evolutionlogq6.pdf')
 
     return evolution
 
@@ -183,7 +183,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 4.6
+    age = 3.0
     primary_mass = 1.0
     secondary_mass = 1.0
     initial_disk_period = 2*numpy.pi/4.44920802529774
@@ -216,7 +216,6 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     # secondary = create_planet(1.0)
 
     print("Secondary_initial_angmom = ", numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
-
 
     binary = create_binary_system(
         primary,

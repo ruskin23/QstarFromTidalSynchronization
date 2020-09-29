@@ -22,8 +22,8 @@ import numpy
 import scipy
 from astropy import units, constants
 
-#wsun = 0.24795522138
-wsun=1.0
+wsun = 0.24795522138
+#wsun=1.0
 
 class Evolution:
 
