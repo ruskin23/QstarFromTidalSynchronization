@@ -408,7 +408,7 @@ class MetropolisHastings:
 
 
         if self.sampling_method=='adaptive':
-            s=pickle.load(open(current_directory+'/covariance.pickle','rb'))
+            s=pickle.load(open(current_directory+'/updated_covariance.pickle','rb'))
             self.covariance_matrix=s[self.system]
 
         self.phi_keys=[]

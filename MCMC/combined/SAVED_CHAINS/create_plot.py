@@ -7,22 +7,58 @@ mean_values=[]
 tidal_days=[]
 with open('limits.txt','r') as f:
     next(f)
-
+    k=0
+    m=0
     for lines in f:
         x=lines.split()
         values=[float(x[1]),float(x[2]),float(x[3])]
-        #if float(x[6])==0:
-        tf=[float(x[8]),float(x[8]),float(x[8])]
-        c='b'
-        #plt.semilogx(tf,values,'-o',color=c)
-        #x_direct=1
-        #y_direct=0
-        #plt.quiver(float(x[7]),float(x[1]),x_direct,y_direct,color='k',width=0.002)
+        if float(x[6])==0:
+            tf=[float(x[8]),float(x[8]),float(x[8])]
+            c='b'
+            if k==0:
+                plt.semilogx(tf,
+                         values,
+                         '-o',
+                         color=c,
+                         label='synchronized systems'
+                         )
+            else:
+                plt.semilogx(tf,
+                         values,
+                         '-o',
+                         color=c
+                         )
+            x_direct=1
+            y_direct=0
+            plt.quiver(float(x[7]),
+                       float(x[1]),
+                       x_direct,
+                       y_direct,
+                       color='k',
+                       width=0.002)
 
-        #continue
-        #if x[0] in good_systems:c='r'
-        #else:c='g'
-        #tf=[2*numpy.pi/float(x[6]),2*numpy.pi/float(x[6]),2*numpy.pi/float(x[6])]
-        plt.semilogx(tf,values,'-o',color=c)
+            k=k+1
+            continue
 
-plt.show()
+        else:
+            c='r'
+            tf=[2*numpy.pi/float(x[6]),2*numpy.pi/float(x[6]),2*numpy.pi/float(x[6])]
+            if m==0:
+                plt.semilogx(tf,
+                             values,
+                             '-o',
+                             color=c,
+                             label='non-synchronized systems')
+            else:
+                plt.semilogx(tf,
+                             values,
+                             '-o',
+                             color=c)
+
+            m=m+1
+
+plt.xlabel('Tidal Period (days)')
+plt.ylabel('logQ')
+plt.legend(prop={'size':6})
+#plt.show()
+plt.savefig('Results.eps')
