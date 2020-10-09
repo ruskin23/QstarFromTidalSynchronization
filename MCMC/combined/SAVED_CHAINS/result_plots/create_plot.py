@@ -60,5 +60,6 @@ with open('limits.txt','r') as f:
 plt.xlabel('Tidal Period (days)')
 plt.ylabel('logQ')
 plt.legend(prop={'size':6})
-#plt.show()
-plt.savefig('Results.eps')
+plt.show()
+#plt.savefig('Results.eps')
+

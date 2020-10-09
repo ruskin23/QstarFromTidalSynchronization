@@ -96,12 +96,13 @@ class MetropolisHastings:
             if value['dist']=='Uniform':
                 if numpy.logical_or(parameter_set[key]<self.sampling_parameters[key]['min'],
                                     parameter_set[key]>self.sampling_parameters[key]['max']):
+                    outlier=key
                     prior=0
                     break
 
 
         if prior==0:
-            print('proposed paramters are out of bounds')
+            print('proposed paramter {} = {} is out of bounds'.format(outlier,self.parameter_set[key]))
             return 0
 
         model_calculations = evolution(self.interpolator,

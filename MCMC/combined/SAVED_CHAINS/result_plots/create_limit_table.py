@@ -6,7 +6,7 @@ import itertools
 system=sys.argv[1]
 qdata=[]
 adata=[]
-with open('AcceptedParameters.txt','r') as f:
+with open('../AcceptedParameters.txt','r') as f:
     for lines in f:
         x=lines.split()
         try:
