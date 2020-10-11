@@ -62,7 +62,6 @@ class evolution:
                                 spin_frequency_powers=numpy.array([0.0]),
                                 reference_phase_lag=self.convective_phase_lag)
 
-
         return star
 
     def create_binary_system(self,
@@ -148,17 +147,17 @@ class evolution:
         tdisk = self.disk_dissipation_age
 
         self.secondary_mass=self.primary_mass*self.mass_ratio
+        print('Secondary Mass = ',self.secondary_mass)
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
                                               numpy.isnan(self.secondary_mass)))
                             ):
-            print('mass out of range')
+            print('secondary mass out of range')
             sys.stdout.flush()
             return scipy.nan
 
-
-
+        
         star = self.create_star(self.secondary_mass,1)
         planet = self.create_planet(1.0)
 
@@ -171,13 +170,14 @@ class evolution:
 
         disk_state = binary.final_state()
 
-
         planet.delete()
         star.delete()
         binary.delete()
-
-        print ('star-planet evolution completed')
+        
+        print ('Secondary Angmom = ',numpy.array([disk_state.envelope_angmom,
+                                                  disk_state.core_angmom]))
         sys.stdout.flush()
+
         primary = self.create_star(self.primary_mass, 1)
         secondary = self.create_star(self.secondary_mass, 1)
         find_ic = InitialConditionSolver(disk_dissipation_age=tdisk,

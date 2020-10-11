@@ -126,7 +126,8 @@ class InitialConditionSolver:
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None
+            None,
+            timeout=600
         )
 
         print ("BINARY EVOLUTION COMPLETE")
@@ -214,17 +215,8 @@ class InitialConditionSolver:
                                 method='lm'
                                 )
                 break
-            except AssertionError:
+            except:
                 self.spin=scipy.nan
-                self.gsl_flag=True
-                self.delta_e=scipy.nan
-                self.delta_p=scipy.nan
-                self.orbital_period=p
-                self.eccentricity=e
-                break
-            except ValueError:
-                self.spin=scipy.nan
-                self.gsl_flag=False
                 self.delta_e=scipy.nan
                 self.delta_p=scipy.nan
                 self.orbital_period=p

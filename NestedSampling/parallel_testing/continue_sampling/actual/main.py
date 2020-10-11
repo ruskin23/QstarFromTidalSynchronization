@@ -23,11 +23,18 @@ def cmdline_args():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-s',
+                        action='store',
+                        dest='status',
+                        help='starting or continuing run')
+
     parser.add_argument('-l',
                         action='store',
                         dest='system',
                         help='select a system for mcmc'
                         )
+
+
 
     parser.add_argument('-t',
                         action='store',
@@ -53,6 +60,7 @@ if __name__ == '__main__':
 
 
     args = cmdline_args()
+    status=args.status
     system_number=args.system
     sampling_type=args.sampling_type
 
@@ -111,7 +119,7 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-number_threads=4
+number_threads=8
 
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
@@ -126,4 +134,4 @@ sampling = NestedSampling(system_number,
                           queue_size,
                           sampling_type)
 
-sampling.start()
+sampling.SampleInitial(status)
