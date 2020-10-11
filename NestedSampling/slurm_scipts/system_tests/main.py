@@ -40,6 +40,11 @@ def cmdline_args():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-s',
+                        action='store',
+                        dest='status',
+                        help='starting or continuing run')
+
     parser.add_argument('-l',
                         action='store',
                         dest='system',
@@ -70,6 +75,7 @@ if __name__ == '__main__':
 
 
     args = cmdline_args()
+    status=args.status
     system_number=args.system
     sampling_type=args.sampling_type
 
@@ -145,4 +151,4 @@ sampling = NestedSampling(system_number,
                           sampling_type,
                           current_directory)
 
-sampling.start()
+sampling.SampleInitial(status)

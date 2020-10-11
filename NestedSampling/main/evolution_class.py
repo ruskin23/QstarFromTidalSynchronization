@@ -29,7 +29,6 @@ from stellar_evolution.derived_stellar_quantities import\
     LogGCGS,\
     RhoCGS
 from initial_conditions_solver import  InitialConditionSolver
-#from ics_zero_eccentricity import InitialConditionSolver
 from basic_utils import Structure
 import numpy
 import scipy

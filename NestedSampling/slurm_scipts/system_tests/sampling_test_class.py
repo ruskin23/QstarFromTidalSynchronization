@@ -3,10 +3,12 @@ import os
 import numpy
 import scipy
 from scipy import stats
+
 import dynesty
 from dynesty import utils as dyfunc
 from dynesty import plotting as dyplot
 import matplotlib.pyplot as plt
+
 from stellar_evolution.manager import StellarEvolutionManager
 from stellar_evolution.derived_stellar_quantities import\
     TeffK,\
@@ -16,6 +18,7 @@ from stellar_evolution.derived_stellar_quantities import\
 from evolution_class import evolution
 
 import dill
+import time
 
 class NestedSampling():
 
@@ -75,7 +78,6 @@ class NestedSampling():
 
 
         print('loglike: ',L)
-        sys.stdout.flush()
         return L
 
     def ptform(self,
@@ -105,55 +107,60 @@ class NestedSampling():
         return x
 
 
-    def start(self):
+    def SampleInitial(self,status):
 
-        print('\nStarting')
-        sys.stdout.flush()
-        dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,
+        start_time=time.time()
+
+        #print progress
+        print_func=None
+        print_progress=True
+        pbar,print_func=dsampler._get_print_func(print_func,print_progress)
+
+        if status = 'start':
+            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,
                                               pool=self.pool, queue_size=self.queue_size)
+            niter=1
+            ncall=0
+            resume=False
 
-        if self.sampling_type=='Internally':
+            #If initial sampling needs to be completely
+            if self.sampling_type=='Internally':
+                dsampler.run_nested()
+                with open(self.current_directory+'/complete_dynamic_sampler_results.dill','wb') as f:
+                    dill.dump(dsampler.results,f)
+                return
 
-            dsampler.run_nested()
-            with open(self.current_directory+'/complete_dynamic_sampler_results.dill','wb') as f:
-                dill.dump(dsampler,f)
 
-        else:
+        elif status='continue':
+            with open(self.current_directory+'/initial_sampling_saved.dill','rb') as f:
+                dsampler=dill.load(f)
+            niter=dsampler.it
+            ncall=dsampler.ncall
+            resume=True
 
-            #intialize sampler parameters
-            nlive_init=250
-            dlogz_init=0.01
-            logl_max_init=numpy.inf
-            n_effective_init=numpy.inf
-            live_points=None
 
-            print_func=None
-            print_progress=True
+        #Sample Initial Batch
+        for results in dsampler.sample_initial(resume=resume):
 
-            pbar,print_func=dsampler._get_print_func(print_func,print_progress)
-            #Sample Initial Batch
-            for results in dsampler.sample_initial(nlive=nlive_init,
-                                                   dlogz=dlogz_init,
-                                                   maxcall=self.maxcall_init,
-                                                   maxiter=self.maxiter_init,
-                                                   logl_max=logl_max_init,
-                                                   n_effective=n_effective_init,
-                                                   live_points=live_points):
+            (worst, ustar, vstar, loglstar, logvol,
+             logwt, logz, logzvar, h, nc, worst_it,
+             boundidx, bounditer, eff, delta_logz) = results
 
-                (worst, ustar, vstar, loglstar, logvol,
-                 logwt, logz, logzvar, h, nc, worst_it,
-                 boundidx, bounditer, eff, delta_logz) = results
+            ncall+=nc
+            niter+=1
 
-                self.ncall+=nc
-                self.niter+=1
+            print_func(results,niter,ncall,nbatch=0,dlogz=0.01,logl_max=numpy.inf)
 
-                #print progress
-                if print_progress:
-                    print_func(results,self.niter,self.ncall,nbatch=0,dlogz=dlogz_init,logl_max=logl_max_init)
+            time_spent=time.time()-start_time
+            if time_spend>342000:#3 days 23 hours
+                with open(self.current_directory+'/initial_sampling_saved.dill','wb') as f:
+                    dill.dump(dsampler,f)
+                print('Sampling paused at {} iteration'.format(niter))
+                return
 
-            res = dsampler.results
-            with open(self.current_directory+'/initial_sample_results.dill','wb') as f:
-                dill.dump(dsampler,f)
+        res = dsampler.results
+        with open(self.current_directory+'/initial_samples_finished.dill','wb') as f:
+            dill.dump(dsampler,f)
 
 
 
@@ -177,29 +184,10 @@ class NestedSampling():
         self.mass_ratio=mass_ratio
         self.sampling_type=sampling_type
         self.current_directory=current_directory
-        # Initialize values.
-        self.maxcall = sys.maxsize
-        self.maxiter = sys.maxsize
-        self.maxiter_batch = sys.maxsize
-        self.maxcall_batch = sys.maxsize
-        self.maxbatch = sys.maxsize
-        self.maxiter_init = sys.maxsize
-        self.maxcall_init = sys.maxsize
-        self.wt_function = None
-        self.wt_kwargs = dict()
-        self.stop_function = None
-        self.stop_kwargs = dict()
-
-        #initialize call values
-        self.ncall=0
-        self.it=1
-        self.niter=self.it-1
-        self.logl_bounds=(-numpy.inf,numpy.inf)
-        self.maxcall_init = min(self.maxcall_init, self.maxcall)  # set max calls
 
         self.ndim=len(self.sampling_parameters)
         self.pool=pool
         self.queue_size=queue_size
-
+        self.ndim=7
 
 

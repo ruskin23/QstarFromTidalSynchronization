@@ -9,8 +9,10 @@ home_dir=str(Path.home())
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet'
+
 if home_dir=='/home/ruskin':
     poet_path=home_dir+'/projects/poet'
+
 if home_dir=='/home1/06850/rpatel23':
     work_dir='/work/06850/rpatel23/stampede2'
     poet_path=work_dir+'/poet'
@@ -126,7 +128,8 @@ class InitialConditionSolver:
             self.target.age,
             self.evolution_max_time_step,
             self.evolution_precision,
-            None
+            None,
+            timeout=600
         )
 
         print ("BINARY EVOLUTION COMPLETE")
@@ -214,23 +217,16 @@ class InitialConditionSolver:
                                 method='lm'
                                 )
                 break
-            except AssertionError:
+            except:
                 self.spin=scipy.nan
-                self.gsl_flag=True
-                self.delta_e=scipy.nan
-                self.delta_p=scipy.nan
-                self.orbital_period=p
-                self.eccentricity=e
-                break
-            except ValueError:
-                self.spin=scipy.nan
-                self.gsl_flag=False
                 self.delta_e=scipy.nan
                 self.delta_p=scipy.nan
                 self.orbital_period=p
                 self.eccentricity=e
                 break
 
+
+        print(self.spin)
 
         if numpy.isnan(self.spin):
             self.initial_orbital_period_sol=scipy.nan
