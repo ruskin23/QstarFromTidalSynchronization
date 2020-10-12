@@ -74,7 +74,6 @@ class InitialConditionSolver:
             inclination = numpy.array([0.0])
             periapsis = numpy.array([0.0])
             secondary_formation_age = self.disk_dissipation_age
-            secondary_config_age = self.disk_dissipation_age
 
 
         else:

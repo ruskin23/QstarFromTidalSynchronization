@@ -15,7 +15,8 @@ from stellar_evolution.derived_stellar_quantities import\
     LogGCGS,\
     RhoCGS
 
-from evolution_class import evolution
+#from evolution_class import evolution
+from spin_calculation import SpinPeriod
 
 import dill
 import time
@@ -36,10 +37,13 @@ class NestedSampling():
         for key in parameter_set:
             print('{} = {}'.format(key,parameter_set[key]))
 
-        spin_calculations = evolution(self.interpolator,
-                                      parameter_set,
-                                      self.fixed_parameters,
-                                      self.mass_ratio)
+        spin_calculations = SpinPeriod(
+                                    self.system,
+                                    self.interpolator,
+                                    parameter_set,
+                                    self.fixed_parameters,
+                                    self.mass_ratio
+                                    )
 
         model_set['spin']=spin_calculations()
 
@@ -51,10 +55,10 @@ class NestedSampling():
         quantity_lum=self.interpolator('lum',mass,feh)
 
         T=TeffK(quantity_radius,quantity_lum)
-        try:model_set['teff']=T(parameter_set['age'])
+        try:model_set['teff']=T(age)
         except:model_set['teff']=scipy.nan
         G=LogGCGS(mass,quantity_radius)
-        try:model_set['logg']=G(parameter_set['age'])
+        try:model_set['logg']=G(age)
         except:model_set['logg']=scipy.nan
 
         for key in model_set:
@@ -109,11 +113,9 @@ class NestedSampling():
 
     def SampleInitial(self,status):
 
-        counter=0
-
         if status == 'start':
-            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,
-                                              pool=self.pool, queue_size=self.queue_size)
+            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim)
+                                              #pool=self.pool, queue_size=self.queue_size)
             niter=1
             ncall=0
             resume=False
@@ -134,17 +136,36 @@ class NestedSampling():
             dsampler.pool=self.pool
             dsampler.M=self.pool.map
 
+            dsampler.loglikelihood=self.loglike
+            dsampler.prior_transform=self.ptform
+
+            dsampler.rstate=numpy.random
+            dsampler.pool=self.pool
+            dsampler.M=self.pool.map
+            dsampler.queue_size=self.queue_size
+
+            dsampler.sampler.loglikelihood=self.loglike
+            dsampler.sampler.prior_transform=self.ptform
+
             dsampler.sampler.rstate=numpy.random
             dsampler.sampler.pool=self.pool
             dsampler.sampler.M=self.pool.map
+            dsampler.sampler.queue_size=self.queue_size
+
+            dsampler.sampler.saved_h=dsampler.saved_h
+            dsampler.sampler.saved_logz=dsampler.saved_logz
+            dsampler.sampler.saved_logzvar=dsampler.saved_logzvar
+            dsampler.sampler.saved_logvol=dsampler.saved_logvol
+            dsampler.sampler.live_logl=dsampler.live_logl
 
             niter=dsampler.it
             ncall=dsampler.ncall
             resume=True
 
 
-        else:print('bhai sahi value dede')
+        else:print('status can either be start or continue')
 
+        #pylint: disable=unused-variable
         #Sample Initial Batch
         for results in dsampler.sample_initial(nlive=50,resume=resume):
 
@@ -162,11 +183,13 @@ class NestedSampling():
 
             print_func(results,niter,ncall,nbatch=0,dlogz=0.01,logl_max=numpy.inf)
 
-            if niter>100:
-                print('Sampling paused {} iteration'.format(niter))
-                with open('initial_sampling_saved.dill','wb') as f:
-                    dill.dump(dsampler,f)
-                return
+            if status=='start':
+                if niter>100:
+                    print('Sampling paused {} iteration'.format(niter))
+                    with open('initial_sampling_saved.dill','wb') as f:
+                        dill.dump(dsampler,f)
+                    return
+        #pylint: enable=unused-variable
 
         #save final results
         with open('initial_samples_finished.dill','wb') as f:

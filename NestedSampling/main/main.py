@@ -14,7 +14,6 @@ from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-
 from sampling_test_class import NestedSampling
 
 from pathos.pools import ProcessPool
@@ -117,7 +116,7 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-number_threads=8
+number_threads=1
 
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
