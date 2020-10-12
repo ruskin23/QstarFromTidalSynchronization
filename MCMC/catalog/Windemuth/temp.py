@@ -33,6 +33,9 @@ with open('windemuth_orbital_raw.txt','r') as f:
             d=numpy.append(d,numpy.log10(float(x[16])))
 
 
-plt.scatter(age,p)
+plt.scatter(p,e)
+plt.xscale('log')
+plt.yscale('log')
 plt.show()
+
 
