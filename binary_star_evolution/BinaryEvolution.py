@@ -171,11 +171,32 @@ class Evolution:
         if self.plot==True:
             self.plot_evolution(Frequencies,2.54)
 
+    
     def evolve_binary(self,
-                      primary,
-                      secondary,
-                      SecondaryAngmom):
+                      parameter=None,
+                      parameter_value=None):
+        """A binary evolution function which creates primary, secondary and binary 
+        system and evloves the binary according to specified parameters. 
+        Args are optional. parameter passed in args will be assigned to self 
+        
+        Args:
+            - parameter:
+                name of a parameter if not specified while initializaing class
+            - parameter_value:
+                value of parameter passed
+        
+        Returns:
+            -binary:
+                a binary object after the evolution"""
+        
+        if parameter is not None:
+            setattr(self,parameter,parameter_value)
 
+        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,
+                                              self.parameters)
+
+        primary=self.create_star(self.primary_mass)
+        secondary=self.create_star(self.secondary_mass)
         binary=self.create_binary_system(primary,
                                          secondary,
                                          secondary_angmom=SecondaryAngmom(self.Wdisk))
@@ -199,69 +220,12 @@ class Evolution:
                           self.evolution_precision,
                           None)
 
-        final_state=binary.final_state()
-        evolution=binary.get_evolution()
+        return binary
 
-        spin = (2.0*numpy.pi*binary.primary.envelope_inertia(final_state.age)/
-                final_state.primary_envelope_angmom)
-
-        PorbFinal=binary.orbital_period(final_state.semimajor)
-        EccFinal=final_state.eccentricity
-
-        print('Final Porb = ',PorbFinal )
-        print('Final Eccentricity = ', EccFinal)
-        print('Secondary Initial Angmom = ', SecondaryAngmom(self.Wdisk))
-        print('Final Spin = ',spin)
-
-        self.FinalValues['Porb']=PorbFinal
-        self.FinalValues['Eccentricity']=EccFinal
-        self.FinalValues['Spin']=spin
-
-        self.Frequencies['age']=evolution.age
-        self.Frequencies['wenv_secondary'] = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
-        self.Frequencies['wcore_secondary'] = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
-        self.Frequencies['wenv_primary'] = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
-        self.Frequencies['wcore_primary'] = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
-        self.Frequencies['orbitalfrequncy'] = binary.orbital_frequency(evolution.semimajor) / wsun
-
-        tidal_frequency=[]
-        for orbf,spinf in zip(self.Frequencies['orbitalfrequncy'],self.Frequencies['wenv_primary']):
-            tidal_frequency.append(abs(2*(orbf-spinf)))
-        self.Frequencies['tidal_frequency']=tidal_frequency
-
-
-
-        if  self.plot==True:
-
-            #pyplot.semilogx(Frequencies['age'],
-            #                Frequencies['tidal_frequency'],
-            #                color=self.plot_color,
-            #                linestyle='-.',
-            #                label='tidal_frequency'+self.plot_key+'_'+str(self.parameters[self.plot_key]))
-
-            self.plot_evolution(2.54)
-
-            pyplot.semilogx(self.Frequencies['age'],
-                          self.Frequencies['orbitalfrequncy'],
-                          linestyle='--',
-                          color='k',
-                            label='Orbital Frequency')#+self.plot_key+'_'+str(self.parameters[self.plot_key]))
 
 
 
     def __call__(self):
-
-        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,
-                                              self.parameters)
-
-        primary=self.create_star(self.primary_mass)
-        secondary=self.create_star(self.secondary_mass)
-
-        if self.GetEvolution==True:
-            self.evolve_binary(primary,
-                               secondary,
-                               SecondaryAngmom)
-
 
         if self.GetInitialCondtion==True:
             self.calculate_intial_conditions(primary,

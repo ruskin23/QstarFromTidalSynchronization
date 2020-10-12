@@ -132,8 +132,6 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
     wcore_primary = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
     orbitalfrequncy = binary.orbital_frequency(evolution.semimajor) / wsun
 
-    quantities = ['primary_envelope', 'primary_core', 'secondary_envelope', 'secondary_core']
-
     pyplot.semilogx(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
     pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
     pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
