@@ -30,11 +30,11 @@ d=data.reshape([len(data)//5,5])
 figure=corner.corner(d,
                      labels=[r"$mass$",r"age",r"$feh$",r"$teff$",r"logg"],
                      color='b',
-                     qunatiles=[0.16,0.5],
+                     #qunatiles=[0.16,0.5],
                      show_titles=True)
 
 
 
 plt.figure(1)
 plt.plot()
-plt.show()
+#plt.savefig('massMCMC_'+system+'.eps')

@@ -25,6 +25,8 @@ import scipy
 from scipy import optimize
 import numpy
 
+from multiprocessing import Pool
+
 wsun = 0.24795522138
 
 
@@ -56,13 +58,13 @@ class InitialConditionSolver:
         )
                         
         final_state=binary.final_state()
-        assert(final_state.age==self.age) 
+        assert(final_state.age==self.target_age) 
 
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
-        self.delta_p=self.final_orbital_period-initial_orbital_period
-        self.delta_e=self.final_eccentricity-initial_eccentricity
+        self.delta_p=self.final_orbital_period-self.target_orbital_period
+        self.delta_e=self.final_eccentricity-self.target_eccentricity
 
         if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e))):
             print('Binary system was destroyed')
@@ -113,6 +115,7 @@ class InitialConditionSolver:
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
 
+
     def __call__(self, primary, secondary):
         """
         Find initial conditions which reproduce the given system now.
@@ -126,16 +129,18 @@ class InitialConditionSolver:
         self.primary = primary
         self.secondary = secondary
 
-        initial_guess=[self.orbital_period,self.eccentricity]
+        self.target_age=self.age
+        self.target_orbital_period=self.orbital_period
+        self.target_eccentricity=self.eccentricity
+
+        initial_guess=[self.target_orbital_period,self.target_eccentricity]
 
 
         print('solving for p and e')
         sol = optimize.root(self.initial_condition_errfunc,
                             initial_guess,
                             method='lm',
-                            tol=1e-6,
-                            options={'xtol':1e-6,
-                                     'ftol':1e-6}
+                            tol=1e-6
                             )
 
         initial_orbital_period_sol,initial_eccentricity_sol=sol.x

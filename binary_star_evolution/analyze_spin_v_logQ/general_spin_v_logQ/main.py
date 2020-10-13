@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
                 print('Mass Ratio = ', mass_ratio)
 
-                logQ=numpy.linspace(5.0,7.0,5)
+                logQ=numpy.linspace(5.0,6.5,5)
                 #logQ=[8.2,8.3,8.4,8.5]
 
                 print(breakPower)

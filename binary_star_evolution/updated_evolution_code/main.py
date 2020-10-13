@@ -13,6 +13,7 @@ from matplotlib import pyplot
 
 from binary_evolution import Evolution
 
+import time
 
 def plot_evolution(evolved_binary):
 
@@ -46,6 +47,11 @@ if __name__=='__main__':
                         dest='system',
                         default=None,
                         help='pick system from a file')
+    
+    parser.add_argument('-m',
+                        dest='method',
+                        default=None,
+                        help='method')
 
     parser.add_argument('-b',
                         dest='breaks',
@@ -53,7 +59,8 @@ if __name__=='__main__':
                         help='decide if breaks needed or not')
 
     args = parser.parse_args()
-
+    method=args.method
+    print('Solver Method = ',method)
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
@@ -80,7 +87,7 @@ if __name__=='__main__':
                     Wdisk=4.1
                     logQ=7.0
 
-    else:
+    """ else:pass
         with open('parameters.txt','r') as f:
             next(f)
             for lines in f:
@@ -93,8 +100,23 @@ if __name__=='__main__':
                 age=float(x[5])
                 logQ=float(x[6])
                 Wdisk=float(x[7])
-                spin_period=float(x[8])
+                spin_period=float(x[8]) """
                 
+    with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/ganymede/MCMC_76/rejected_parameters_1.txt','r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            if x[0]=='4':
+                orbital_period=float(x[1])
+                eccentricity=float(x[2])
+                Wdisk=float(x[3])
+                logQ=float(x[4])
+                primary_mass=float(x[5])
+                age=float(x[6])
+                feh=float(x[7])
+                secondary_mass=float(x[8])
+                spin_period=9.242
+
 
     parameters=dict()
 
@@ -134,16 +156,21 @@ if __name__=='__main__':
 
     evolution=Evolution(interpolator,parameters)
 
+    start_time=time.time()
     evolution.calculate_intial_conditions()
-    #evolved_binary=evolution.evolve_binary()
-    #final_state=evolved_binary.final_state()
-    #spin = (2.0*numpy.pi*evolved_binary.primary.envelope_inertia(final_state.age)/
-    #            final_state.primary_envelope_angmom)
-    #final_orbital_period=evolved_binary.orbital_period(final_state.semimajor)
-    #final_eccentricity=final_state.eccentricity
+    time_spent=time.time()-start_time
+    print('time taken = ',time_spent)
 
-    #print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
+    """ 
+    evolved_binary=evolution.evolve_binary()
+    final_state=evolved_binary.final_state()
+    spin = (2.0*numpy.pi*evolved_binary.primary.envelope_inertia(final_state.age)/
+                final_state.primary_envelope_angmom)
+    final_orbital_period=evolved_binary.orbital_period(final_state.semimajor)
+    final_eccentricity=final_state.eccentricity
 
+    print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
+    """
     #plot_evolution(evolved_binary)
 
 

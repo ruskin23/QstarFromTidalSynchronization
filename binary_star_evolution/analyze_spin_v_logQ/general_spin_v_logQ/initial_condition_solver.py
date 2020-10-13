@@ -266,7 +266,7 @@ class InitialConditionSolver:
                 sol = optimize.root(self._try_initial_conditions,
                                     [p,e],
                                     method='lm',
-                                    options={'xtol':1e-5}
+                                    tol=1e-6
                                     )
                 sol_p,sol_e=sol.x
                 break

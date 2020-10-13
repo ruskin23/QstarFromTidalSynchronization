@@ -26,7 +26,7 @@ class Evolution:
     def calculate_intial_conditions(self):
         
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        print('Seconary Initial Angular Momentum = ',SecondaryAngmom)()
+        print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -36,7 +36,7 @@ class Evolution:
 
         FindIC=InitialConditionSolver(self.interpolator,
                                       self.parameters,
-                                      secondary_angmom=SecondaryAngmom)
+                                      secondary_angmom=SecondaryAngmom())
 
         FindIC(primary,secondary)
 
@@ -63,13 +63,13 @@ class Evolution:
             setattr(self,parameter,parameter_value)
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)()
-        print('Seconary Initial Angular Momentum = ',SecondaryAngmom)
+        print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
         primary=binary_system.create_star(self.primary_mass,dissipation=True)
         secondary=binary_system.create_star(self.secondary_mass,dissipation=True)
-        binary=binary_system.create_binary_system(primary,secondary,secondary_angmom=SecondaryAngmom)
+        binary=binary_system.create_binary_system(primary,secondary,secondary_angmom=SecondaryAngmom())
 
         if self.print_cfile==True:
             if self.breaks==True:
