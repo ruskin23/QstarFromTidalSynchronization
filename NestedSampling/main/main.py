@@ -6,15 +6,35 @@ import scipy
 import os
 import sys
 
-poet_path='/home/ruskin/projects/poet/'
-sys.path.append(poet_path+'PythonPackage')
-sys.path.append(poet_path+'scripts')
+from pathlib import Path
+home_dir=str(Path.home())
+
+git_dir='/QstarFromTidalSynchronization/NestedSampling/main'
+
+if home_dir=='/home/ruskin':
+    poet_path=home_dir+'/projects/poet'
+    current_directory=home_dir+'/projects'+git_dir
+    output_directory=current_directory+'/results/kartof'
+
+if home_dir=='/home/rxp163130':
+    poet_path=home_dir+'/poet'
+    current_directory=home_dir+git_dir
+    output_directory=current_directory+'/results/ganymede'
+
+if home_dir=='/home1/06850/rpatel23':
+    work_dir='/work/06850/rpatel23/stampede2'
+    poet_path=work_dir+'/poet'
+    current_directory=work_dir+git_dir
+    output_directory=current_directory+'/results/stampede'
+
+sys.path.append(poet_path+'/PythonPackage')
+sys.path.append(poet_path+'/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-from sampling_test_class import NestedSampling
+from sampling import NestedSampling
 
 from pathos.pools import ProcessPool
 
@@ -32,12 +52,11 @@ def cmdline_args():
                         dest='system',
                         help='select a system for mcmc'
                         )
-
-    parser.add_argument('-t',
+    
+    parser.add_argument('-n',
                         action='store',
-                        dest='sampling_type',
-                        help='select sampling type'
-                        )
+                        dest='threads',
+                        help='number of parallel processes')
 
     return parser.parse_args()
 
@@ -45,7 +64,7 @@ def cmdline_args():
 
 if __name__ == '__main__':
 
-    serialized_dir = poet_path +  "stellar_evolution_interpolators"
+    serialized_dir = poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
@@ -59,9 +78,9 @@ if __name__ == '__main__':
     args = cmdline_args()
     status=args.status
     system_number=args.system
-    sampling_type=args.sampling_type
+    number_threads=int(args.threads)
 
-    catalog_file='SpinlogQCatalog_el0.4.txt'
+    catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
 
     with open(catalog_file,'r') as f:
         next(f)
@@ -116,8 +135,6 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-number_threads=1
-
 queue_size=number_threads
 pool=ProcessPool(nodes=number_threads)
 
@@ -129,6 +146,6 @@ sampling = NestedSampling(system_number,
                           mass_ratio,
                           pool,
                           queue_size,
-                          sampling_type)
+                          output_directory)
 
 sampling.SampleInitial(status)

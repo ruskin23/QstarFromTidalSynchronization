@@ -125,10 +125,10 @@ class SpinPeriod():
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-        print('\nTrying Porb_initial = {} , e_initial = {}'.format(initial_orbital_period,initial_eccentricity))
+        print('\nTrying Porb_initial = {} , e_initial = {}'.format(initial_orbital_period,initial_eccentricity), file=sys.stdout, flush=True)
 
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
-            print('Invalid values')
+            print('Invalid values', file=sys.stdout, flush=True)
             return scipy.nan,scipy.nan
        
         binary=self.create_binary_system(
@@ -153,54 +153,44 @@ class SpinPeriod():
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
-        self.delta_p=self.final_orbital_period-initial_orbital_period
-        self.delta_e=self.final_eccentricity-initial_eccentricity
+        self.delta_p=self.final_orbital_period-self.Porb
+        self.delta_e=self.final_eccentricity-self.eccentricity
 
         if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e))):
-            print('Binary system was destroyed')
+            print('Binary system was destroyed', file=sys.stdout, flush=True)
             raise ValueError
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
 
         binary.delete()
 
-        print('delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e))
-        print('Spin Period = ',self.spin)
+        print('delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e), file=sys.stdout, flush=True)
+        print('Spin Period = ',self.spin, file=sys.stdout, flush=True)
 
         return self.delta_p,self.delta_e
 
     def initial_condition_solver(self):
         
+        
         initial_guess=[self.Porb,self.eccentricity]
-        #try:
-        sol=scipy.optimize.root(self.initial_condition_errfunc,
-                                initial_guess,
-                                method='lm',
-                                tol=1e-6,
-                                options={'xtol':1e-6,
-                                         'ftol':1e-6}
+        try:
+            sol=scipy.optimize.root(self.initial_condition_errfunc,
+                                    initial_guess,
+                                    method='lm',
+                                    tol=1e-6
+            )               
 
-        )               
+        except Exception as e:
+            print(e, file=sys.stdout, flush=True)
+            print('Cannot calculate spin period', file=sys.stdout, flush=True)
+            self.spin=scipy.nan
+            return scipy.nan,scipy.nan
 
-       # except Exception as e:
-        #    print(e)
-         #   print('Cannot calculate spin period')
-         #   self.spin=scipy.nan
-         #   return scipy.nan,scipy.nan
-
-        initial_orbital_period_sol,initial_eccentricity_sol=sol.x
-
-        print('Solver Results:')
-        print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
-        print('Final Orbital Period = {} , Final Eccentricity = {}'.format(self.final_orbital_period,self.final_eccentricity))
-        print('Errors: delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e))
-        print('Final Spin Period = {}'.format(self.spin))
-
-        return initial_orbital_period_sol,initial_eccentricity_sol
+        return sol.x
 
     def initial_secondary_angmom(self):
 
-        print('Calculating secondary angomom')
+        print('Calculating secondary angomom', file=sys.stdout, flush=True)
         star = self.create_star(self.secondary_mass,1)
         planet = self.create_planet(1.0)
         binary = self.create_binary_system(star,
@@ -255,34 +245,27 @@ class SpinPeriod():
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
                                               numpy.isnan(self.secondary_mass)))
                             ):
-            print('mass out of range')
+            print('mass out of range', file=sys.stdout, flush=True)
             sys.stdout.flush()
             return scipy.nan
 
         self.secondary_angmom=self.initial_secondary_angmom()
-        print('Secondary Spin Angmom = ',self.secondary_angmom)
+        print('Secondary Spin Angmom = ',self.secondary_angmom, file=sys.stdout, flush=True)
 
         self.primary = self.create_star(self.primary_mass, 1)
         self.secondary = self.create_star(self.secondary_mass, 1)
 
-        initial_orbital_period,initial_eccentricity=self.initial_condition_solver()
+        initial_orbital_period_sol,initial_eccentricity_sol=self.initial_condition_solver()
+
+        print('Solver Results:', file=sys.stdout, flush=True)
+        print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol), file=sys.stdout, flush=True)
+        print('Final Orbital Period = {} , Final Eccentricity = {}'.format(self.final_orbital_period,self.final_eccentricity), file=sys.stdout, flush=True)
+        print('Errors: delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e), file=sys.stdout, flush=True)
+        print('Final Spin Period = {}'.format(self.spin), file=sys.stdout, flush=True)
+
 
         self.primary.delete()
         self.secondary.delete()
-
-        solver_results=dict()
-
-        solver_results.update(self.sampling_parameters)
-        solver_results['initial_orbital_period']=initial_orbital_period
-        solver_results['initial_eccentricity']=initial_eccentricity
-        solver_results['final_orbital_period']=self.final_orbital_period
-        solver_results['final_eccentricity']=self.final_eccentricity
-        solver_results['delta_p']=self.delta_p
-        solver_results['delta_e']=self.delta_e
-        solver_results['spin_period']=self.spin
-
-        with open('solver_results_system_'+self.system+'.pickle','wb') as f:
-            pickle.dump(solver_results,f)
 
         return self.spin
 

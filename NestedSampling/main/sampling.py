@@ -21,7 +21,7 @@ from spin_calculation import SpinPeriod
 import dill
 import time
 
-class NestedSampling():
+class NestedSampling:
 
 
     def calculate_model(self,
@@ -81,7 +81,7 @@ class NestedSampling():
             L=L-0.5*(((model_set[key]-self.observed_parameters[key]['value'])/self.observed_parameters[key]['sigma'])**2) - numpy.log(self.observed_parameters[key]['sigma']*numpy.sqrt(2*numpy.pi))
 
 
-        print('loglike: ',L)
+        print('loglike: ',L, file=sys.stdout, flush=True)
         return L
 
     def ptform(self,
@@ -109,28 +109,8 @@ class NestedSampling():
             print('For {} = {}'.format(s[0],x[i]))
 
         return x
-
-
-    def SampleInitial(self,status):
-
-        if status == 'start':
-            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim)
-                                              #pool=self.pool, queue_size=self.queue_size)
-            niter=1
-            ncall=0
-            resume=False
-
-            #If initial sampling needs to be completely
-            if self.sampling_type=='Internally':
-                dsampler.run_nested()
-                with open('complete_dynamic_sampler_results.dill','wb') as f:
-                    dill.dump(dsampler.results,f)
-                return
-
-
-        elif status == 'continue':
-            with open('initial_sampling_saved.dill','rb') as f:
-                dsampler=dill.load(f)
+    
+    def initialize_sampler(self,dsampler):
 
             dsampler.rstate=numpy.random
             dsampler.pool=self.pool
@@ -158,17 +138,34 @@ class NestedSampling():
             dsampler.sampler.saved_logvol=dsampler.saved_logvol
             dsampler.sampler.live_logl=dsampler.live_logl
 
+            return dsampler
+
+
+    def SampleInitial(self,status):
+
+        if status == 'start':
+            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,pool=self.pool, queue_size=self.queue_size)
+            niter=1
+            ncall=0
+            resume=False
+
+        elif status == 'continue':
+            with open(self.output_directory+'/initial_sampling_saved.dill','rb') as f:
+                dsampler=dill.load(f)
+
+            dsampler=self.initialize_sampler(dsampler)
             niter=dsampler.it
             ncall=dsampler.ncall
             resume=True
 
 
-        else:print('status can either be start or continue')
+        else:print('status can either be start or continue', file=sys.stdout, flush=True)
 
         #pylint: disable=unused-variable
         #Sample Initial Batch
-        for results in dsampler.sample_initial(nlive=50,resume=resume):
-
+        start_time=time.time()
+        for results in dsampler.sample_initial(resume=resume):
+            
             #print progress
             print_func=None
             print_progress=True
@@ -183,16 +180,19 @@ class NestedSampling():
 
             print_func(results,niter,ncall,nbatch=0,dlogz=0.01,logl_max=numpy.inf)
 
-            if status=='start':
-                if niter>100:
-                    print('Sampling paused {} iteration'.format(niter))
-                    with open('initial_sampling_saved.dill','wb') as f:
-                        dill.dump(dsampler,f)
-                    return
+            #Stop sampling at 4 hours on cluster time
+            time_spent=(time.time()-start_time)*0.000277778 #in hours
+            print('Time spent = ',time_spent, file=sys.stdout, flush=True)
+
+            if time_spent>4:
+                print('Sampling paused {} iteration after spending {} hours'.format(niter,time_spent), file=sys.stdout, flush=True)
+                with open(self.output_directory+'/initial_sampling_saved.dill','wb') as f:
+                    dill.dump(dsampler,f)
+                return
         #pylint: enable=unused-variable
 
         #save final results
-        with open('initial_samples_finished.dill','wb') as f:
+        with open(self.output_directory+'/initial_samples_finished.dill','wb') as f:
             dill.dump(dsampler,f)
 
 
@@ -206,7 +206,7 @@ class NestedSampling():
                  mass_ratio,
                  pool,
                  queue_size,
-                 sampling_type):
+                 output_directory):
 
         self.system=system_number
         self.interpolator=interpolator
@@ -214,11 +214,9 @@ class NestedSampling():
         self.observed_parameters=observed_parameters
         self.fixed_parameters=fixed_parameters
         self.mass_ratio=mass_ratio
-        self.sampling_type=sampling_type
-
         self.ndim=len(self.sampling_parameters)
         self.pool=pool
         self.queue_size=queue_size
-        self.ndim=7
+        self.output_directory=output_directory
 
 
