@@ -217,10 +217,9 @@ class InitialConditionSolver:
                 sol = optimize.root(
                                 self._try_initial_conditions,
                                 [p,e],
-                                method='lm',
-                                options={'xtol':1e-6,
-                                         'ftol':1e-6}
-                                )
+                                method='df-sane',
+                                tol=1e-6
+                )
                 break
             except AssertionError:
                 self.spin=scipy.nan

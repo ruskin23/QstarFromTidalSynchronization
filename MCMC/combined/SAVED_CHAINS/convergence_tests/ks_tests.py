@@ -9,11 +9,16 @@ def _get_filename(system,cluster,instance):
     return '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
 
 def _write_on_file(line,filename,option):
+#write line on given filename
+#option:'w' to write new file
+#       'a' to append
 
     with open(filename,option) as f:
         f.write(line)
 
 def _fill_parameters(chain_filename):
+#creates a file filled_parameters.txt which repeats the missing parameters
+#in accepted parameter file
 
     filled_filename='filled_parameters.txt'
     with open(chain_filename,'r') as f:
@@ -37,7 +42,7 @@ def _fill_parameters(chain_filename):
                     continue
                 else:
                     difference=iteration-counter
-                    for k in range(difference):
+                    for _ in range(difference):
                         line='\t'.join([str(counter)]+saved_state+['\n'])
                         _write_on_file(line,filled_filename,'a')
                         counter=counter+1
@@ -61,8 +66,6 @@ def get_cdf(parameter,filled_filename):
     C=cummulative_distribution(samples)
     return C()
      
-
-
 def get_stats(chain_filenames):
 #function to get statistics between all the chains prints cluster 
 # and chains number in output returns all chains
@@ -79,8 +82,6 @@ def get_stats(chain_filenames):
         CHAINS.append(values)
     
     return stats.ks_2samp(CHAINS[0],CHAINS[1])
-
-    
 
 def all_chains(system):
 
@@ -103,7 +104,6 @@ def all_chains(system):
             comparison_between='For '+ i_filename + ' and ' + j_filename
             print(comparison_between,get_stats([chain_filenames[i],chain_filenames[j]]))
 
-
 def plot_chains(parameter,chain_filenames):
 #plot cdf of two different chains
     
@@ -121,6 +121,6 @@ if __name__ == '__main__':
     
     #all_chains(system)
 
-    chain1=_get_filename(system,'stampede',3)
-    chain2=_get_filename(system,'stampede',4)
+    chain1=_get_filename(system,'ganymede',2)
+    chain2=_get_filename(system,'stampede',3)
     plot_chains('logQ',[chain1,chain2])
