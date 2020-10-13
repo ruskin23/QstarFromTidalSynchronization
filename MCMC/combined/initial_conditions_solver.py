@@ -217,7 +217,7 @@ class InitialConditionSolver:
                 sol = optimize.root(
                                 self._try_initial_conditions,
                                 [p,e],
-                                method='df-sane',
+                                method='lm',
                                 tol=1e-6
                 )
                 break
