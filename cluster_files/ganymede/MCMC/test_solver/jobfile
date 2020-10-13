@@ -1,15 +1,11 @@
-./main.py -c -i 1 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.1.out
-./main.py -c -i 2 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.2.out
-./main.py -c -i 3 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.3.out
-./main.py -c -i 4 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.4.out
-./main.py -c -i 5 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.5.out
-./main.py -c -i 6 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.6.out
-./main.py -c -i 7 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.7.out
-./main.py -c -i 8 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.8.out
-./main.py -c -i 9 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.9.out
-./main.py -c -i 10 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.10.out
-./main.py -c -i 11 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.11.out
-./main.py -c -i 12 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.12.out
-./main.py -c -i 13 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.13.out
-./main.py -c -i 14 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.14.out
-./main.py -c -i 15 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.15.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 10 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.10.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 11 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.11.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 12 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.12.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 13 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.13.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 14 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.14.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 15 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.15.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 16 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.16.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 17 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.17.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 18 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.18.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 19 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.19.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i 20 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.20.out

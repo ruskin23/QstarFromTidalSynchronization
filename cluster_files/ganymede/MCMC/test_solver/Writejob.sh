@@ -2,7 +2,7 @@
 
 
 
-for I in {1..15}
+for I in {11..20}
 do
-    echo "./main.py -c -i $I -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.$I.out"
+    echo "python3 /home/rxp163130/QstarFromTidalSynchronization/MCMC/combined/main.py -c -i $I -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/76.$I.out"
 done >jobfile
