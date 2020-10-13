@@ -1,0 +1,15 @@
+./main.py -c -i 1 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 2 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 3 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 4 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 5 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 6 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 7 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 8 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 9 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 10 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 11 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 12 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 13 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 14 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
+./main.py -c -i 15 -l 76 -m uncorrelated >/home/rxp163130/scratch/test_solver/..out
