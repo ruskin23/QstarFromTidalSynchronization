@@ -189,7 +189,7 @@ class NestedSampling:
             ncall+=nc
             niter+=1
 
-            with open('progress.txt','a',1) as f:
+            with open(self.output_directory+'/progress.txt','a',1) as f:
                 f.write(repr(niter)+'\t'+
                         repr(ncall)+'\t'+
                         repr(delta_logz)+'\t'+
