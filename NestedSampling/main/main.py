@@ -1,42 +1,24 @@
 #!/usr/bin/env python3 -u
-
-import argparse
-import scipy
-
 import os
 import sys
 
 from pathlib import Path
+from directories import directories
+
 home_dir=str(Path.home())
-
-git_dir='/QstarFromTidalSynchronization/NestedSampling/main'
-
-if home_dir=='/home/ruskin':
-    poet_path=home_dir+'/projects/poet'
-    current_directory=home_dir+'/projects'+git_dir
-    output_directory=current_directory+'/results/kartof'
-
-if home_dir=='/home/rxp163130':
-    poet_path=home_dir+'/poet'
-    current_directory=home_dir+git_dir
-    output_directory=current_directory+'/results/ganymede'
-
-if home_dir=='/home1/06850/rpatel23':
-    work_dir='/work/06850/rpatel23/stampede2'
-    poet_path=work_dir+'/poet'
-    current_directory=work_dir+git_dir
-    output_directory=current_directory+'/results/stampede'
-
-sys.path.append(poet_path+'/PythonPackage')
-sys.path.append(poet_path+'/scripts')
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
     orbital_evolution_library
 
-from sampling import NestedSampling
-
+import argparse
+import scipy
 from pathos.pools import ProcessPool
+
+from sampling import NestedSampling
 
 def cmdline_args():
 
@@ -64,11 +46,11 @@ def cmdline_args():
 
 if __name__ == '__main__':
 
-    serialized_dir = poet_path +  "/stellar_evolution_interpolators"
+    serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join(poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         eccentricity_path
@@ -80,7 +62,7 @@ if __name__ == '__main__':
     system_number=args.system
     number_threads=int(args.threads)
 
-    catalog_file=current_directory+'/SpinlogQCatalog_el0.4.txt'
+    catalog_file=path.current_directory+'/SpinlogQCatalog_el0.4.txt'
 
     with open(catalog_file,'r') as f:
         next(f)
@@ -146,6 +128,6 @@ sampling = NestedSampling(system_number,
                           mass_ratio,
                           pool,
                           queue_size,
-                          output_directory)
+                          path.output_directory)
 
 sampling.SampleInitial(status)

@@ -143,6 +143,22 @@ class NestedSampling:
 
     def SampleInitial(self,status):
 
+        with open('progress.txt','w',1) as f:
+            f.write('niter'+'\t'+
+                    'ncall'+'\t'+
+                    'delta_logz'+'\t'+
+                    'ustar'+'\t'+
+                    'vstar'+'\t'+
+                    'loglstar'+'\t'+
+                    'logvol'+'\t'+
+                    'logwt'+'\t'+
+                    'logz'+'\t'+
+                    'logzvar'+'\t'+
+                    'worst_it'+'\t'+
+                    'boundidx'+'\t'+
+                    'bounditer'+'\t'+
+                    'eff'+'\n')
+
         if status == 'start':
             dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,pool=self.pool, queue_size=self.queue_size)
             niter=1
@@ -166,11 +182,6 @@ class NestedSampling:
         start_time=time.time()
         for results in dsampler.sample_initial(resume=resume):
             
-            #print progress
-            print_func=None
-            print_progress=True
-            pbar,print_func=dsampler._get_print_func(print_func,print_progress)
-
             (worst, ustar, vstar, loglstar, logvol,
              logwt, logz, logzvar, h, nc, worst_it,
              boundidx, bounditer, eff, delta_logz) = results
@@ -178,7 +189,21 @@ class NestedSampling:
             ncall+=nc
             niter+=1
 
-            print_func(results,niter,ncall,nbatch=0,dlogz=0.01,logl_max=numpy.inf)
+            with open('progress.txt','a',1) as f:
+                f.write(repr(niter)+'\t'+
+                        repr(ncall)+'\t'+
+                        repr(delta_logz)+'\t'+
+                        repr(ustar)+'\t'+
+                        repr(vstar)+'\t'+
+                        repr(loglstar)+'\t'+
+                        repr(logvol)+'\t'+
+                        repr(logwt)+'\t'+
+                        repr(logz)+'\t'+
+                        repr(logzvar)+'\t'+
+                        repr(worst_it)+'\t'+
+                        repr(boundidx)+'\t'+
+                        repr(bounditer)+'\t'+
+                        repr(eff)+'\n')
 
             #Stop sampling at 4 hours on cluster time
             time_spent=(time.time()-start_time)*0.000277778 #in hours
