@@ -135,8 +135,7 @@ class SpinPeriod():
             self.age, 
             self.evolution_max_time_step, 
             self.evolution_precision, 
-            None,
-            timeout=600
+            None)
         )
                         
         final_state=binary.final_state()
