@@ -109,7 +109,7 @@ class NestedSampling:
             print('For {} = {}'.format(s[0],x[i]))
 
         return x
-    
+
     def initialize_sampler(self,dsampler):
 
             dsampler.rstate=numpy.random
@@ -181,7 +181,7 @@ class NestedSampling:
         #Sample Initial Batch
         start_time=time.time()
         for results in dsampler.sample_initial(resume=resume):
-            
+
             (worst, ustar, vstar, loglstar, logvol,
              logwt, logz, logzvar, h, nc, worst_it,
              boundidx, bounditer, eff, delta_logz) = results
