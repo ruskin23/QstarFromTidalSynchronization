@@ -209,6 +209,7 @@ class NestedSampling:
             time_spent=(time.time()-start_time)*0.000277778 #in hours
             print('Time spent = ',time_spent, file=sys.stdout, flush=True)
 
+            #overwrite. no need for time conditin. dump alternatively.
             if time_spent>4:
                 print('Sampling paused {} iteration after spending {} hours'.format(niter,time_spent), file=sys.stdout, flush=True)
                 with open(self.output_directory+'/initial_sampling_saved.dill','wb') as f:
