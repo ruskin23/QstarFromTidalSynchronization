@@ -21,7 +21,7 @@ from spin_calculation import SpinPeriod
 import dill
 import time
 
-class NestedSampling:
+class NestedSampling():
 
 
     def calculate_model(self,
@@ -105,9 +105,6 @@ class NestedSampling:
             elif s[-1]=='Uniform':
                 x[i]=(s[2]-s[1])*u[i] + s[1]
 
-        for i,s in enumerate(self.sampling_parameters):
-            print('For {} = {}'.format(s[0],x[i]))
-
         return x
 
     def initialize_sampler(self,dsampler):
@@ -140,85 +137,75 @@ class NestedSampling:
 
             return dsampler
 
+    def calculate_live_points(self,dsampler,nlive=500):
+        """Samples nlive points from ndim unit cube, transform into desired priors and 
+            calculates loglikelohoods of nlive points"""
+            
+        live_u=dsampler.rstate.rand(nlive,self.ndim)
+        live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
+        live_logl=numpy.array(list(dsampler.M(self.loglike,numpy.array(live_v))))
 
-    def SampleInitial(self,status):
+        #Convert -numpy.inf loglikelihoods to finite numbers
+        for i,logl in enumerate(live_logl):
+            if not numpy.isfinite(logl):
+                if numpy.sign(logl)<0:
+                    live_logl[i]=1e-300
+                else:
+                    raise ValueError(\
+                        "The log-likelihood ({0}) of live "
+                        "point {1} located at u={2} v={3} "
+                        " is invalid."
+                        .format(logl, i, live_u[i],live_v[i]))
+        
+        return [live_u,live_v,live_logl]
 
-        with open(self.output_directory+'/progress.txt','w',1) as f:
-            f.write('niter'+'\t'+
-                    'ncall'+'\t'+
-                    'delta_logz'+'\t'+
-                    'ustar'+'\t'+
-                    'vstar'+'\t'+
-                    'loglstar'+'\t'+
-                    'logvol'+'\t'+
-                    'logwt'+'\t'+
-                    'logz'+'\t'+
-                    'logzvar'+'\t'+
-                    'worst_it'+'\t'+
-                    'boundidx'+'\t'+
-                    'bounditer'+'\t'+
-                    'eff'+'\n')
-
+    def get_sampler_object(self,status):
+        """Initialize Dynamic Nested Sampler object depending upon status"""
+    
         if status == 'start':
             dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,pool=self.pool, queue_size=self.queue_size)
-            niter=1
-            ncall=0
-            resume=False
+            self.niter=1
+            self.ncall=0
+            self.resume=False
 
         elif status == 'continue':
-            with open(self.output_directory+'/initial_sampling_saved.dill','rb') as f:
+            with open(self.output_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','rb') as f:
                 dsampler=dill.load(f)
 
             dsampler=self.initialize_sampler(dsampler)
-            niter=dsampler.it
-            ncall=dsampler.ncall
-            resume=True
+            self.niter=dsampler.it
+            self.ncall=dsampler.ncall
+            self.resume=True
 
+        return dsampler
 
-        else:print('status can either be start or continue', file=sys.stdout, flush=True)
+    def SampleInitial(self,status):
+
+        with open(self.output_directory+'/progress_'+str(self.system)+'.txt','w',1) as f:
+            f.write('niter'+'\t'+ 'ncall'+'\t'+ 'delta_logz'+'\t'+ 'ustar'+'\t'+ 'vstar'+'\t'+ 'loglstar'+'\t'+ 'logvol'+'\t'+ 'logwt'+'\t'+ 'logz'+'\t'+ 'logzvar'+'\t'+ 'worst_it'+'\t'+ 'boundidx'+'\t'+ 'bounditer'+'\t'+ 'eff'+'\n')
+
+        dsampler=self.get_sampler_object(status)
 
         #pylint: disable=unused-variable
         #Sample Initial Batch
-        start_time=time.time()
-        for results in dsampler.sample_initial(resume=resume):
+        for results in dsampler.sample_initial(resume=self.resume):
 
-            (worst, ustar, vstar, loglstar, logvol,
-             logwt, logz, logzvar, h, nc, worst_it,
-             boundidx, bounditer, eff, delta_logz) = results
+            self.ncall+=results[9]
+            self.niter+=1
 
-            ncall+=nc
-            niter+=1
+            with open(self.output_directory+'/progress_'+str(self.system)+'.txt','a',1) as f:
+                for r in results:
+                    f.write(repr(r)+'\t')
+                f.write('\n')
 
-            with open(self.output_directory+'/progress.txt','a',1) as f:
-                f.write(repr(niter)+'\t'+
-                        repr(ncall)+'\t'+
-                        repr(delta_logz)+'\t'+
-                        repr(ustar)+'\t'+
-                        repr(vstar)+'\t'+
-                        repr(loglstar)+'\t'+
-                        repr(logvol)+'\t'+
-                        repr(logwt)+'\t'+
-                        repr(logz)+'\t'+
-                        repr(logzvar)+'\t'+
-                        repr(worst_it)+'\t'+
-                        repr(boundidx)+'\t'+
-                        repr(bounditer)+'\t'+
-                        repr(eff)+'\n')
-
-            #Stop sampling at 4 hours on cluster time
-            time_spent=(time.time()-start_time)*0.000277778 #in hours
-            print('Time spent = ',time_spent, file=sys.stdout, flush=True)
 
             #overwrite. no need for time conditin. dump alternatively.
-            if time_spent>4:
-                print('Sampling paused {} iteration after spending {} hours'.format(niter,time_spent), file=sys.stdout, flush=True)
-                with open(self.output_directory+'/initial_sampling_saved.dill','wb') as f:
-                    dill.dump(dsampler,f)
-                return
+            with open(self.output_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
+                dill.dump(dsampler,f)
         #pylint: enable=unused-variable
 
         #save final results
-        with open(self.output_directory+'/initial_samples_finished.dill','wb') as f:
+        with open(self.output_directory+'/initial_samples_finished_'+str(self.system)+'.dill','wb') as f:
             dill.dump(dsampler,f)
 
 

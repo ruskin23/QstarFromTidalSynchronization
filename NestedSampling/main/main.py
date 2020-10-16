@@ -17,6 +17,7 @@ from orbital_evolution.evolve_interface import library as\
 import argparse
 import scipy
 from pathos.pools import ProcessPool
+import dill
 
 from sampling import NestedSampling
 
@@ -130,4 +131,7 @@ sampling = NestedSampling(system_number,
                           queue_size,
                           path.output_directory)
 
-sampling.SampleInitial(status)
+dsampler=sampling.get_sampler_object(status)
+nlive_points=sampling.calculate_live_points(dsampler)
+with open(path.output_directory+'/nlive_points_'+str(system_number)+'.dill','wb') as f:
+    dill.dump(nlive_points,f)
