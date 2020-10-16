@@ -62,7 +62,7 @@ class Evolution:
         if parameter is not None:
             setattr(self,parameter,parameter_value)
 
-        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)()
+        SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
         print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)

@@ -5,6 +5,7 @@ sys.path.append('home/ruskin/projects/poet/PythonPackage')
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
+from orbital_evolution.transformations import phase_lag
 
 import numpy
 import argparse
@@ -38,6 +39,27 @@ def plot_evolution(evolved_binary):
     pyplot.ylim(top=100)
     pyplot.ylim(bottom=-20)
     pyplot.show()
+
+def get_initial_conditions(evolution):
+
+    start_time=time.time()
+    evolution.calculate_intial_conditions()
+    time_spent=time.time()-start_time
+    print('time taken = ',time_spent)
+
+
+def get_evolution(evolution):
+
+    evolved_binary=evolution.evolve_binary()
+    final_state=evolved_binary.final_state()
+    spin = (2.0*numpy.pi*evolved_binary.primary.envelope_inertia(final_state.age)/
+                final_state.primary_envelope_angmom)
+    final_orbital_period=evolved_binary.orbital_period(final_state.semimajor)
+    final_eccentricity=final_state.eccentricity
+
+    print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
+    
+    plot_evolution(evolved_binary)
 
 
 if __name__=='__main__':
@@ -149,35 +171,27 @@ if __name__=='__main__':
 
     TidalFrequencyBreaks=None
     TidalFrequencyPowers=numpy.array([0.0])
-    parameters['breaks']=False
     parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
     parameters['tidal_frequency_powers']=TidalFrequencyPowers
 
 
-    evolution=Evolution(interpolator,parameters)
+    #for item,value in parameters.items():
+    #    print('{} = {}'.format(item,value))
 
-    start_time=time.time()
-    evolution.calculate_intial_conditions()
-    time_spent=time.time()-start_time
-    print('time taken = ',time_spent)
+    #evolution=Evolution(interpolator,parameters)
 
-    """ 
-    evolved_binary=evolution.evolve_binary()
-    final_state=evolved_binary.final_state()
-    spin = (2.0*numpy.pi*evolved_binary.primary.envelope_inertia(final_state.age)/
-                final_state.primary_envelope_angmom)
-    final_orbital_period=evolved_binary.orbital_period(final_state.semimajor)
-    final_eccentricity=final_state.eccentricity
+    alpha=-1.0
 
-    print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
-    """
-    #plot_evolution(evolved_binary)
+    logQMax=4.0
+    logQ1=6.0
+    
+    phase_lagMax=phase_lag(logQMax)
+    phase_lag1=phase_lag(logQ1)
+    omegaref1=2*numpy.pi
 
+    omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
 
-
-
-
-
+    print(omegaref)
 
 
 
