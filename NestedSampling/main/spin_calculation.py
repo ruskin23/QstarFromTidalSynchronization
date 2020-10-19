@@ -30,7 +30,7 @@ from astropy import units, constants
 
 class SpinPeriod():
 
-    def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')): 
+    def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')):
         """Return a configured planet to use in the evolution."""
 
         planet = LockedPlanet(mass=mass, radius=(constants.R_jup / constants.R_sun).to(''))
@@ -39,9 +39,9 @@ class SpinPeriod():
     def create_star(self, mass, dissipation):
         star = EvolvingStar(mass=mass,
                             metallicity=self.feh,
-                            wind_strength=self.wind_strength if self.wind else 0.0, 
-                            wind_saturation_frequency=self.wind_saturation_frequency, 
-                            diff_rot_coupling_timescale=self.diff_rot_coupling_timescale, 
+                            wind_strength=self.wind_strength if self.wind else 0.0,
+                            wind_saturation_frequency=self.wind_saturation_frequency,
+                            diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
                             interpolator=self.interpolator)
 
         if dissipation == 1:
@@ -79,10 +79,10 @@ class SpinPeriod():
                         initial_orbital_period=initial_orbital_period,
                         initial_eccentricity=initial_eccentricity,
                         initial_inclination=0.0,
-                        disk_lock_frequency=self.Wdisk, 
-                        disk_dissipation_age=self.disk_dissipation_age, 
-                        secondary_formation_age=self.disk_dissipation_age) 
-        
+                        disk_lock_frequency=self.Wdisk,
+                        disk_dissipation_age=self.disk_dissipation_age,
+                        secondary_formation_age=self.disk_dissipation_age)
+
         binary.primary.select_interpolation_region(primary.core_formation_age())
         if isinstance(secondary, EvolvingStar):binary.secondary.detect_stellar_wind_saturation()
 
@@ -96,7 +96,7 @@ class SpinPeriod():
 
         binary.primary.detect_stellar_wind_saturation()
 
-        binary.secondary.configure(age=self.disk_dissipation_age, 
+        binary.secondary.configure(age=self.disk_dissipation_age,
                             companion_mass=primary.mass,
                             semimajor=binary.semimajor(initial_orbital_period),
                             eccentricity=initial_eccentricity,
@@ -112,7 +112,7 @@ class SpinPeriod():
         return binary
 
 
-    def initial_condition_errfunc(self,initial_conditions): 
+    def initial_condition_errfunc(self,initial_conditions):
 
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
@@ -122,7 +122,7 @@ class SpinPeriod():
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
             print('Invalid values', file=sys.stdout, flush=True)
             return scipy.nan,scipy.nan
-       
+
         binary=self.create_binary_system(
             self.primary,
             self.secondary,
@@ -130,16 +130,16 @@ class SpinPeriod():
             initial_eccentricity,
             secondary_angmom=self.secondary_angmom
             )
-        
+
         binary.evolve(
-            self.age, 
-            self.evolution_max_time_step, 
-            self.evolution_precision, 
+            self.age,
+            self.evolution_max_time_step,
+            self.evolution_precision,
             None
         )
-                        
+
         final_state=binary.final_state()
-        assert(final_state.age==self.age) 
+        assert(final_state.age==self.age)
 
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
@@ -161,15 +161,15 @@ class SpinPeriod():
         return self.delta_p,self.delta_e
 
     def initial_condition_solver(self):
-        
-        
+
+
         initial_guess=[self.Porb,self.eccentricity]
         try:
             sol=scipy.optimize.root(self.initial_condition_errfunc,
                                     initial_guess,
                                     method='lm',
                                     tol=1e-6
-            )               
+            )
 
         except Exception as e:
             print(e, file=sys.stdout, flush=True)
@@ -187,8 +187,8 @@ class SpinPeriod():
         binary = self.create_binary_system(star,
                                       planet,
                                       10.0,
-                                      0.0) 
-        
+                                      0.0)
+
 
         binary.evolve(self.disk_dissipation_age, 1e-3, 1e-6, None)
 
@@ -226,6 +226,8 @@ class SpinPeriod():
         self.evolution_max_time_step=evolution_max_time_step
         self.evolution_precision=evolution_precision
 
+        self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
+        self.delta_p,self.delta_e=scipy.nan,scipy.nan
 
     def __call__(self):
 
