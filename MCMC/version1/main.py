@@ -9,7 +9,7 @@ import os.path
 from pathlib import Path
 home_dir=str(Path.home())
 
-git_dir='/QstarFromTidalSynchronization/MCMC/combined'
+git_dir='/QstarFromTidalSynchronization/MCMC/version1'
 
 if home_dir=='/home/rxp163130':
     poet_path=home_dir+'/poet/'
