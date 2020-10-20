@@ -16,6 +16,9 @@ from binary_evolution import Evolution
 
 import time
 
+
+
+
 def plot_evolution(evolved_binary):
 
     wsun = 0.24795522138
@@ -109,89 +112,106 @@ if __name__=='__main__':
                     Wdisk=4.1
                     logQ=7.0
 
-    """ else:pass
-        with open('parameters.txt','r') as f:
-            next(f)
-            for lines in f:
-                x=lines.split()
-                orbital_period=float(x[0])
-                eccentricity=float(x[1])
-                feh=float(x[2])
-                primary_mass=float(x[3])
-                secondary_mass=float(x[4])
-                age=float(x[5])
-                logQ=float(x[6])
-                Wdisk=float(x[7])
-                spin_period=float(x[8]) """
+    # with open('parameters.txt','r') as f:
+    #     next(f)
+    #     for lines in f:
+    #         x=lines.split()
+    #         orbital_period=float(x[0])
+    #         feh=float(x[1])
+    #         eccentricity=float(x[2])
+    #         Wdisk=float(x[3])
+    #         logQ=float(x[4])
+    #         primary_mass=float(x[5])
+    #         age=float(x[6])
+    #         Wdisk=float(x[7])
+    #         secondary_mass=primary_mass*0.606
+    #         spin_period=14.581
                 
-    with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/ganymede/MCMC_76/rejected_parameters_1.txt','r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            if x[0]=='4':
-                orbital_period=float(x[1])
-                eccentricity=float(x[2])
-                Wdisk=float(x[3])
-                logQ=float(x[4])
-                primary_mass=float(x[5])
-                age=float(x[6])
-                feh=float(x[7])
-                secondary_mass=float(x[8])
-                spin_period=9.242
+    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/ganymede/MCMC_76/rejected_parameters_1.txt','r') as f:
+    #     next(f)
+    #     for lines in f:
+    #         x=lines.split()
+    #         if x[0]=='4':
+    #             orbital_period=float(x[1])
+    #             eccentricity=float(x[2])
+    #             Wdisk=float(x[3])
+    #             logQ=float(x[4])
+    #             primary_mass=float(x[5])
+    #             age=float(x[6])
+    #             feh=float(x[7])
+    #             secondary_mass=float(x[8])
+    #             spin_period=9.242
 
 
     parameters=dict()
 
     if args.system is not None:parameters['system']=args.system
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']=secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['orbital_period']= orbital_period
-    parameters['eccentricity']=eccentricity
-
-    parameters['spin_period']=spin_period
+    # parameters['primary_mass']=primary_mass
+    # parameters['secondary_mass']=secondary_mass
+    # parameters['age']=age
+    # parameters['feh']=feh
+    # parameters['orbital_period']= orbital_period
+    # parameters['eccentricity']=eccentricity
+    # parameters['spin_period']=spin_period
+    # parameters['logQ']=logQ
+    # parameters['Wdisk']=Wdisk
 
     parameters['dissipation']=True
-    parameters['logQ']=logQ
-
-    parameters['Wdisk']=Wdisk
     parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
     parameters['wind_saturation_frequency']=2.54
     parameters['diff_rot_coupling_timescale']=5e-3
     parameters['wind_strength']=0.17
-
     parameters['print_cfile']=False
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
-
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
+    parameters['tidal_frequency_breaks']=None
+    parameters['tidal_frequency_powers']=numpy.array([0.0])
 
-    TidalFrequencyBreaks=None
-    TidalFrequencyPowers=numpy.array([0.0])
-    parameters['tidal_frequency_breaks']=TidalFrequencyBreaks
-    parameters['tidal_frequency_powers']=TidalFrequencyPowers
+    #Chekcing nested sampling calculations
+    with open('parameters.txt','r') as f:
+        next(f)
+        for i,lines in enumerate(f):
+            if i>=389:
+                x=lines.split()
+
+                parameters['orbital_period']=float(x[0])
+                parameters['feh']=float(x[1])
+                parameters['eccentricity']=float(x[2])
+                parameters['Wdisk']=float(x[3])
+                parameters['logQ']=float(x[4])
+                parameters['primary_mass']=float(x[5])
+                parameters['age']=float(x[6])
+                parameters['secondary_mass']=parameters['primary_mass']*0.606
+                parameters['spin_period']=14.581
+
+                print('\n\nLine = ',str(i+2))
+                for item,value in parameters.items():
+                    print('{} = {}'.format(item,value))
+
+                if numpy.logical_or(parameters['secondary_mass']>1.2,parameters['secondary_mass']<0.4):
+                    print('Mass out of range')
+                    continue
+
+                if numpy.logical_or(parameters['feh']<-1.014,parameters['feh']>0.537):
+                    print('Metallicity out of range')
+                    continue               
+
+                evolution=Evolution(interpolator,parameters)
+                get_initial_conditions(evolution)
 
 
-    #for item,value in parameters.items():
-    #    print('{} = {}'.format(item,value))
 
-    #evolution=Evolution(interpolator,parameters)
-
-    alpha=-1.0
-
-    logQMax=4.0
-    logQ1=6.0
-    
-    phase_lagMax=phase_lag(logQMax)
-    phase_lag1=phase_lag(logQ1)
-    omegaref1=2*numpy.pi
-
-    omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
-
-    print(omegaref)
+    # alpha=-1.0
+    # logQMax=4.0
+    # logQ1=6.0
+    # phase_lagMax=phase_lag(logQMax)
+    # phase_lag1=phase_lag(logQ1)
+    # omegaref1=2*numpy.pi
+    # omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+    # print(omegaref)
 
 
 
