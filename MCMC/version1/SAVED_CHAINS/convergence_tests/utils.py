@@ -52,16 +52,16 @@ def _fill_parameters(chain_filename):
         for i,params in enumerate(f):
             x=params.split()
             if i==0:
-                _write_on_file(params,filled_filename,'w')
-                saved_state=x[1:-1]
-                counter=counter+int(x[0])
-                continue
-                # if x[0]!='1':raise ValueError
-                # else:
-                #     _write_on_file(params,filled_filename,'w')
-                #     saved_state=x[1:-1]
-                #     counter=counter+1
-                #     continue
+                # _write_on_file(params,filled_filename,'w')
+                # saved_state=x[1:-1]
+                # counter=counter+int(x[0])
+                # continue
+                if x[0]!='1':raise ValueError
+                else:
+                    _write_on_file(params,filled_filename,'w')
+                    saved_state=x[1:-1]
+                    counter=counter+1
+                    continue
             else:
                 iteration=int(x[0])
                 if iteration==counter:
