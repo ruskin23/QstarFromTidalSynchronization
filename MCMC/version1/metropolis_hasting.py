@@ -15,7 +15,7 @@ import os.path
 import sys
 from pathlib import Path
 home_dir=str(Path.home())
-git_dir='/QstarFromTidalSynchronization/MCMC/combined'
+git_dir='/QstarFromTidalSynchronization/MCMC/version1'
 if home_dir=='/home/rxp163130':current_directory=home_dir+git_dir
 if home_dir=='/home/ruskin':current_directory=home_dir+'/projects'+git_dir
 if home_dir=='/home1/06850/rpatel23':
@@ -102,7 +102,7 @@ class MetropolisHastings:
 
 
         if prior==0:
-            print('proposed paramter {} = {} is out of bounds'.format(outlier,self.parameter_set[key]))
+            print('proposed paramter {} = {} is out of bounds'.format(outlier,parameter_set[key]))
             return 0
 
         model_calculations = evolution(self.interpolator,
