@@ -2,10 +2,10 @@
 *.txt
 *.pickle
 *.out
-!MCMC/combined/SAVED_CHAINS/stampede/*
-!MCMC/combined/SAVED_CHAINS/stampede/MCMC_*/*.txt
-!MCMC/combined/SAVED_CHAINS/ganymede/*
-!MCMC/combined/SAVED_CHAINS/ganymede/MCMC_*/*.txt
+!MCMC/version1/SAVED_CHAINS/stampede/*
+!MCMC/version1/SAVED_CHAINS/stampede/MCMC_*/*.txt
+!MCMC/version1/SAVED_CHAINS/ganymede/*
+!MCMC/version1/SAVED_CHAINS/ganymede/MCMC_*/*.txt
 
 #vim swap files
 .*.swp
