@@ -1,61 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy
 from scipy import stats
-from utils import cummulative_distribution
+from utils import _cummulative_distribution
+from utils import _get_filename
+from utils import _write_on_file
+from utils import _fill_parameters
 
 clusters=['ganymede','stampede']
 
-def _get_filename(system,cluster,instance):
-#returns the filename with directory of accepted parameter file
 
-    return '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
-
-def _write_on_file(line,filename,option):
-#write line on given filename
-#option:'w' to write new file
-#       'a' to append
-
-    with open(filename,option) as f:
-        f.write(line)
-
-def _fill_parameters(chain_filename):
-#creates a file filled_parameters.txt which repeats the missing parameters
-#in accepted parameter file
-
-    filled_filename='filled_parameters.txt'
-    with open(chain_filename,'r') as f:
-        next(f)
-        counter=1
-        for i,params in enumerate(f):
-            x=params.split()
-            if i==0:
-                if x[0]!='1':raise ValueError
-                else:
-                    _write_on_file(params,filled_filename,'w')
-                    saved_state=x[1:-1]
-                    counter=counter+1
-                    continue
-            else:
-                iteration=int(x[0])
-                if iteration==counter:
-                    _write_on_file(params,filled_filename,'a')
-                    saved_state=x[1:-1]
-                    counter=counter+1
-                    continue
-                else:
-                    difference=iteration-counter
-                    for _ in range(difference):
-                        line='\t'.join([str(counter)]+saved_state+['\n'])
-                        _write_on_file(line,filled_filename,'a')
-                        counter=counter+1
-                    _write_on_file(params,filled_filename,'a')
-                    saved_state=x[1:-1]
-                    counter=iteration+1
-
-
-    return filled_filename
-
-def get_cdf(parameter,filled_filename):
+def get_cdf(filled_filename):
 #returns cdf for the specified paremter in file of accepted parameters
 #the filed_filename is the file where repeated steps is accounted for
 
@@ -65,11 +19,10 @@ def get_cdf(parameter,filled_filename):
             x=lines.split()
             samples=numpy.append(samples,float(x[4]))
 
-    C=cummulative_distribution(samples)
-    return C()
+    return _cummulative_distribution(samples)
+
 
 def get_chain(chain_filename):
-
     CHAIN=[]
     with open(chain_filename,'r') as f:
         next(f)
@@ -78,27 +31,32 @@ def get_chain(chain_filename):
             CHAIN=numpy.append(CHAIN,float(x[4]))
     return CHAIN
 
+
 def get_stats(chain1,chain2):
+#returns ks 2 sample statistics using scipy ks_2samp function
+#accepts 2 numpy.ndarray of chains
 
     return stats.ks_2samp(chain1,chain2)
 
-def break_chain(system,percent_break):
 
-    complete_chain=[]
+def break_chain(system,percent_break):
+    
+    chain1=[]
+    chain2=[]
     for c in clusters:
         for i in range(5):
             _fill_parameters(_get_filename(system,c,i+1))
-            with open('filled_parameters.txt','r') as f:
-                for lines in f:
-                    x=lines.split()
-                    complete_chain=numpy.append(complete_chain,float(x[4]))
-
-    split_chain=numpy.split(complete_chain,[int(len(complete_chain)*(percent_break/100))])
-
-    print(get_stats(split_chain[0],split_chain[1]))
+            complete_chain=get_chain('filled_parameters.txt')
+            for k,v in enumerate(complete_chain):
+                if k<int(len(complete_chain)*(percent_break/100)): chain1=numpy.append(chain1,v)
+                else:chain2=numpy.append(chain2,v)
+            #split_chain=numpy.split(complete_chain,[int(len(complete_chain)*(percent_break/100))])
+    print(get_stats(chain1,chain2))
+    return [chain1,chain2]
 
 
 def all_chains(system):
+#Useless for now
 
     chain_filenames=[]
     for c in clusters:
@@ -118,23 +76,24 @@ def all_chains(system):
             chain2=get_chain(chain_filenames[j])
             print(comparison_between,get_stats(chain1,chain2))
 
-def plot_chains(parameter,chain_filenames):
+
+def plot_chain(chain,label=None):
 #plot cdf of two different chains
 
+    cdf=_cummulative_distribution(chain)
+    plt.plot(*zip(*cdf),label=label)
 
-    for i in range(2):
-        filled_filename=_fill_parameters(chain_filenames[i])
-        cdf=get_cdf(parameter,filled_filename)
-        plt.plot(*zip(*cdf))
-    plt.show()
 
 if __name__ == '__main__':
 
-    system='84'
-    parameters=['Porb','eccentricity','Wdisk','logQ','primary_mass','age','feh','Pspin']
+    system='43'
 
     #all_chains(system)
-    #break_chain(system,70)
-    chain1=_get_filename(system,'ganymede',5)
-    chain2=_get_filename(system,'stampede',3)
-    plot_chains('logQ',[chain1,chain2])
+    
+    chains=break_chain(system,50)
+    for i,c in enumerate(chains):
+        plot_chain(c,label='part'+str(i+1))
+    complete_chain=numpy.concatenate([chains[0],chains[1]])
+    plot_chain(complete_chain,label='complete')
+    plt.legend()
+    plt.show()    

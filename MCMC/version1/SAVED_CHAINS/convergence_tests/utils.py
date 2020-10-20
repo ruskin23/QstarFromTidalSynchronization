@@ -1,27 +1,20 @@
 import numpy
 import itertools
-import matplotlib.pyplot as plt
 
-class cummulative_distribution:
-
-    def __init__(self,
-                 samples,
-                 mulitplicity=None,
-                 plot=None):
-
-        self.samples=samples
-        self.mulitplicity=mulitplicity
-
-    def sort_tuples(self):
-
-        if self.mulitplicity is None: return sorted([(x, len(list(y))) for x, y in itertools.groupby(self.samples)], key=lambda tup: tup[0])
-        else: return sorted(zip(self.samples,self.mulitplicity), key=lambda tup: tup[0])
+def _Norm(value,loc=0.0,sigma=1.0):
+    arg=(value-loc)/sigma
+    return numpy.exp(-(arg**2)/2)
 
 
-    def __call__(self):
+def _multivariate_gaussian(x_vector,x_mean,y_vector,y_mean,sigma_xy):
+    arg=numpy.matmul(numpy.transpose(x_vector-x_mean),numpy.matmul(sigma_xy,(y_vector-y_mean)))
+    return numpy.exp(-0.5*arg)
 
 
-        sorted_samples=self.sort_tuples()
+def _cummulative_distribution(samples,mulitplicity=None):
+
+        if mulitplicity is None: sorted_samples=sorted([(x, len(list(y))) for x, y in itertools.groupby(samples)], key=lambda tup: tup[0])
+        else: sorted_samples=sorted(zip(samples,mulitplicity), key=lambda tup: tup[0])
 
         sample_values=[]
         probability=[]
@@ -35,27 +28,58 @@ class cummulative_distribution:
         return list(zip(sample_values,probability/max(probability)))
 
 
-
-class multivariate_gaussian:
-
-    def multi(self,
-              x_vector,
-              x_mean,
-              y_vector,
-              y_mean,
-              sigma_xy):
-
-        arg=numpy.matmul(numpy.transpose(x_vector-x_mean),numpy.matmul(sigma_xy,(y_vector-y_mean)))
-        return numpy.exp(-0.5*arg)
+def _get_filename(system,cluster,instance):
+#returns the filename with directory of accepted parameter file
+    return '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
 
 
-class  Norm:
+def _write_on_file(line,filename,option):
+#write line on given filename
+#option:'w' to write new file
+#       'a' to append
+    with open(filename,option) as f:
+        f.write(line)
 
-    def N(self,
-          value,
-          loc=0.0,
-          sigma=1.0):
 
-        arg=(value-loc)/sigma
-        return numpy.exp(-(arg**2)/2)
+def _fill_parameters(chain_filename):
+#creates a file filled_parameters.txt which repeats the missing parameters
+#in accepted parameter file
+
+    filled_filename='filled_parameters.txt'
+    with open(chain_filename,'r') as f:
+        next(f)
+        counter=1
+        for i,params in enumerate(f):
+            x=params.split()
+            if i==0:
+                _write_on_file(params,filled_filename,'w')
+                saved_state=x[1:-1]
+                counter=counter+int(x[0])
+                continue
+                # if x[0]!='1':raise ValueError
+                # else:
+                #     _write_on_file(params,filled_filename,'w')
+                #     saved_state=x[1:-1]
+                #     counter=counter+1
+                #     continue
+            else:
+                iteration=int(x[0])
+                if iteration==counter:
+                    _write_on_file(params,filled_filename,'a')
+                    saved_state=x[1:-1]
+                    counter=counter+1
+                    continue
+                else:
+                    difference=iteration-counter
+                    for _ in range(difference):
+                        line='\t'.join([str(counter)]+saved_state+['\n'])
+                        _write_on_file(line,filled_filename,'a')
+                        counter=counter+1
+                    _write_on_file(params,filled_filename,'a')
+                    saved_state=x[1:-1]
+                    counter=iteration+1
+
+
+    return filled_filename
+
 
