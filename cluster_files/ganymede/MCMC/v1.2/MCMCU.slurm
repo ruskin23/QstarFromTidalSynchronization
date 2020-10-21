@@ -9,10 +9,9 @@
 
 ulimit -S -m $((2*1024*1024))
 
-module load gsl
-module swap intel gnu7
 module load launcher
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/boost_lib:~/gsl_lib
 export PYTHONPATH=/home/rxp163130/poet/PythonPackage:/home/rxp163130/poet/scripts
 
 for d in /home/rxp163130/poet/build/libs/*/shared/release; do
