@@ -54,7 +54,7 @@ class InitialConditionSolver:
             self.evolution_max_time_step, 
             self.evolution_precision, 
             None,
-            timeout=600
+            timeout=3600
         )
                         
         final_state=binary.final_state()
@@ -115,6 +115,11 @@ class InitialConditionSolver:
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
 
+        self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
+        self.delta_p,self.delta_e=scipy.nan,scipy.nan 
+        self.spin=scipy.nan
+
+
 
     def __call__(self, primary, secondary):
         """
@@ -137,13 +142,16 @@ class InitialConditionSolver:
 
 
         print('solving for p and e')
-        sol = optimize.root(self.initial_condition_errfunc,
-                            initial_guess,
-                            method='lm',
-                            tol=1e-6
-                            )
-
-        initial_orbital_period_sol,initial_eccentricity_sol=sol.x
+        try:
+            sol = optimize.root(self.initial_condition_errfunc,
+                                initial_guess,
+                                method='lm',
+                                tol=1e-6
+                                )
+            initial_orbital_period_sol,initial_eccentricity_sol=sol.x
+        except Exception as e:
+            print(e)
+        
 
         print('Solver Results:')
         print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
