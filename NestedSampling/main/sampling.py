@@ -110,24 +110,24 @@ class NestedSampling():
     def initialize_sampler(self,dsampler):
 
             dsampler.rstate=numpy.random
-            dsampler.pool=self.pool
-            dsampler.M=self.pool.map
+            #dsampler.pool=self.pool
+            #dsampler.M=self.pool.map
 
             dsampler.loglikelihood=self.loglike
             dsampler.prior_transform=self.ptform
 
             dsampler.rstate=numpy.random
-            dsampler.pool=self.pool
-            dsampler.M=self.pool.map
-            dsampler.queue_size=self.queue_size
+            #dsampler.pool=self.pool
+            #dsampler.M=self.pool.map
+            #dsampler.queue_size=self.queue_size
 
             dsampler.sampler.loglikelihood=self.loglike
             dsampler.sampler.prior_transform=self.ptform
 
             dsampler.sampler.rstate=numpy.random
-            dsampler.sampler.pool=self.pool
-            dsampler.sampler.M=self.pool.map
-            dsampler.sampler.queue_size=self.queue_size
+            #dsampler.sampler.pool=self.pool
+            #dsampler.sampler.M=self.pool.map
+            #dsampler.sampler.queue_size=self.queue_size
 
             dsampler.sampler.saved_h=dsampler.saved_h
             dsampler.sampler.saved_logz=dsampler.saved_logz
@@ -143,27 +143,32 @@ class NestedSampling():
             
         live_u=dsampler.rstate.rand(nlive,self.ndim)
         live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
-        live_logl=numpy.array(list(dsampler.M(self.loglike,numpy.array(live_v))))
+        live_logl=numpy.zeros(len(nlive))
+        for i in range(len(nlive)):
+            live_logl[i]=self.loglike(live_v[i])
+            outfile=self.output_directory+'/nlive_'+self.system
+            numpy.savez(outfile,live_u,live_v,live_logl)
+            
+        #live_logl=numpy.array(list(dsampler.M(self.loglike,numpy.array(live_v))))
 
         #Convert -numpy.inf loglikelihoods to finite numbers
-        for i,logl in enumerate(live_logl):
-            if not numpy.isfinite(logl):
-                if numpy.sign(logl)<0:
-                    live_logl[i]=1e-300
-                else:
-                    raise ValueError(\
-                        "The log-likelihood ({0}) of live "
-                        "point {1} located at u={2} v={3} "
-                        " is invalid."
-                        .format(logl, i, live_u[i],live_v[i]))
-        
-        return [live_u,live_v,live_logl]
+        # for i,logl in enumerate(live_logl):
+        #     if not numpy.isfinite(logl):
+        #         if numpy.sign(logl)<0:
+        #             live_logl[i]=1e-300
+        #         else:
+        #             raise ValueError(\
+        #                 "The log-likelihood ({0}) of live "
+        #                 "point {1} located at u={2} v={3} "
+        #                 " is invalid."
+        #                 .format(logl, i, live_u[i],live_v[i]))
+        # return [live_u,live_v,live_logl]
 
     def get_sampler_object(self,status):
         """Initialize Dynamic Nested Sampler object depending upon status"""
     
         if status == 'start':
-            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,pool=self.pool, queue_size=self.queue_size)
+            dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim)#,pool=self.pool, queue_size=self.queue_size)
             self.niter=1
             self.ncall=0
             self.resume=False
@@ -217,8 +222,8 @@ class NestedSampling():
                  fixed_parameters,
                  observed_parameters,
                  mass_ratio,
-                 pool,
-                 queue_size,
+                 #pool,
+                 #queue_size,
                  output_directory):
 
         self.system=system_number
@@ -228,8 +233,8 @@ class NestedSampling():
         self.fixed_parameters=fixed_parameters
         self.mass_ratio=mass_ratio
         self.ndim=len(self.sampling_parameters)
-        self.pool=pool
-        self.queue_size=queue_size
+        #self.pool=pool
+        #self.queue_size=queue_size
         self.output_directory=output_directory
 
 

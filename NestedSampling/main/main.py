@@ -16,7 +16,7 @@ from orbital_evolution.evolve_interface import library as\
 
 import argparse
 import scipy
-from pathos.pools import ProcessPool
+#from pathos.pools import ProcessPool
 import dill
 
 from sampling import NestedSampling
@@ -36,10 +36,10 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
     
-    parser.add_argument('-n',
-                        action='store',
-                        dest='threads',
-                        help='number of parallel processes')
+    # parser.add_argument('-n',
+    #                     action='store',
+    #                     dest='threads',
+    #                     help='number of parallel processes')
 
     return parser.parse_args()
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     args = cmdline_args()
     status=args.status
     system_number=args.system
-    number_threads=int(args.threads)
+    #number_threads=int(args.threads)
 
     catalog_file=path.current_directory+'/SpinlogQCatalog_el0.4.txt'
 
@@ -118,8 +118,8 @@ if __name__ == '__main__':
     print('Observed Parameters: ',observed_parameters)
 
 
-queue_size=number_threads
-pool=ProcessPool(nodes=number_threads)
+#queue_size=number_threads
+#pool=ProcessPool(nodes=number_threads)
 
 sampling = NestedSampling(system_number,
                           interpolator,
@@ -127,11 +127,9 @@ sampling = NestedSampling(system_number,
                           fixed_parameters,
                           observed_parameters,
                           mass_ratio,
-                          pool,
-                          queue_size,
+                          #pool,
+                          #queue_size,
                           path.output_directory)
 
 dsampler=sampling.get_sampler_object(status)
-nlive_points=sampling.calculate_live_points(dsampler)
-with open(path.output_directory+'/nlive_points_'+str(system_number)+'.dill','wb') as f:
-    dill.dump(nlive_points,f)
+sampling.calculate_live_points(dsampler)
