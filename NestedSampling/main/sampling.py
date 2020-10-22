@@ -143,7 +143,7 @@ class NestedSampling():
             
         live_u=dsampler.rstate.rand(nlive,self.ndim)
         live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
-        live_logl=numpy.zeros(len(nlive))
+        live_logl=numpy.zeros(nlive)
         for i in range(len(nlive)):
             live_logl[i]=self.loglike(live_v[i])
             outfile=self.output_directory+'/nlive_'+self.system
