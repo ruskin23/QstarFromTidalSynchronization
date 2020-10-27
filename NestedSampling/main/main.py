@@ -36,10 +36,10 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
     
-    # parser.add_argument('-n',
-    #                     action='store',
-    #                     dest='threads',
-    #                     help='number of parallel processes')
+    parser.add_argument('-i',
+                        action='store',
+                        dest='instance',
+                        help='instance')
 
     return parser.parse_args()
 
@@ -61,6 +61,7 @@ if __name__ == '__main__':
     args = cmdline_args()
     status=args.status
     system_number=args.system
+    instance=int(args.instance)
     #number_threads=int(args.threads)
 
     catalog_file=path.current_directory+'/SpinlogQCatalog_el0.4.txt'
@@ -122,6 +123,7 @@ if __name__ == '__main__':
 #pool=ProcessPool(nodes=number_threads)
 
 sampling = NestedSampling(system_number,
+                          instance,
                           interpolator,
                           sampling_parameters,
                           fixed_parameters,

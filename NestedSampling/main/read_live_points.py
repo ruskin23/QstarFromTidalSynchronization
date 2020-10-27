@@ -15,4 +15,3 @@ for i,k in enumerate(live_logl):
         print(live_logl[i])
         print(i)
         break
-print(live_logl[80])

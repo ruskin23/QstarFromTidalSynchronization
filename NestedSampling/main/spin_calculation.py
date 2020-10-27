@@ -177,7 +177,7 @@ class SpinPeriod():
             print('Cannot calculate spin period', file=sys.stdout, flush=True)
             self.spin=scipy.nan
             return scipy.nan,scipy.nan
-
+        
         return sol.x
 
     def initial_secondary_angmom(self):
@@ -250,6 +250,10 @@ class SpinPeriod():
         self.secondary = self.create_star(self.secondary_mass, 1)
 
         initial_orbital_period_sol,initial_eccentricity_sol=self.initial_condition_solver()
+
+        if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:
+            self.spin=scipy.nan
+
 
         print('Solver Results:', file=sys.stdout, flush=True)
         print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol), file=sys.stdout, flush=True)

@@ -155,12 +155,19 @@ class NestedSampling():
         for i,k in enumerate(live_logl):
             if k==0:break
         rerun_idx=i
-        for i in range(rerun_idx,nlive):
+        division=int((500-rerun_idx)/32)
+        instance=self.instance
+        i_min=rerun_idx + division*(instance-1)
+        if instance==32:i_max=500
+        else:i_max=rerun_idx + division*(instance)
+
+        print('Running between index {} and {}'.format(i_min,i_max))
+
+        for i in range(i_min,i_max):
             live_logl[i]=self.loglike(live_v[i])
             outfile=self.output_directory+'/nlive_'+self.system
             numpy.savez(outfile,live_u,live_v,live_logl)
             
-        #live_logl=numpy.array(list(dsampler.M(self.loglike,numpy.array(live_v))))
 
         #Convert -numpy.inf loglikelihoods to finite numbers
         # for i,logl in enumerate(live_logl):
@@ -228,6 +235,7 @@ class NestedSampling():
 
     def __init__(self,
                  system_number,
+                 instance,
                  interpolator,
                  sampling_parameters,
                  fixed_parameters,
@@ -238,6 +246,7 @@ class NestedSampling():
                  output_directory):
 
         self.system=system_number
+        self.instance=instance
         self.interpolator=interpolator
         self.sampling_parameters=sampling_parameters
         self.observed_parameters=observed_parameters
