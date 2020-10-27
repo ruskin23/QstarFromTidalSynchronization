@@ -12,7 +12,7 @@
 
 ulimit -S -m $((2*1024*1024))
 
-module load gsl/2.3
+module load gsl
 module load gcc
 module load python3
 module load boost
