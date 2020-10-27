@@ -1,7 +1,7 @@
 import numpy
 import scipy
 from scipy import stats
-
+import matplotlib.pyplot as plt
 
 def ptform(u):
 
@@ -56,13 +56,24 @@ sampling_parameters = [('Porb',Porb_value,Porb_error,'Normal'),
                         ('age',1e-3,10.0,'Uniform')]
 
 
-r=numpy.random.rand(10,7)
-p=numpy.array(list(map(ptform,r)))
-print(p)
-print('break')
-outfile='temp'
-for i in range(len(p)):
-    numpy.savez(outfile,p=p,pi=p[i])
+# r=numpy.random.rand(10,7)
+# p=numpy.array(list(map(ptform,r)))
+# print(p)
+# print('break')
+# outfile='temp'
+# for i in range(len(p)):
+#     numpy.savez(outfile,p=p,pi=p[i])
 
-npzfile=numpy.load('temp.npz',allow_pickle=True)
-print(npzfile['pi'])
+# npzfile=numpy.load('temp.npz',allow_pickle=True)
+# print(npzfile['pi'])
+
+#sub-linear scaling
+K=numpy.linspace(50,1500,1000)
+M=numpy.array([10,20,30,40,50])
+color=['r','g','b','y','k']
+
+for m,c in zip(M,color):
+    S=K*numpy.log(1+(m/K))
+    plt.plot(S/K,m/K,color=c,label=str(m))
+plt.legend()
+plt.show()

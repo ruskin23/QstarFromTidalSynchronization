@@ -141,10 +141,21 @@ class NestedSampling():
         """Samples nlive points from ndim unit cube, transform into desired priors and 
             calculates loglikelohoods of nlive points"""
             
-        live_u=dsampler.rstate.rand(nlive,self.ndim)
-        live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
-        live_logl=numpy.zeros(nlive)
-        for i in range(nlive):
+        #live_u=dsampler.rstate.rand(nlive,self.ndim)
+        #live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
+        #live_logl=numpy.zeros(nlive)
+        
+        filename=self.output_directory+'/nlive_'+self.system+'.npz'
+        live_points=numpy.load(filename)
+
+        live_u=live_points['arr_0']
+        live_v=live_points['arr_1']
+        live_logl=live_points['arr_2']
+
+        for i,k in enumerate(live_logl):
+            if k==0:break
+        rerun_idx=i
+        for i in range(rerun_idx,nlive):
             live_logl[i]=self.loglike(live_v[i])
             outfile=self.output_directory+'/nlive_'+self.system
             numpy.savez(outfile,live_u,live_v,live_logl)
