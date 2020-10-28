@@ -40,18 +40,18 @@ def get_stats(chain1,chain2):
 
 
 def break_chain(system,percent_break):
-    
+
     chain1=[]
     chain2=[]
     for c in clusters:
         for i in range(5):
-            _fill_parameters(_get_filename(system,c,i+1))
-            complete_chain=get_chain('filled_parameters.txt')
+            
+            complete_chain=get_chain(_fill_parameters(_get_filename(system,c,i+1)))
             for k,v in enumerate(complete_chain):
                 if k<int(len(complete_chain)*(percent_break/100)): chain1=numpy.append(chain1,v)
                 else:chain2=numpy.append(chain2,v)
             #split_chain=numpy.split(complete_chain,[int(len(complete_chain)*(percent_break/100))])
-    print(get_stats(chain1,chain2))
+    print(repr(get_stats(chain1,chain2)))
     return [chain1,chain2]
 
 
@@ -86,14 +86,26 @@ def plot_chain(chain,label=None):
 
 if __name__ == '__main__':
 
-    system='43'
-
+    #system='28'
+    systems=['8','43','36','109','70','47','86','88','93','123','95','106','79','84','25','12','50','28','13']
+    #systems=['93']
     #all_chains(system)
-    
-    chains=break_chain(system,50)
-    for i,c in enumerate(chains):
-        plot_chain(c,label='part'+str(i+1))
-    complete_chain=numpy.concatenate([chains[0],chains[1]])
-    plot_chain(complete_chain,label='complete')
-    plt.legend()
-    plt.show()    
+
+    for system in systems:
+        print('System = ',system)
+        chains=break_chain(system,50)
+
+        with open('chain_files/chain_'+system+'_1.csv','w') as f:
+            for c in chains[0]:
+                f.write(repr(c)+'\n')
+
+        with open('chain_files/chain_'+system+'_2.csv','w') as f:
+            for c in chains[1]:
+                f.write(repr(c)+'\n')
+
+    #for i,c in enumerate(chains):
+    #    plot_chain(c,label='part'+str(i+1))
+    #complete_chain=numpy.concatenate([chains[0],chains[1]])
+    #plot_chain(complete_chain,label='complete')
+    #plt.legend()
+    #plt.show()

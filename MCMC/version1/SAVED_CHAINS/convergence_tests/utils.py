@@ -30,8 +30,8 @@ def _cummulative_distribution(samples,mulitplicity=None):
 
 def _get_filename(system,cluster,instance):
 #returns the filename with directory of accepted parameter file
-    return '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
-
+    f = '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
+    return f
 
 def _write_on_file(line,filename,option):
 #write line on given filename
