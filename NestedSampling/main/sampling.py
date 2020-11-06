@@ -266,6 +266,7 @@ class NestedSampling():
             self.niter+=1   
 
             result_names=['worst','ustar', 'vstar','loglstar','logvol','logwt', 'logz','logzvar','h','nc','worst_it','boundidx','bounditer', 'eff','delta_logz']
+            self.logger.info('RESULTS OBTAINED')
             self.logger.info(f'niter={self.niter}')
             self.logger.info(f'ncall={self.ncall}')
             for x,y in zip(result_names,results):
