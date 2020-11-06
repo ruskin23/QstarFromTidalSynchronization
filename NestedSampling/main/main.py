@@ -1,7 +1,5 @@
-#!/usr/bin/env python3 -u
 import os
 import sys
-
 from pathlib import Path
 from directories import directories
 
@@ -16,10 +14,12 @@ from orbital_evolution.evolve_interface import library as\
 
 import argparse
 import scipy
-#from pathos.pools import ProcessPool
+from pathos.pools import ProcessPool
 import dill
 
-from sampling import NestedSampling
+from sampling import today,NestedSampling
+
+import logging
 
 def cmdline_args():
 
@@ -36,6 +36,12 @@ def cmdline_args():
                         help='select a system for mcmc'
                         )
     
+    parser.add_argument('-n',
+                        action='store',
+                        dest='nprocs',
+                        help='number threads')
+
+
     parser.add_argument('-i',
                         action='store',
                         dest='instance',
@@ -46,6 +52,26 @@ def cmdline_args():
 
 
 if __name__ == '__main__':
+
+    args = cmdline_args()
+    status=args.status
+    system_number=args.system
+    instance=args.instance
+    nprocs=int(args.nprocs)
+    if instance is not None:instance=int(instance)
+
+
+    logger=logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    scrath_filename=f'{path.scratch_directory}/system_{system_number}/{today}_main.log'
+    main_handler=logging.FileHandler(scrath_filename)
+    
+    main_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
+    main_handler.setFormatter(main_format)
+    
+    logger.addHandler(main_handler)
+
+    logger.info('Starting main program')
 
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -58,11 +84,6 @@ if __name__ == '__main__':
     )
 
 
-    args = cmdline_args()
-    status=args.status
-    system_number=args.system
-    instance=int(args.instance)
-    #number_threads=int(args.threads)
 
     catalog_file=path.current_directory+'/SpinlogQCatalog_el0.4.txt'
 
@@ -114,13 +135,12 @@ if __name__ == '__main__':
                             wind_strength=0.17,
                             inclination=scipy.pi/2
                             )
+    logger.info(f'Sampling Parameters: {sampling_parameters}')
+    logger.info(f'Observed Parameters: {observed_parameters}')
 
-    print('Sampling Parameters: ',sampling_parameters)
-    print('Observed Parameters: ',observed_parameters)
 
-
-#queue_size=number_threads
-#pool=ProcessPool(nodes=number_threads)
+queue_size=nprocs
+pool=ProcessPool(nodes=nprocs)
 
 sampling = NestedSampling(system_number,
                           instance,
@@ -129,9 +149,13 @@ sampling = NestedSampling(system_number,
                           fixed_parameters,
                           observed_parameters,
                           mass_ratio,
-                          #pool,
-                          #queue_size,
-                          path.output_directory)
+                          pool,
+                          queue_size,
+                          path.results_directory,
+                          path.scratch_directory,
+                          logger)
 
-dsampler=sampling.get_sampler_object(status)
-sampling.calculate_live_points(dsampler)
+sampling.SampleInitial(status)
+
+# dsampler=sampling.get_sampler_object(status)
+# sampling.calculate_live_points(dsampler)

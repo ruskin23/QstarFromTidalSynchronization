@@ -117,10 +117,9 @@ class SpinPeriod():
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-        print('\nTrying Porb_initial = {} , e_initial = {}'.format(initial_orbital_period,initial_eccentricity), file=sys.stdout, flush=True)
-
+        self.logger.info(f'Trying Porb_initial = {initial_orbital_period} , e_initial = {initial_eccentricity}')
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
-            print('Invalid values', file=sys.stdout, flush=True)
+            self.logger.warning('Invalid Values')
             return scipy.nan,scipy.nan
 
         binary=self.create_binary_system(
@@ -149,15 +148,15 @@ class SpinPeriod():
         self.delta_e=self.final_eccentricity-self.eccentricity
 
         if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e))):
-            print('Binary system was destroyed', file=sys.stdout, flush=True)
+            self.logger.error('Binary system was destroyed')
             raise ValueError
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
 
         binary.delete()
 
-        print('delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e), file=sys.stdout, flush=True)
-        print('Spin Period = ',self.spin, file=sys.stdout, flush=True)
+        self.logger.info(f'delta_p = {self.delta_p} , delta_e = {self.delta_e}')
+        self.logger.info(f'Spin Period = {self.spin}')
 
         return self.delta_p,self.delta_e
 
@@ -173,8 +172,7 @@ class SpinPeriod():
             )
 
         except Exception as e:
-            print(e, file=sys.stdout, flush=True)
-            print('Cannot calculate spin period', file=sys.stdout, flush=True)
+            self.logger.exception('Solver Crashed')
             self.spin=scipy.nan
             return scipy.nan,scipy.nan
         
@@ -182,7 +180,7 @@ class SpinPeriod():
 
     def initial_secondary_angmom(self):
 
-        print('Calculating secondary angomom', file=sys.stdout, flush=True)
+        self.logger.info('Calculating Secondary Angmom')
         star = self.create_star(self.secondary_mass,1)
         planet = self.create_planet(1.0)
         binary = self.create_binary_system(star,
@@ -208,8 +206,10 @@ class SpinPeriod():
                 sampling_parameters,
                 fixed_parameters,
                 mass_ratio,
+                logger,
                 evolution_max_time_step=1e-3,
-                evolution_precision=1e-6):
+                evolution_precision=1e-6
+                ):
 
         self.system=system
         self.interpolator=interpolator
@@ -230,6 +230,8 @@ class SpinPeriod():
         self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
         self.delta_p,self.delta_e=scipy.nan,scipy.nan
 
+        self.logger=logger
+
     def __call__(self):
 
 
@@ -239,27 +241,26 @@ class SpinPeriod():
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
                                               numpy.isnan(self.secondary_mass)))
                             ):
-            print('mass out of range', file=sys.stdout, flush=True)
-            sys.stdout.flush()
+            self.logger.warning('secondary mass out of range')
             return scipy.nan
 
         self.secondary_angmom=self.initial_secondary_angmom()
-        print('Secondary Spin Angmom = ',self.secondary_angmom, file=sys.stdout, flush=True)
-
+        self.logger.info(f'Secondary Spin Angmom = {self.secondary_angmom}')
         self.primary = self.create_star(self.primary_mass, 1)
         self.secondary = self.create_star(self.secondary_mass, 1)
 
         initial_orbital_period_sol,initial_eccentricity_sol=self.initial_condition_solver()
 
         if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:
+            self.logger.warning('Bad Solution obtained')
             self.spin=scipy.nan
 
 
-        print('Solver Results:', file=sys.stdout, flush=True)
-        print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol), file=sys.stdout, flush=True)
-        print('Final Orbital Period = {} , Final Eccentricity = {}'.format(self.final_orbital_period,self.final_eccentricity), file=sys.stdout, flush=True)
-        print('Errors: delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e), file=sys.stdout, flush=True)
-        print('Final Spin Period = {}'.format(self.spin), file=sys.stdout, flush=True)
+        self.logger.info('Solver Results:')
+        self.logger.info(f'Intial Orbital Period = {initial_orbital_period_sol} , Initial Eccentricity = {initial_eccentricity_sol}')
+        self.logger.info(f'Final Orbital Period = {self.final_orbital_period} , Final Eccentricity = {self.final_eccentricity}')
+        self.logger.info(f'Errors: delta_p = {self.delta_p} , delta_e = {self.delta_e}')
+        self.logger.info(f'Final Spin Period = {self.spin}')
 
 
         self.primary.delete()

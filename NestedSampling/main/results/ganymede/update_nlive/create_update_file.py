@@ -1,6 +1,6 @@
 import numpy
 
-systems = ['39', '54', '76', '92', '126']
+systems = ['39', '54', '76', '80', '81', '92', '126']
 
 for s in systems:
     logl=numpy.zeros(500)
@@ -16,7 +16,7 @@ for s in systems:
                 i=i+1
 
 
-    filename='../nlive_39.npz'
+    filename=f'../nlive_{s}.npz'
     live_points=numpy.load(filename)
     live_u=live_points['arr_0']
     live_v=live_points['arr_1']
@@ -25,7 +25,7 @@ for s in systems:
     for i,l in enumerate(live_logl):
         if l==0:live_logl[i]=logl[i]
 
-    outfile='updated_nlive_39.npz'
+    outfile=f'updated_nlive_{s}.npz'
     numpy.savez(outfile,live_u,live_v,live_logl)
 
 
