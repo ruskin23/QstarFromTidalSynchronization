@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#SBATCH -p skx-normal
+#SBATCH -J INIT126
+#SBATCH -o /scratch/06850/rpatel23/Nested_Sampling/system_126/slurm_output.out
+#SBATCH -N 1
+#SBATCH -n 45
+#SBATCH -t 2-00:00:00
+
+#SBATCH --mail-user=rxp153130@utdallas.edu
+#SBATCH --mail-type=all
+
+ulimit -S -m $((2*1024*1024))
+
+module load gsl
+module load gcc
+module load python3
+module load boost
+
+export PYTHONPATH=/work/06850/rpatel23/stampede2/poet/PythonPackage:/work/06850/rpatel23/stampede2/poet/scripts:/work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/main
+
+for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
+
+
+python3 main.py -s start -l 126 -n 45
