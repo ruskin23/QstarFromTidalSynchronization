@@ -30,7 +30,7 @@ today=today.strftime("%B_%d")
 class NestedSampling():
 
 
-    def calculate_model(self,x,logger):
+    def calculate_model(self,x):
 
         parameter_set=dict()
         model_set=dict()
@@ -38,9 +38,9 @@ class NestedSampling():
         for i,s in enumerate(self.sampling_parameters):
             parameter_set[s[0]]=x[i]
 
-        logger.info('Parameter Set')
+        self.sampling_logger.info('Parameter Set')
         for key in parameter_set:
-            logger.info('{} = {}'.format(key,parameter_set[key]))
+            self.sampling_logger.info('{} = {}'.format(key,parameter_set[key]))
 
         spin_calculations = SpinPeriod(
                                     self.system,
@@ -48,7 +48,7 @@ class NestedSampling():
                                     parameter_set,
                                     self.fixed_parameters,
                                     self.mass_ratio,
-                                    logger
+                                    self.sampling_logger
                                     )
 
         model_set['spin']=spin_calculations()
@@ -69,39 +69,44 @@ class NestedSampling():
 
         for key in model_set:
             if numpy.isnan(model_set[key]):model_set[key]=-scipy.inf
-            logger.info(f'{key} = {model_set[key]}')
+            self.sampling_logger.info(f'{key} = {model_set[key]}')
 
         return model_set
 
 
-    def loglike(self,
-                x):
+    def loglike(self,x):
 
-        logger=logging.getLogger(__name__)
-        logger.setLevel(logging.DEBUG)
-        pid=str(os.getpid())[-3:]
-        scratch_filename=f'{self.output_directory}/system_{self.system}/{today}_sampling_{pid}.log'
-        proces_handler=logging.FileHandler(scratch_filename)
+        self.sampling_logger=logging.getLogger(__name__)
+        if not self.sampling_logger.handlers:
+            self.sampling_logger.setLevel(logging.DEBUG)
+            pid=str(os.getpid())[-3:]
+            scratch_filename=f'{self.output_directory}/system_{self.system}/{today}_sampling_{pid}.log'
+            proces_handler=logging.FileHandler(scratch_filename)
+            
+            process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
+            proces_handler.setFormatter(process_format)
+
+            self.sampling_logger.addHandler(proces_handler)
+
         
-        process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
-        proces_handler.setFormatter(process_format)
-
-        logger.addHandler(proces_handler)
-
         parameter_set=dict()
         for i,v in enumerate(self.sampling_parameters):
            parameter_set[v[0]]=x[i]
 
-        model_set=self.calculate_model(x,logger)
+        start_time=time.time()
+        model_set=self.calculate_model(x)
+        end_time=time.time()
+
+        self.sampling_logger.info(f'Time taken for this = {end_time-start_time} seconds')
+
         L=0
         for key in self.observed_parameters:
             L=L-0.5*(((model_set[key]-self.observed_parameters[key]['value'])/self.observed_parameters[key]['sigma'])**2) - numpy.log(self.observed_parameters[key]['sigma']*numpy.sqrt(2*numpy.pi))
 
-        logger.info(f'Loglike = {L}')
+        self.sampling_logger.info(f'Loglike = {L}')
         return L
 
-    def ptform(self,
-               u):
+    def ptform(self,u):
 
 
         x=numpy.array(u)
@@ -260,6 +265,7 @@ class NestedSampling():
         self.logger.info('Live points obtained')
         #pylint: disable=unused-variable
         #Sample Initial Batch
+        start_time=time.time()
         for results in dsampler.sample_initial(live_points=live_points,resume=self.resume):
             
             self.ncall+=results[9]
@@ -277,6 +283,9 @@ class NestedSampling():
                 dill.dump(dsampler,f)
             
             dsampler=self.initialize_sampler(dsampler)
+            end_time=time.time()
+            self.logger.info(f'Time taken for iteration {self.niter} = {end_time-start_time}')
+            start_time=end_time
         #pylint: enable=unused-variable
 
         #save final results
@@ -313,6 +322,7 @@ class NestedSampling():
         self.output_directory=output_directory
 
         self.logger=logger
+        self.sampling_logger=None
         
 
 

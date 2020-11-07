@@ -168,7 +168,9 @@ class SpinPeriod():
             sol=scipy.optimize.root(self.initial_condition_errfunc,
                                     initial_guess,
                                     method='lm',
-                                    tol=1e-6
+                                    options={'xtol':1e-6,
+                                             'ftol':1e-6,
+                                             'maxiter':30}
             )
 
         except Exception as e:
@@ -207,8 +209,8 @@ class SpinPeriod():
                 fixed_parameters,
                 mass_ratio,
                 logger,
-                evolution_max_time_step=1e-3,
-                evolution_precision=1e-6
+                evolution_max_time_step=1e-2,
+                evolution_precision=1e-5
                 ):
 
         self.system=system
