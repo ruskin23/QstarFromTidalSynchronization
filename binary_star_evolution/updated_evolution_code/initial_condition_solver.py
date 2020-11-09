@@ -31,9 +31,10 @@ wsun = 0.24795522138
 
 
 class InitialConditionSolver:
-    """Find initial conditions which reproduce a given system now."""
+    """Find initial orbital period and eccentricity which reproduce
+        current orbital period and eccentricity of a given system """
 
-    def initial_condition_errfunc(self,initial_conditions): 
+    def initial_condition_errfunc(self,initial_conditions):
         """Error function which returns the difference between final values and intial values"""
 
         initial_orbital_period=initial_conditions[0]
@@ -44,21 +45,25 @@ class InitialConditionSolver:
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
             print('Invalid values')
             return scipy.nan,scipy.nan
-       
+
         binary_system=BinaryObjects(self.interpolator,self.parameters)
-        
-        binary=binary_system.create_binary_system(self.primary,self.secondary,secondary_angmom=self.secondary_angmom)
-        
+
+        binary=binary_system.create_binary_system(self.primary,
+                                                  self.secondary,
+                                                  initial_orbital_period=initial_orbital_period,
+                                                  initial_eccentricity=initial_eccentricity,
+                                                  secondary_angmom=self.secondary_angmom)
+
         binary.evolve(
-            self.age, 
-            self.evolution_max_time_step, 
-            self.evolution_precision, 
+            self.age,
+            self.evolution_max_time_step,
+            self.evolution_precision,
             None,
             timeout=3600
         )
-                        
+
         final_state=binary.final_state()
-        assert(final_state.age==self.target_age) 
+        assert(final_state.age==self.target_age)
 
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
@@ -78,8 +83,8 @@ class InitialConditionSolver:
         print('Spin Period = ',self.spin)
 
         return self.delta_p,self.delta_e
-   
-    
+
+
 
     def __init__(self,
                 interpolator,
@@ -88,13 +93,12 @@ class InitialConditionSolver:
                 evolution_precision=1e-6,
                 secondary_angmom=None):
         """
-        Initialize the intiial conditino solver object
-
         Args:
 
             - interpolator
-            
+
             - parameters
+                a dictionary of all the parameters
 
             - evolution_max_time_step:
                 The maximum timestep the evolution is allowed to make.
@@ -116,7 +120,7 @@ class InitialConditionSolver:
         self.secondary_angmom = secondary_angmom
 
         self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
-        self.delta_p,self.delta_e=scipy.nan,scipy.nan 
+        self.delta_p,self.delta_e=scipy.nan,scipy.nan
         self.spin=scipy.nan
 
 
@@ -151,7 +155,8 @@ class InitialConditionSolver:
             initial_orbital_period_sol,initial_eccentricity_sol=sol.x
         except Exception as e:
             print(e)
-        
+            initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
+
 
         print('Solver Results:')
         print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol))

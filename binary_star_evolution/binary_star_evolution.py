@@ -39,7 +39,7 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
 
 def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                        metallicity=-0.1,
+                        metallicity=-0.4263598250304539,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.54,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -67,6 +67,7 @@ def create_binary_system(primary,
                          secondary,
                          disk_lock_frequency,
                          initial_orbital_period,
+                         initial_eccentricity,
                          disk_dissipation_age,
                          secondary_angmom=None):
     """Create a binary system to evolve from the given objects."""
@@ -88,7 +89,7 @@ def create_binary_system(primary,
     binary = Binary(primary=primary,
                     secondary=secondary,
                     initial_orbital_period=initial_orbital_period,
-                    initial_eccentricity=0.0,
+                    initial_eccentricity=initial_eccentricity,
                     initial_inclination=0.0,
                     disk_lock_frequency=disk_lock_frequency,
                     disk_dissipation_age=disk_dissipation_age,
@@ -97,7 +98,7 @@ def create_binary_system(primary,
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),
-                        eccentricity=0.0,
+                        eccentricity=initial_eccentricity,
                         locked_surface=False,
                         zero_outer_inclination=True,
                         zero_outer_periapsis=True,
@@ -181,11 +182,12 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 3.0
-    primary_mass = 1.0
-    secondary_mass = 1.0
-    initial_disk_period = 2*numpy.pi/4.44920802529774
-    initial_orbital_period =7.871614845733611
+    age = 6.60424767211282
+    primary_mass = 1.0571084005376594
+    secondary_mass = 0.6406076907258216
+    initial_disk_period = 2*numpy.pi/4.333365662368658
+    initial_orbital_period =10.738951826364838
+    initial_eccentricity=0.08253709903899567
     #teff=5873.306906
 
     print(convective_phase_lag)
@@ -197,6 +199,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
                                   planet,
                                   2.0 * numpy.pi / initial_disk_period,
                                   initial_orbital_period,
+                                  initial_eccentricity,
                                   tdisk)
 
     binary.evolve(tdisk, 1e-3, 1e-6, None)
@@ -220,6 +223,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
         secondary,
         2.0 * numpy.pi /initial_disk_period,
         initial_orbital_period,
+        initial_eccentricity,
         tdisk,
         secondary_angmom=numpy.array([disk_state.envelope_angmom,
                                       disk_state.core_angmom])
@@ -254,5 +258,5 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 6.0
+    logQ = 10.906676885551768
     test_evolution(interpolator,  phase_lag(logQ), True)

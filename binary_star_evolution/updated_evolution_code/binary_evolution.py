@@ -13,6 +13,8 @@ from orbital_evolution.planet_interface import LockedPlanet
 
 from initial_secondary_angmom import IntialSecondaryAngmom
 from initial_condition_solver import  InitialConditionSolver
+#from intial_orbital_period_solver import InitialConditionSolver
+#from initial_conditions_minimizer import InitialConditionSolver
 from create_objects import BinaryObjects
 
 import numpy
@@ -60,8 +62,10 @@ class Evolution:
                 a binary object after the evolution"""
         
         if parameter is not None:
+            self.parameters[parameter]=parameter_value
             setattr(self,parameter,parameter_value)
-
+        if self.parameter_logQ==True:self.convective_phase_lag=phase_lag(self.logQ)
+        
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
         print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
@@ -102,8 +106,10 @@ class Evolution:
         for item,value in parameters.items():
             setattr(self,item,value)
 
-        self.convective_phase_lag=phase_lag(self.logQ)
-        print('Convective Phase lag = ',self.convective_phase_lag)
-
+        try:
+            self.convective_phase_lag=phase_lag(self.logQ)
+            print('Convective Phase lag = ',self.convective_phase_lag)
+        except:
+            self.parameter_logQ=True
 
 

@@ -20,7 +20,7 @@ from astropy import units, constants
 
 class BinaryObjects():
 
-    def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')): 
+    def create_planet(self,mass=(constants.M_jup / constants.M_sun).to('')):
         """Return a configured planet to use in the evolution."""
 
         planet = LockedPlanet(mass=mass, radius=(constants.R_jup / constants.R_sun).to(''))
@@ -29,9 +29,9 @@ class BinaryObjects():
     def create_star(self, mass, dissipation=None):
         star = EvolvingStar(mass=mass,
                             metallicity=self.feh,
-                            wind_strength=self.wind_strength if self.wind else 0.0, 
-                            wind_saturation_frequency=self.wind_saturation_frequency, 
-                            diff_rot_coupling_timescale=self.diff_rot_coupling_timescale, 
+                            wind_strength=self.wind_strength if self.wind else 0.0,
+                            wind_saturation_frequency=self.wind_saturation_frequency,
+                            diff_rot_coupling_timescale=self.diff_rot_coupling_timescale,
                             interpolator=self.interpolator)
 
         if dissipation is True:
@@ -49,8 +49,12 @@ class BinaryObjects():
     def create_binary_system(self,
                              primary,
                              secondary,
+                             initial_orbital_period=None,
+                             initial_eccentricity=None,
                              secondary_angmom=None):
         """Create a binary system to evolve from the given objects."""
+        if initial_orbital_period is None:initial_orbital_period=self.orbital_period
+        if initial_eccentricity is None:initial_eccentricity=self.eccentricity
 
         if isinstance(secondary, LockedPlanet):
             spin_angmom=numpy.array([0.0])
@@ -64,13 +68,13 @@ class BinaryObjects():
 
         binary = Binary(primary=primary,
                         secondary=secondary,
-                        initial_orbital_period=self.orbital_period,
-                        initial_eccentricity=self.eccentricity,
+                        initial_orbital_period=initial_orbital_period,
+                        initial_eccentricity=initial_eccentricity,
                         initial_inclination=0.0,
-                        disk_lock_frequency=self.Wdisk, 
-                        disk_dissipation_age=self.disk_dissipation_age, 
-                        secondary_formation_age=self.disk_dissipation_age) 
-        
+                        disk_lock_frequency=self.Wdisk,
+                        disk_dissipation_age=self.disk_dissipation_age,
+                        secondary_formation_age=self.disk_dissipation_age)
+
         binary.primary.select_interpolation_region(primary.core_formation_age())
         if isinstance(secondary, EvolvingStar):binary.secondary.detect_stellar_wind_saturation()
 
@@ -84,10 +88,10 @@ class BinaryObjects():
 
         binary.primary.detect_stellar_wind_saturation()
 
-        binary.secondary.configure(age=self.disk_dissipation_age, 
+        binary.secondary.configure(age=self.disk_dissipation_age,
                             companion_mass=primary.mass,
-                            semimajor=binary.semimajor(self.orbital_period),
-                            eccentricity=self.eccentricity,
+                            semimajor=binary.semimajor(initial_orbital_period),
+                            eccentricity=initial_eccentricity,
                             spin_angmom=spin_angmom,
                             inclination=inclination,
                             periapsis=periapsis,

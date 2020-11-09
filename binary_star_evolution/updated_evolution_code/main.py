@@ -16,9 +16,6 @@ from binary_evolution import Evolution
 
 import time
 
-
-
-
 def plot_evolution(evolved_binary):
 
     wsun = 0.24795522138
@@ -72,11 +69,6 @@ if __name__=='__main__':
                         dest='system',
                         default=None,
                         help='pick system from a file')
-    
-    parser.add_argument('-m',
-                        dest='method',
-                        default=None,
-                        help='method')
 
     parser.add_argument('-b',
                         dest='breaks',
@@ -84,8 +76,6 @@ if __name__=='__main__':
                         help='decide if breaks needed or not')
 
     args = parser.parse_args()
-    method=args.method
-    print('Solver Method = ',method)
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         b"eccentricity_expansion_coef.txt"
@@ -127,11 +117,11 @@ if __name__=='__main__':
     #         secondary_mass=primary_mass*0.606
     #         spin_period=14.581
                 
-    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/combined/SAVED_CHAINS/ganymede/MCMC_76/rejected_parameters_1.txt','r') as f:
+    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version1/SAVED_CHAINS/ganymede/MCMC_1/accepted_parameters_1.txt','r') as f:
     #     next(f)
     #     for lines in f:
     #         x=lines.split()
-    #         if x[0]=='4':
+    #         if x[0]=='1':
     #             orbital_period=float(x[1])
     #             eccentricity=float(x[2])
     #             Wdisk=float(x[3])
@@ -140,12 +130,24 @@ if __name__=='__main__':
     #             age=float(x[6])
     #             feh=float(x[7])
     #             secondary_mass=float(x[8])
-    #             spin_period=9.242
+    #             spin_period=10.778
 
 
     parameters=dict()
 
     if args.system is not None:parameters['system']=args.system
+
+    parameters['primary_mass']=0.7086821280545156
+    parameters['secondary_mass']=0.4294613696010364
+    parameters['age']=3.8115090596301986
+    parameters['feh']=-0.1261628121107624
+    parameters['orbital_period']=10.738967949893649
+    parameters['eccentricity']=0.08146654408567669
+    parameters['spin_period']=14.581
+    parameters['logQ']=5.2143665367195915
+    parameters['Wdisk']=0.8913583550426958
+
+
     # parameters['primary_mass']=primary_mass
     # parameters['secondary_mass']=secondary_mass
     # parameters['age']=age
@@ -165,42 +167,20 @@ if __name__=='__main__':
     parameters['print_cfile']=False
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
+    parameters['breaks']=False
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
     parameters['tidal_frequency_breaks']=None
     parameters['tidal_frequency_powers']=numpy.array([0.0])
 
-    #Chekcing nested sampling calculations
-    with open('parameters.txt','r') as f:
-        next(f)
-        for i,lines in enumerate(f):
-            if i>=389:
-                x=lines.split()
+    for item,value in parameters.items():
+        print('{} = {}'.format(item,value))
 
-                parameters['orbital_period']=float(x[0])
-                parameters['feh']=float(x[1])
-                parameters['eccentricity']=float(x[2])
-                parameters['Wdisk']=float(x[3])
-                parameters['logQ']=float(x[4])
-                parameters['primary_mass']=float(x[5])
-                parameters['age']=float(x[6])
-                parameters['secondary_mass']=parameters['primary_mass']*0.606
-                parameters['spin_period']=14.581
-
-                print('\n\nLine = ',str(i+2))
-                for item,value in parameters.items():
-                    print('{} = {}'.format(item,value))
-
-                if numpy.logical_or(parameters['secondary_mass']>1.2,parameters['secondary_mass']<0.4):
-                    print('Mass out of range')
-                    continue
-
-                if numpy.logical_or(parameters['feh']<-1.014,parameters['feh']>0.537):
-                    print('Metallicity out of range')
-                    continue               
-
-                evolution=Evolution(interpolator,parameters)
-                get_initial_conditions(evolution)
+    start_time=time.time()
+    evolution=Evolution(interpolator,parameters)
+    evolution.calculate_intial_conditions()
+    time_spent=time.time()-start_time
+    print('time_spent = ',time_spent)
 
 
 
