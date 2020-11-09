@@ -28,6 +28,24 @@ def _cummulative_distribution(samples,mulitplicity=None):
         return list(zip(sample_values,probability/max(probability)))
 
 
+def _get_chain(parameter,chain_filename):
+
+    parameters=['Porb','eccentricity','Wdisk','logQ','primary_mass','age','feh']
+    if parameter=='Spin':param_idx=15
+    elif parameter in parameters:param_idx=parameters.index(parameter)+1
+    else:
+        print('Parameters names can only be: ',parameters)
+        raise ValueError
+
+    CHAIN=[]
+    with open(chain_filename,'r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            CHAIN=numpy.append(CHAIN,float(x[param_idx]))
+    return CHAIN
+
+
 def _get_filename(system,cluster,instance):
 #returns the filename with directory of accepted parameter file
     f = '../'+cluster+'/MCMC_'+system+'/accepted_parameters_'+str(instance)+'.txt'
