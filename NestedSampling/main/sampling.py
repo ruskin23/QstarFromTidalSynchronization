@@ -18,6 +18,7 @@ from stellar_evolution.derived_stellar_quantities import\
 from spin_calculation import SpinPeriod
 
 import dill
+import copy
 import time
 from datetime import date
 
@@ -80,7 +81,7 @@ class NestedSampling():
         if not self.sampling_logger.handlers:
             self.sampling_logger.setLevel(logging.DEBUG)
             pid=str(os.getpid())[-3:]
-            scratch_filename=f'{self.output_directory}/system_{self.system}/{today}_sampling_{pid}.log'
+            scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_sampling_{pid}.log'
             proces_handler=logging.FileHandler(scratch_filename)
             
             process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
@@ -187,7 +188,7 @@ class NestedSampling():
         #files and save results on npz files
 
         # live_logl=numpy.zeros(nlive)        
-        # filename=self.output_directory+'/nlive_'+self.system+'.npz'
+        # filename=self.scratch_directory+'/nlive_'+self.system+'.npz'
         # live_points=numpy.load(filename)
 
         # live_u=live_points['arr_0']
@@ -207,7 +208,7 @@ class NestedSampling():
 
         # for i in range(i_min,i_max):
         #     live_logl[i]=self.loglike(live_v[i])
-        #     outfile=self.output_directory+'/nlive_'+self.system+'_'+str(instance)
+        #     outfile=self.scratch_directory+'/nlive_'+self.system+'_'+str(instance)
         #     numpy.savez(outfile,live_u,live_v,live_logl)
             
 
@@ -279,10 +280,11 @@ class NestedSampling():
                 self.logger.info(f'{x} = {y}')
 
             #overwrite. no need for time conditin. dump alternatively.
+            dsampler_copy=copy.deepcopy(dsampler)
             with open(self.results_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
-                dill.dump(dsampler,f)
+                dill.dump(dsampler_copy,f)
             
-            dsampler=self.initialize_sampler(dsampler)
+            #dsampler=self.initialize_sampler(dsampler)
             end_time=time.time()
             self.logger.info(f'Time taken for iteration {self.niter} = {end_time-start_time}')
             start_time=end_time
@@ -305,7 +307,7 @@ class NestedSampling():
                  pool,
                  queue_size,
                  results_directory,
-                 output_directory,
+                 scratch_directory,
                  logger):
 
         self.system=system_number
@@ -319,7 +321,7 @@ class NestedSampling():
         self.pool=pool
         self.queue_size=queue_size
         self.results_directory=results_directory
-        self.output_directory=output_directory
+        self.scratch_directory=scratch_directory
 
         self.logger=logger
         self.sampling_logger=None
