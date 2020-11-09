@@ -17,7 +17,7 @@ module load gcc
 module load python3
 module load boost
 
-export PYTHONPATH=/work/06850/rpatel23/stampede2/poet/PythonPackage:/work/06850/rpatel23/stampede2/poet/scripts:/work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/main
+export PYTHONPATH=/work/06850/rpatel23/stampede2/poet/PythonPackage:/work/06850/rpatel23/stampede2/poet/scripts
 
 for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
@@ -25,4 +25,4 @@ for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
 done
 
 
-python3 main.py -s start -l 81 -n 45
+python3 /work/06850/rpatel23/stampede2/QstarFromTidalSynchronization/NestedSampling/main/main.py -s start -l 81 -n 45
