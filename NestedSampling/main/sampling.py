@@ -83,13 +83,13 @@ class NestedSampling():
             pid=str(os.getpid())[-3:]
             scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_sampling_{pid}.log'
             proces_handler=logging.FileHandler(scratch_filename)
-            
+
             process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
             proces_handler.setFormatter(process_format)
 
             self.sampling_logger.addHandler(proces_handler)
 
-        
+
         parameter_set=dict()
         for i,v in enumerate(self.sampling_parameters):
            parameter_set[v[0]]=x[i]
@@ -161,16 +161,16 @@ class NestedSampling():
         return dsampler
 
     def calculate_live_points(self,dsampler,nlive=500):
-        """Samples nlive points from ndim unit cube, transform into desired priors and 
+        """Samples nlive points from ndim unit cube, transform into desired priors and
             calculates loglikelohoods of nlive points.
-            uncomment section of code if the calulations is divided into various 
+            uncomment section of code if the calulations is divided into various
             instances and each intance is saved on a npz file if """
-            
+
         #use pool to calculate points
         live_u=dsampler.rstate.rand(nlive,self.ndim)
         live_v=numpy.array(list(dsampler.M(self.ptform,numpy.array(live_u))))
         live_logl=numpy.array(list(dsampler.M(self.loglike,live_v)))
-        
+
         #Convert -numpy.inf loglikelihoods to finite numbers
         for i,logl in enumerate(live_logl):
             if not numpy.isfinite(logl):
@@ -187,7 +187,7 @@ class NestedSampling():
         #If pool is not working or getting locked, use this method to create various
         #files and save results on npz files
 
-        # live_logl=numpy.zeros(nlive)        
+        # live_logl=numpy.zeros(nlive)
         # filename=self.scratch_directory+'/nlive_'+self.system+'.npz'
         # live_points=numpy.load(filename)
 
@@ -210,11 +210,10 @@ class NestedSampling():
         #     live_logl[i]=self.loglike(live_v[i])
         #     outfile=self.scratch_directory+'/nlive_'+self.system+'_'+str(instance)
         #     numpy.savez(outfile,live_u,live_v,live_logl)
-            
+
 
     def get_live_points(self):
-        """If live points were saved on a npz file, create a list of
-        3 nd numpy arrays and conver -inf logl points tp finite numbers"""
+        """If live points were saved on a npz file, create a list of  3 numpy arrays"""
 
         filename=self.results_directory+'/update_nlive/updated_nlive_'+self.system+'.npz'
         live_points=numpy.load(filename)
@@ -239,7 +238,7 @@ class NestedSampling():
 
     def get_sampler_object(self,status):
         """Initialize Dynamic Nested Sampler object depending upon status"""
-    
+
         if status == 'start':
             dsampler=dynesty.DynamicNestedSampler(self.loglike, self.ptform, self.ndim,pool=self.pool, queue_size=self.queue_size)
             self.niter=1
@@ -268,9 +267,9 @@ class NestedSampling():
         #Sample Initial Batch
         start_time=time.time()
         for results in dsampler.sample_initial(live_points=live_points,resume=self.resume):
-            
+
             self.ncall+=results[9]
-            self.niter+=1   
+            self.niter+=1
 
             result_names=['worst','ustar', 'vstar','loglstar','logvol','logwt', 'logz','logzvar','h','nc','worst_it','boundidx','bounditer', 'eff','delta_logz']
             self.logger.info('RESULTS OBTAINED')
@@ -279,12 +278,12 @@ class NestedSampling():
             for x,y in zip(result_names,results):
                 self.logger.info(f'{x} = {y}')
 
-            #overwrite. no need for time conditin. dump alternatively.
-            dsampler_copy=copy.deepcopy(dsampler)
+            #dumping a sampling copy
+            #dsampler_copy=copy.deepcopy(dsampler)
             with open(self.results_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
-                dill.dump(dsampler_copy,f)
-            
-            #dsampler=self.initialize_sampler(dsampler)
+                dill.dump(dsampler,f)
+
+            dsampler=self.initialize_sampler(dsampler)
             end_time=time.time()
             self.logger.info(f'Time taken for iteration {self.niter} = {end_time-start_time}')
             start_time=end_time
@@ -325,6 +324,6 @@ class NestedSampling():
 
         self.logger=logger
         self.sampling_logger=None
-        
+
 
 
