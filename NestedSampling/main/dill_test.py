@@ -19,8 +19,6 @@ def summary_plots(custom_results,labels):
                                quantiles=None, fig=(fig, axes))
 
 
-    fg1,ax1=dyplot.runplot(custom_results)
-    fg.tight_layout()
 
     plt.show()
     #plt.savefig('custom.pdf')
