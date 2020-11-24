@@ -25,7 +25,7 @@ def summary_plots(partial_results,labels):
     plt.show()
     #plt.savefig('custom.pdf')
 
-sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/kartof/initial_sampling_saved_76.dill'
+sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/initial_sampling_saved_76.dill'
 with open(sampler_file,'rb') as f:
     partial_sampler=dill.load(f)
     partial_results=partial_sampler.results
