@@ -170,7 +170,7 @@ class SpinPeriod():
                                     method='lm',
                                     options={'xtol':1e-6,
                                              'ftol':1e-6,
-                                             'maxiter':30}
+                                             'maxiter':5}
             )
 
         except Exception as e:
@@ -235,7 +235,6 @@ class SpinPeriod():
         self.logger=logger
 
     def __call__(self):
-
 
         self.secondary_mass=self.primary_mass*self.mass_ratio
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,

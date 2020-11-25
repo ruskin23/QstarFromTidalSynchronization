@@ -256,13 +256,28 @@ class NestedSampling():
 
         return dsampler
 
+    
+    def log_info(self,niter,ncall,results,time_taken):
+        init_logger=logging.getLogger('SampleInitial')
+        
+        if not init_logger.handlers:
+            scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_SampleInitial.log'
+            sampleinit_handler=logging.FileHandler(scratch_filename)
+            sampleinit_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
+            sampleinit_handler.setFormatter(sampleinit_format)
+            init_logger.addHandler(sampleinit_handler)
+        result_names=['worst','ustar', 'vstar','loglstar','logvol','logwt', 'logz','logzvar','h','nc','worst_it','boundidx','bounditer', 'eff','delta_logz']
+        init_logger.info('RESULTS OBTAINED')
+        init_logger.info(f'niter={niter}')
+        init_logger.info(f'ncall={ncall}')
+        for x,y in zip(result_names,results):
+            init_logger.info(f'{x} = {y}')
+        init_logger.info(f'Time taken for iteration {self.niter} = {time_taken}')
+        
     def SampleInitial(self,status):
 
-
         dsampler=self.get_sampler_object(status)
-        self.logger.info('Obtaining live points')
         live_points=self.get_live_points()
-        self.logger.info('Live points obtained')
         #pylint: disable=unused-variable
         #Sample Initial Batch
         start_time=time.time()
@@ -271,22 +286,15 @@ class NestedSampling():
             self.ncall+=results[9]
             self.niter+=1
 
-            result_names=['worst','ustar', 'vstar','loglstar','logvol','logwt', 'logz','logzvar','h','nc','worst_it','boundidx','bounditer', 'eff','delta_logz']
-            self.logger.info('RESULTS OBTAINED')
-            self.logger.info(f'niter={self.niter}')
-            self.logger.info(f'ncall={self.ncall}')
-            for x,y in zip(result_names,results):
-                self.logger.info(f'{x} = {y}')
-
-            #dumping a sampling copy
-            #dsampler_copy=copy.deepcopy(dsampler)
-            with open(self.results_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
+            with open(self.results_directory+'/initial_sampling_test_'+str(self.system)+'.dill','wb') as f:
                 dill.dump(dsampler,f)
-
-            dsampler=self.initialize_sampler(dsampler)
+            
             end_time=time.time()
-            self.logger.info(f'Time taken for iteration {self.niter} = {end_time-start_time}')
+            time_taken=end_time-start_time
+            self.log_info(self.niter,self.ncall,results,time_taken)
             start_time=end_time
+            
+            dsampler=self.initialize_sampler(dsampler)
         #pylint: enable=unused-variable
 
         #save final results
@@ -306,8 +314,7 @@ class NestedSampling():
                  pool,
                  queue_size,
                  results_directory,
-                 scratch_directory,
-                 logger):
+                 scratch_directory):
 
         self.system=system_number
         self.instance=instance
@@ -322,8 +329,6 @@ class NestedSampling():
         self.results_directory=results_directory
         self.scratch_directory=scratch_directory
 
-        self.logger=logger
-        self.sampling_logger=None
 
 
 

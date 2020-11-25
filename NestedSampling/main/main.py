@@ -61,18 +61,6 @@ if __name__ == '__main__':
     if instance is not None:instance=int(instance)
 
 
-    logger=logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    scrath_filename=f'{path.scratch_directory}/system_{system_number}/{today}_main.log'
-    main_handler=logging.FileHandler(scrath_filename)
-    
-    main_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
-    main_handler.setFormatter(main_format)
-    
-    logger.addHandler(main_handler)
-
-    logger.info('Starting main program')
-
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
@@ -135,8 +123,8 @@ if __name__ == '__main__':
                             wind_strength=0.17,
                             inclination=scipy.pi/2
                             )
-    logger.info(f'Sampling Parameters: {sampling_parameters}')
-    logger.info(f'Observed Parameters: {observed_parameters}')
+    print(f'Sampling Parameters: {sampling_parameters}')
+    print(f'Observed Parameters: {observed_parameters}')    
 
 
 queue_size=nprocs
@@ -152,8 +140,7 @@ sampling = NestedSampling(system_number,
                           pool,
                           queue_size,
                           path.results_directory,
-                          path.scratch_directory,
-                          logger)
+                          path.scratch_directory)
 
 sampling.SampleInitial(status)
 
