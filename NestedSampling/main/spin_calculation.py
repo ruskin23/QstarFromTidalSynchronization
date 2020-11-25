@@ -170,7 +170,7 @@ class SpinPeriod():
                                     method='lm',
                                     options={'xtol':1e-6,
                                              'ftol':1e-6,
-                                             'maxiter':5}
+                                             'maxiter':15}
             )
 
         except Exception as e:
