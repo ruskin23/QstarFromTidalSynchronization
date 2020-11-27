@@ -286,7 +286,7 @@ class NestedSampling():
             self.ncall+=results[9]
             self.niter+=1
 
-            with open(self.results_directory+'/stampede/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
+            with open(self.results_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
                 dill.dump(dsampler,f)
             
             end_time=time.time()
