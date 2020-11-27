@@ -13,22 +13,29 @@ def summary_plots(partial_results,labels):
     fig, axes = plt.subplots(7,7,figsize=(25,25))
 
 
-    fg,ax=dyplot.cornerplot(partial_results, color='red',
-                               labels=labels,
-                               show_titles=True, title_kwargs={'y': 1.05},
-                               quantiles=None, fig=(fig, axes))
+    #fg,ax=dyplot.cornerplot(partial_results, color='red',
+    #                           labels=labels,
+    #                           show_titles=True, title_kwargs={'y': 1.05},
+    #                           quantiles=None, fig=(fig, axes))
 
 
     fg1,ax1=dyplot.runplot(partial_results)
-    fg.tight_layout()
+    #fg.tight_layout()
 
     plt.show()
     #plt.savefig('custom.pdf')
 
-sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/initial_sampling_test_76.dill'
+sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/kartof/initial_sampling_saved_76.dill'
 with open(sampler_file,'rb') as f:
     partial_sampler=dill.load(f)
     partial_results=partial_sampler.results
+
+samples=partial_results.samples
+logl=partial_results.logl
+its=numpy.arange(0,909,1)
+print(its.size)
+print(logl.size)
+print(max(logl))
 
 system_number=sys.argv[1]
 with open('SpinlogQCatalog_el0.4.txt','r') as f:

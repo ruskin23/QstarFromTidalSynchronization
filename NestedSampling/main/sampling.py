@@ -256,10 +256,10 @@ class NestedSampling():
 
         return dsampler
 
-    
+
     def log_info(self,niter,ncall,results,time_taken):
         init_logger=logging.getLogger('SampleInitial')
-        
+        init_logger.setLevel(logging.DEBUG)
         if not init_logger.handlers:
             scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_SampleInitial.log'
             sampleinit_handler=logging.FileHandler(scratch_filename)
@@ -273,7 +273,7 @@ class NestedSampling():
         for x,y in zip(result_names,results):
             init_logger.info(f'{x} = {y}')
         init_logger.info(f'Time taken for iteration {self.niter} = {time_taken}')
-        
+
     def SampleInitial(self,status):
 
         dsampler=self.get_sampler_object(status)
@@ -288,12 +288,12 @@ class NestedSampling():
 
             with open(self.results_directory+'/initial_sampling_saved_'+str(self.system)+'.dill','wb') as f:
                 dill.dump(dsampler,f)
-            
+
             end_time=time.time()
             time_taken=end_time-start_time
             self.log_info(self.niter,self.ncall,results,time_taken)
             start_time=end_time
-            
+
             dsampler=self.initialize_sampler(dsampler)
         #pylint: enable=unused-variable
 
