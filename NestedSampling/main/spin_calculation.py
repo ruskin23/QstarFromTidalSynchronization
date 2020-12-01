@@ -26,6 +26,7 @@ import pickle
 import numpy
 import scipy
 from astropy import units, constants
+import time
 
 
 class SpinPeriod():
@@ -250,7 +251,9 @@ class SpinPeriod():
         self.primary = self.create_star(self.primary_mass, 1)
         self.secondary = self.create_star(self.secondary_mass, 1)
 
+        start_time=time.time()
         initial_orbital_period_sol,initial_eccentricity_sol=self.initial_condition_solver()
+        end_time=time.time()
 
         if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:
             self.logger.warning('Bad Solution obtained')
@@ -262,7 +265,7 @@ class SpinPeriod():
         self.logger.info(f'Final Orbital Period = {self.final_orbital_period} , Final Eccentricity = {self.final_eccentricity}')
         self.logger.info(f'Errors: delta_p = {self.delta_p} , delta_e = {self.delta_e}')
         self.logger.info(f'Final Spin Period = {self.spin}')
-
+        self.logger.info(f'Time taken for this = {end_time-start_time} seconds')
 
         self.primary.delete()
         self.secondary.delete()

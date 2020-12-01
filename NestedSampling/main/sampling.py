@@ -31,7 +31,7 @@ today=today.strftime("%B_%d")
 class NestedSampling():
 
 
-    def calculate_model(self,x):
+    def calculate_model(self,x,sampling_logger):
 
         parameter_set=dict()
         model_set=dict()
@@ -39,9 +39,9 @@ class NestedSampling():
         for i,s in enumerate(self.sampling_parameters):
             parameter_set[s[0]]=x[i]
 
-        self.sampling_logger.info('Parameter Set')
+        sampling_logger.info('Parameter Set')
         for key in parameter_set:
-            self.sampling_logger.info('{} = {}'.format(key,parameter_set[key]))
+            sampling_logger.info('{} = {}'.format(key,parameter_set[key]))
 
         spin_calculations = SpinPeriod(
                                     self.system,
@@ -49,7 +49,7 @@ class NestedSampling():
                                     parameter_set,
                                     self.fixed_parameters,
                                     self.mass_ratio,
-                                    self.sampling_logger
+                                    sampling_logger
                                     )
 
         model_set['spin']=spin_calculations()
@@ -70,16 +70,14 @@ class NestedSampling():
 
         for key in model_set:
             if numpy.isnan(model_set[key]):model_set[key]=-scipy.inf
-            self.sampling_logger.info(f'{key} = {model_set[key]}')
+            
 
         return model_set
 
-
-    def loglike(self,x):
-
-        self.sampling_logger=logging.getLogger(__name__)
-        if not self.sampling_logger.handlers:
-            self.sampling_logger.setLevel(logging.DEBUG)
+    def likelihood_logger(self):
+        l_logger=logging.getLogger('spin_calculations')
+        if not l_logger.handlers:
+            l_logger.setLevel(logging.DEBUG)
             pid=str(os.getpid())[-3:]
             scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_sampling_{pid}.log'
             proces_handler=logging.FileHandler(scratch_filename)
@@ -87,24 +85,41 @@ class NestedSampling():
             process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
             proces_handler.setFormatter(process_format)
 
-            self.sampling_logger.addHandler(proces_handler)
+            l_logger.addHandler(proces_handler)
+        return l_logger
+
+    def loglike(self,x):
+        
+        sampling_logger=self.likelihood_logger()
+
+        #self.sampling_logger=logging.getLogger(__name__)
+        #if not self.sampling_logger.handlers:
+        #    self.sampling_logger.setLevel(logging.DEBUG)
+        #    pid=str(os.getpid())[-3:]
+        #    scratch_filename=f'{self.scratch_directory}/system_{self.system}/{today}_sampling_{pid}.log'
+        #    proces_handler=logging.FileHandler(scratch_filename)
+
+        #    process_format=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s',datefmt='%d-%b-%y %H:%M:%S')
+        #    proces_handler.setFormatter(process_format)
+
+        #    self.sampling_logger.addHandler(proces_handler)
 
 
         parameter_set=dict()
         for i,v in enumerate(self.sampling_parameters):
            parameter_set[v[0]]=x[i]
 
-        start_time=time.time()
-        model_set=self.calculate_model(x)
-        end_time=time.time()
+        #start_time=time.time()
+        model_set=self.calculate_model(x,sampling_logger)
+        #end_time=time.time()
 
-        self.sampling_logger.info(f'Time taken for this = {end_time-start_time} seconds')
+        #sampling_logger.info(f'Time taken for this = {end_time-start_time} seconds')
 
         L=0
         for key in self.observed_parameters:
             L=L-0.5*(((model_set[key]-self.observed_parameters[key]['value'])/self.observed_parameters[key]['sigma'])**2) - numpy.log(self.observed_parameters[key]['sigma']*numpy.sqrt(2*numpy.pi))
 
-        self.sampling_logger.info(f'Loglike = {L}')
+        sampling_logger.info(f'Loglike = {L}')
         return L
 
     def ptform(self,u):
