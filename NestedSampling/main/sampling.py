@@ -43,16 +43,6 @@ class NestedSampling():
         for key in parameter_set:
             sampling_logger.info('{} = {}'.format(key,parameter_set[key]))
 
-        spin_calculations = SpinPeriod(
-                                    self.system,
-                                    self.interpolator,
-                                    parameter_set,
-                                    self.fixed_parameters,
-                                    self.mass_ratio,
-                                    sampling_logger
-                                    )
-
-        model_set['spin']=spin_calculations()
 
         mass=parameter_set['primary_mass']
         feh=parameter_set['feh']
@@ -63,16 +53,30 @@ class NestedSampling():
 
         T=TeffK(quantity_radius,quantity_lum)
         try:model_set['teff']=T(age)
-        except:model_set['teff']=scipy.nan
+        except:model_set['teff']=-scipy.inf
         G=LogGCGS(mass,quantity_radius)
         try:model_set['logg']=G(age)
-        except:model_set['logg']=scipy.nan
+        except:model_set['logg']=-scipy.inf
 
-        for key in model_set:
-            if numpy.isnan(model_set[key]):model_set[key]=-scipy.inf
-            
+        if numpy.isneginf(model_set['teff']) or numpy.isneginf(model_set['logg']):
+            model_set['spin']=-scipy.inf
+            return model_set
 
-        return model_set
+        else:
+            spin_calculations = SpinPeriod(
+                                        self.system,
+                                        self.interpolator,
+                                        parameter_set,
+                                        self.fixed_parameters,
+                                        self.mass_ratio,
+                                        sampling_logger
+                                        )
+
+            model_set['spin']=spin_calculations()
+            if numpy.isnan(model_set['spin']):model_set['spin']=-scipy.inf
+
+
+            return model_set
 
     def likelihood_logger(self):
         l_logger=logging.getLogger('spin_calculations')
@@ -89,7 +93,7 @@ class NestedSampling():
         return l_logger
 
     def loglike(self,x):
-        
+
         sampling_logger=self.likelihood_logger()
 
         #self.sampling_logger=logging.getLogger(__name__)
@@ -119,6 +123,8 @@ class NestedSampling():
         for key in self.observed_parameters:
             L=L-0.5*(((model_set[key]-self.observed_parameters[key]['value'])/self.observed_parameters[key]['sigma'])**2) - numpy.log(self.observed_parameters[key]['sigma']*numpy.sqrt(2*numpy.pi))
 
+        for key in model_set:
+            sampling_logger.info(f'{key} = {model_set[key]}')
         sampling_logger.info(f'Loglike = {L}')
         return L
 

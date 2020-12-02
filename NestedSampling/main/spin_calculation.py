@@ -171,14 +171,14 @@ class SpinPeriod():
                                     method='lm',
                                     options={'xtol':1e-6,
                                              'ftol':1e-6,
-                                             'maxiter':15}
+                                             'maxiter':20}
             )
 
         except Exception as e:
             self.logger.exception('Solver Crashed')
             self.spin=scipy.nan
             return scipy.nan,scipy.nan
-        
+
         return sol.x
 
     def initial_secondary_angmom(self):
