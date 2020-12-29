@@ -35,7 +35,7 @@ def cmdline_args():
                         dest='system',
                         help='select a system for mcmc'
                         )
-    
+
     parser.add_argument('-n',
                         action='store',
                         dest='nprocs',
@@ -124,7 +124,7 @@ if __name__ == '__main__':
                             inclination=scipy.pi/2
                             )
     print(f'Sampling Parameters: {sampling_parameters}')
-    print(f'Observed Parameters: {observed_parameters}')    
+    print(f'Observed Parameters: {observed_parameters}')
 
 
 queue_size=nprocs

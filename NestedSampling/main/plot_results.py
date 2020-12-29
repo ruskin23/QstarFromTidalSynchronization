@@ -22,13 +22,15 @@ def summary_plots(partial_results,labels):
     fg1,ax1=dyplot.runplot(partial_results)
     fg.tight_layout()
 
+    #fg2,ax2=dyplot.traceplot(partial_results,show_titles=True,trace_cmap='viridis',connect=True,connect_highlight=range(5))
+
     plt.show()
     #plt.savefig('custom.pdf')
 
 
 system_number=sys.argv[1]
-#sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/initial_sampling_saved_'+system_number+'.dill'
-sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/kartof/initial_sampling_saved_76.dill'
+sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/initial_sampling_saved_'+system_number+'.dill'
+#sampler_file='/home/ruskin/projects/QstarFromTidalSynchronization/NestedSampling/main/results/kartof/initial_sampling_saved_76.dill'
 with open(sampler_file,'rb') as f:
     partial_sampler=dill.load(f)
     partial_results=partial_sampler.results

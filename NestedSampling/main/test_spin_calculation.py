@@ -154,8 +154,6 @@ class SpinPeriod():
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
 
-        #binary.delete()
-
         self.logger.info(f'delta_p = {self.delta_p} , delta_e = {self.delta_e}')
         self.logger.info(f'Spin Period = {self.spin}')
 
@@ -165,6 +163,7 @@ class SpinPeriod():
 
 
         initial_guess=[self.Porb,self.eccentricity]
+        self.logger.info(f'Solving for initial conditions')
         try:
             sol=scipy.optimize.root(self.initial_condition_errfunc,
                                     initial_guess,
@@ -174,7 +173,7 @@ class SpinPeriod():
                                              'maxiter':20}
             )
 
-        except Exception as e:
+        except:
             self.logger.exception('Solver Crashed')
             self.spin=scipy.nan
             return scipy.nan,scipy.nan
@@ -238,6 +237,7 @@ class SpinPeriod():
     def __call__(self):
 
         self.secondary_mass=self.primary_mass*self.mass_ratio
+        self.logger.info(f'secondary_mass={self.secondary_mass}')
         if numpy.logical_or((numpy.logical_or(self.secondary_mass>1.2,
                                               self.secondary_mass<0.4)),
                             (numpy.logical_or(numpy.isnan(self.primary_mass),
@@ -246,7 +246,8 @@ class SpinPeriod():
             self.logger.warning('secondary mass out of range')
             return scipy.nan
 
-        self.secondary_angmom=self.initial_secondary_angmom()
+        # self.secondary_angmom=self.initial_secondary_angmom()
+        self.secondary_angmom=numpy.array( [0.49346459 ,0.02898269])
         self.logger.info(f'Secondary Spin Angmom = {self.secondary_angmom}')
         self.primary = self.create_star(self.primary_mass, 1)
         self.secondary = self.create_star(self.secondary_mass, 1)
