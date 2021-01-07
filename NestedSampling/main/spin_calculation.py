@@ -137,7 +137,8 @@ class SpinPeriod():
             self.evolution_precision,
             None,
             timeout=3600
-        )
+            )
+
 
         final_state=binary.final_state()
         assert(final_state.age==self.age)
@@ -174,7 +175,7 @@ class SpinPeriod():
                                              'maxiter':20}
             )
 
-        except Exception as e:
+        except:
             self.logger.exception('Solver Crashed')
             self.spin=scipy.nan
             return scipy.nan,scipy.nan

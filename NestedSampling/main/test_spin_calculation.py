@@ -1,6 +1,7 @@
 #!/usr/bin/env python3 -u
 
 import sys
+import os
 from pathlib import Path
 from directories import directories
 
@@ -122,7 +123,7 @@ class SpinPeriod():
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
             self.logger.warning('Invalid Values')
             return scipy.nan,scipy.nan
-
+        create_c_code='debug/cfile_'+self.system+'.cpp'
         binary=self.create_binary_system(
             self.primary,
             self.secondary,
@@ -131,13 +132,19 @@ class SpinPeriod():
             secondary_angmom=self.secondary_angmom
             )
 
+        self.logger.info('Evolusiton Starting')
+
         binary.evolve(
             self.age,
             self.evolution_max_time_step,
             self.evolution_precision,
             None,
+            #create_c_code=create_c_code,
+            #eccentricity_expansion_fname=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii'),
             timeout=3600
         )
+
+        self.logger.info('Evolution Finished')
 
         final_state=binary.final_state()
         assert(final_state.age==self.age)
@@ -162,7 +169,8 @@ class SpinPeriod():
     def initial_condition_solver(self):
 
 
-        initial_guess=[self.Porb,self.eccentricity]
+        #initial_guess=[self.Porb,self.eccentricity]
+        initial_guess=[13.052119801234262,0.4362638392876184]
         self.logger.info(f'Solving for initial conditions')
         try:
             sol=scipy.optimize.root(self.initial_condition_errfunc,
@@ -173,7 +181,7 @@ class SpinPeriod():
                                              'maxiter':20}
             )
 
-        except:
+        except Exception as e:
             self.logger.exception('Solver Crashed')
             self.spin=scipy.nan
             return scipy.nan,scipy.nan
@@ -246,8 +254,7 @@ class SpinPeriod():
             self.logger.warning('secondary mass out of range')
             return scipy.nan
 
-        # self.secondary_angmom=self.initial_secondary_angmom()
-        self.secondary_angmom=numpy.array( [0.49346459 ,0.02898269])
+        self.secondary_angmom=self.initial_secondary_angmom()
         self.logger.info(f'Secondary Spin Angmom = {self.secondary_angmom}')
         self.primary = self.create_star(self.primary_mass, 1)
         self.secondary = self.create_star(self.secondary_mass, 1)

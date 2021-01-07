@@ -141,7 +141,6 @@ if __name__ == '__main__':
     )
 
 
-
     catalog_file=path.current_directory+'/SpinlogQCatalog_el0.4.txt'
 
     with open(catalog_file,'r') as f:
@@ -166,13 +165,13 @@ if __name__ == '__main__':
                 break
 
 
-    sampling_parameters = [('Porb',10.303032034625893,Porb_error,'Normal'),
-                           ('feh', -0.31882201216054464,feh_error,-1.014,0.537,'Turncated_Normal'),
-                           ('eccentricity', 0.27557873381900033,eccentricity_error,0.0,0.45,'Turncated_Normal'),
-                           ('Wdisk',  1.786126160343231,2*scipy.pi/14,2*scipy.pi/1.4,'Uniform'),
-                           ('logQ',  5.6832393389266604,5.0,12.0,'Uniform'),
-                           ('primary_mass',  0.7123097489857166,0.5,1.2,'Uniform'),
-                           ('age',  4.525614334426742,1e-3,10.0,'Uniform')]
+    sampling_parameters = [('Porb',10.303019453719756,Porb_error,'Normal'),
+                           ('feh',  0.08533256313787185,feh_error,-1.014,0.537,'Turncated_Normal'),
+                           ('eccentricity', 0.2786522360406878,eccentricity_error,0.0,0.45,'Turncated_Normal'),
+                           ('Wdisk',  2.057860678804206,2*scipy.pi/14,2*scipy.pi/1.4,'Uniform'),
+                           ('logQ',6.278628450565616,5.0,12.0,'Uniform'),
+                           ('primary_mass', 0.7754400499652361,0.5,1.2,'Uniform'),
+                           ('age',7.586259581296493,1e-3,10.0,'Uniform')]
 
 
     observed_parameters=dict(teff=dict(value=teff_value,
@@ -220,11 +219,11 @@ if __name__ == '__main__':
 
     PARAMS=[param,param_1,param_2,param_3,param_4]
 
-    pool=ProcessPool(nodes=nprocs)
+    #pool=ProcessPool(nodes=nprocs)
 
     # p=numpy.array(list(pool.map(calculate_model,PARAMS)))
-    pool.map(calculate_model,PARAMS)
-    
+    #pool.map(calculate_model,PARAMS)
+    calculate_model(param)
 
     # for i in range(3):
     
