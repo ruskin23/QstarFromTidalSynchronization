@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J INIT81
-#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/system_81/slurm_output_6.out
+#SBATCH -o /home/rxp163130/scratch/Nested_Sampling/system_81/slurm_output_1.out
 #SBATCH -N 3
 #SBATCH -n 45
 #SBATCH -t 4-00:00:00
