@@ -2,7 +2,7 @@
 
 #SBATCH -p skx-normal
 #SBATCH -J INIT54
-#SBATCH -o /scratch/06850/rpatel23/Nested_Sampling/system_54/slurm_output_10.out
+#SBATCH -o /scratch/06850/rpatel23/Nested_Sampling/system_54/ slurm_output_11.out
 #SBATCH -N 1
 #SBATCH -n 44
 #SBATCH -t 2-00:00:00
