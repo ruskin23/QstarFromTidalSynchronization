@@ -2,6 +2,8 @@
 *.txt
 *.pickle
 *.out
+*.png
+*.csv
 !MCMC/version1/SAVED_CHAINS/stampede/*
 !MCMC/version1/SAVED_CHAINS/stampede/MCMC_*/*.txt
 !MCMC/version1/SAVED_CHAINS/ganymede/*
