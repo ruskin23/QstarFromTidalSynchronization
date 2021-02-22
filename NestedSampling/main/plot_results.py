@@ -24,7 +24,7 @@ def summary_plots(partial_results,labels):
 
     #fg2,ax2=dyplot.traceplot(partial_results,show_titles=True,trace_cmap='viridis',connect=True,connect_highlight=range(5))
 
-    #plt.show()
+    plt.show()
     #plt.savefig('custom.pdf')
 
 
@@ -37,6 +37,7 @@ with open(sampler_file,'rb') as f:
 
 samples=partial_results.samples
 logl=partial_results.logl
+print(max(delta_logz))
 print(logl.size)
 print(max(logl))
 
