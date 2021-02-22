@@ -15,4 +15,4 @@ for system in systems:
             chain=_get_chain('logQ',filled_name)
             CHAIN=numpy.concatenate((CHAIN,chain),axis=None)
 
-    raftery_lewis(CHAIN,q=0.95, r=0.01)
+    raftery_lewis(CHAIN,q=0.90, r=0.1)

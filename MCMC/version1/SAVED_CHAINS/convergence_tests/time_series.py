@@ -13,12 +13,13 @@ def continuity_check(it,filename):
 
 def save_chains(s):
 
-    #pp = PdfPages('time_series_mcmc.pdf')
+    pp = PdfPages('time_series_mcmc.pdf')
 
-    #plt.rc('xtick',labelsize=30)
-    #plt.rc('ytick',labelsize=30)
+    plt.rc('xtick',labelsize=30)
+    plt.rc('ytick',labelsize=30)
 
     #s=['85', '73', '76', '96', '92', '81', '80', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '39', '56', '126', '54', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '57', '137', '120', '86', '43', '28', '13']
+    s=['85', '73', '76', '96', '92', '81', '80', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '39', '56', '126', '54', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '137', '120', '86', '43', '28', '13']
 
     clusters=['ganymede','stampede']
 
@@ -53,10 +54,10 @@ def save_chains(s):
                 if i==3 and j>0:axs[i,j].axis('off')
                 else:axs[i,j].plot(ITERATIONS[3*i+j],CHAINS[3*i+j])
         plt.suptitle('System '+ system, fontsize=50)
-        #plt.savefig(pp,format='pdf')
-        plt.savefig(f'plots/time_series/System_{system}.png')
+        plt.savefig(pp,format='pdf')
+        #plt.savefig(f'plots/time_series/System_{system}.png')
         plt.close()
-    #pp.close()
+    pp.close()
 
 
 
