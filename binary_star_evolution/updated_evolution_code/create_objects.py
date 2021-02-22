@@ -1,9 +1,13 @@
 #!/usr/bin/env python3 -u
 
 import sys
+from pathlib import Path
+from directories import directories
 
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as\
@@ -16,7 +20,6 @@ from orbital_evolution.planet_interface import LockedPlanet
 import numpy
 import scipy
 from astropy import units, constants
-
 
 class BinaryObjects():
 

@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
 
 import sys
-sys.path.append('home/ruskin/projects/poet/PythonPackage')
+import os
+from pathlib import Path
+from directories import directories
+
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
+
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from orbital_evolution.transformations import phase_lag
 
 import numpy
+import scipy
 import argparse
 import matplotlib
 from matplotlib import pyplot
@@ -59,7 +68,7 @@ def get_evolution(evolution):
 
     print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
     
-    plot_evolution(evolved_binary)
+    # plot_evolution(evolved_binary)
 
 
 if __name__=='__main__':
@@ -77,13 +86,26 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
-    )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
+    # orbital_evolution_library.read_eccentricity_expansion_coefficients(
+    #     b"eccentricity_expansion_coef.txt"
+    # )
+    # serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
 
+    # manager = StellarEvolutionManager(serialized_dir)
+    # interpolator = manager.get_interpolator_by_name('default')
+
+    serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
+
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+
+    orbital_evolution_library.read_eccentricity_expansion_coefficients(
+        eccentricity_path
+    )
+
+
+
 
     
     if args.system is not None:
@@ -100,8 +122,8 @@ if __name__=='__main__':
                     orbital_period=float(x[6])
                     eccentricity=float(x[8])
                     Wdisk=4.1
-                    logQ=7.0
-
+                    # logQ=7.0
+    
     # with open('parameters.txt','r') as f:
     #     next(f)
     #     for lines in f:
@@ -122,8 +144,8 @@ if __name__=='__main__':
     #     for lines in f:
     #         x=lines.split()
     #         if x[0]=='1':
-    #             orbital_period=float(x[1])
-    #             eccentricity=float(x[2])
+    #             orbital_period=float(x[11])
+    #             eccentricity=float(x[12])
     #             Wdisk=float(x[3])
     #             logQ=float(x[4])
     #             primary_mass=float(x[5])
@@ -131,21 +153,22 @@ if __name__=='__main__':
     #             feh=float(x[7])
     #             secondary_mass=float(x[8])
     #             spin_period=10.778
+    #             break
 
 
     parameters=dict()
 
-    if args.system is not None:parameters['system']=args.system
+    # if args.system is not None:parameters['system']=args.system
 
-    parameters['primary_mass']=0.7086821280545156
-    parameters['secondary_mass']=0.4294613696010364
-    parameters['age']=3.8115090596301986
-    parameters['feh']=-0.1261628121107624
-    parameters['orbital_period']=10.738967949893649
-    parameters['eccentricity']=0.08146654408567669
-    parameters['spin_period']=14.581
-    parameters['logQ']=5.2143665367195915
-    parameters['Wdisk']=0.8913583550426958
+    # parameters['primary_mass']= 1.022193732085151
+    # parameters['secondary_mass']=0.8539*parameters['primary_mass']
+    # parameters['age']=   1.936233718547847
+    # parameters['feh']=  -0.5085339379604049
+    # parameters['orbital_period']= 4.306
+    # parameters['eccentricity']=0.035
+    # parameters['spin_period']=4.0
+    # # parameters['logQ']=    8.006006006006006
+    # parameters['Wdisk']= 4.1
 
 
     # parameters['primary_mass']=primary_mass
@@ -167,31 +190,41 @@ if __name__=='__main__':
     parameters['print_cfile']=False
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
-    parameters['breaks']=False
+    parameters['inclination']=numpy.pi/2
+    parameters['breaks']=True
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
-    parameters['tidal_frequency_breaks']=None
-    parameters['tidal_frequency_powers']=numpy.array([0.0])
+    # parameters['tidal_frequency_breaks']=None
+    # parameters['tidal_frequency_powers']=numpy.array([0.0])
 
     for item,value in parameters.items():
         print('{} = {}'.format(item,value))
 
-    start_time=time.time()
+    # start_time=time.time()
+    # evolution=Evolution(interpolator,parameters)
+    # evolution.calculate_intial_conditions()
+    # time_spent=time.time()-start_time
+    # print('time_spent = ',time_spent)
+
+    # evolution=Evolution(interpolator,parameters)
+    # get_evolution(evolution)
+
+    alpha=-1.0
+    logQMax=4.0
+    logQ1=8.006006006006006
+    phase_lagMax=phase_lag(logQMax)
+    phase_lag1=phase_lag(logQ1)
+    omegaref1=2*numpy.pi
+    omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+    print(omegaref)
+    print(f'spin period={4.218290759468918}')
+    parameters['logQ']=logQ1
+    parameters['tidal_frequency_breaks']=numpy.array([omegaref])
+    parameters['tidal_frequency_powers']=numpy.array([0,alpha])
     evolution=Evolution(interpolator,parameters)
     evolution.calculate_intial_conditions()
-    time_spent=time.time()-start_time
-    print('time_spent = ',time_spent)
+    # get_evolution(evolution)
 
-
-
-    # alpha=-1.0
-    # logQMax=4.0
-    # logQ1=6.0
-    # phase_lagMax=phase_lag(logQMax)
-    # phase_lag1=phase_lag(logQ1)
-    # omegaref1=2*numpy.pi
-    # omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
-    # print(omegaref)
 
 
 

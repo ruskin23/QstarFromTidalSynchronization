@@ -1,7 +1,11 @@
 import sys
-sys.path.append('home/ruskin/projects/poet/PythonPackage')
-sys.path.append('home/ruskin/projects/poet/scripts')
+from pathlib import Path
+from directories import directories
 
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
 from orbital_evolution.transformations import phase_lag
 from create_objects import BinaryObjects
 import numpy
@@ -30,7 +34,7 @@ class IntialSecondaryAngmom:
         star = binary_system.create_star(self.secondary_mass,dissipation=True)
         planet = binary_system.create_planet(1.0)
 
-        binary = binary_system.create_binary_system(star,planet)
+        binary = binary_system.create_binary_system(star,planet,initial_orbital_period=10.0,initial_eccentricity=0.0)
 
         binary.evolve(self.disk_dissipation_age, 1e-3, 1e-6, None)
         disk_state = binary.final_state()
