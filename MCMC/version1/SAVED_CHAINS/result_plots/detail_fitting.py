@@ -46,31 +46,48 @@ def kde(x,x_array,h=None):
     return f/(n*h)
     
 
-s=['85', '73', '76', '96', '92', '81', '80', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '39', '56', '126', '54', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '137', '120', '86', '43', '28', '13']
-# s=['85', '73', '96', '92', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '56', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '137', '120', '86', '43', '28', '13']
-# system=sys.argv[1]
+s=['1', '106', '109', '12', '120', '123', '126', '13', '137', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '57', '67', '70', '73', '76', '79', '8', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96']
 M=numpy.ones(100000)
 PDF=[]
-# with open('all_pdf_data.pickle','rb') as f:
-#     M=pickle.load(f)['M']
-# M=M/max(M)
 for system in s:
+    print(system)
     logQ_raw=get_chain(system)
-    cdf=_cummulative_distribution(logQ_raw)
-    Z=list(zip(*cdf))
-    logQ_values=list(Z[0])
-    P=list(Z[1])
-    logQ=[]
-    P_idx=[]
-    for q in logQ_values:
-        if q not in logQ:logQ.append(q)
-        else:
-            print(q)
-            P_idx.append(logQ.index(q))
-    logQ=numpy.array(logQ)
-    P=numpy.array(P)
-    P=numpy.delete(P,P_idx)
-    print(f'system={system} logQ_min={min(logQ)} logQ_max={max(logQ)}')
+
+    x=numpy.linspace(5,12,100000)
+    f=kde(x,logQ_raw)
+    PDF.append(f)
+    M=M*f
+    plt.xlim(5,12)
+    plt.plot(x,f,color='blue')
+    plt.savefig(f'pdf/gauss_kde/system_{system}.png')
+    plt.close()
+        
+
+dataset=dict()
+for name,array in zip(s,PDF):
+    dataset[name]=array
+dataset['M']=M
+
+with open('all_pdf_data.pickle','wb') as f:
+    pickle.dump(dataset,f)
+
+
+
+    # cdf=_cummulative_distribution(logQ_raw)
+    # Z=list(zip(*cdf))
+    # logQ_values=list(Z[0])
+    # P=list(Z[1])
+    # logQ=[]
+    # P_idx=[]
+    # for q in logQ_values:
+    #     if q not in logQ:logQ.append(q)
+    #     else:
+    #         print(q)
+    #         P_idx.append(logQ.index(q))
+    # logQ=numpy.array(logQ)
+    # P=numpy.array(P)
+    # P=numpy.delete(P,P_idx)
+    # print(f'system={system} logQ_min={min(logQ)} logQ_max={max(logQ)}')
     # plt.plot(logQ,P,color='red')
 
     # q_diff=[]
@@ -105,25 +122,3 @@ for system in s:
     # deriv=deriv/max(deriv)
     # plt.plot(x_new,deriv,'black')
     # plt.show()
-
-    x=numpy.linspace(5,12,100000)
-    # n,bins,patches=plt.hist(logQ,bins='auto',alpha=0.7, rwidth=0.85,density='True')
-    f=kde(x,logQ)
-    f=f/max(f)
-    PDF.append(f)
-    M=M*f
-    plt.xlim(5,12)
-    plt.plot(x,f,color='blue')
-    # plt.plot(x,M)
-    plt.savefig(f'pdf/gauss_kde/system_{system}.png')
-    # plt.show()
-    plt.close()
-        
-
-dataset=dict()
-for name,array in zip(s,PDF):
-    dataset[name]=array
-dataset['M']=M
-
-with open('all_pdf_data.pickle','wb') as f:
-    pickle.dump(dataset,f)

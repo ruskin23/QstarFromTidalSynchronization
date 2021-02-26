@@ -42,7 +42,12 @@ def _get_chain(parameter,chain_filename):
         next(f)
         for lines in f:
             x=lines.split()
-            CHAIN=numpy.append(CHAIN,float(x[param_idx]))
+            try:
+                CHAIN=numpy.append(CHAIN,float(x[param_idx]))
+            except:
+                print(chain_filename)
+                print(x)
+                raise Exception
     return CHAIN
 
 
