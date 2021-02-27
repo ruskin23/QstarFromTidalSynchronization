@@ -7,7 +7,7 @@ from scipy import integrate
 from scipy import interpolate
 from scipy.stats import norm
 from scipy.optimize import curve_fit
-from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution
+from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution,adjust_chain
 
 
 
@@ -27,20 +27,29 @@ class p_value():
 
     def get_chain(self,system):
 
-        self.CHAIN=numpy.zeros(1)
+        # self.CHAIN=numpy.zeros(1)
         
-        for c in self.clusters:
-            for i in range(1,6):
-                filename=_get_filename(system,c,i)
-                filled_file=_fill_parameters(filename)
-                chain=_get_chain('logQ',filled_file)
-                if filename!=f'ganymede/MCMC_{system}/accepted_parameters_1.txt':
-                    start_point=chain[0]
-                    count_repeat=numpy.count_nonzero(chain==start_point)
-                    chain=chain[count_repeat:]
-                self.CHAIN=numpy.concatenate((self.CHAIN,chain),axis=None)
-        self.CHAIN=self.CHAIN[1:]
-    
+        # for c in self.clusters:
+        #     for i in range(1,6):
+        #         filename=_get_filename(system,c,i)
+        #         filled_file=_fill_parameters(filename)
+        #         chain=_get_chain('logQ',filled_file)
+        #         chain=adjust_chain(system,chain)
+        #         if filename!=f'ganymede/MCMC_{system}/accepted_parameters_1.txt':
+        #             start_point=chain[0]
+        #             count_repeat=numpy.count_nonzero(chain==start_point)
+        #             chain=chain[count_repeat:]
+        #         self.CHAIN=numpy.concatenate((self.CHAIN,chain),axis=None)
+        # self.CHAIN=adjust_chain(system,self.CHAIN[1:])
+
+        with open('../complete_chains.pickle','rb') as f:
+            D=pickle.load(f)
+        for system_name,params in D.items():
+            if system_name==system:
+                for name,values in params.items():
+                    if name=='logQ':self.CHAIN=values
+
+
     def get_samples(self,system):
 
         self.get_chain(system)
@@ -53,7 +62,6 @@ class p_value():
         self.logQ_mean=numpy.mean(self.logQ_values)
         self.logQ_interp=interpolate.interp1d(self.logQ_values,self.logQ_cdf)
         self.logQ_reverse_interp=interpolate.interp1d(self.logQ_cdf,self.logQ_values)
-        
 
     def get_cdf_statistic(self,quantile=None,value=None):
         if quantile is not None:
@@ -88,11 +96,9 @@ class p_value():
 
         return f_h/N
 
-
     def p_E(self):
 
         q_stat=self.get_cdf_statistic(value=self.M_mean)
-
         return 2*min(q_stat,1-q_stat)
 
     def integrand_E_p(self,x):
@@ -118,7 +124,6 @@ class p_value():
         plt.plot(self.logQ_array,I)
         plt.show()
 
-
     def __call__(self,system,method):
 
         
@@ -126,8 +131,6 @@ class p_value():
         if method=='p_E':return self.p_E()
         elif method=='E_p':return self.E_p()
         else: raise ValueError
-
-# 2(cdf,1-cdf)
 
 def find_nearest(array, value):
     idx = (numpy.abs(array - value)).argmin()
@@ -176,11 +179,9 @@ def M_stats_cdf(logQ_array,M):
     # plt.legend()
     # plt.show()
 
-
-
 if __name__=='__main__':
 
-    s=['1', '106', '109', '12', '120', '123', '126', '13', '137', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '57', '67', '70', '73', '76', '79', '8', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96']
+    s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
     method=sys.argv[1]
     x=numpy.linspace(5,12,100000)
 
@@ -194,7 +195,6 @@ if __name__=='__main__':
     M_mean,M_sigma_left,M_sigma_right=M_stats_cdf(x,M)
     sigma=(M_sigma_right-M_sigma_left)/2
     print(M_mean,sigma)
-
 
     P=p_value(M_mean,M_interp,M_Z)
     

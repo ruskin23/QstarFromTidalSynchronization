@@ -3,7 +3,7 @@ from scipy import integrate
 from scipy import interpolate
 from scipy.stats import norm
 from scipy.misc import derivative
-from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution
+from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution,adjust_chain
 import numpy
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -29,7 +29,7 @@ def logQ_subplot(s,D,M):
     gs1=gridspec.GridSpec(6,7)
     gs1.update(wspace=0.0, hspace=0.0)
 
-    for i in range(42):
+    for i in range(41):
 
         f_Z=interpolate.InterpolatedUnivariateSpline(x,D[s[i]]).integral(5,12)
         f=D[s[i]]/f_Z
@@ -105,7 +105,7 @@ def get_samples(system,parameter):
                     count_repeat=numpy.count_nonzero(chain==start_point)
                     chain=chain[count_repeat:]
                 CHAIN=numpy.concatenate((CHAIN,chain),axis=None)
-        CHAIN=CHAIN[1:]
+        CHAIN=adjust_chain(system,CHAIN[1:])
         return CHAIN
     
     CHAIN=get_chain()
@@ -154,11 +154,11 @@ def logQ_parameter_plots(s):
         plt.savefig(f'pdf/logQ_{parameter}.png')
         plt.close()   
 
-s=['1', '106', '109', '12', '120', '123', '126', '13', '137', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '57', '67', '70', '73', '76', '79', '8', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96']
+s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
 with open('all_pdf_data.pickle','rb') as f:
     D=pickle.load(f)
 
 M=D['M']
-# logQ_M_plots(s,D,M)
+logQ_M_plots(s,D,M)
 logQ_subplot(s,D,M)
 

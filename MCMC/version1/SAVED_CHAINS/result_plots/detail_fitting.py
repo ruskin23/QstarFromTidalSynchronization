@@ -1,7 +1,7 @@
 import scipy
 from scipy import interpolate
 from scipy.misc import derivative
-from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution
+from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution,adjust_chain
 import numpy
 import matplotlib.pyplot as plt
 import sys
@@ -9,20 +9,29 @@ from collections import OrderedDict
 import pickle
 
 def get_chain(system):
-    CHAIN=numpy.zeros(1)
+    # CHAIN=numpy.zeros(1)
 
-    for c in ['ganymede','stampede']:
-        for i in range(1,6):
-            filename=_get_filename(system,c,i)
-            filled_file=_fill_parameters(filename)
-            chain=_get_chain('logQ',filled_file)
-            if i!=1:
-                start_point=chain[0]
-                count_repeat=numpy.count_nonzero(chain==start_point)
-                chain=chain[count_repeat:]
-            CHAIN=numpy.concatenate((CHAIN,chain),axis=None)
+    # for c in ['ganymede','stampede']:
+    #     for i in range(1,6):
+    #         filename=_get_filename(system,c,i)
+    #         filled_file=_fill_parameters(filename)
+    #         chain=_get_chain('logQ',filled_file)
+    #         if i!=1:
+    #             start_point=chain[0]
+    #             count_repeat=numpy.count_nonzero(chain==start_point)
+    #             chain=chain[count_repeat:]
+    #         CHAIN=numpy.concatenate((CHAIN,chain),axis=None)
+    # CHAIN=adjust_chain(system,CHAIN[1:])
+    # return CHAIN
 
-    return CHAIN[1:]
+
+    with open('../complete_chains.pickle','rb') as f:
+        D=pickle.load(f)
+    for system_name,params in D.items():
+        if system_name==system:
+            for name,values in params.items():
+                if name=='logQ':
+                    return values
 
 def kernel_expan(x,x_i,h):
     y=(x-x_i)/h
@@ -46,7 +55,7 @@ def kde(x,x_array,h=None):
     return f/(n*h)
     
 
-s=['1', '106', '109', '12', '120', '123', '126', '13', '137', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '57', '67', '70', '73', '76', '79', '8', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96']
+s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
 M=numpy.ones(100000)
 PDF=[]
 for system in s:
@@ -59,7 +68,7 @@ for system in s:
     M=M*f
     plt.xlim(5,12)
     plt.plot(x,f,color='blue')
-    plt.savefig(f'pdf/gauss_kde/system_{system}.png')
+    plt.savefig(f'pdf/gauss_kde_new/system_{system}.png')
     plt.close()
         
 

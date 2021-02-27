@@ -1,5 +1,5 @@
 import numpy
-from utils import _get_filename, _fill_parameters, _get_chain
+from utils import _get_filename, _fill_parameters, _get_chain, adjust_chain
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -28,7 +28,7 @@ def break_chain(chain):
 if __name__=='__main__':
 
     #systems=['8','43','36','109','70','47','86','88','93','123','95','106','79','84','25','12','50','28','13']
-    systems=['85', '73', '76', '96', '92', '81', '80', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '39', '56', '126', '54', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '57', '137', '120', '86', '43', '28', '13']
+    systems=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
 
     for system in systems:
         print('System = ',system)
@@ -39,6 +39,7 @@ if __name__=='__main__':
                 chain_filename=_get_filename(system,c,i)
                 filled_name=_fill_parameters(chain_filename)
                 chain=_get_chain('logQ',filled_name)
+                chain=adjust_chain(systems,chain)
                 div,initial_part,last_arrays=break_chain(chain)
                 INITIAL=numpy.concatenate((INITIAL,initial_part),axis=None)
                 if INITIAL[0]==0:INITIAL=INITIAL[1:]
@@ -54,5 +55,5 @@ if __name__=='__main__':
         plt.scatter(IT,Z)
         plt.hlines(2.0,min(IT),max(IT),linestyles='dashed')
         plt.hlines(-2.0,min(IT),max(IT),linestyles='dashed')
-        plt.savefig(f'plots/z_test/System_{system}.png')
+        plt.savefig(f'plots/z_test_new/System_{system}.png')
         plt.close()
