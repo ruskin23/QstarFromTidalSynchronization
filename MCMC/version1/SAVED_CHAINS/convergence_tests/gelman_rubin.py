@@ -36,26 +36,26 @@ def reduce_chain(CHAINS,l_chain):
 
     CHAINS_R=[]
 
-    # for c in CHAINS:
-    #     chain_sliced=c[:min_len]
-    #     CHAINS_R.append(chain_sliced)
+    for c in CHAINS:
+        chain_sliced=c[:min_len]
+        CHAINS_R.append(chain_sliced)
 
-    for _,c in enumerate(CHAINS):
-        r=int(len(c)/len(CHAINS[min_chain_idx]))
-        c=c[::r]
-        diff=len(c)-min_len
-        if diff==0:
-            # c=c[::20]
-            CHAINS_R.append(c)
-            continue
-        r=int(len(c)/diff)
-        ridx=[]
-        for i in range(len(c)):
-            if i%(r-1)==0:ridx.append(i)
-            if len(ridx)==diff:break
-        c=numpy.delete(c,ridx)
-        # c=c[::20]
-        CHAINS_R.append(c)
+    # for _,c in enumerate(CHAINS):
+    #     r=int(len(c)/len(CHAINS[min_chain_idx]))
+    #     c=c[::r]
+    #     diff=len(c)-min_len
+    #     if diff==0:
+    #         # c=c[::20]
+    #         CHAINS_R.append(c)
+    #         continue
+    #     r=int(len(c)/diff)
+    #     ridx=[]
+    #     for i in range(len(c)):
+    #         if i%(r-1)==0:ridx.append(i)
+    #         if len(ridx)==diff:break
+    #     c=numpy.delete(c,ridx)
+    #     # c=c[::20]
+    #     CHAINS_R.append(c)
     
     return CHAINS_R
 
@@ -142,5 +142,5 @@ if __name__=='__main__':
     plt.hlines(1.1,min(N),max(N),linestyles='dashed',color='b',label=1.1)
     plt.hlines(1.2,min(N),max(N),linestyles='dashed',color='m',label=1.2)
     plt.legend()
-    # plt.show()
+    plt.show()
     plt.savefig('gl_min_start.png')

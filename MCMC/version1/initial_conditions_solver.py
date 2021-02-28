@@ -64,7 +64,7 @@ class InitialConditionSolver:
               %(repr(initial_condition[0]), repr(initial_condition[1])))
         if initial_condition[1]>0.9 or initial_condition[1]<0 or initial_condition[0]<0:
             print('Cannot accept eccentricity > 0.45')
-            return scipy.nan, scipy.nan
+            return numpy.nan, numpy.nan
 
         if self.is_secondary_star is True:
             self.secondary.select_interpolation_region(self.disk_dissipation_age)
@@ -192,8 +192,6 @@ class InitialConditionSolver:
         self.initial_orbital_period_sol=None
         self.initial_eccentricity_sol=None
         self.bad_solution=False
-        self.gsl_flag=False
-        self.binary_destroyed=False
 
     def __call__(self, target, primary, secondary):
         """
@@ -220,41 +218,32 @@ class InitialConditionSolver:
                                 method='lm',
                                 tol=1e-6
                 )
+                self.initial_orbital_period_sol,self.initial_eccentricity_sol = sol.x
                 break
-            except AssertionError:
-                self.spin=scipy.nan
-                self.gsl_flag=True
-                self.delta_e=scipy.nan
-                self.delta_p=scipy.nan
+            except Exception as ex:
+                self.spin=numpy.nan
+                self.delta_e=numpy.nan
+                self.delta_p=numpy.nan
                 self.orbital_period=p
                 self.eccentricity=e
-                break
-            except ValueError:
-                self.spin=scipy.inf
-                self.delta_e=scipy.nan
-                self.delta_p=scipy.nan
-                self.orbital_period=p
-                self.eccentricity=e
-                self.binary_destroyed=True
+                self.initial_orbital_period_sol=numpy.nan
+                self.initial_eccentricity_sol=numpy.nan
+                print(f'Crashed due to {ex}')
                 break
 
-
-        print(self.spin)
-
-        if numpy.isnan(self.spin) or numpy.isinf(self.spin):
-            self.initial_orbital_period_sol=scipy.nan
-            self.initial_eccentricity_sol=scipy.nan
-
-        else:
-            self.initial_orbital_period_sol,self.initial_eccentricity_sol = sol.x
+        print(f'Spin_obtained = {self.spin}')
 
         if abs(self.delta_p)>0.1 or abs(self.delta_e)>0.1:
+            print(f'Solutions did not converge. delta_p = {self.delta_p} delta_e = {self.delta_e}')
+            sys.stdout.flush()
+            self.spin=numpy.nan
             self.bad_solution=True
-            self.spin=scipy.nan
 
         pickle_fname=self.output_directory+'solver_results_'+self.instance+'.pickle'
 
         print('pickle file name = ', pickle_fname)
+        
+        sys.stdout.flush()
         with open(pickle_fname,'wb') as f:
             pickle.dump(self.initial_orbital_period_sol,f)
             pickle.dump(self.initial_eccentricity_sol,f)
@@ -264,10 +253,7 @@ class InitialConditionSolver:
             pickle.dump(self.delta_p,f)
             pickle.dump(self.delta_e,f)
             pickle.dump(self.bad_solution,f)
-            pickle.dump(self.gsl_flag,f)
-            pickle.dump(self.binary_destroyed,f)
 
-        sys.stdout.flush()
         return self.spin
 
 

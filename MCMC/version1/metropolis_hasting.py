@@ -63,8 +63,6 @@ class MetropolisHastings:
                 'delta_e',
                 'delta_p',
                 'bad_solution_flag',
-                'gsl_flag',
-                'binary_destroyed'
                ]
 
 
@@ -114,7 +112,7 @@ class MetropolisHastings:
                                        )
 
         self.spin=model_calculations()
-        if numpy.isnan(self.spin) or numpy.isinf(self.spin):return scipy.nan
+        if numpy.isnan(self.spin):return numpy.nan
 
         print('Current Spin Value = ', self.spin)
         sys.stdout.flush()
@@ -209,8 +207,6 @@ class MetropolisHastings:
                 delta_e=pickle.load(f)
                 delta_p=pickle.load(f)
                 bad_solution=pickle.load(f)
-                gsl_flag=pickle.load(f)
-                binary_destroyed=pickle.load(f)
 
         with open(f_name, 'a', 1) as f:
 
@@ -240,8 +236,6 @@ class MetropolisHastings:
                     repr(delta_e)+'\t'+
                     repr(delta_p)+'\t'+
                     repr(bad_solution)+'\t'+
-                    repr(gsl_flag)+'\t'+
-                    repr(binary_destroyed)+
                     '\n')
             else:f.write('\n')
 
@@ -336,10 +330,7 @@ class MetropolisHastings:
             #calculating posterior probabilty for proposed values. a nan value for posterior will mean the mass calculations were out of range of the interpolator. New values will be proposed.
             self.proposed_posterior = self.posterior_probability(parameter_set=self.proposed_parameters)
             if numpy.isnan(self.proposed_posterior):
-                self.isAccepted = False
-                self.write_output()
-                self.iteration_step = self.iteration_step + 1
-                print('Cannot calclate model parameters')
+                print(f'Cannot calclate model parameters. Discarding parameters {self.proposed_parameters}')
                 sys.stdout.flush()
                 continue
 

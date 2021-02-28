@@ -15,7 +15,6 @@ with open('complete_chains.pickle','rb') as f:
 for system_name,parameters in D.items():
     if system_name==system:
         for param,value in parameters.items():
-            print(param)
             data.append(value)
 
 d=numpy.vstack(data)
