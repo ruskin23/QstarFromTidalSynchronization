@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #SBATCH -J MCMCU 
-#SBATCH -n 65  #Total number of tasks to run at one time
-#SBATCH -N 5  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/Run41/MCMCU.out
+#SBATCH -n 110  #Total number of tasks to run at one time
+#SBATCH -N 7  #Number of nodes on which to distribute the tasks evenly
+#SBATCH -o /home/rxp163130/scratch/Run42/MCMCU.out
 #SBATCH -t 4-00:00:00
 
 

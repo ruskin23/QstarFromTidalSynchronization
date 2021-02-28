@@ -1,13 +1,10 @@
 #!/bin/bash
 
 #SBATCH -J MCMCA 
-#SBATCH -n 90  #Total number of tasks to run at one time
+#SBATCH -n 95  #Total number of tasks to run at one time
 #SBATCH -N 6  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/Run41/MCMCA.out
+#SBATCH -o /home/rxp163130/scratch/Run42/MCMCA.out
 #SBATCH -t 4-00:00:00
-
-
-ulimit -S -m $((2*1024*1024))
 
 module load launcher
 
