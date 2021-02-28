@@ -25,6 +25,6 @@ for d in /work/06850/rpatel23/stampede2/poet/build/libs/*/shared/release; do
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
 
-export LAUNCHER_JOB_FILE=common
+export LAUNCHER_JOB_FILE=mixed
 
 $LAUNCHER_DIR/paramrun

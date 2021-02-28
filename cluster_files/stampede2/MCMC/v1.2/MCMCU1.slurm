@@ -4,7 +4,7 @@
 #SBATCH -J MCMCU1
 #SBATCH -o /scratch/06850/rpatel23/output/Run44/MCMCU1.R
 #SBATCH -N 1
-#SBATCH -n 25 
+#SBATCH -n 45 
 #SBATCH -t 2-00:00:00
 
 #SBATCH --mail-user=rxp153130@utdallas.edu
