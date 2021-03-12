@@ -3,7 +3,7 @@
 #SBATCH -J MCMCA 
 #SBATCH -n 95  #Total number of tasks to run at one time
 #SBATCH -N 6  #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/Run42/MCMCA.out
+#SBATCH -o /home/rxp163130/scratch/Run43/MCMCA.out
 #SBATCH -t 4-00:00:00
 
 module load launcher
