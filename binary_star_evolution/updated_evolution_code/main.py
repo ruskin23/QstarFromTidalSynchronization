@@ -15,6 +15,7 @@ from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from orbital_evolution.transformations import phase_lag
 
+import pickle
 import numpy
 import scipy
 import argparse
@@ -51,11 +52,8 @@ def plot_evolution(evolved_binary):
 
 def get_initial_conditions(evolution):
 
-    start_time=time.time()
-    evolution.calculate_intial_conditions()
-    time_spent=time.time()-start_time
-    print('time taken = ',time_spent)
-
+    results = evolution.calculate_intial_conditions()
+    return results
 
 def get_evolution(evolution):
 
@@ -67,8 +65,9 @@ def get_evolution(evolution):
     final_eccentricity=final_state.eccentricity
 
     print('Final Orbital Period = {} \nFinal Eccentricity = {} \n Final Spin ={}'.format(final_orbital_period,final_eccentricity,spin))
-    
+    return spin,final_orbital_period,final_eccentricity
     # plot_evolution(evolved_binary)
+
 
 
 if __name__=='__main__':
@@ -85,14 +84,8 @@ if __name__=='__main__':
                         help='decide if breaks needed or not')
 
     args = parser.parse_args()
+    breaks=float(args.breaks)
 
-    # orbital_evolution_library.read_eccentricity_expansion_coefficients(
-    #     b"eccentricity_expansion_coef.txt"
-    # )
-    # serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
-
-    # manager = StellarEvolutionManager(serialized_dir)
-    # interpolator = manager.get_interpolator_by_name('default')
 
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -104,11 +97,11 @@ if __name__=='__main__':
         eccentricity_path
     )
 
+    parameters=dict()
 
 
-
-    
     if args.system is not None:
+        parameters['system']=args.system
         with open('SpinlogQCatalog_el0.4.txt','r') as f:
             for lines in f:
                 x=lines.split()
@@ -123,7 +116,116 @@ if __name__=='__main__':
                     eccentricity=float(x[8])
                     Wdisk=4.1
                     # logQ=7.0
+
+    parameters['primary_mass']=primary_mass
+    parameters['secondary_mass']=secondary_mass
+    parameters['age']=age
+    parameters['feh']=feh
+    parameters['orbital_period']= orbital_period
+    parameters['eccentricity']=eccentricity
+    parameters['spin_period']=spin_period
+    # parameters['logQ']=logQ
+    parameters['Wdisk']=Wdisk
+
+    parameters['dissipation']=True
+    parameters['disk_dissipation_age']=5e-3
+    parameters['wind']=True
+    parameters['wind_saturation_frequency']=2.54
+    parameters['diff_rot_coupling_timescale']=5e-3
+    parameters['wind_strength']=0.17
+    parameters['print_cfile']=False
+    parameters['evolution_max_time_step']=1e-3
+    parameters['evolution_precision']=1e-6
+    parameters['inclination']=0.0
+    parameters['breaks']=True
+    parameters['spin_frequency_breaks']=None
+    parameters['spin_frequency_powers']=numpy.array([0.0])
+    parameters['tidal_frequency_breaks']=None
+    parameters['tidal_frequency_powers']=numpy.array([0.0])
+
+    Q_values=[5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,11.0,12]
     
+    with open(f'spin_vs_logQ_{breaks}.txt','w') as fr:
+        fr.write('logQ\tspin_constant_Q\tspin_freq_Q\tp_initial\te_initial\tp_final\te_final\tdelta_p\tdelta_e\n')
+        for q in Q_values:
+            print(f'Solving for logQ = {q}')
+            alpha=breaks
+            logQMax=4.0
+            logQ1=q
+            phase_lagMax=phase_lag(logQMax)
+            phase_lag1=phase_lag(logQ1)
+            omegaref1=2*numpy.pi
+            omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+            print(omegaref)
+            print(f'observed spin period={spin_period}')
+            parameters['logQ']=logQ1
+            parameters['tidal_frequency_breaks']=numpy.array([omegaref])
+            parameters['tidal_frequency_powers']=numpy.array([0,alpha])
+            evolution=Evolution(interpolator,parameters)
+            results =  evolution.calculate_intial_conditions()
+            fr.write(repr(q)+'\t'+
+                    repr(results['spin'])+'\t'+
+                    repr(results['p_initial'])+'\t'+
+                    repr(results['e_initial'])+'\t'+
+                    repr(results['p_final'])+'\t'+
+                    repr(results['e_final'])+'\t'+
+                    repr(results['delta_p'])+'\t'+
+                    repr(results['delta_e'])+'\n'
+                    )
+    # get_evolution(evolution)
+
+
+
+
+    # massratio=0.663
+    # with open('results.txt','w') as ff:
+    #     ff.write('porb_initial\te_initial\tWdisk\tlogQ\tprimary_mass\tage\tfeh\tporb_final\te_final\tspin\tfail\n')
+    #     with open('temp.out','r') as f:
+    #         for lines in f:
+    #             p=lines.split()
+    #             print(float(p[9][:-1]))
+    #             parameters['system']='1'
+    #             parameters['primary_mass']=float(p[9][:-1])
+    #             parameters['secondary_mass']=float(p[9][:-1])*massratio
+    #             parameters['age']=float(p[11][:-1])
+    #             parameters['feh']=float(p[13][:-1])
+    #             parameters['orbital_period']= float(p[1][:-1])
+    #             parameters['eccentricity']=float(p[3][:-1])
+    #             parameters['logQ']=float(p[7][:-1])
+    #             parameters['Wdisk']=float(p[5][:-1])
+
+
+    #             for item,value in parameters.items():
+    #                 print('{} = {}'.format(item,value))
+            
+    #             evolution=Evolution(interpolator,parameters)
+    #             evolved_binary=evolution.evolve_binary()
+    #             final_state=evolved_binary.final_state()
+    #             if final_state.age!=parameters['age']:
+    #                 spin,final_orbital_period,final_eccentricity=scipy.nan,scipy.nan,scipy.nan
+    #             else:
+    #                 spin = (2.0*numpy.pi*evolved_binary.primary.envelope_inertia(final_state.age)/
+    #                         final_state.primary_envelope_angmom)
+    #                 final_orbital_period=evolved_binary.orbital_period(final_state.semimajor)
+    #                 final_eccentricity=final_state.eccentricity
+
+    #             ff.write(repr(float(p[1][:-1]))+'\t'+
+    #                      repr(float(p[3][:-1]))+'\t'+
+    #                      repr(float(p[5][:-1]))+'\t'+
+    #                      repr(float(p[7][:-1]))+'\t'+
+    #                      repr(float(p[9][:-1]))+'\t'+
+    #                      repr(float(p[11][:-1]))+'\t'+
+    #                      repr(float(p[13][:-1]))+'\t'
+    #                      )
+    #             ff.write(repr(final_orbital_period)+'\t'+repr(final_eccentricity)+'\t'+repr(spin)+'\t'+repr(numpy.isnan(spin))+'\n')
+
+
+
+
+
+
+
+
     # with open('parameters.txt','r') as f:
     #     next(f)
     #     for lines in f:
@@ -154,88 +256,6 @@ if __name__=='__main__':
     #             secondary_mass=float(x[8])
     #             spin_period=10.778
     #             break
-
-
-    parameters=dict()
-
-    # if args.system is not None:parameters['system']=args.system
-
-    # parameters['primary_mass']= 1.022193732085151
-    # parameters['secondary_mass']=0.8539*parameters['primary_mass']
-    # parameters['age']=   1.936233718547847
-    # parameters['feh']=  -0.5085339379604049
-    # parameters['orbital_period']= 4.306
-    # parameters['eccentricity']=0.035
-    # parameters['spin_period']=4.0
-    # # parameters['logQ']=    8.006006006006006
-    # parameters['Wdisk']= 4.1
-
-
-    # parameters['primary_mass']=primary_mass
-    # parameters['secondary_mass']=secondary_mass
-    # parameters['age']=age
-    # parameters['feh']=feh
-    # parameters['orbital_period']= orbital_period
-    # parameters['eccentricity']=eccentricity
-    # parameters['spin_period']=spin_period
-    # parameters['logQ']=logQ
-    # parameters['Wdisk']=Wdisk
-
-    parameters['dissipation']=True
-    parameters['disk_dissipation_age']=5e-3
-    parameters['wind']=True
-    parameters['wind_saturation_frequency']=2.54
-    parameters['diff_rot_coupling_timescale']=5e-3
-    parameters['wind_strength']=0.17
-    parameters['print_cfile']=False
-    parameters['evolution_max_time_step']=1e-3
-    parameters['evolution_precision']=1e-6
-    parameters['inclination']=numpy.pi/2
-    parameters['breaks']=True
-    parameters['spin_frequency_breaks']=None
-    parameters['spin_frequency_powers']=numpy.array([0.0])
-    # parameters['tidal_frequency_breaks']=None
-    # parameters['tidal_frequency_powers']=numpy.array([0.0])
-
-    for item,value in parameters.items():
-        print('{} = {}'.format(item,value))
-
-    # start_time=time.time()
-    # evolution=Evolution(interpolator,parameters)
-    # evolution.calculate_intial_conditions()
-    # time_spent=time.time()-start_time
-    # print('time_spent = ',time_spent)
-
-    # evolution=Evolution(interpolator,parameters)
-    # get_evolution(evolution)
-
-    alpha=-1.0
-    logQMax=4.0
-    logQ1=8.006006006006006
-    phase_lagMax=phase_lag(logQMax)
-    phase_lag1=phase_lag(logQ1)
-    omegaref1=2*numpy.pi
-    omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
-    print(omegaref)
-    print(f'spin period={4.218290759468918}')
-    parameters['logQ']=logQ1
-    parameters['tidal_frequency_breaks']=numpy.array([omegaref])
-    parameters['tidal_frequency_powers']=numpy.array([0,alpha])
-    evolution=Evolution(interpolator,parameters)
-    evolution.calculate_intial_conditions()
-    # get_evolution(evolution)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

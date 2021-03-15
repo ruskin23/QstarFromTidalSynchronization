@@ -45,8 +45,9 @@ class Evolution:
                                       self.parameters,
                                       secondary_angmom=SecondaryAngmom())
 
-        FindIC(primary,secondary)
+        spin = FindIC(primary,secondary)
 
+        return spin
 
 
     def evolve_binary(self,
@@ -95,12 +96,13 @@ class Evolution:
                 eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt")
         else:
             binary.evolve(self.age,
-                          self.evolution_max_time_step,
-                          self.evolution_precision,
-                          None,
-                          timeout=3600)
+                        self.evolution_max_time_step,
+                        self.evolution_precision,
+                        None,
+                        timeout=3600)
+            return binary
 
-        return binary
+        
 
     def __init__(self,
                  interpolator,

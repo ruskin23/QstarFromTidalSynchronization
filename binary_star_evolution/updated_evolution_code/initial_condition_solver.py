@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
-import shelve
-
 import sys
+import os
+from pathlib import Path
+from directories import directories
 
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
 
 
 from stellar_evolution.manager import StellarEvolutionManager
@@ -24,8 +27,7 @@ from math import pi
 import scipy
 from scipy import optimize
 import numpy
-
-from multiprocessing import Pool
+import pickle
 
 wsun = 0.24795522138
 
@@ -150,11 +152,11 @@ class InitialConditionSolver:
             sol = optimize.root(self.initial_condition_errfunc,
                                 initial_guess,
                                 method='lm',
-                                tol=1e-6
+                                tol=1e-6,
+                                options={'maxiter':20}
                                 )
             initial_orbital_period_sol,initial_eccentricity_sol=sol.x
-        except Exception as e:
-            print(e)
+        except:
             initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
 
 
@@ -163,4 +165,15 @@ class InitialConditionSolver:
         print('Final Orbital Period = {} , Final Eccentricity = {}'.format(self.final_orbital_period,self.final_eccentricity))
         print('Errors: delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e))
         print('Final Spin Period = {}'.format(self.spin))
+
+        results=dict()
+        results['p_initial']=initial_orbital_period_sol
+        results['e_initial']=initial_eccentricity_sol
+        results['p_final']=self.final_orbital_period
+        results['e_final']=self.final_eccentricity
+        results['delta_p']=self.delta_p
+        results['delta_e']=self.delta_e
+
+
+        return results
 
