@@ -55,79 +55,109 @@ def kde(x,x_array,h=None):
     return f/(n*h)
     
 
-s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
-M=numpy.ones(100000)
-PDF=[]
-for system in s:
-    print(system)
-    logQ_raw=get_chain(system)
 
-    x=numpy.linspace(5,12,100000)
-    f=kde(x,logQ_raw)
-    PDF.append(f)
-    M=M*f
-    plt.xlim(5,12)
-    plt.plot(x,f,color='blue')
-    plt.savefig(f'pdf/gauss_kde_new/system_{system}.png')
-    plt.close()
-        
+def get_pdfs(s,save_plots=False,dump_pdf=False):
 
-dataset=dict()
-for name,array in zip(s,PDF):
-    dataset[name]=array
-dataset['M']=M
+    M=numpy.ones(100000)
+    PDF=[]
+    for system in s:
+        print(system)
+        logQ_raw=get_chain(system)
 
-with open('all_pdf_data.pickle','wb') as f:
-    pickle.dump(dataset,f)
-
-
-
-    # cdf=_cummulative_distribution(logQ_raw)
-    # Z=list(zip(*cdf))
-    # logQ_values=list(Z[0])
-    # P=list(Z[1])
-    # logQ=[]
-    # P_idx=[]
-    # for q in logQ_values:
-    #     if q not in logQ:logQ.append(q)
-    #     else:
-    #         print(q)
-    #         P_idx.append(logQ.index(q))
-    # logQ=numpy.array(logQ)
-    # P=numpy.array(P)
-    # P=numpy.delete(P,P_idx)
-    # print(f'system={system} logQ_min={min(logQ)} logQ_max={max(logQ)}')
-    # plt.plot(logQ,P,color='red')
-
-    # q_diff=[]
-    # p_diff=[]
-    # r=[]
-    # for i in range(1,len(logQ)):
-    #     q_diff.append(logQ[i]-logQ[i-1])
-    #     p_diff.append(P[i]-P[i-1])
-    #     r.append((P[i]-P[i-1])/(logQ[i]-logQ[i-1]))
-    # N=1
-    # count=len([i for i in r if i>N])
-    # print(f'total={len(logQ)},greater than {N}={count}, remaining={len(logQ)-count}')
-
-    # g_idx=[idx+1 for idx,val in enumerate(r) if val>N]+[idx for idx,val in enumerate(r) if val>N]
-    # logQ_new=[val for idx,val in enumerate(logQ) if idx not in g_idx]
-    # P_new=[val for idx,val in enumerate(P) if idx not in g_idx]
-    # print(len(logQ),len(logQ_new))
-    # plt.plot(logQ_new,P_new)
+        x=numpy.linspace(5,12,100000)
+        f=kde(x,logQ_raw)
+        PDF.append(f)
+        M=M*f
+        if save_plots==True:
+            plt.xlim(5,12)
+            plt.plot(x,f,color='blue')
+            plt.savefig(f'pdf/gauss_kde_new/system_{system}.png')
+            plt.close()
     
-    # spl=interpolate.UnivariateSpline(logQ,P,s=0.02)
-    # x=numpy.linspace(min(logQ),max(logQ),10000)
-    # y=spl(x)
-    # plt.plot(x,y,color='green')
-    # plt.show()
+    dataset=dict()
+    for name,array in zip(s,PDF):
+        dataset[name]=array
+    dataset['M']=M
 
-    # deriv=[]
-    # x_new=[]
-    # for i in range(1,len(x)):
-    #     dx=x[i]-x[i-1]
-    #     x_new.append(x[i-1]+dx/2)
-    #     deriv.append( (y[i]-y[i-1]) / dx )
-    # deriv=deriv/max(deriv)
-    # plt.plot(x_new,deriv,'black')
-    # plt.show()
+    if dump_pdf==True:
+        with open('all_pdf_data.pickle','wb') as f:
+            pickle.dump(dataset,f)
+
+    return dataset        
+
+
+
+def discard_low_e_system(s):
+    
+    Q=numpy.linspace(5,12,100000)
+
+    s_remove=[]
+    with open('../SpinlogQCatalog_el0.4.txt','r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            if float(x[8])<0.1 and x[0] not in ['106','86']:
+                s_remove.append(x[0])
+    
+    s_new=[systems for systems in s if systems not in s_remove]
+
+    with open('all_pdf_data.pickle','rb') as f:
+        D=pickle.load(f)
+    
+    M_old=D['M']/interpolate.InterpolatedUnivariateSpline(Q,D['M']).integral(5,12)
+    M_new=numpy.ones(100000)
+    for system in s_new:
+        M_new=M_new*D[system]
+    M_new=M_new/interpolate.InterpolatedUnivariateSpline(Q,M_new).integral(5,12)
+
+    plt.plot(Q,M_old,color='g')
+    plt.plot(Q,M_new,color='r')
+    plt.show()
+    
+
+def plot_parameters(system,param1,param2):
+
+    with open('../complete_chains.pickle','rb') as f:
+        D=pickle.load(f)
+    
+    for s,_ in D.items():
+        if s==system:
+            p_1=D[s][param1]
+            p_2=D[s][param2]
+            break
+
+
+    plt.scatter(p_1,p_2)
+    # p_1_min,p_2_min=min(p_1),min(p_1)
+    # p_1_max,p_2_max=max(p_1),max(p_2)
+
+    # p_1_bins=numpy.linspace(p_1_min,p_1_max,100)
+    # p_2_bins=numpy.linspace(p_2_min,p_2_max,100)
+
+    # plt.hist2d(p_1,p_2,bins=[p_1_bins,p_2_bins])
+    # plt.ylim(8.0,15.0)
+
+    # heatmap, xedges, yedges = numpy.histogram2d(p_1, p_2, bins=50)
+    # print(xedges,yedges)
+    # extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+    # plt.clf()
+    # plt.imshow(heatmap.T, extent=extent, origin='lower')
+
+
+    # spin_min=10.778-0.38400000000000034
+    # spin_max=10.778+0.38400000000000034
+    # spin_value=10.778  
+
+    # plt.axhline(y=spin_min,color='r',linestyle='--')
+    # plt.axhline(y=spin_max,color='r',linestyle='--')
+    # plt.axhline(y=spin_value,color='k')
+    plt.show()
+
+if __name__=='__main__':
+
+    s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
+
+
+    # discard_low_e_system(s)
+    plot_parameters('1','logQ','Spin')

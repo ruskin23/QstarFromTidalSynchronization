@@ -2,7 +2,7 @@ import numpy
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from ks_tests import _fill_parameters
-from utils import _get_filename
+import utils 
 import corner
 
 def continuity_check(it,filename):
@@ -13,7 +13,7 @@ def continuity_check(it,filename):
 
 def save_chains():
 
-    pp = PdfPages('time_series_mcmc.pdf')
+    pp = PdfPages('time_series_mcmc_spin.pdf')
 
     plt.rc('xtick',labelsize=30)
     plt.rc('ytick',labelsize=30)
@@ -41,7 +41,7 @@ def save_chains():
                     for lines in f:
                         x=lines.split()
                         it.append(int(x[0]))
-                        values.append(float(x[4]))
+                        values.append(float(x[15]))
                         #values.append(float(x[parameters.index('logQ')]))
                 #continuity_check(it,filename)
                 ITERATIONS.append(it)
@@ -65,8 +65,8 @@ def countours(s):
     
     # for c in ['ganymede','stampede']:
     #     for i in range(5):
-    chain_file=_get_filename(s,'ganymede',1)
-    filled_file=_fill_parameters(chain_file)
+    chain_file=utils._get_filename(s,'ganymede',1)
+    filled_file=utils._fill_parameters(chain_file)
 
     data=[]
     with open(filled_file,'r') as f:

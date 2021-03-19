@@ -5,24 +5,58 @@ import numpy
 import matplotlib.pyplot as plt
 
 
-def gr_test(chains):
+def degree_of_freedoms(N,M,s_array,x_mean_array,total_mean,B,V):
 
+    f1 = (((N-1)/N)**2)*(1/M)*numpy.var(s_array)
+    f2 = (((M+1)/(M*N))**2)*(2/(M-1))*B*B
+    f3 = 2*((M+1)*(N+1))/(M*N*N)
+    # X=numpy.stack((s_array,x_mean_array**2),axis=0)
+    f4 = (N/M)*(numpy.cov(s_array,x_mean_array**2)[0][1]-2*total_mean*numpy.cov(s_array,x_mean_array)[0][1])
+    print(f'f1 = {f1} f2 = {f2} f3 = {f3} f4 = {f4}')
+
+    var_V = f1 + f2 + f3*f4
+    df = (2*V*V)/(var_V)
+    return df
+
+def gr_test(chains):
+ 
     N=len(chains[0])
     M=10
     chains=numpy.array(chains)
     total_mean=numpy.mean(chains)
 
     #between chain variance
-    B=N*numpy.mean((numpy.mean(chains,axis=1)-total_mean)**2,)*(M/(M-1))
+    B=0
+    x_mean_array=[]
+    for c in chains:
+        B=B+((numpy.mean(c)-total_mean)**2)
+        x_mean_array.append(numpy.mean(c))
+    x_mean_array=numpy.array(x_mean_array)
+    B=B*(N/(M-1))
+    # B=N*numpy.mean((numpy.mean(chains,axis=1)-total_mean)**2,)*(M/(M-1))
 
     #within chain variance
-    W=numpy.mean(numpy.var(chains,axis=1))
+    W=0
+    s_array=[]
+    for c in chains:
+        W=W+(numpy.var(c))
+        s_array.append(numpy.var(c))
+    s_array=numpy.array(s_array)
+    W=W/M
+    # W=numpy.mean(numpy.var(chains,axis=1))
 
     #target variance
+    # var_target=(((N-1)/N)*W) + (((M+1)/(M*N))*B)
     var_target=((N-1)/N)*W + B/N
+    V = var_target + B/(M*N)
+
+    #correction
+    # df=degree_of_freedoms(N,M,s_array,x_mean_array,total_mean,B,V)
 
     #GR statistics
-    R=numpy.sqrt(var_target/W)
+    R=V/W
+    R=numpy.sqrt(R)
+    # R=numpy.sqrt(R*(df/(df-2)))
 
     return N,B,W,R
 
@@ -31,13 +65,12 @@ def reduce_chain(CHAINS,l_chain):
 
     print(f'min len = {min(l_chain)} max len = {max(l_chain)}')
     min_len=min(l_chain)
-    max_len=max(l_chain)
-    min_chain_idx=l_chain.index(min_len)
 
     CHAINS_R=[]
 
     for c in CHAINS:
         chain_sliced=c[:min_len]
+        # chain_thinned=chain_sliced[::10]
         CHAINS_R.append(chain_sliced)
 
     # for _,c in enumerate(CHAINS):
@@ -96,7 +129,7 @@ def get_chains(system):
             CHAINS.append(chain_fixed)
             
     C=reduce_chain(CHAINS,l_chain)
-    
+    print(len(C[0]))
     # for i in range(10):
     #     CHAINS[i]=CHAINS[i][-min_len:-1]
 
@@ -142,5 +175,8 @@ if __name__=='__main__':
     plt.hlines(1.1,min(N),max(N),linestyles='dashed',color='b',label=1.1)
     plt.hlines(1.2,min(N),max(N),linestyles='dashed',color='m',label=1.2)
     plt.legend()
+    plt.title('Gelman-Rubin Test')
+    plt.xlabel('Length of each chain')
+    plt.ylabel('R')
     plt.show()
-    plt.savefig('gl_min_start.png')
+    # plt.savefig('gl_min_start.png')

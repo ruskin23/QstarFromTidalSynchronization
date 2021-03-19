@@ -39,7 +39,7 @@ def create_planet(mass=(constants.M_jup / constants.M_sun).to('')):
 
 def create_star(mass, dissipation, interpolator, convective_phase_lag, wind=True):
     star = EvolvingStar(mass=mass,
-                        metallicity=-0.4263598250304539,
+                        metallicity= 0.02,
                         wind_strength=0.17 if wind else 0.0,
                         wind_saturation_frequency=2.54,
                         diff_rot_coupling_timescale=5.0e-3,
@@ -139,14 +139,16 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
     pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
 
     pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
+    pyplot.xlim(5e-3,age)
+    pyplot.ylim(0,100)
     pyplot.legend(loc='upper right')
     pyplot.ylabel('Spin Freuqncy')
     pyplot.xlabel('age')
     #pyplot.axhline(y=wsat/wsun)
-    pyplot.ylim(top=100)
-    pyplot.ylim(bottom=-20)
-    pyplot.show()
-    #pyplot.savefig('evolutionlogq6.pdf')
+    # pyplot.ylim(top=100)
+    # pyplot.ylim(bottom=-20)
+    # pyplot.show()
+    pyplot.savefig('evolutionlogq10.png')
 
     return evolution
 
@@ -182,13 +184,12 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 6.60424767211282
-    primary_mass = 1.0571084005376594
-    secondary_mass = 0.6406076907258216
-    initial_disk_period = 2*numpy.pi/4.333365662368658
-    initial_orbital_period =10.738951826364838
-    initial_eccentricity=0.08253709903899567
-    #teff=5873.306906
+    age = 8.0
+    primary_mass = 1.0
+    secondary_mass = 1.0
+    initial_disk_period = 2*numpy.pi/4.1
+    initial_orbital_period = 10
+    initial_eccentricity= 0.1
 
     print(convective_phase_lag)
 
@@ -231,8 +232,6 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
     print("BINARY STAR SYSTEM CREATED")
 
-    #print(numpy.array([disk_state.envelope_angmom, disk_state.core_angmom]))
-
     evolution = plot_evolution(age,binary, wsat=2.54,
                                style=dict(orb='xr', core='xb', env='xg', sec_env=':c', sec_core=':m'))
 
@@ -240,9 +239,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
     disk_state = binary.final_state()
 
-    #print (disk_state.envelope_angmom)
-
-    #output_evolution(evolution, binary)
+    print (disk_state.age)
 
     primary.delete()
     secondary.delete()
@@ -258,5 +255,5 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 10.906676885551768
+    logQ = 10
     test_evolution(interpolator,  phase_lag(logQ), True)

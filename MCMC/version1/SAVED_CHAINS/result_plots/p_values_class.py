@@ -199,14 +199,27 @@ if __name__=='__main__':
     P=p_value(M_mean,M_interp,M_Z)
     
     f=open(f'{method}.txt','w',1)
-    f.write('System\tp-value(s)\n')
+    f.write('KIC\tE[p(Q)]\n')
+    N10=0
+    N1=0
     for system in s:
         print(f'\nSystem: {system}')
         value=P(system,method)
+        if numpy.logical_and(value*100<10,
+                             value*100>1):N10=N10+1
+        if value*100<1:N1=N1+1
         print(f'Obtained values: {value}')
+        with open('../SpinlogQCatalog_el0.4.txt','r') as catalog:
+            for lines in catalog:
+                sp=lines.split()
+                if sp[0]==system:
+                    KIC=sp[1]
+                    break
         if method=='p_E':
-            f.write(system+'\t'+repr(value)+'\n')
-        else:f.write(system+'\t'+repr(value)+'\n')
+            f.write(KIC+'\t'+repr(value)+'\n')
+        else:f.write(KIC+'\t'+repr(value)+'\n')
 
     f.close()
+    print(N10)
+    print(N1)
 

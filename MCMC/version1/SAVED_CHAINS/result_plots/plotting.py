@@ -119,46 +119,71 @@ def get_samples(system,parameter):
     return param_values,param_cdf,param_interp,param_reverse_interp
 
 def logQ_parameter_plots(s):
-    parameters=['Porb','eccentricity','Wdisk','primary_mass','age','feh']
+    # parameters=['Porb','eccentricity','Wdisk','primary_mass','age','feh']
 
-    for parameter in parameters:
-        print(f'\n{parameter}')
+    teff_values=[]
+    teff_errors=[]
+    logQ_errors=[]
+    logQ_means=[]
+    
+    for system in s:
+        print(system)
 
-        mass_error=[]
-        logQ_error=[]
+        with open('../SpinlogQCatalog_el0.4.txt','r') as f:
+            for lines in f:
+                x=lines.split()
+                if x[0]==system:
+                    teff_values.append(float(x[2]))
+                    teff_errors.append(float(x[3]))
+        _,_,_,logQ_reverse_interp=get_samples(system,'logQ')
+        
+        logQ_lower_limit=logQ_reverse_interp(0.3125)
+        logQ_upper_limit=logQ_reverse_interp(0.6875)
+        logQ_errors.append(logQ_upper_limit-logQ_lower_limit)
+        logQ_means.append(logQ_reverse_interp(0.5))
+    
+    plt.scatter(teff_values,logQ_means)
+    plt.errorbar(teff_values,logQ_means,xerr=teff_errors,yerr=logQ_errors,linestyle='None')
+    plt.savefig('pdf/logQ_temp.png')
 
-        mass_mean=[]
-        logQ_mean=[]
+    # for parameter in parameters:
+    #     print(f'\n{parameter}')
 
-        for system in s:        
-            print(system)
-            _,_,_,mass_reverse_interp=get_samples(system,parameter)
-            _,_,_,logQ_reverse_interp=get_samples(system,'logQ')
+    #     mass_error=[]
+    #     logQ_error=[]
 
-            mass_lower_limit=mass_reverse_interp(0.3125)
-            logQ_lower_limit=logQ_reverse_interp(0.3125)
+    #     mass_mean=[]
+    #     logQ_mean=[]
 
-            mass_upper_limit=mass_reverse_interp(0.6875)
-            logQ_upper_limit=logQ_reverse_interp(0.6875)
+    #     for system in s:        
+    #         print(system)
+    #         _,_,_,mass_reverse_interp=get_samples(system,parameter)
+    #         _,_,_,logQ_reverse_interp=get_samples(system,'logQ')
 
-            mass_error.append(mass_upper_limit-mass_lower_limit)
-            logQ_error.append(logQ_upper_limit-logQ_lower_limit)
+    #         mass_lower_limit=mass_reverse_interp(0.3125)
+    #         logQ_lower_limit=logQ_reverse_interp(0.3125)
 
-            mass_mean.append(mass_reverse_interp(0.5))
-            logQ_mean.append(logQ_reverse_interp(0.5))
+    #         mass_upper_limit=mass_reverse_interp(0.6875)
+    #         logQ_upper_limit=logQ_reverse_interp(0.6875)
 
-        plt.scatter(logQ_mean,mass_mean)
-        plt.errorbar(logQ_mean,mass_mean,xerr=logQ_error,yerr=mass_error,linestyle='None')
-        plt.xlabel('logQ')
-        plt.ylabel(parameter)
-        plt.savefig(f'pdf/logQ_{parameter}.png')
-        plt.close()   
+    #         mass_error.append(mass_upper_limit-mass_lower_limit)
+    #         logQ_error.append(logQ_upper_limit-logQ_lower_limit)
+
+    #         mass_mean.append(mass_reverse_interp(0.5))
+    #         logQ_mean.append(logQ_reverse_interp(0.5))
+
+    #     plt.scatter(logQ_mean,mass_mean)
+    #     plt.errorbar(logQ_mean,mass_mean,xerr=logQ_error,yerr=mass_error,linestyle='None')
+    #     plt.xlabel('logQ')
+    #     plt.ylabel(parameter)
+    #     plt.savefig(f'pdf/logQ_{parameter}.png')
+    #     plt.close()   
 
 s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
-with open('all_pdf_data.pickle','rb') as f:
-    D=pickle.load(f)
+# with open('all_pdf_data.pickle','rb') as f:
+#     D=pickle.load(f)
 
-M=D['M']
-logQ_M_plots(s,D,M)
-logQ_subplot(s,D,M)
-
+# M=D['M']
+# logQ_M_plots(s,D,M)
+# logQ_subplot(s,D,M)
+logQ_parameter_plots(s)

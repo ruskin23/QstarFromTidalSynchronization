@@ -18,7 +18,7 @@ import pickle
 
 s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '57', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
 
-
+s=['1']
 params=dict()
 parameters=['Porb','eccentricity','Wdisk','logQ','primary_mass','age','feh','Spin']
 
@@ -44,13 +44,14 @@ for system in s:
         delete_idx=numpy.concatenate((delete_idx,idx[0]),axis=None)
     delete_idx=delete_idx.astype(int)
     logQ=numpy.delete(logQ_values,delete_idx)
-
     for p in parameters:
-        if p=='logQ':D[p]=logQ
+        if p=='logQ':
+            D[p]=logQ
         else:
             param_values=utils._get_filled_chain(system,p)
             param_values=numpy.delete(param_values,delete_idx)
             D[p]=param_values
     params[system]=D  
+    
 with open('complete_chains.pickle','wb') as f:
     pickle.dump(params,f)

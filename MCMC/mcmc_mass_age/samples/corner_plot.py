@@ -37,4 +37,5 @@ figure=corner.corner(d,
 
 plt.figure(1)
 plt.plot()
+plt.show()
 #plt.savefig('massMCMC_'+system+'.eps')

@@ -38,6 +38,8 @@ import sys
 
 Porb=[]
 e=[]
+de_upper=[]
+de_lower=[]
 i=0
 with open('windemuth_orbital_raw.txt','r') as f:
     next(f)
@@ -51,16 +53,31 @@ with open('windemuth_orbital_raw.txt','r') as f:
         #        y=glines.split()
         #        cat_KIC=y[1]
         #        if cat_KIC==nc_KIC:
-        if float(x[1])<30 and (abs(numpy.sqrt((float(x[7])**2) +
-                                              (float(x[10])**2))))<0.5:
+        e1=float(x[7])
+        e2=float(x[10])
+        e_value=abs(numpy.sqrt(e1**2 + e2**2))
+        delta_e1_upper=float(x[8])
+        delta_e1_lower=float(x[9])
+        delta_e2_upper=float(x[11])
+        delta_e2_lower=float(x[12])
+        e1_r=e1/e_value
+        e2_r=e2/e_value
+        if float(x[1])<30 and e_value<0.5:
             Porb.append(float(x[1]))
-            e.append(abs(numpy.sqrt((float(x[7])**2) + (float(x[10])**2))))
-        #            break
+            e.append(e_value)
+            de_upper.append((e1_r*delta_e1_upper) + (e2_r*delta_e2_upper))
+            de_lower.append((e1_r*delta_e1_lower) + (e2_r*delta_e2_lower))
             i=i+1
 
 print(i)
+e=numpy.array(e)
+de_lower=numpy.array(de_lower)
+de_upper=numpy.array(de_upper)
+errors=numpy.vstack([de_lower,de_upper])
+
 plt.scatter(Porb,e)
 plt.xscale('log')
 plt.xlabel('Orbital Period (days)')
 plt.ylabel('Eccentricity')
-plt.savefig('windemuth_cat.pdf')
+plt.show()
+#plt.savefig('windemuth_cat.pdf')

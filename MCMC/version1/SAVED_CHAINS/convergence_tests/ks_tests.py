@@ -4,7 +4,8 @@ from scipy import stats
 from utils import _cummulative_distribution
 from utils import _get_filename
 from utils import _write_on_file
-from utils import _fill_parameters
+from utils import _get_chain
+from utils import _fill_parameters,adjust_chain
 
 clusters=['ganymede','stampede']
 
@@ -22,13 +23,14 @@ def get_cdf(filled_filename):
     return _cummulative_distribution(samples)
 
 
-def get_chain(chain_filename):
+def get_chain(system,chain_filename):
     CHAIN=[]
     with open(chain_filename,'r') as f:
         next(f)
         for lines in f:
             x=lines.split()
             CHAIN=numpy.append(CHAIN,float(x[4]))
+    CHAIN=adjust_chain(system,CHAIN)
     return CHAIN
 
 
@@ -46,13 +48,15 @@ def break_chain(system,percent_break):
     for c in clusters:
         for i in range(5):
             
-            complete_chain=get_chain(_fill_parameters(_get_filename(system,c,i+1)))
+            complete_chain=get_chain(system,_fill_parameters(_get_filename(system,c,i+1)))
             for k,v in enumerate(complete_chain):
                 if k<int(len(complete_chain)*(percent_break/100)): chain1=numpy.append(chain1,v)
                 else:chain2=numpy.append(chain2,v)
             #split_chain=numpy.split(complete_chain,[int(len(complete_chain)*(percent_break/100))])
     print(repr(get_stats(chain1,chain2)))
     return [chain1,chain2]
+
+
 
 
 def all_chains(system):
@@ -72,8 +76,8 @@ def all_chains(system):
             if j<5:j_filename='ganymede chain '+str(j+1)
             else:j_filename='stampede chain '+str(j-4)
             comparison_between='For '+ i_filename + ' and ' + j_filename
-            chain1=get_chain(chain_filenames[i])
-            chain2=get_chain(chain_filenames[j])
+            chain1=get_chain(system,chain_filenames[i])
+            chain2=get_chain(system,chain_filenames[j])
             print(comparison_between,get_stats(chain1,chain2))
 
 
@@ -87,25 +91,26 @@ def plot_chain(chain,label=None):
 if __name__ == '__main__':
 
     #system='28'
-    systems=['85', '73', '76', '96', '92', '81', '80', '36', '93', '83', '84', '94', '32', '79', '106', '123', '50', '47', '39', '56', '126', '54', '109', '44', '48', '17', '70', '8', '12', '88', '67', '20', '95', '25', '137', '120', '86', '43', '28', '13']
-    #systems=['93']
+    s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
+    # s=['73']
     #all_chains(system)
 
-    for system in systems:
+    for system in s:
         print('System = ',system)
         chains=break_chain(system,50)
 
-        with open('chain_files/chain_'+system+'_1.csv','w') as f:
-            for c in chains[0]:
-                f.write(repr(c)+'\n')
+        # with open('chain_files/chain_'+system+'_1.csv','w') as f:
+        #     for c in chains[0]:
+        #         f.write(repr(c)+'\n')
 
-        with open('chain_files/chain_'+system+'_2.csv','w') as f:
-            for c in chains[1]:
-                f.write(repr(c)+'\n')
+        # with open('chain_files/chain_'+system+'_2.csv','w') as f:
+        #     for c in chains[1]:
+        #         f.write(repr(c)+'\n')
 
-    #for i,c in enumerate(chains):
-    #    plot_chain(c,label='part'+str(i+1))
-    #complete_chain=numpy.concatenate([chains[0],chains[1]])
-    #plot_chain(complete_chain,label='complete')
-    #plt.legend()
-    #plt.show()
+    for i,c in enumerate(chains):
+       plot_chain(c,label='part'+str(i+1))
+    complete_chain=numpy.concatenate([chains[0],chains[1]])
+    plot_chain(complete_chain,label='complete')
+    plt.legend()
+    plt.show()
+
