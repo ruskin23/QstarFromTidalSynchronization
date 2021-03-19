@@ -172,7 +172,7 @@ if __name__=='__main__':
                     repr(results['delta_p'])+'\t'+
                     repr(results['delta_e'])+'\n'
                     )
-    # get_evolution(evolution)
+    get_evolution(evolution)
 
 
 

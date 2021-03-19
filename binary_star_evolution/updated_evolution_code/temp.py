@@ -18,14 +18,29 @@
 #                         )
 
 
-import sys
-import os
-from pathlib import Path
-from directories import directories
+# import sys
+# import os
+# from pathlib import Path
+# from directories import directories
 
-home_dir=str(Path.home())
-path=directories(home_dir)
-sys.path.append(path.poet_path+'/PythonPackage')
-sys.path.append(path.poet_path+'/scripts')
+# home_dir=str(Path.home())
+# path=directories(home_dir)
+# sys.path.append(path.poet_path+'/PythonPackage')
+# sys.path.append(path.poet_path+'/scripts')
 
-print(f'{path.results_directory}/spin.txt')
+# print(f'{path.results_directory}/spin.txt')
+
+import numpy
+s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
+
+with open('SpinlogQCatalog_el0.4.txt','r') as f:
+    next (f)
+    for lines in f:
+        x=lines.split()
+        if x[0] in s:
+            teff_lower=float(x[2])-float(x[3])
+            teff_higher=float(x[2])+float(x[3])
+            for t in [teff_lower,teff_higher]:
+                if numpy.logical_and(t>3500,t<5000):
+                    print(f'System = {x[0]} teff_lower  = {teff_lower} teff_higher = {teff_higher}')
+                    break
