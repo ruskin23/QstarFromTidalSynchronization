@@ -173,7 +173,7 @@ class InitialConditionSolver:
         results['e_final']=self.final_eccentricity
         results['delta_p']=self.delta_p
         results['delta_e']=self.delta_e
-        results['spin'=self.spin]
+        results['spin']=self.spin
 
 
         return results
