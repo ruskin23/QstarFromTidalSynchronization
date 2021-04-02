@@ -1,0 +1,16 @@
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 81 -b 1.0 >/home/rxp163130/scratch/bianry_evolution_analysis/81.1.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 83 -b 1.0 >/home/rxp163130/scratch/bianry_evolution_analysis/83.1.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 84 -b 1.0 >/home/rxp163130/scratch/bianry_evolution_analysis/84.1.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 85 -b 1.0 >/home/rxp163130/scratch/bianry_evolution_analysis/85.1.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 81 -b 2.0 >/home/rxp163130/scratch/bianry_evolution_analysis/81.2.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 83 -b 2.0 >/home/rxp163130/scratch/bianry_evolution_analysis/83.2.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 84 -b 2.0 >/home/rxp163130/scratch/bianry_evolution_analysis/84.2.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 85 -b 2.0 >/home/rxp163130/scratch/bianry_evolution_analysis/85.2.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 81 -b 3.0 >/home/rxp163130/scratch/bianry_evolution_analysis/81.3.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 83 -b 3.0 >/home/rxp163130/scratch/bianry_evolution_analysis/83.3.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 84 -b 3.0 >/home/rxp163130/scratch/bianry_evolution_analysis/84.3.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 85 -b 3.0 >/home/rxp163130/scratch/bianry_evolution_analysis/85.3.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 81 -b 4.0 >/home/rxp163130/scratch/bianry_evolution_analysis/81.4.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 83 -b 4.0 >/home/rxp163130/scratch/bianry_evolution_analysis/83.4.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 84 -b 4.0 >/home/rxp163130/scratch/bianry_evolution_analysis/84.4.0.out
+python3 /home/rxp163130/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code/ganymede_main.py -s 85 -b 4.0 >/home/rxp163130/scratch/bianry_evolution_analysis/85.4.0.out

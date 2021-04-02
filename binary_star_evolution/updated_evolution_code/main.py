@@ -143,27 +143,22 @@ if __name__=='__main__':
     parameters['tidal_frequency_breaks']=None
     parameters['tidal_frequency_powers']=numpy.array([0.0])
 
-    Q_values=[5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,11.0,12]
-    
-    with open(f'spin_vs_logQ_{breaks}.txt','w') as fr:
+    logQ0=5.0
+
+    omega_ref_values=numpy.linspace(numpy.pi/10,4*numpy.pi,10)
+
+    with open(f'spin_vs_logQ_{breaks}.txt','w',1) as fr:
         fr.write('logQ\tspin_constant_Q\tspin_freq_Q\tp_initial\te_initial\tp_final\te_final\tdelta_p\tdelta_e\n')
-        for q in Q_values:
-            print(f'Solving for logQ = {q}')
+        for omega_ref in omega_ref_values:
+            print(f'Solving for omega_ref = {omega_ref}')
             alpha=breaks
-            logQMax=4.0
-            logQ1=q
-            phase_lagMax=phase_lag(logQMax)
-            phase_lag1=phase_lag(logQ1)
-            omegaref1=2*numpy.pi
-            omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
-            print(omegaref)
             print(f'observed spin period={spin_period}')
-            parameters['logQ']=logQ1
-            parameters['tidal_frequency_breaks']=numpy.array([omegaref])
-            parameters['tidal_frequency_powers']=numpy.array([0,alpha])
+            parameters['logQ']=logQ0
+            parameters['tidal_frequency_breaks']=numpy.array([omega_ref])
+            parameters['tidal_frequency_powers']=numpy.array([alpha,0])
             evolution=Evolution(interpolator,parameters)
             results =  evolution.calculate_intial_conditions()
-            fr.write(repr(q)+'\t'+
+            fr.write(repr(omega_ref)+'\t'+
                     repr(results['spin'])+'\t'+
                     repr(results['p_initial'])+'\t'+
                     repr(results['e_initial'])+'\t'+
@@ -172,7 +167,38 @@ if __name__=='__main__':
                     repr(results['delta_p'])+'\t'+
                     repr(results['delta_e'])+'\n'
                     )
-    get_evolution(evolution)
+
+
+
+
+    # with open(f'spin_vs_logQ_{breaks}.txt','w') as fr:
+    #     fr.write('logQ\tspin_constant_Q\tspin_freq_Q\tp_initial\te_initial\tp_final\te_final\tdelta_p\tdelta_e\n')
+    #     for q in Q_values:
+    #         print(f'Solving for logQ = {q}')
+    #         alpha=breaks
+    #         logQMax=4.0
+    #         logQ1=q
+    #         phase_lagMax=phase_lag(logQMax)
+    #         phase_lag1=phase_lag(logQ1)
+    #         omegaref1=2*numpy.pi
+    #         omegaref=omegaref1*((phase_lagMax/phase_lag1)**(1/alpha))
+    #         print(omegaref)
+    #         print(f'observed spin period={spin_period}')
+    #         parameters['logQ']=logQ1
+    #         parameters['tidal_frequency_breaks']=numpy.array([omegaref])
+    #         parameters['tidal_frequency_powers']=numpy.array([0,alpha])
+    #         evolution=Evolution(interpolator,parameters)
+    #         results =  evolution.calculate_intial_conditions()
+    #         fr.write(repr(q)+'\t'+
+    #                 repr(results['spin'])+'\t'+
+    #                 repr(results['p_initial'])+'\t'+
+    #                 repr(results['e_initial'])+'\t'+
+    #                 repr(results['p_final'])+'\t'+
+    #                 repr(results['e_final'])+'\t'+
+    #                 repr(results['delta_p'])+'\t'+
+    #                 repr(results['delta_e'])+'\n'
+    #                 )
+    # get_evolution(evolution)
 
 
 
@@ -197,7 +223,7 @@ if __name__=='__main__':
 
     #             for item,value in parameters.items():
     #                 print('{} = {}'.format(item,value))
-            
+
     #             evolution=Evolution(interpolator,parameters)
     #             evolved_binary=evolution.evolve_binary()
     #             final_state=evolved_binary.final_state()
@@ -240,7 +266,7 @@ if __name__=='__main__':
     #         Wdisk=float(x[7])
     #         secondary_mass=primary_mass*0.606
     #         spin_period=14.581
-                
+
     # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version1/SAVED_CHAINS/ganymede/MCMC_1/accepted_parameters_1.txt','r') as f:
     #     next(f)
     #     for lines in f:
