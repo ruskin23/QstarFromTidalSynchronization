@@ -1,0 +1,8 @@
+These .npz files contain the thinned (few x 10^4) version of chains from the full MCMC analysis, typically 128 walkers x ~100-1500k iterations. You can open the files in Python using Numpy with the np.load() function. 
+
+Each file contains:
+
+'thinned_chain' : 2d array sampling a few x 10^4 data points from full mcmc
+'thinned_by' : int specifying the numerical factor in thinning
+
+For details and discussion of these results, see Windemuth et al. (2019) DOI: 10.1093/mnras/stz2137

@@ -4,25 +4,44 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-# import sys
-# sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/PythonPackage')
-# sys.path.append('/Users/ruskinpatel/Desktop/Research/poet/scripts')
-
 import sys
+import os
+from pathlib import Path
+from directories import directories
 
-sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
-sys.path.append('/home/kpenev/projects/git/poet/scripts')
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
 
-from matplotlib import pyplot
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
+from orbital_evolution.transformations import phase_lag
+from matplotlib import pyplot
 from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
 from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 import numpy
 from astropy import units, constants
+
+
+# import sys
+
+# sys.path.append('/home/kpenev/projects/git/poet/PythonPackage')
+# sys.path.append('/home/kpenev/projects/git/poet/scripts')
+
+# from matplotlib import pyplot
+# from stellar_evolution.manager import StellarEvolutionManager
+# from orbital_evolution.evolve_interface import library as \
+#     orbital_evolution_library
+# from orbital_evolution.binary import Binary
+# from orbital_evolution.transformations import phase_lag
+# from orbital_evolution.star_interface import EvolvingStar
+# from orbital_evolution.planet_interface import LockedPlanet
+# import numpy
+# from astropy import units, constants
 
 wsun = 0.24795522138
 
@@ -248,12 +267,23 @@ def test_evolution(interpolator, convective_phase_lag, wind):
 
 if __name__ == '__main__':
 
+    serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
+    manager = StellarEvolutionManager(serialized_dir)
+    interpolator = manager.get_interpolator_by_name('default')
+
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        b"eccentricity_expansion_coef.txt"
+        eccentricity_path
     )
-    serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
+
+
+    # orbital_evolution_library.read_eccentricity_expansion_coefficients(
+    #     b"eccentricity_expansion_coef.txt"
+    # )
+    # serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 10
+    logQ = 5.5
     test_evolution(interpolator,  phase_lag(logQ), True)

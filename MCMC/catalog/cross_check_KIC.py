@@ -11,7 +11,7 @@ args = parser.parse_args()
 fname1=args.fname1
 fname2=args.fname2
 
-f3=open('cross_1.txt','w')
+f3=open('cross_1_test.txt','w')
 with open(fname1,'r') as f1:
     for line in f1:
         name = line.split()
@@ -29,7 +29,7 @@ with open(fname1,'r') as f1:
 
 f3.close()
 
-if os.stat('cross_1.txt').st_size != 0:
-    with open('cross_1.txt','r') as f:
+if os.stat('cross_1_test.txt').st_size != 0:
+    with open('cross_1_test.txt','r') as f:
         for line in f:
             print(line)

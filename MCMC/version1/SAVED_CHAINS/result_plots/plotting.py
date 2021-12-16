@@ -180,10 +180,10 @@ def logQ_parameter_plots(s):
     #     plt.close()   
 
 s=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
-# with open('all_pdf_data.pickle','rb') as f:
-#     D=pickle.load(f)
+with open('all_pdf_data.pickle','rb') as f:
+    D=pickle.load(f)
 
-# M=D['M']
+M=D['M']
 # logQ_M_plots(s,D,M)
-# logQ_subplot(s,D,M)
-logQ_parameter_plots(s)
+logQ_subplot(s,D,M)
+# logQ_parameter_plots(s)
