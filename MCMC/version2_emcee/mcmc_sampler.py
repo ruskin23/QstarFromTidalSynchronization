@@ -74,12 +74,12 @@ class sampler:
 
         self.params['logQ']=lgQ0
 
-        # self.params['tidal_frequency_breaks']=numpy.array([omegaref])
-        # self.params['tidal_frequency_powers']=tidal_power
+        self.params['tidal_frequency_breaks']=numpy.array([omegaref])
+        self.params['tidal_frequency_powers']=tidal_power
 
 
-        self.params['tidal_frequency_breaks']=None
-        self.params['tidal_frequency_powers']=numpy.array([0.0])
+        # self.params['tidal_frequency_breaks']=None
+        # self.params['tidal_frequency_powers']=numpy.array([0.0])
         self.params['spin_frequency_breaks']=None
         self.params['spin_frequency_powers']=numpy.array([0.0])
 

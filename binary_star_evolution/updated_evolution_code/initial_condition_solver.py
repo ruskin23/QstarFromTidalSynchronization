@@ -70,6 +70,8 @@ class InitialConditionSolver:
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
+        print(f'{self.final_orbital_period}\t{self.final_eccentricity}')
+
         self.delta_p=self.final_orbital_period-self.target_orbital_period
         self.delta_e=self.final_eccentricity-self.target_eccentricity
 

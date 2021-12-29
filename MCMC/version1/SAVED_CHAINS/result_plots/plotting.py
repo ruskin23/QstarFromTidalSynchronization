@@ -27,7 +27,7 @@ def logQ_subplot(s,D,M):
     # _,axs=plt.subplots(7,6,sharex='col',sharey='row')
     plt.figure(figsize=(15,10))
     gs1=gridspec.GridSpec(6,7)
-    gs1.update(wspace=0.0, hspace=0.0)
+    gs1.update(wspace=0.1, hspace=0.1)
 
     for i in range(41):
 
@@ -41,8 +41,8 @@ def logQ_subplot(s,D,M):
         ax1.plot(x,M)
         # ax1.set_xticklabels([])
         # ax1.set_yticklabels([])
-        ax1.tick_params(axis='x', labelsize= 5)
-        ax1.tick_params(axis='y', labelsize= 5)
+        ax1.tick_params(axis='x', labelsize= 15)
+        ax1.tick_params(axis='y', labelsize= 15)
         ax1.label_outer()
         # ax1.set_aspect('equal')
 
@@ -64,7 +64,7 @@ def logQ_subplot(s,D,M):
     #     ax.label_outer()
 
     # plt.show()
-    plt.savefig('all_pdf.png')
+    plt.savefig('all_pdf_new.png')
 
 def logQ_M_plots(s,D,M):
 

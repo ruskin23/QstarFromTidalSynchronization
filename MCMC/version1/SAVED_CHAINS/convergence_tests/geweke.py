@@ -35,7 +35,7 @@ if __name__=='__main__':
 
     plt.figure(figsize=(15,10))
     gs1=gridspec.GridSpec(6,7)
-    gs1.update(wspace=0.0, hspace=0.0)
+    gs1.update(wspace=0.1, hspace=0.1)
 
     for s in range(41):
 
@@ -66,11 +66,12 @@ if __name__=='__main__':
         ax1.scatter(IT,Z)
         ax1.hlines(2.0,min(IT),max(IT),linestyles='dashed')
         ax1.hlines(-2.0,min(IT),max(IT),linestyles='dashed')
-        ax1.tick_params(axis='x', labelsize= 5)
-        ax1.tick_params(axis='y', labelsize= 5)
+        ax1.tick_params(axis='x', labelsize= 18)
+        ax1.tick_params(axis='y', labelsize= 18)
         ax1.label_outer()
 
-    plt.savefig('all_pdf.png')
+    # plt.show()
+    plt.savefig('z_test.png')
 
     # for system in systems:
     #     print('System = ',system)

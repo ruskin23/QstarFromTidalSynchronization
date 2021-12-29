@@ -90,6 +90,7 @@ class BinaryObjects():
                          evolution_mode='LOCKED_SURFACE_SPIN')
 
         binary.primary.detect_stellar_wind_saturation()
+            
 
         binary.secondary.configure(age=self.disk_dissipation_age,
                             companion_mass=primary.mass,

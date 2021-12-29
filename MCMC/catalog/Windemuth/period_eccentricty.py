@@ -11,5 +11,5 @@ with open('CommonKICandWindeCat.txt','r') as f:
         e.append(float(x[4]))
 
 plt.scatter(p,e)
-plt.yscale('log')
+#plt.yscale('log')
 plt.show()

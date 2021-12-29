@@ -103,7 +103,8 @@ def create_binary_system(primary,
 
 
     primary.select_interpolation_region(primary.core_formation_age())
-    primary.detect_stellar_wind_saturation()
+    
+
 
     binary = Binary(primary=primary,
                     secondary=secondary,
@@ -114,6 +115,9 @@ def create_binary_system(primary,
                     disk_dissipation_age=disk_dissipation_age,
                     secondary_formation_age=disk_dissipation_age)
     #set large formation age for single star
+
+
+
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
                         semimajor=binary.semimajor(initial_orbital_period),
@@ -122,8 +126,7 @@ def create_binary_system(primary,
                         zero_outer_inclination=True,
                         zero_outer_periapsis=True,
                         **secondary_config)
-    if isinstance(secondary, EvolvingStar):
-        secondary.detect_stellar_wind_saturation()
+
 
     binary.configure(age=primary.core_formation_age(),
                      semimajor=float('nan'),
@@ -132,6 +135,11 @@ def create_binary_system(primary,
                      inclination=None,
                      periapsis=None,
                      evolution_mode='LOCKED_SURFACE_SPIN')
+
+    primary.detect_stellar_wind_saturation()
+
+    if isinstance(secondary, EvolvingStar):
+        secondary.detect_stellar_wind_saturation()
 
     return binary
 
@@ -145,21 +153,29 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     evolution = binary.get_evolution()
 
-
-    wenv_secondary = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore_secondary = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
     wenv_primary = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
+    
+    wenv_secondary = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
+
+    wcore_secondary = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
+
     wcore_primary = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
+
     orbitalfrequncy = binary.orbital_frequency(evolution.semimajor) / wsun
 
-    pyplot.semilogx(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
-    pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
-    pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
-    pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
+    pyplot.loglog(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
 
-    pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
+    # pyplot.loglog(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
+
+    # pyplot.loglog(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
+
+    pyplot.loglog(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
+
+    
+
+    pyplot.loglog(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
     pyplot.xlim(5e-3,age)
-    pyplot.ylim(0,100)
+    # pyplot.ylim(0,100)
     pyplot.legend(loc='upper right')
     pyplot.ylabel('Spin Freuqncy')
     pyplot.xlabel('age')
@@ -167,7 +183,7 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
     # pyplot.ylim(top=100)
     # pyplot.ylim(bottom=-20)
     # pyplot.show()
-    pyplot.savefig('evolutionlogq10.png')
+    pyplot.savefig('evolutionlogq6.png')
 
     return evolution
 
@@ -285,5 +301,5 @@ if __name__ == '__main__':
 
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 5.5
+    logQ = 6.0
     test_evolution(interpolator,  phase_lag(logQ), True)
