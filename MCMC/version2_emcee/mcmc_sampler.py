@@ -65,16 +65,20 @@ class sampler:
 
     def uniformly_sampled(self):
 
-        lgQ0 = numpy.random.uniform(4,12)
-        alpha = numpy.random.uniform(-5,5)
+        phase_lag_max=numpy.random.uniform(phase_lag(5),phase_lag(12))
+        # phase_lag_max=phase_lag(5)
+        alpha = numpy.random.uniform(1,5)
+
         lnP= numpy.random.uniform(numpy.log(0.5),numpy.log(50))
         omegaref= numpy.exp(numpy.log(2*numpy.pi) - lnP) 
-        if alpha<0:tidal_power=numpy.array([0,alpha])
-        else:tidal_power=numpy.array([alpha,0])
+        omegamin=(2*numpy.pi)/50
 
-        self.params['logQ']=lgQ0
+        if alpha<0:tidal_power=numpy.array([1,0,alpha])
+        else:tidal_power=numpy.array([1,alpha,0])
 
-        self.params['tidal_frequency_breaks']=numpy.array([omegaref])
+        self.params['phase_lag_max']=phase_lag_max
+
+        self.params['tidal_frequency_breaks']=numpy.array([omegamin,omegaref])
         self.params['tidal_frequency_powers']=tidal_power
 
 
