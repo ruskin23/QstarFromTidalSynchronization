@@ -1,7 +1,13 @@
+# from distutils.command.config import config
+from distutils.command.config import config
+from configargparse import ArgumentParser
+from gettext import Catalog
+import logging
 import sys
 import os
 import random
 import numpy
+import scipy
 sys.path.append('/home/ruskin/projects/poet/PythonPackage')
 sys.path.append('/home/ruskin/projects/poet/scripts')
 sys.path.append('/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code')
@@ -16,6 +22,46 @@ from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from orbital_evolution.transformations import phase_lag
+from multiprocessing import Pool, Process, Queue
+from collections import namedtuple
+from Logger import setup_process
+from datetime import date
+
+
+
+import emcee
+from  hdf5_backend import HDFBackend
+
+_logger=logging.getLogger(__name__)
+
+
+def cmdline_parser():
+
+    p = ArgumentParser(default_config_files=['config.txt'])
+    p.add_argument('--system')
+    p.add_argument('--num_parallel_processes',type=int,default=16,help='number of parallel processes')
+    # p.add_argument('--fname_datetime_format',default='%Y%m%d%H%M%S')
+    p.add_argument('--fname_datetime_format',default='%d%d%Y')
+    p.add_argument('--logging_datetime_format',default=None)
+    p.add_argument('--std_out_err_fname',default='%(system)s_%(now)s_%(pid)d.err')
+    p.add_argument('--logging_message_format',default=None)
+    p.add_argument('--logging_fname',default='%(system)s_%(now)s_%(pid)d.log')
+
+    return p.parse_args()
+
+
+class UnchunkedPool:
+    """Disable chunking in Pool.map."""
+
+    def __init__(self, pool):
+        """Wrap around the given pool's map."""
+
+        self._pool = pool
+
+    def map(self, *args, **kwargs):
+        """Delegate everything to parent, but set chunksize to 1."""
+
+        return self._pool.map(*args, **kwargs, chunksize=1)
 
 
 class sampler:
@@ -46,7 +92,6 @@ class sampler:
         sampled_params=params.paramter_evaluate(self.uniform_variable)
         masses=self.param_conversion(sampled_params)
 
-
         self.params['primary_mass'] = masses[0]
         self.params['secondary_mass'] = masses[1]
         z=sampled_params[2]
@@ -65,16 +110,19 @@ class sampler:
 
     def uniformly_sampled(self):
 
-        phase_lag_max=numpy.random.uniform(phase_lag(5),phase_lag(12))
-        # phase_lag_max=phase_lag(5)
-        alpha = numpy.random.uniform(1,5)
+        phase_lag_sampled=phase_lag(7*self.uniform_variable[5]+5)
+        alpha=10*self.uniform_variable[6]-5
+        lnP=(numpy.log(50)-numpy.log(0.5))*self.uniform_variable[7] + numpy.log(0.5)
 
-        lnP= numpy.random.uniform(numpy.log(0.5),numpy.log(50))
         omegaref= numpy.exp(numpy.log(2*numpy.pi) - lnP) 
         omegamin=(2*numpy.pi)/50
 
-        if alpha<0:tidal_power=numpy.array([1,0,alpha])
-        else:tidal_power=numpy.array([1,alpha,0])
+        if alpha<0:
+            tidal_power=numpy.array([1,0,alpha])
+            phase_lag_max=phase_lag_sampled
+        else:
+            tidal_power=numpy.array([1,alpha,0])
+            phase_lag_max=phase_lag_sampled*((omegamin/omegaref)**alpha)
 
         self.params['phase_lag_max']=phase_lag_max
 
@@ -87,15 +135,14 @@ class sampler:
         self.params['spin_frequency_breaks']=None
         self.params['spin_frequency_powers']=numpy.array([0.0])
 
-
         self.params['Wdisk'] = numpy.random.uniform(2*numpy.pi/14,2*numpy.pi/1.4)
 
     def get_orbital_period(self):
-        with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/orbital_periods.txt','r') as f:
+        with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
             for lines in f:
                 x=lines.split()
-                if self.system_number==x[0]:
-                    self.params['orbital_period']=float(x[1])
+                if self.system_number==x[1]:
+                    self.params['orbital_period']=float(x[2])
                     break
 
 
@@ -109,7 +156,71 @@ class sampler:
         return self.params
 
 
+def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
+    invalid_values = tuple( -numpy.inf if i == 0 else numpy.nan
+                        for i in range(len(unit_cube_values)+1)
+                        )
+
+    if unit_cube_values.min() < 0 or unit_cube_values.max() > 1:
+        _logger.warning(
+            'At least one proposed unit cube value is outside the range(0, 1): '
+            '%s',
+            repr(unit_cube_values)
+        )
+        return invalid_values
+    #             len(log_likelihood.parameter_order)
+    #             -
+    #             len(exclude_from_blob)
+    #             +
+    #             (2 if track_final_eccentricity else 1)
+    #         )
+    #     )
+   
+
+    _logger.info('Begin Conversion using %s',repr(unit_cube_values))
+
+    sampled_params=sampler(system_number,unit_cube_values)
+    parameter_set=sampled_params()
+
+    _logger.info('Parameters: %s',repr(parameter_set))
+
+
+    if parameter_set['feh'] < -1.014 or parameter_set['feh'] > 0.53:
+        _logger.warning('feh value = %s is out of POET range (-1.014,0.53)',repr(parameter_set['feh']))
+        return invalid_values
+
+    if parameter_set['primary_mass'] < 0.4 or parameter_set['primary_mass'] > 1.2:
+        _logger.warning('primary mass value = %s is out of POET range (0.4,1.2)',repr(parameter_set['primary_mass']))
+        return invalid_values
+
+    if parameter_set['secondary_mass'] < 0.4 or parameter_set['secondary_mass'] > 1.2:
+        _logger.warning('secondary mass value = %s is out of POET range (0.4,1.2)',repr(parameter_set['secondary_mass']))
+        return invalid_values
+
+
+    _logger.info('\nSampled Parameters:')
+    for key,values in parameter_set.items():
+        _logger.info(f'{key}\t{values}\n')
+
+    stars=BinaryObjects(interpolator,parameter_set)
+    primary=stars.create_star(parameter_set['primary_mass'])
+    secondary=stars.create_star(parameter_set['secondary_mass'])
+    
+    angmom=IntialSecondaryAngmom(interpolator,parameter_set)
+
+
+    initial_conditions=InitialConditionSolver(interpolator,parameter_set,secondary_angmom=angmom())
+
+    results=initial_conditions(primary,secondary)
+    _logger.info('Initial Condition solver results:')
+    for key,values in results.items():
+        _logger.info(f'{key}\t{values}\n')
+    spin=results['spin']
+
+    log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
+    parameters=tuple(value for key,value in parameter_set.items())
+    return ((log_likelihood,) + parameters)
 
 
 if __name__ == '__main__':
@@ -124,43 +235,106 @@ if __name__ == '__main__':
         eccentricity_path
     )
 
+    # system_number='10296163'
+    system_number='10264202'
+
+    initial_state=numpy.random.rand(64,8)
+
+    _logger.info(initial_state)
+
+    observed_spin=dict()
+    with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:
+        for lines in f:
+            x=lines.split()
+            KIC=x[0]
+            if KIC==system_number:
+                observed_spin['value']=float(x[5])
+                observed_spin['sigma']=abs(float(x[5])-float(x[6]))
+                break
 
 
-    system_number='10296163'
+    nwalkers=64
+    ndim=8
     
-    while(True):
-        uniform_variables=[random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)]
-        get_params=sampler(system_number,uniform_variables)
-        parameters=get_params()
 
-        if numpy.logical_or(parameters['feh']<-1.014,
-                            parameters['feh']>0.537):
-                            continue
+    backend_reader = HDFBackend('test_run.h5')
+
+    config=cmdline_parser()
+
+    with Pool(
+            config.num_parallel_processes,
+            initializer=setup_process,
+            initargs=[config],
+            maxtasksperchild=1
+    ) as workers:
+
+        sampler_emcee=emcee.EnsembleSampler(nwalkers,
+                                            ndim,
+                                            log_probablity,
+                                            args=(interpolator,system_number,observed_spin),
+                                            backend=backend_reader,
+                                            pool=UnchunkedPool(workers)
+                                            )
+
+        sampler_emcee.run_mcmc(initial_state,1,progress=True)
+
+
+
+
+
+
+#run on ganymede
+#print fraction of time masses are out of bounds using prior corner plots
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # get_params=sampler(system_number,uniform_variables)
+        # parameters=get_params()
+
+        # if numpy.logical_or(parameters['feh']<-1.014,
+        #                     parameters['feh']>0.537):
+        #                     continue
         
-        if numpy.logical_or(numpy.logical_or(parameters['primary_mass']<0.4,
-                                             parameters['primary_mass']>1.2),
-                            numpy.logical_or(parameters['secondary_mass']<0.4,
-                                            parameters['secondary_mass']>1.2)
-                            ):
-                            continue
+        # if numpy.logical_or(numpy.logical_or(parameters['primary_mass']<0.4,
+        #                                      parameters['primary_mass']>1.2),
+        #                     numpy.logical_or(parameters['secondary_mass']<0.4,
+        #                                     parameters['secondary_mass']>1.2)
+        #                     ):
+        #                     continue
 
-        for key,values in parameters.items():
-            print(f'{key}\t{values}\n')
+        # for key,values in parameters.items():
+        #     print(f'{key}\t{values}\n')
 
-        stars=BinaryObjects(interpolator,parameters)
-        primary=stars.create_star(parameters['primary_mass'])
-        secondary=stars.create_star(parameters['secondary_mass'])
+        # stars=BinaryObjects(interpolator,parameters)
+        # primary=stars.create_star(parameters['primary_mass'])
+        # secondary=stars.create_star(parameters['secondary_mass'])
         
-        angmom=IntialSecondaryAngmom(interpolator,parameters)
+        # angmom=IntialSecondaryAngmom(interpolator,parameters)
 
 
-        initial_conditions=InitialConditionSolver(interpolator,parameters,secondary_angmom=angmom())
-        try:
-            results=initial_conditions(primary,secondary)
-        except:
-            continue
+        # initial_conditions=InitialConditionSolver(interpolator,parameters,secondary_angmom=angmom())
+        # try:
+        #     results=initial_conditions(primary,secondary)
+        # except:
+        #     continue
 
-        if numpy.isnan(results['spin']):
-            print('\n')
-            continue
-        else: break
+        # if numpy.isnan(results['spin']):
+        #     print('\n')
+        #     break
+        # else: continue

@@ -53,27 +53,32 @@ def stellar_paramters_plots(all_chains):
 
     eccentricity_col=get_eccentricity_col(all_chains)
     eccentricity_col=numpy.reshape(eccentricity_col,[len(eccentricity_col),1])
-    print(eccentricity_col.shape)
     sliced_chain=numpy.hstack((sliced_chain,eccentricity_col))
-
-    print(numpy.shape(sliced_chain))
 
     figure=corner.corner(sliced_chain)
     # plt.show()
-    plt.savefig(f'corner_{system}.png')
+    plt.savefig(f'corner_plots_filtered_spin_catalog/corner_{system}.png')
 
 
 
 if __name__=='__main__':
 
-    system = sys.argv[1]
+    systems=[]
+    with open('../filtering/filtered_spin_catalog.txt','r') as f:
+        next(f)
+        for lines in f:
+            x=lines.split()
+            systems.append(x[1])
+    
+    for system in systems:
+        
+        print(system)
+        # A=numpy.load('chains/10198109.npz')
+        A=numpy.load('chains/'+system+'.npz')
 
-    # A=numpy.load('chains/10198109.npz')
-    A=numpy.load('chains/'+system+'.npz')
+        all_chains=A['thinned_chain']
 
-    all_chains=A['thinned_chain']
-
-    stellar_paramters_plots(all_chains)
+        stellar_paramters_plots(all_chains)
 
     params=['Msum','Q','z','age','d','E','Porb','tPE','esinw','ecosw','b','q11','q12','q21','q22','lnsigmaLC','lnsigmaSED','lnsigmaE','lnsigmad']
 

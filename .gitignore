@@ -4,6 +4,8 @@
 *.out
 *.png
 *.csv
+*.err
+*.log
 
 #vim swap files
 .*.swp

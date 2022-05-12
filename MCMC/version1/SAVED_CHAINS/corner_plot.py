@@ -2,6 +2,7 @@ import corner
 import pickle
 import numpy
 import matplotlib.pyplot as plt
+plt.style.use('figureParams.mplstyle')
 import sys
 
 
@@ -18,14 +19,30 @@ for system_name,parameters in D.items():
         for param,value in parameters.items():
             data.append(value)
 
-d=numpy.vstack(data)
-d=d.T
+Porb=data[0]
+Pspin=data[7]
+logQ=data[3]
+data1=numpy.array([Porb,logQ,Pspin])
+d1=numpy.vstack(data1)
+d1=d1.T
+print(d1.shape)
 
-figure=corner.corner(d,
-                    labels=[r"$Porb$",r"eccentricity",r"$Wdisk$",r"$logQ$",r"$mass$",r"$age$",r"$feh$",r"$Pspin$"],
+figure=corner.corner(d1,
+                    labels=[r"$Porb$",r"$\log_{10}{Q^{'}_{*}}$",r"$Pspin$"],
+                    color='r',
                     show_titles=True)
 
-plt.show()
+
+# d=numpy.vstack(data)
+# d=d.T
+# print(d.shape)
+
+
+# figure=corner.corner(d,
+#                     labels=[r"$Porb$",r"eccentricity",r"$Wdisk$",r"$logQ$",r"$mass$",r"$age$",r"$feh$",r"$Pspin$"],
+#                     show_titles=True)
+
+plt.savefig('non_sync.pdf')
 
 # with open('AcceptedParameters.txt','r') as f:
 #     next(f)

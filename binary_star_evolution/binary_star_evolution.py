@@ -2,7 +2,11 @@
 
 import matplotlib
 
+import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
+plt.rcParams['text.usetex'] = True
+plt.style.use('figureParams.mplstyle')
+
 
 import sys
 import os
@@ -13,6 +17,8 @@ home_dir=str(Path.home())
 path=directories(home_dir)
 sys.path.append(path.poet_path+'/PythonPackage')
 sys.path.append(path.poet_path+'/scripts')
+
+
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
@@ -171,19 +177,19 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     pyplot.loglog(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
 
-    
+
 
     pyplot.loglog(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
     pyplot.xlim(5e-3,age)
     # pyplot.ylim(0,100)
-    pyplot.legend(loc='upper right')
-    pyplot.ylabel('Spin Freuqncy')
-    pyplot.xlabel('age')
+    pyplot.legend(loc='lower left',prop={'size': 16})
+    pyplot.ylabel(r'Spin Freuqncy ($\Omega_{\star}/\Omega_{sun}$)')
+    pyplot.xlabel(r'Age (Gyr) ')
     #pyplot.axhline(y=wsat/wsun)
     # pyplot.ylim(top=100)
     # pyplot.ylim(bottom=-20)
     # pyplot.show()
-    pyplot.savefig('evolutionlogq6.png')
+    pyplot.savefig('evolutionlogq6.pdf')
 
     return evolution
 

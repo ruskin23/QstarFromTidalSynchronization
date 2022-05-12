@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+from distutils.log import info
 import sys
 from pathlib import Path
 from directories import directories
+import logging
+
 
 home_dir=str(Path.home())
 path=directories(home_dir)
@@ -28,12 +31,14 @@ import scipy
 wsun = 0.24795522138
 #wsun=1.0
 
+_logger=logging.getLogger(__name__)
+
 class Evolution:
 
     def calculate_intial_conditions(self):
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
+        _logger.info('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -73,7 +78,7 @@ class Evolution:
         if self.parameters['logQ']==True:self.convective_phase_lag=phase_lag(self.logQ)
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        print('Seconary Initial Angular Momentum = ',SecondaryAngmom())
+        _logger.info('Seconary Initial Angular Momentum = ',SecondaryAngmom())
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -116,7 +121,7 @@ class Evolution:
 
         try:
             self.convective_phase_lag=phase_lag(self.logQ)
-            print('Convective Phase lag = ',self.convective_phase_lag)
+            _logger,info('Convective Phase lag = ',self.convective_phase_lag)
         except:
             self.parameter_logQ=True
 

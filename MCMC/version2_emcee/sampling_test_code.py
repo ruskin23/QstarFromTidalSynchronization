@@ -12,7 +12,6 @@ import sys
 
 import scipy.integrate as integrate
 
-
 def get_cdf():
 
     M_array=priors[0]
@@ -24,7 +23,6 @@ def get_cdf():
         M_cdf=M_cdf+erf_fun(alpha_M)
     M_cdf=M_cdf/len(M_samples)
 
-
     Q_array=priors[1]
     h_Q=h[1]
     Q_samples=all_chains[1]
@@ -33,8 +31,6 @@ def get_cdf():
         alpha_Q=(Q_array-s)/h_Q
         Q_cdf=M_cdf+erf_fun(alpha_Q)
     Q_cdf=Q_cdf/len(Q_samples)
-
-
 
     age_array=priors[3]
     h_age=h[3]
@@ -118,7 +114,7 @@ def eccentricity_pdf(e_samples):
 def eccentricity_sampling(rnd_num,e_samples):
 
     e_cdf=eccentricity_cdf(e_samples)
-    e_array=numpy.linspace(0,1,5000)
+    e_array=numpy.linspace(0,1,10000)
     e_value=e_array[numpy.argmin(abs(e_cdf-rnd_num))]
 
     return e_value
@@ -147,7 +143,7 @@ if __name__=='__main__':
     priors=[numpy.linspace(0.2, 2.5, 5000),numpy.linspace(0.0085, 1, 5000),
     numpy.linspace(0.001, 0.06, 5000),10**(numpy.linspace(6, 10.1, 5000))/1e9]
 
-    h=[0.01,0.001,0.0001,0.001]
+    h=[0.01,0.001,0.0001,0.01]
 
     values=[]
 
@@ -177,7 +173,7 @@ if __name__=='__main__':
 
 
 
-    for i in range(1000):
+    for i in range(5000):
 
 
         rdm_num=[random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)]
@@ -220,5 +216,5 @@ if __name__=='__main__':
     # numpy.savetxt('text.txt',d)
     figure=corner.corner(d)
     # plt.show()
-    plt.savefig('corner.png')
+    plt.savefig(f'corner_{system}.png')
 

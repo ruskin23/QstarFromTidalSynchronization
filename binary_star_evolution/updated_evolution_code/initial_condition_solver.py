@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import logging
 import sys
 import os
 from pathlib import Path
@@ -30,7 +31,7 @@ import numpy
 import pickle
 
 wsun = 0.24795522138
-
+_logger=logging.getLogger(__name__)
 
 class InitialConditionSolver:
     """Find initial orbital period and eccentricity which reproduce
@@ -42,10 +43,10 @@ class InitialConditionSolver:
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-        print('\nTrying Porb_initial = {} , e_initial = {}'.format(initial_orbital_period,initial_eccentricity))
+        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
         if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
-            print('Invalid values')
+            _logger.warning('Invalid values')
             return scipy.nan,scipy.nan
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
@@ -70,21 +71,21 @@ class InitialConditionSolver:
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
-        print(f'{self.final_orbital_period}\t{self.final_eccentricity}')
+        _logger.info(f'{self.final_orbital_period}\t{self.final_eccentricity}')
 
         self.delta_p=self.final_orbital_period-self.target_orbital_period
         self.delta_e=self.final_eccentricity-self.target_eccentricity
 
         if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e))):
-            print('Binary system was destroyed')
+            _logger.warning('Binary system was destroyed')
             raise ValueError
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
 
         binary.delete()
 
-        print('delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e))
-        print('Spin Period = ',self.spin)
+        _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+        _logger.info('Spin Period = %s',repr(self.spin))
 
         return self.delta_p,self.delta_e
 
@@ -118,6 +119,8 @@ class InitialConditionSolver:
         self.parameters=parameters
         for item,value in parameters.items():
             setattr(self,item,value)
+        if hasattr(parameters,'logQ'):self.convective_phase_lag=phase_lag(self.logQ)
+        else: self.convective_phase_lag=self.phase_lag_max
 
         self.evolution_max_time_step=evolution_max_time_step
         self.evolution_precision = evolution_precision
@@ -149,7 +152,7 @@ class InitialConditionSolver:
         initial_guess=[self.target_orbital_period,self.target_eccentricity]
 
 
-        print('solving for p and e')
+        _logger.info('solving for p and e')
         try:
             sol = optimize.root(self.initial_condition_errfunc,
                                 initial_guess,
@@ -160,13 +163,14 @@ class InitialConditionSolver:
             initial_orbital_period_sol,initial_eccentricity_sol=sol.x
         except:
             initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
+            self.spin=numpy.inf
 
 
-        print('Solver Results:')
-        print('Intial Orbital Period = {} , Initial Eccentricity = {}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
-        print('Final Orbital Period = {} , Final Eccentricity = {}'.format(self.final_orbital_period,self.final_eccentricity))
-        print('Errors: delta_p = {} , delta_e = {}'.format(self.delta_p,self.delta_e))
-        print('Final Spin Period = {}'.format(self.spin))
+        _logger.info('Solver Results:')
+        _logger.info('Intial Orbital Period = {!r} , Initial Eccentricity = {!r}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
+        _logger.info('Final Orbital Period = {!r} , Final Eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
+        _logger.info('Errors: delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+        _logger.info('Final Spin Period = {!r}'.format(self.spin))
 
         results=dict()
         results['p_initial']=initial_orbital_period_sol

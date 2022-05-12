@@ -6,6 +6,7 @@ from scipy.misc import derivative
 from utils import _get_filename,_get_chain,_fill_parameters,_cummulative_distribution,adjust_chain
 import numpy
 import matplotlib.pyplot as plt
+plt.style.use('figureParams.mplstyle')
 import matplotlib.gridspec as gridspec
 import sys
 import pickle
@@ -25,7 +26,11 @@ def logQ_subplot(s,D,M):
     # s=numpy.reshape(numpy.array(s),(7,6))
 
     # _,axs=plt.subplots(7,6,sharex='col',sharey='row')
-    plt.figure(figsize=(15,10))
+    fig=plt.figure(figsize=(15,10))
+    fig.text(0.5, 0.04, r"$\log_{10}{Q}^{'}_{*}$", ha='center',fontsize=20)
+    fig.text(0.04, 0.5, r'Normalized Porbablity Density', va='center', rotation='vertical',fontsize=20)
+    
+
     gs1=gridspec.GridSpec(6,7)
     gs1.update(wspace=0.1, hspace=0.1)
 
@@ -41,6 +46,7 @@ def logQ_subplot(s,D,M):
         ax1.plot(x,M)
         # ax1.set_xticklabels([])
         # ax1.set_yticklabels([])
+        ax1.xaxis.set_ticks(numpy.array([5,7,9,11]))
         ax1.tick_params(axis='x', labelsize= 15)
         ax1.tick_params(axis='y', labelsize= 15)
         ax1.label_outer()
@@ -64,7 +70,7 @@ def logQ_subplot(s,D,M):
     #     ax.label_outer()
 
     # plt.show()
-    plt.savefig('all_pdf_new.png')
+    plt.savefig('all_pdf_new.pdf')
 
 def logQ_M_plots(s,D,M):
 

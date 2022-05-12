@@ -1,6 +1,7 @@
 import numpy
 from utils import _get_filename, _fill_parameters, _get_chain, adjust_chain
 import matplotlib.pyplot as plt
+plt.style.use('figureParams.mplstyle')
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.gridspec as gridspec
 
@@ -32,10 +33,14 @@ if __name__=='__main__':
     #systems=['8','43','36','109','70','47','86','88','93','123','95','106','79','84','25','12','50','28','13']
     systems=['1', '8', '12', '13', '17', '20', '25', '28', '32', '36', '39', '43', '44', '47', '48', '50', '54', '56', '67', '70', '73', '76', '79', '80', '81', '83', '84', '85', '86', '88', '92', '93', '94', '95', '96', '106', '109', '120', '123', '126', '137']
 
+    
+    fig = plt.figure(figsize=(15,10))
+    fig.text(0.5, 0.04, r'Segment Number the chain', ha='center',fontsize=20)
+    fig.text(0.04, 0.5, r'z-value', va='center', rotation='vertical',fontsize=20)
 
-    plt.figure(figsize=(15,10))
     gs1=gridspec.GridSpec(6,7)
     gs1.update(wspace=0.1, hspace=0.1)
+
 
     for s in range(41):
 

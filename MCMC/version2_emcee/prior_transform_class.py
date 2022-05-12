@@ -3,6 +3,9 @@ from utils import erf_fun
 import random
 import corner
 import matplotlib.pyplot as plt
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class prior_transform:
 

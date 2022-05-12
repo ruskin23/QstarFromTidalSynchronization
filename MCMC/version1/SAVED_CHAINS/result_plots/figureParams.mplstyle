@@ -1,0 +1,6 @@
+axes.titlesize : 18
+axes.labelsize : 12
+lines.linewidth : 2
+lines.markersize : 8
+xtick.labelsize : 13
+ytick.labelsize : 13

@@ -29,7 +29,7 @@ class BinaryObjects():
         planet = LockedPlanet(mass=mass, radius=(constants.R_jup / constants.R_sun).to(''))
         return planet
 
-    def create_star(self, mass, dissipation=None):
+    def create_star(self, mass, dissipation=True):
         star = EvolvingStar(mass=mass,
                             metallicity=self.feh,
                             wind_strength=self.wind_strength if self.wind else 0.0,
@@ -116,4 +116,5 @@ class BinaryObjects():
 
         for item,value in parameters.items():
             setattr(self,item,value)
-        self.convective_phase_lag=phase_lag(self.logQ)
+        if hasattr(parameters,'logQ'):self.convective_phase_lag=phase_lag(self.logQ)
+        else: self.convective_phase_lag=self.phase_lag_max
