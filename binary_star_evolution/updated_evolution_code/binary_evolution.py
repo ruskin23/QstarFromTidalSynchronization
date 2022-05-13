@@ -38,7 +38,7 @@ class Evolution:
     def calculate_intial_conditions(self):
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        _logger.info('Seconary Initial Angular Momentum = ',SecondaryAngmom())
+        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SecondaryAngmom())))
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -78,7 +78,7 @@ class Evolution:
         if self.parameters['logQ']==True:self.convective_phase_lag=phase_lag(self.logQ)
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        _logger.info('Seconary Initial Angular Momentum = ',SecondaryAngmom())
+        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SecondaryAngmom())))
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 

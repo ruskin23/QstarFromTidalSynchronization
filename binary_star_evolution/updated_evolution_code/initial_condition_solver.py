@@ -31,7 +31,8 @@ import numpy
 import pickle
 
 wsun = 0.24795522138
-_logger=logging.getLogger(__name__)
+_logger = logging.getLogger()
+
 
 class InitialConditionSolver:
     """Find initial orbital period and eccentricity which reproduce
@@ -119,8 +120,9 @@ class InitialConditionSolver:
         self.parameters=parameters
         for item,value in parameters.items():
             setattr(self,item,value)
-        if hasattr(parameters,'logQ'):self.convective_phase_lag=phase_lag(self.logQ)
+        if 'logQ' in parameters: self.convective_phase_lag=phase_lag(self.logQ)
         else: self.convective_phase_lag=self.phase_lag_max
+
 
         self.evolution_max_time_step=evolution_max_time_step
         self.evolution_precision = evolution_precision

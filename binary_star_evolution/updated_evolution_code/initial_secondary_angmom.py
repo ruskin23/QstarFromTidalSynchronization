@@ -25,7 +25,9 @@ class IntialSecondaryAngmom:
         for item,value in parameters.items():
             setattr(self,item,value)
 
-        if hasattr(parameters,'logQ'):self.convective_phase_lag=phase_lag(self.logQ)
+        print('logQ value = ',parameters['logQ'])
+
+        if 'logQ' in parameters: self.convective_phase_lag=phase_lag(self.logQ)
         else: self.convective_phase_lag=self.phase_lag_max
 
     def __call__(self):
