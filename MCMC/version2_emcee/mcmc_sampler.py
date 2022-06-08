@@ -235,11 +235,11 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
 if __name__ == '__main__':
 
-    serialized_dir =  "/home/ruskin/projects/poet/stellar_evolution_interpolators"
+    serialized_dir =  path.poet_path+"/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join('/home/ruskin/projects/poet','eccentricity_expansion_coef.txt').encode('ascii')
+    eccentricity_path=os.path.join(path.poet_path+'/poet','eccentricity_expansion_coef.txt').encode('ascii')
 
     orbital_evolution_library.read_eccentricity_expansion_coefficients(
         eccentricity_path
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     _logger.info(initial_state)
 
     observed_spin=dict()
-    with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:
+    with open(path.current_directory+'/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:
         for lines in f:
             x=lines.split()
             KIC=x[0]
