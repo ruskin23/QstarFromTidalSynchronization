@@ -1,5 +1,7 @@
+from turtle import shape
 import matplotlib.pyplot as plt
 import numpy
+import pickle
 
 s=['13','86','96']
 
@@ -25,6 +27,18 @@ with open('SpinlogQCatalog_el0.4.txt','r') as f:
             omega_spin=2*numpy.pi/pspin
             tidal_frequency=2*abs(omega_orb-omega_spin)
             print(f'System = {x[0]} I={tidal_frequency/(2*omega_spin)}')
+
+
+
+
+
+
+
+
+
+
+
+
 
 # with open('SpinlogQCatalog_el0.4.txt','r') as f:
 #     next(f)

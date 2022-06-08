@@ -22,6 +22,7 @@ s=['1']
 params=dict()
 parameters=['Porb','eccentricity','Wdisk','logQ','primary_mass','age','feh','Spin']
 
+
 for system in s:
     D=dict()
     print(f'\nSystem={system}')

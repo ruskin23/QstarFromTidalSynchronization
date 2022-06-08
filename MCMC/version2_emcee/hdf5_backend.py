@@ -306,23 +306,3 @@ class HDFBackend(Backend):
             logging.getLogger(__name__).error(
                 'Failed to save step to HDF5 file, will try again later'
             )
-
-class TempHDFBackend():
-    """HDF5 backend based on a temporary file."""
-
-    def __init__(self, dtype=None):
-        self.dtype = dtype
-        self.filename = None
-
-    def __enter__(self):
-        #pylint: disable=invalid-name
-        f = NamedTemporaryFile(prefix="emcee-temporary-hdf5",
-                               suffix=".hdf5",
-                               delete=False)
-        f.close()
-        self.filename = f.name
-        return HDFBackend(f.name, "test", dtype=self.dtype)
-        #pylint: enable=invalid-name
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        os.remove(self.filename)

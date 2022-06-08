@@ -71,6 +71,7 @@ def logQ_subplot(s,D,M):
 
     # plt.show()
     plt.savefig('all_pdf_new.pdf')
+    
 
 def logQ_M_plots(s,D,M):
 

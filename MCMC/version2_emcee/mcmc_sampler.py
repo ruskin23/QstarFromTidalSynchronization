@@ -261,6 +261,11 @@ if __name__ == '__main__':
 
     config=cmdline_parser()
 
+    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
+    blobs_dtype = [(name, float) for name in parameters]
+    blobs_dtype = numpy.dtype(blobs_dtype)
+
+
     with Pool(
             config.num_parallel_processes,
             initializer=setup_process,
@@ -272,6 +277,7 @@ if __name__ == '__main__':
                                             ndim,
                                             log_probablity,
                                             args=(interpolator,system_number,observed_spin),
+                                            blobs_dtype=blobs_dtype,
                                             backend=backend_reader,
                                             pool=UnchunkedPool(workers)
                                             )
