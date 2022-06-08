@@ -5,6 +5,13 @@ import corner
 import matplotlib.pyplot as plt
 import logging
 
+from pathlib import Path
+from directories import directories
+
+home_dir=str(Path.home())
+path=directories(home_dir)
+
+
 _logger = logging.getLogger(__name__)
 
 class prior_transform:
@@ -13,7 +20,7 @@ class prior_transform:
 
         self.system_num=system_num
 
-        system_chains=numpy.load('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/samples/chains/'+system_num+'.npz')
+        system_chains=numpy.load(path.current_directory+'/catalog/samples/chains/'+system_num+'.npz')
         all_chains=numpy.transpose(system_chains['thinned_chain'])
 
         self.M_samples=all_chains[0]

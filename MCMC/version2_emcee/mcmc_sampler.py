@@ -8,9 +8,19 @@ import os
 import random
 import numpy
 import scipy
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
-sys.path.append('/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code')
+
+from pathlib import Path
+from directories import directories
+
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
+sys.path.append(path.current_directory+'/binary_star_evolution/updated_evolution_code')
+
+# sys.path.append('/home/ruskin/projects/poet/PythonPackage')
+# sys.path.append('/home/ruskin/projects/poet/scripts')
+# sys.path.append('/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code')
 
 from stellar_evolution.library_interface import library
 from create_objects import BinaryObjects
