@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J emcee_1
-#SBATCH -n 16 #Total number of tasks to run at one time
-#SBATCH -N 50  #Number of nodes on which to distribute the tasks evenly
+#SBATCH -n 800 #Total number of tasks to run at one time
+#SBATCH -N 50 #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /home/rxp163130/scratch/version2/first_run/sampling_output/ganymede_1.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
