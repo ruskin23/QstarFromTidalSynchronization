@@ -246,7 +246,7 @@ if __name__ == '__main__':
     )
 
     # system_number='10296163'
-    system_number='10264202'
+    # system_number='10264202'
 
     initial_state=numpy.random.rand(64,8)
 
@@ -300,6 +300,7 @@ if __name__ == '__main__':
 
 
 #run on ganymede
+#run slurm script on debug node
 #print fraction of time masses are out of bounds using prior corner plots
 
 
