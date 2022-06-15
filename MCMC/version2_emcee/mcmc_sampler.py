@@ -148,7 +148,7 @@ class sampler:
         self.params['Wdisk'] = numpy.random.uniform(2*numpy.pi/14,2*numpy.pi/1.4)
 
     def get_orbital_period(self):
-        with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
+        with open(path.current_directory+'/catalog/filtering/nominal_value_catalog.txt','r') as f:
             for lines in f:
                 x=lines.split()
                 if self.system_number==x[1]:
