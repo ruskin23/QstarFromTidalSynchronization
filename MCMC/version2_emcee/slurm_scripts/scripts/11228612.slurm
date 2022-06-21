@@ -30,5 +30,4 @@ python3 \
     --logging-fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
     >\
     ${OUTPUT_DIR}/sample_11228612.outerr\
-    2>&1\
-    &
+    2>&1

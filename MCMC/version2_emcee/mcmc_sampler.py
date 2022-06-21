@@ -16,7 +16,7 @@ home_dir=str(Path.home())
 path=directories(home_dir)
 sys.path.append(path.poet_path+'/PythonPackage')
 sys.path.append(path.poet_path+'/scripts')
-sys.path.append(path.current_directory+'/binary_star_evolution/updated_evolution_code')
+sys.path.append(path.binary_directory)
 
 # sys.path.append('/home/ruskin/projects/poet/PythonPackage')
 # sys.path.append('/home/ruskin/projects/poet/scripts')
