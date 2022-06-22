@@ -8,14 +8,11 @@
 #SBATCH --mail-type=all
 #SBATCH -t 4-00:00:00
 
-export LD_LIBRARY_PATH=$LD_LIBRARAY_PATH:~/boost_lib:~/gsl_lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/rxp163130/lib
+export LIBRARY_PATH=$LIBRARY_PATH:/home/rxp163130/lib
+
 
 export PYTHONPATH=/home/rxp163130/poet/PythonPackage:/home/rxp163130/poet/scripts
-
-for d in /home/rxp163130/poet/build/libs/*/shared/release; do
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
-    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
-done
 
 export PYTHONUNBUFFERED=1
 

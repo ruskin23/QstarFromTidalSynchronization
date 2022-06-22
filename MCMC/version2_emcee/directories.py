@@ -16,7 +16,7 @@ class directories:
             self.current_directory=home_dir+self.git_dir
             self.binary_directory=home_dir+self.binary_dir
             self.results_directory=self.current_directory+'/results/ganymede'
-            self.scratch_directory=home_dir+'/scratch/binary_evolution'
+            self.scratch_directory=home_dir+'/scratch'
 
         if home_dir=='/home1/06850/rpatel23':
             self.work_dir='/work/06850/rpatel23/stampede2'

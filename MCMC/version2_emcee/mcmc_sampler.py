@@ -239,14 +239,14 @@ if __name__ == '__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+    eccentricity_path=os.path.join(path.scratch_directory,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        eccentricity_path
+    orbital_evolution_library.prepare_eccentricity_expansion(
+        eccentricity_path,
+        1e-4,
+        True,
+        True
     )
-
-    # system_number='10296163'
-    # system_number='10264202'
 
     initial_state=numpy.random.rand(64,8)
 
