@@ -85,6 +85,7 @@ class InitialConditionSolver:
 
         binary.delete()
 
+        _logger.info('Final Age = {!r}'.format(final_state.age))
         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
