@@ -251,7 +251,8 @@ if __name__ == '__main__':
     initial_state=numpy.random.rand(64,8)
 
     _logger.info(initial_state)
-
+    config=cmdline_parser()
+    system_number=config.system
     observed_spin=dict()
     with open(path.current_directory+'/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:
         for lines in f:
@@ -267,9 +268,7 @@ if __name__ == '__main__':
     ndim=8
     
 
-    backend_reader = HDFBackend('test_run.h5')
-
-    config=cmdline_parser()
+    backend_reader = HDFBackend('system_'+system_number+'.h5')
 
     parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
     blobs_dtype = [(name, float) for name in parameters]
@@ -292,7 +291,7 @@ if __name__ == '__main__':
                                             pool=UnchunkedPool(workers)
                                             )
 
-        sampler_emcee.run_mcmc(initial_state,1,progress=True)
+        sampler_emcee.run_mcmc(initial_state,nsteps=1000,progress=True)
 
 
 

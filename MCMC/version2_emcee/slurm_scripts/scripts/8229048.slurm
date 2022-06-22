@@ -17,6 +17,7 @@ for d in /home/rxp163130/poet/build/libs/*/shared/release; do
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
 
+export PYTHONUNBUFFERED=1
 
 SOURCE_DIR=/home/rxp163130/QstarFromTidalSynchronization/MCMC/version2_emcee
 OUTPUT_ROOT=/home/rxp163130/scratch/version2
@@ -26,8 +27,8 @@ OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output
 python3 \
     ${SOURCE_DIR}/mcmc_sampler.py \
     --system 8229048\
-    --std-out-err-fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
-    --logging-fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
+    --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
+    --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
     >\
     ${OUTPUT_DIR}/sample_8229048.outerr\
     2>&1

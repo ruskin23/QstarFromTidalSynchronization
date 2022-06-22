@@ -14,7 +14,7 @@ class directories:
         if home_dir=='/home/rxp163130':
             self.poet_path=home_dir+'/poet'
             self.current_directory=home_dir+self.git_dir
-            self.binary_directory=home_dir+self.binary_directory
+            self.binary_directory=home_dir+self.binary_dir
             self.results_directory=self.current_directory+'/results/ganymede'
             self.scratch_directory=home_dir+'/scratch/binary_evolution'
 
