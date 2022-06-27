@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH -J 10031409_emcee
+#SBATCH -J 8957954_emcee
 #SBATCH -n 16 #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /home/rxp163130/scratch/version2/sampling_output/debug/10031409_debug.out
+#SBATCH -o /home/rxp163130/scratch/version2/sampling_output/debug/8957954.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
-#SBATCH -t 02:00:00
+#SBATCH -t 2:00:00
 #SBATCH -p debug
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/rxp163130/lib
@@ -24,9 +24,9 @@ OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/debug
 
 python3 \
     ${SOURCE_DIR}/mcmc_sampler.py \
-    --system 10031409\
+    --system 8957954\
     --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
     --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
     >\
-    ${OUTPUT_DIR}/sample_debug_10031409.outerr\
+    ${OUTPUT_DIR}/sample_8957954.outerr\
     2>&1
