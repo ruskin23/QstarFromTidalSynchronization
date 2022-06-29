@@ -27,8 +27,8 @@ except ImportError:
 
 class HDFBackend(Backend):
     """A backend that stores the chain in an HDF5 file using h5py
-    .. note:: You must install `h5py <http://www.h5py.org/>`_ to use this
-        backend.
+    .. note::
+        You must install `h5py <http://www.h5py.org/>`_ to use this backend.
     Args:
         filename (str): The name of the HDF5 file where the chain will be
             saved.
@@ -287,7 +287,7 @@ class HDFBackend(Backend):
             try:
                 self._check(state, accepted)
                 retry_check = 0
-            except BlockingIOError:
+            except (BlockingIOError, OSError):
                 retry_check -= 1
                 if retry_check > 0:
                     logging.getLogger(__name__).error(
@@ -302,7 +302,7 @@ class HDFBackend(Backend):
 
         try:
             self._flush_unsaved_steps()
-        except BlockingIOError:
+        except (BlockingIOError, OSError):
             logging.getLogger(__name__).error(
                 'Failed to save step to HDF5 file, will try again later'
             )
