@@ -9,12 +9,18 @@
 #SBATCH -t 2:00:00
 #SBATCH -p debug
 
-module laod boost
+module load intel/19.1.1
+module load boost
 module load gsl
 
 export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23/poet/scripts
 
 export PYTHONUNBUFFERED=1
+
+for d in build/libs/*/shared/release; do
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
 
 SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
 OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch

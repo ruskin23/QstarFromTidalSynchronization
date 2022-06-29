@@ -128,15 +128,17 @@ class sampler:
         omegamin=(2*numpy.pi)/50
 
         if alpha<0:
-            tidal_power=numpy.array([1,0,alpha])
+            tidal_power=numpy.array([0,alpha])
+            self.params['tidal_frequency_breaks']=numpy.array([omegaref])
             phase_lag_max=phase_lag_sampled
         else:
-            tidal_power=numpy.array([1,alpha,0])
+            tidal_power=numpy.array([0,alpha,0])
+            self.params['tidal_frequency_breaks']=numpy.array([omegamin,omegaref])
             phase_lag_max=phase_lag_sampled*((omegamin/omegaref)**alpha)
 
         self.params['phase_lag_max']=phase_lag_max
 
-        self.params['tidal_frequency_breaks']=numpy.array([omegamin,omegaref])
+        
         self.params['tidal_frequency_powers']=tidal_power
 
 
