@@ -9,7 +9,7 @@
 #SBATCH -t 2:00:00
 #SBATCH -p debug
 
-module laod boost
+module load boost
 module load gsl
 
 export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23/poet/scripts
