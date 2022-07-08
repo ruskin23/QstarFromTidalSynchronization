@@ -231,7 +231,8 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     spin=results['spin']
 
     log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
-    parameters=tuple(value for key,value in parameter_set.items())
+    p_names=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
+    parameters=tuple(parameter_set[param_name] for param_name in p_names)
     return ((log_likelihood,) + parameters)
 
 
