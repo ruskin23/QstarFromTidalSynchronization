@@ -149,6 +149,8 @@ class sampler:
 
         self.params['Wdisk'] = numpy.random.uniform(2*numpy.pi/14,2*numpy.pi/1.4)
 
+        return alpha,omegaref
+
     def get_orbital_period(self):
         with open(path.current_directory+'/catalog/filtering/nominal_value_catalog.txt','r') as f:
             for lines in f:
@@ -160,12 +162,12 @@ class sampler:
 
     def __call__(self):
 
-        self.uniformly_sampled()
+        alpha,omegaref=self.uniformly_sampled()
         self.fixed_params()
         self.sampled_from_data()
         self.get_orbital_period()
 
-        return self.params
+        return self.params,alpha,omegaref
 
 
 def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
@@ -193,7 +195,7 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     _logger.info('Begin Conversion using %s',repr(unit_cube_values))
 
     sampled_params=sampler(system_number,unit_cube_values)
-    parameter_set=sampled_params()
+    parameter_set,alpha,omegaref=sampled_params()
 
     _logger.info('Parameters: %s',repr(parameter_set))
 
@@ -236,10 +238,9 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
              'feh',
              'age',
              'eccentricity',
-             'phase_lag_max',
-             'tidal_frequency_powers',
-             'tidal_frequency_breaks']
-    parameters=tuple(parameter_set[param_name] for param_name in p_names)
+             'phase_lag_max']
+    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref)
+
     return ((log_likelihood,) + parameters)
 
 

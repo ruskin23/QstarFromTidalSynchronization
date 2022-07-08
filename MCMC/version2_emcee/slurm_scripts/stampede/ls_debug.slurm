@@ -7,7 +7,7 @@
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2:00:00
-#SBATCH -p debug
+#SBATCH -p development
 
 module load intel/19.1.1
 module load boost
@@ -17,7 +17,7 @@ export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23
 
 export PYTHONUNBUFFERED=1
 
-for d in build/libs/*/shared/release; do
+for d in /home1/06850/rpatel23/poet/build/libs/*/shared/release; do
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
