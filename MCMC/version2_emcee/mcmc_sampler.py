@@ -51,7 +51,7 @@ def cmdline_parser():
     p.add_argument('--system')
     p.add_argument('--num_parallel_processes',type=int,default=16,help='number of parallel processes')
     # p.add_argument('--fname_datetime_format',default='%Y%m%d%H%M%S')
-    p.add_argument('--fname_datetime_format',default='%d%d%Y')
+    p.add_argument('--fname_datetime_format',default='%Y%m%d%H%M%S')
     p.add_argument('--logging_datetime_format',default=None)
     p.add_argument('--std_out_err_fname',default='%(system)s_%(now)s_%(pid)d.err')
     p.add_argument('--logging_message_format',default=None)
@@ -238,6 +238,10 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
 if __name__ == '__main__':
 
+    
+    config=cmdline_parser()
+    setup_process(config)
+
     serialized_dir =  path.poet_path+"/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
@@ -254,7 +258,8 @@ if __name__ == '__main__':
     initial_state=numpy.random.rand(64,8)
 
     _logger.info(initial_state)
-    config=cmdline_parser()
+
+    
     system_number=config.system
     observed_spin=dict()
     with open(path.current_directory+'/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:

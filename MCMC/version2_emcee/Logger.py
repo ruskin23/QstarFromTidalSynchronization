@@ -41,7 +41,7 @@ def setup_process(config):
         handler.close()
     logging_config = dict(
         filename=logging_fname,
-        level=logging.INFO,#getattr(logging, config.logging_verbosity.upper()),
+        level=logging.DEBUG,#getattr(logging, config.logging_verbosity.upper()),
         format=config.logging_message_format,
     )
     if config.logging_datetime_format is not None:
