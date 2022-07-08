@@ -231,7 +231,14 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     spin=results['spin']
 
     log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
-    p_names=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
+    p_names=['primary_mass',
+             'secondary_mass',
+             'feh',
+             'age',
+             'eccentricity',
+             'phase_lag_max',
+             'tidal_frequency_powers',
+             'tidal_frequency_breaks']
     parameters=tuple(parameter_set[param_name] for param_name in p_names)
     return ((log_likelihood,) + parameters)
 
