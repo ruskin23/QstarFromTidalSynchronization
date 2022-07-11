@@ -17,12 +17,21 @@ export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23
 
 export PYTHONUNBUFFERED=1
 
+for d in /home1/06850/rpatel23/poet/build/libs/*/shared/release; do
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
 
 run_system() {
+    sysid=$1
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
-    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_2
-    sysid=$1
+    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_2/system_${sysid}
+
+    if [ ! -d ${OUTPUT_DIR} ] 
+    then
+        mkdir ${OUTPUT_DIR}
+    fi
 
     while true; do
         python3 \
@@ -35,6 +44,8 @@ run_system() {
             2>&1
         done
 }
+
+
 
 for SYSID in 11233911   11252617    11403216    11616200    11704044    12470530    2305543 3241344; do 
     run_system $SYSID & 

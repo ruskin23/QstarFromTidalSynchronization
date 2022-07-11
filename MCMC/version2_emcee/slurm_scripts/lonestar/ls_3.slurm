@@ -22,9 +22,6 @@ for d in /home1/06850/rpatel23/poet/build/libs/*/shared/release; do
     export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
 done
 
-
-
-
 run_system() {
     sysid=$1
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee

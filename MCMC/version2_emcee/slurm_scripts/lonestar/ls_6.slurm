@@ -3,7 +3,7 @@
 #SBATCH -J emcee_6
 #SBATCH -n 128  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/emcee_6.out
+#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_6/emcee_6.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
@@ -17,11 +17,21 @@ export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23
 
 export PYTHONUNBUFFERED=1
 
+for d in /home1/06850/rpatel23/poet/build/libs/*/shared/release; do
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
+
 run_system() {
+    sysid=$1
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
-    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output
-    sysid=$1
+    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_6/system_${sysid}
+
+    if [ ! -d ${OUTPUT_DIR} ] 
+    then
+        mkdir ${OUTPUT_DIR}
+    fi
 
     while true; do
         python3 \
@@ -34,6 +44,7 @@ run_system() {
             2>&1
         done
 }
+
 
 for SYSID in 2852560 2860788 3098194 3248019 3323289 3344427 3834364 3838496; do 
     run_system $SYSID & 
