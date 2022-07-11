@@ -2,11 +2,13 @@
 
 #SBATCH -J emcee_9
 #SBATCH -n 128  #Total number of tasks to run at one time
-#SBATCH -N 8 #Number of nodes on which to distribute the tasks evenly
+#SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/emcee_9.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
+#SBATCH -p normal
+
 module load intel/19.1.1
 module load boost
 module load gsl
