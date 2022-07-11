@@ -6,6 +6,8 @@
 *.csv
 *.err
 *.log
+*.h5
+*.unsaved_steps
 
 #vim swap files
 .*.swp
