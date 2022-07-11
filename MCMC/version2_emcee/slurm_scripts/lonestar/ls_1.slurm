@@ -18,19 +18,27 @@ export PYTHONPATH=/home1/06850/rpatel23/poet/PythonPackage:/home1/06850/rpatel23
 export PYTHONUNBUFFERED=1
 
 
+for d in /home1/06850/rpatel23/poet/build/libs/*/shared/release; do
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(readlink -e $d)
+    export LIBRARY_PATH=$LIBRARY_PATH:$(readlink -e $d)
+done
+
+
+
 run_system() {
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
     OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output
+    sysid=$1
 
     while true; do
         python3 \
             ${SOURCE_DIR}/mcmc_sampler.py \
-            --system ${SYS}\
+            --system ${sysid}\
             --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
             --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
             >\
-            ${OUTPUT_DIR}/sample_${SYS}.outerr\
+            ${OUTPUT_DIR}/sample_${sysid}.outerr\
             2>&1
         done
 }

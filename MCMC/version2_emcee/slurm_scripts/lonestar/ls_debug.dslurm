@@ -6,7 +6,7 @@
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/debug/7374746.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
-#SBATCH -t 2:00:00
+#SBATCH -t 00:10:00
 #SBATCH -p development
 
 module load intel/19.1.1
@@ -34,4 +34,7 @@ python3 \
     --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
     >\
     ${OUTPUT_DIR}/sample_7374746.outerr\
-    2>&1
+    2>&1\
+    &
+
+wait
