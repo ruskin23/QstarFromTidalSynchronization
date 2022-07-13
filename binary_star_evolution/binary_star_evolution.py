@@ -2,10 +2,10 @@
 
 import matplotlib
 
-import matplotlib.pyplot as plt
-matplotlib.use('TkAgg')
-plt.rcParams['text.usetex'] = True
-plt.style.use('figureParams.mplstyle')
+# import matplotlib.pyplot as plt
+# matplotlib.use('TkAgg')
+# plt.rcParams['text.usetex'] = True
+# plt.style.use('figureParams.mplstyle')
 
 
 import sys
@@ -159,37 +159,40 @@ def plot_evolution(age,binary, wsat, style=dict(pcore='-b', penv='-g', score='m'
 
     evolution = binary.get_evolution()
 
-    wenv_primary = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
+    # wenv_primary = (evolution.primary_envelope_angmom / binary.primary.envelope_inertia(evolution.age)) / wsun
     
-    wenv_secondary = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
+    # wenv_secondary = (evolution.secondary_envelope_angmom / binary.secondary.envelope_inertia(evolution.age)) / wsun
 
-    wcore_secondary = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
+    # wcore_secondary = (evolution.secondary_core_angmom / binary.secondary.core_inertia(evolution.age)) / wsun
 
-    wcore_primary = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
+    # wcore_primary = (evolution.primary_core_angmom / binary.primary.core_inertia(evolution.age)) / wsun
 
     orbitalfrequncy = binary.orbital_frequency(evolution.semimajor) / wsun
 
-    pyplot.loglog(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
+    ecc = evolution.eccentricity
+
+    print(ecc)
+    # pyplot.loglog(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
 
     # pyplot.loglog(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
 
     # pyplot.loglog(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
 
-    pyplot.loglog(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
+    # pyplot.loglog(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
 
 
 
-    pyplot.loglog(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
-    pyplot.xlim(5e-3,age)
+    # pyplot.loglog(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
+    # pyplot.xlim(5e-3,age)
     # pyplot.ylim(0,100)
-    pyplot.legend(loc='lower left',prop={'size': 16})
-    pyplot.ylabel(r'Spin Freuqncy ($\Omega_{\star}/\Omega_{sun}$)')
-    pyplot.xlabel(r'Age (Gyr) ')
+    # pyplot.legend(loc='lower left',prop={'size': 16})
+    # pyplot.ylabel(r'Spin Freuqncy ($\Omega_{\star}/\Omega_{sun}$)')
+    # pyplot.xlabel(r'Age (Gyr) ')
     #pyplot.axhline(y=wsat/wsun)
     # pyplot.ylim(top=100)
     # pyplot.ylim(bottom=-20)
     # pyplot.show()
-    pyplot.savefig('evolutionlogq6.pdf')
+    # pyplot.savefig('evolutionlogq6.pdf')
 
     return evolution
 
@@ -225,7 +228,7 @@ def test_evolution(interpolator, convective_phase_lag, wind):
     """run evolution for binary system """
 
     tdisk = 5e-3
-    age = 8.0
+    age = 1.0
     primary_mass = 1.0
     secondary_mass = 1.0
     initial_disk_period = 2*numpy.pi/4.1
@@ -292,20 +295,18 @@ if __name__ == '__main__':
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
+    
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
 
-    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
-
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        eccentricity_path
+    orbital_evolution_library.prepare_eccentricity_expansion(
+        eccentricity_path,
+        1e-4,
+        True,
+        True
     )
 
 
-    # orbital_evolution_library.read_eccentricity_expansion_coefficients(
-    #     b"eccentricity_expansion_coef.txt"
-    # )
-    # serialized_dir = '/home/kpenev/projects/git/poet/stellar_evolution_interpolators'
-
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
-    logQ = 6.0
+    logQ = 12
     test_evolution(interpolator,  phase_lag(logQ), True)

@@ -38,7 +38,8 @@ class Evolution:
     def calculate_intial_conditions(self):
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SecondaryAngmom())))
+        SA=SecondaryAngmom()
+        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SA)))
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -48,7 +49,7 @@ class Evolution:
 
         FindIC=InitialConditionSolver(self.interpolator,
                                       self.parameters,
-                                      secondary_angmom=SecondaryAngmom())
+                                      secondary_angmom=SA)
 
         spin = FindIC(primary,secondary)
 

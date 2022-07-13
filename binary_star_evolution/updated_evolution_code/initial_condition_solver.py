@@ -34,6 +34,13 @@ wsun = 0.24795522138
 _logger = logging.getLogger()
 
 
+def check_last_nan(a):
+    for i in range(len(a)):
+        val=a[len(a)-i-1]
+        check=numpy.isnan(val)
+        if check == False:
+            return(val,len(a)-i-1)
+
 class InitialConditionSolver:
     """Find initial orbital period and eccentricity which reproduce
         current orbital period and eccentricity of a given system """
@@ -46,9 +53,12 @@ class InitialConditionSolver:
 
         _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
-        if initial_eccentricity>0.45 or initial_orbital_period<0 or initial_eccentricity<0:
-            _logger.warning('Invalid values')
-            return scipy.nan,scipy.nan
+        if initial_eccentricity>0.80  or initial_eccentricity<0:
+            _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
+            return -self.target_orbital_period,initial_eccentricity-self.target_eccentricity
+        if initial_orbital_period<0:
+            _logger.warning('Encoutnered invalid value for orbtial period = {!r}'.format(initial_orbital_period))
+            return initial_orbital_period-self.target_orbital_period,-self.target_eccentricity
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -67,19 +77,25 @@ class InitialConditionSolver:
         )
 
         final_state=binary.final_state()
-        assert(final_state.age==self.target_age)
+        if final_state.age != self.target_age:
+            _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr'.format(repr(final_state.age)))
+            assert(final_state.age==self.target_age)
 
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
         _logger.info(f'{self.final_orbital_period}\t{self.final_eccentricity}')
 
-        self.delta_p=self.final_orbital_period-self.target_orbital_period
+
+        if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+            evolution = binary.get_evolution()
+            _logger.warning('Binary system was destroyed')
+            self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
+            self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
+        else:
+            self.delta_p=self.final_orbital_period-self.target_orbital_period
         self.delta_e=self.final_eccentricity-self.target_eccentricity
 
-        if numpy.logical_or(numpy.isnan(self.delta_p),(numpy.isnan(self.delta_e))):
-            _logger.warning('Binary system was destroyed')
-            raise ValueError
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
 

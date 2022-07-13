@@ -9,6 +9,9 @@ sys.path.append(path.poet_path+'/scripts')
 from orbital_evolution.transformations import phase_lag
 from create_objects import BinaryObjects
 import numpy
+import logging
+
+_logger = logging.getLogger()
 
 
 class IntialSecondaryAngmom:
@@ -45,5 +48,9 @@ class IntialSecondaryAngmom:
         star.delete()
         binary.delete()
 
-        return numpy.array([disk_state.envelope_angmom, disk_state.core_angmom])
+        angmom_array=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom])
+
+        _logger.info('Initial Secondary Angular Momentum = {!r}'.format(repr(angmom_array)))
+
+        return angmom_array
 

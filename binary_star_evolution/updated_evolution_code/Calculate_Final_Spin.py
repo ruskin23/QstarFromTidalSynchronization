@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pickletools import pylist, pylong
 import sys
 import os
 from pathlib import Path
@@ -14,6 +15,11 @@ from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from orbital_evolution.transformations import phase_lag
+from stellar_evolution.derived_stellar_quantities import\
+    TeffK,\
+    LogGCGS,\
+    RhoCGS
+
 
 import pickle
 import numpy
@@ -93,11 +99,45 @@ if __name__=='__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef.txt').encode('ascii')
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-        eccentricity_path
+    orbital_evolution_library.prepare_eccentricity_expansion(
+        eccentricity_path,
+        1e-4,
+        True,
+        True
     )
+
+
+    
+    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_temp_cutoff.txt','w') as fnew:
+    #     fnew.write('Number\tKIC\tPorb\tspin\teccentricity\tfeh\tage(Gyr)\tm1\tm2\n')
+    #     with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
+    #         next(f)
+    #         for lines in f:
+    #             x=lines.split()
+    #             feh=float(x[5])
+    #             age=float(x[6])
+    #             m1=float(x[7])
+    #             m2=float(x[8])
+    #             quantity_radius=interpolator('radius',m1, feh)
+    #             quantity_lum=interpolator('lum',m1, feh)
+    #             t_age=numpy.linspace(5e-3,age,1000)
+    #             try:
+    #                 T=TeffK(quantity_radius,quantity_lum)(age)
+    #                 I=interpolator('iconv',m1,feh)
+    #                 if min(I(t_age)):
+    #                     fnew.write(lines)
+    #                     print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
+    #             except:
+    #                 continue
+
+
+    # I=interpolator('iconv',1.0368188571870431,0.0)
+
+    # t_age=numpy.linspace(5e-3,6,1000)
+    # pyplot.plot(t_age,T(t_age))
+    # pyplot.show()
 
     parameters=dict()
 
@@ -119,15 +159,16 @@ if __name__=='__main__':
                     Wdisk=4.1
                     logQ=12.0
 
-    parameters['primary_mass']=primary_mass
-    parameters['secondary_mass']=secondary_mass
-    parameters['age']=age
-    parameters['feh']=feh
-    parameters['orbital_period']= orbital_period
-    parameters['eccentricity']=eccentricity
-    parameters['spin_period']=spin_period
-    parameters['logQ']=logQ
-    parameters['Wdisk']=Wdisk
+    parameters['primary_mass']=1.1802942134608967
+    parameters['secondary_mass']=0.9214074882408048
+    parameters['age']=9.216468955586022
+    parameters['feh']=0.46782459199735366
+    parameters['orbital_period']=1.03514760842
+
+    parameters['eccentricity']=0.058058058058058054
+    parameters['spin_period']=10
+    # parameters['logQ']=logQ
+    parameters['Wdisk']=2.9824736108117884
 
     parameters['dissipation']=True
     parameters['disk_dissipation_age']=5e-3
@@ -139,10 +180,11 @@ if __name__=='__main__':
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
     parameters['inclination']=0.0
+    parameters['phase_lag_max']=4.5071733293046075e-14
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
-    parameters['tidal_frequency_breaks']=None
-    parameters['tidal_frequency_powers']=numpy.array([0.0])
+    parameters['tidal_frequency_breaks']=numpy.array([0.12566371,2.13757534])
+    parameters['tidal_frequency_powers']=numpy.array([0,2.66383021,0])
 
     print(parameters)
 
