@@ -112,7 +112,7 @@ class InitialConditionSolver:
         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
-        if self.function=='minimze':
+        if self.function=='minimize':
             return numpy.sqrt(self.delta_p**2 + self.delta_e**2)
         else:
             return numpy.array([self.delta_p,self.delta_e])
