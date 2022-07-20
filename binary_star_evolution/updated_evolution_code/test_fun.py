@@ -8,16 +8,18 @@ def test_fun(in_vals):
     a = numpy.sqrt(in_vals[0])
     b = numpy.sqrt(in_vals[1]) - 4
     
-    print('Calculated Values a = {} b = {}'.format(a,b))
+    # print('Calculated Values a = {} b = {}'.format(a,b))
 
-    if numpy.isnan(a) or numpy.isnan(b):
-        return numpy.array([numpy.inf,numpy.inf])
+    #return [numpy.sqrt(in_vals[0]), numpy.sqrt(in_vals[1]) - 4]
+    print('Solution = {}'.format(numpy.sqrt(a**2 + b**2)))
+    return  numpy.sqrt(a**2 + b**2)
 
-    return [numpy.sqrt(in_vals[0]), numpy.sqrt(in_vals[1]) - 4]
-
-initial_guess=[-0.1,2.3]
-sol = optimize.least_squares(test_fun,
-                    initial_guess
+initial_guess=[0.001,4]
+# bounds=optimize.Bounds(numpy.array([0.0,1.0]),numpy.array([1.0,10.0]),keep_feasible=True)
+sol = optimize.minimize(test_fun,
+                    initial_guess,
+                    # bounds=bounds,
+                    method='Nelder-Mead'
                     )
 
 print(sol.x)

@@ -56,8 +56,8 @@ class InitialConditionSolver:
         _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
         
-        #if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
-        #    return scipy.nan,scipy.nan
+        if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
+           return scipy.nan
         
         #if initial_eccentricity>0.80  or initial_eccentricity<0:
         #    _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
@@ -95,13 +95,14 @@ class InitialConditionSolver:
 
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
-            evolution = binary.get_evolution()
-            self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
-            _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(evolution.age[non_nan_index]))
-            self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
-        else:
-            self.delta_p=self.final_orbital_period-self.target_orbital_period
-        self.delta_e=self.final_eccentricity-self.target_eccentricity
+            return scipy.nan
+        #     evolution = binary.get_evolution()
+        #     self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
+        #     _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(evolution.age[non_nan_index]))
+        #     self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
+        # else:
+        #     self.delta_p=self.final_orbital_period-self.target_orbital_period
+        # self.delta_e=self.final_eccentricity-self.target_eccentricity
 
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
@@ -196,7 +197,7 @@ class InitialConditionSolver:
                                 method=self.method
                                 )
             if self.function=='minimize':
-                bounds=((0.0,numpy.inf), (0,0.8))
+                bounds=((0.0,numpy.inf), (0.0,0.8))
                 sol = optimize.minimize(self.initial_condition_errfunc,
                                 initial_guess,
                                 bounds=bounds,
