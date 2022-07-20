@@ -174,7 +174,7 @@ class InitialConditionSolver:
         self.target_orbital_period=self.orbital_period
         self.target_eccentricity=self.eccentricity
 
-        initial_guess=[3*self.target_orbital_period,self.target_eccentricity]
+        initial_guess=[self.target_orbital_period,self.target_eccentricity]
         bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
         
         _logger.info('solving for p and e')
