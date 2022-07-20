@@ -96,8 +96,8 @@ class InitialConditionSolver:
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
             evolution = binary.get_evolution()
-            _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(final_state.age))
             self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
+            _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(evolution.age[non_nan_index]))
             self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
         else:
             self.delta_p=self.final_orbital_period-self.target_orbital_period
