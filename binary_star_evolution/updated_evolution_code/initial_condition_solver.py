@@ -51,14 +51,20 @@ class InitialConditionSolver:
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
+
+
         _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
-        if initial_eccentricity>0.80  or initial_eccentricity<0:
-            _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
-            return -self.target_orbital_period,initial_eccentricity-self.target_eccentricity
-        if initial_orbital_period<0:
-            _logger.warning('Encoutnered invalid value for orbtial period = {!r}'.format(initial_orbital_period))
-            return initial_orbital_period-self.target_orbital_period,-self.target_eccentricity
+        
+        #if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
+        #    return scipy.nan,scipy.nan
+        
+        #if initial_eccentricity>0.80  or initial_eccentricity<0:
+        #    _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
+        #    return -self.target_orbital_period,initial_eccentricity-self.target_eccentricity
+        #if initial_orbital_period<0:
+        #    _logger.warning('Encoutnered invalid value for orbtial period = {!r}'.format(initial_orbital_period))
+        #    return initial_orbital_period-self.target_orbital_period,-self.target_eccentricity
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -84,7 +90,7 @@ class InitialConditionSolver:
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
-        _logger.info(f'{self.final_orbital_period}\t{self.final_eccentricity}')
+        _logger.info(f'final_orbital_period = {self.final_orbital_period}\tfinal_eccentricity = {self.final_eccentricity}')
 
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
@@ -105,7 +111,7 @@ class InitialConditionSolver:
         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
-        return self.delta_p,self.delta_e
+        return numpy.array([self.delta_p,self.delta_e])
 
 
 
@@ -168,16 +174,14 @@ class InitialConditionSolver:
         self.target_orbital_period=self.orbital_period
         self.target_eccentricity=self.eccentricity
 
-        initial_guess=[self.target_orbital_period,self.target_eccentricity]
-
-
+        initial_guess=[3*self.target_orbital_period,self.target_eccentricity]
+        bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
+        
         _logger.info('solving for p and e')
         try:
-            sol = optimize.root(self.initial_condition_errfunc,
+            sol = optimize.least_squares(self.initial_condition_errfunc,
                                 initial_guess,
-                                method='lm',
-                                tol=1e-6,
-                                options={'maxiter':20}
+                                bounds=bounds
                                 )
             initial_orbital_period_sol,initial_eccentricity_sol=sol.x
         except:

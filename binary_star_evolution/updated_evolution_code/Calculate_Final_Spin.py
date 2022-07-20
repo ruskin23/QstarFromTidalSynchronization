@@ -93,13 +93,13 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
-    logging.basicConfig(filename='spin_calculation.log',level=logging.INFO)
+    logging.basicConfig(filename='/work/06850/rpatel23/ls6/scratch/spin_calculation.log',level=logging.INFO)
 
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
+    eccentricity_path=os.path.join(path.scratch_directory,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
 
     orbital_evolution_library.prepare_eccentricity_expansion(
         eccentricity_path,

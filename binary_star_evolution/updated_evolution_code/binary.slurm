@@ -7,7 +7,7 @@
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 02:00:00
-#SBATCH -p debug
+#SBATCH -p development
 
 module load intel/19.1.1
 module load boost
