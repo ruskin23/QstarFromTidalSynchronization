@@ -34,7 +34,6 @@ import time
 
 import logging
 
-
 def plot_evolution(evolved_binary):
 
     wsun = 0.24795522138
@@ -81,8 +80,6 @@ def get_evolution(evolution):
 
 if __name__=='__main__':
 
-    #clear log file. this is best way I found
-    with open('spin_calculation.log', 'w'): pass
 
 
     parser = argparse.ArgumentParser()
@@ -91,9 +88,14 @@ if __name__=='__main__':
                         default=None,
                         help='pick system from a file')
 
+    parser.add_argument('-f')
+    parser.add_argument('-m')
+
+
     args = parser.parse_args()
 
-    logging.basicConfig(filename='/work/06850/rpatel23/ls6/scratch/spin_calculation.log',level=logging.INFO)
+    logging.basicConfig(filename=path.scratch_directory+'/spin_calculation_{}_{}.log'.format(args.f,args.m),
+                        level=logging.INFO)
 
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
@@ -109,38 +111,11 @@ if __name__=='__main__':
     )
 
 
-    
-    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_temp_cutoff.txt','w') as fnew:
-    #     fnew.write('Number\tKIC\tPorb\tspin\teccentricity\tfeh\tage(Gyr)\tm1\tm2\n')
-    #     with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
-    #         next(f)
-    #         for lines in f:
-    #             x=lines.split()
-    #             feh=float(x[5])
-    #             age=float(x[6])
-    #             m1=float(x[7])
-    #             m2=float(x[8])
-    #             quantity_radius=interpolator('radius',m1, feh)
-    #             quantity_lum=interpolator('lum',m1, feh)
-    #             t_age=numpy.linspace(5e-3,age,1000)
-    #             try:
-    #                 T=TeffK(quantity_radius,quantity_lum)(age)
-    #                 I=interpolator('iconv',m1,feh)
-    #                 if min(I(t_age)):
-    #                     fnew.write(lines)
-    #                     print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
-    #             except:
-    #                 continue
-
-
-    # I=interpolator('iconv',1.0368188571870431,0.0)
-
-    # t_age=numpy.linspace(5e-3,6,1000)
-    # pyplot.plot(t_age,T(t_age))
-    # pyplot.show()
 
     parameters=dict()
 
+    parameters['function']=args.f
+    parameters['method']=args.m
 
     if args.system is not None:
         parameters['system']=args.system
@@ -201,3 +176,32 @@ if __name__=='__main__':
 
 
 
+    
+    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_temp_cutoff.txt','w') as fnew:
+    #     fnew.write('Number\tKIC\tPorb\tspin\teccentricity\tfeh\tage(Gyr)\tm1\tm2\n')
+    #     with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
+    #         next(f)
+    #         for lines in f:
+    #             x=lines.split()
+    #             feh=float(x[5])
+    #             age=float(x[6])
+    #             m1=float(x[7])
+    #             m2=float(x[8])
+    #             quantity_radius=interpolator('radius',m1, feh)
+    #             quantity_lum=interpolator('lum',m1, feh)
+    #             t_age=numpy.linspace(5e-3,age,1000)
+    #             try:
+    #                 T=TeffK(quantity_radius,quantity_lum)(age)
+    #                 I=interpolator('iconv',m1,feh)
+    #                 if min(I(t_age)):
+    #                     fnew.write(lines)
+    #                     print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
+    #             except:
+    #                 continue
+
+
+    # I=interpolator('iconv',1.0368188571870431,0.0)
+
+    # t_age=numpy.linspace(5e-3,6,1000)
+    # pyplot.plot(t_age,T(t_age))
+    # pyplot.show()

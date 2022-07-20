@@ -84,9 +84,10 @@ class InitialConditionSolver:
 
         final_state=binary.final_state()
         if final_state.age != self.target_age:
-            _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr'.format(repr(final_state.age)))
+            _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr'.format(final_state.age))
             assert(final_state.age==self.target_age)
 
+        
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
@@ -95,7 +96,7 @@ class InitialConditionSolver:
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
             evolution = binary.get_evolution()
-            _logger.warning('Binary system was destroyed')
+            _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(final_state.age))
             self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
             self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
         else:
@@ -111,7 +112,10 @@ class InitialConditionSolver:
         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
-        return numpy.array([self.delta_p,self.delta_e])
+        if self.function=='minimze':
+            return numpy.sqrt(self.delta_p**2 + self.delta_e**2)
+        else:
+            return numpy.array([self.delta_p,self.delta_e])
 
 
 
@@ -175,14 +179,31 @@ class InitialConditionSolver:
         self.target_eccentricity=self.eccentricity
 
         initial_guess=[self.target_orbital_period,self.target_eccentricity]
-        bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
         
-        _logger.info('solving for p and e')
+        
+        _logger.info('solving for p and e using function = {} and method {}'.format(self.function,self.method))
         try:
-            sol = optimize.least_squares(self.initial_condition_errfunc,
+            if self.function=='least_squares':
+                bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
+                sol = optimize.least_squares(self.initial_condition_errfunc,
                                 initial_guess,
-                                bounds=bounds
+                                bounds=bounds,
+                                method=self.method
                                 )
+            if self.function=='root':
+                sol = optimize.root(self.initial_condition_errfunc,
+                                initial_guess,
+                                method=self.method
+                                )
+            if self.function=='minimize':
+                bounds=((0.0,numpy.inf), (0,0.8))
+                sol = optimize.minimize(self.initial_condition_errfunc,
+                                initial_guess,
+                                bounds=bounds,
+                                method=self.method
+                                )
+
+
             initial_orbital_period_sol,initial_eccentricity_sol=sol.x
         except:
             initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
