@@ -190,7 +190,7 @@ class InitialConditionSolver:
             while numpy.isnan(err_fun):
                 n_1=n_1+1
                 Pguess=Pguess*n_1
-                err_fun=self.initial_condition_errfunc([repr(Pguess),repr(e)])
+                err_fun=self.initial_condition_errfunc([Pguess,e])
         simplex_1=[Pguess,e]
         _logger.info('Found first simplex values at Pguess = {} e = {}'.format(repr(Pguess),repr(e)))
 
