@@ -166,6 +166,8 @@ class sampler:
         self.fixed_params()
         self.sampled_from_data()
         self.get_orbital_period()
+        self.params['function']='minimize'
+        self.params['method']='Nelder-Mead'
 
         return self.params,alpha,omegaref
 
@@ -284,7 +286,7 @@ if __name__ == '__main__':
     ndim=8
     
 
-    backend_reader = HDFBackend('system_'+system_number+'.h5')
+    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
     parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
     blobs_dtype = [(name, float) for name in parameters]
