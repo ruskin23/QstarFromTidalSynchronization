@@ -100,9 +100,9 @@ class InitialConditionSolver:
         #     self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
         #     _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(evolution.age[non_nan_index]))
         #     self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
-        # else:
-        #     self.delta_p=self.final_orbital_period-self.target_orbital_period
-        # self.delta_e=self.final_eccentricity-self.target_eccentricity
+        else:
+            self.delta_p=self.final_orbital_period-self.target_orbital_period
+        self.delta_e=self.final_eccentricity-self.target_eccentricity
 
 
         self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
@@ -183,30 +183,36 @@ class InitialConditionSolver:
 
         _logger.info('solving for p and e using function = {} and method {}'.format(self.function,self.method))
 
+
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
         err_fun=numpy.nan
         n_1=0
+        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(Pguess,e))
         while numpy.isnan(err_fun):
             n_1=n_1+1
             Pguess=Pguess*n_1
             err_fun=self.initial_condition_errfunc([Pguess,e])
         simplex_1=(Pguess,e)
 
+
         err_fun=numpy.nan
         n_1=0
+        _logger.info('Calculating second simplex using Pguess = {} e =  {}'.format(Pguess,e))
         while numpy.isnan(err_fun):
             n_1=n_1+1
             Pguess=2*Pguess*n_1
             err_fun=self.initial_condition_errfunc([Pguess,e])
         simplex_2=(Pguess,e)
 
+
         err_fun=numpy.nan
-        
+        _logger.info('Calculating second simplex using Pguess = {} e =  {}'.format(Pguess,e))
         while numpy.isnan(err_fun):
             e = e + (0.1 if e < 0.3 else -0.1)
             err_fun=self.initial_condition_errfunc([Pguess,e])
         simplex_3=(Pguess,e)
+
 
         initial_simplex=(simplex_1,simplex_2,simplex_3)
         _logger.info('Initial Simplex = {}'.format(repr(initial_simplex)))

@@ -92,6 +92,8 @@ if __name__=='__main__':
 
     args = parser.parse_args()
 
+    with open(path.scratch_directory+'/spin_calculation_{}_{}.log'.format(args.f,args.m),'w'):
+        pass
     logging.basicConfig(filename=path.scratch_directory+'/spin_calculation_{}_{}.log'.format(args.f,args.m),
                         level=logging.INFO)
 
