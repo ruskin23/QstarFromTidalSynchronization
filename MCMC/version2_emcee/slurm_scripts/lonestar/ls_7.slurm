@@ -3,7 +3,7 @@
 #SBATCH -J emcee_7
 #SBATCH -n 128  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/ndoe_7/emcee_7.out
+#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_7/emcee_7.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
