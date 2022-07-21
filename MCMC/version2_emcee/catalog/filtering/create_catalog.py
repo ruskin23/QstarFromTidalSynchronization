@@ -3,15 +3,33 @@ from re import T
 import sys
 import os
 import random
+import pandas
 import numpy
-sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-sys.path.append('/home/ruskin/projects/poet/scripts')
+
+from pathlib import Path
+from directories import directories
+
+home_dir=str(Path.home())
+path=directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
+
 
 from stellar_evolution.library_interface import library
 
 from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
+from stellar_evolution.derived_stellar_quantities import\
+TeffK,\
+LogGCGS,\
+RhoCGS
+
+serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
+manager = StellarEvolutionManager(serialized_dir)
+interpolator = manager.get_interpolator_by_name('default')
+
+
 
 def stellar_parameter_check(interpolator,feh,t,m1,m2):
 
@@ -47,14 +65,14 @@ if __name__=='__main__':
 
     # print(set(spin_KIC) - set(win_KIC))
 
-    serialized_dir =  "/home/ruskin/projects/poet/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
+    # serialized_dir =  "/home/ruskin/projects/poet/stellar_evolution_interpolators"
+    # manager = StellarEvolutionManager(serialized_dir)
+    # interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join('/home/ruskin/projects/poet','eccentricity_expansion_coef.txt').encode('ascii')
+    # eccentricity_path=os.path.join('/home/ruskin/projects/poet','eccentricity_expansion_coef.txt').encode('ascii')
 
-    orbital_evolution_library.read_eccentricity_expansion_coefficients(
-    eccentricity_path)
+    # orbital_evolution_library.read_eccentricity_expansion_coefficients(
+    # eccentricity_path)
 
     KIC_not_in_win=[]
     fo=open('filtered_spin_catalog.txt','w')
@@ -167,8 +185,43 @@ if __name__=='__main__':
             PS.append(float(spin))
             f_nominal.write(f'{number}\t{KIC}\t{porb}\t{spin}\t{eccentricity}\t{feh}\t{age}\t{m1}\t{m2}\n')
 
-PO,PS=sorted(PO),sorted(PS)
-print(max(PO))
-for p,s in zip(PO,PS):
-    print(f'{p}\t{s}')
+    #Total Systems with morph<0.5
+    maxlike_data = pandas.read_csv(
+        'paper_maxlike_pars.dat',
+        sep=r'\s+'
+    )
+    KIC = maxlike_data[maxlike_data['morph']<0.5]['#KIC'].to_numpy()
+
+    #second nominal file where min(I(conv))>0
+    with open('nominal_value_catalog_Iconv_cutoff.txt','w') as fnew:
+        fnew.write('Number\tKIC\tPorb\tspin\teccentricity\tfeh\tage(Gyr)\tm1\tm2\n')
+        with open('nominal_value_catalog.txt','r') as f:
+            next(f)
+            for lines in f:
+                x=lines.split()
+                if int(x[1]) in KIC:
+                    feh=float(x[5])
+                    age=float(x[6])
+                    m1=float(x[7])
+                    m2=float(x[8])
+                    quantity_radius=interpolator('radius',m1, feh)
+                    quantity_lum=interpolator('lum',m1, feh)
+                    t_age=numpy.linspace(5e-3,age,1000)
+                    try:
+                        T=TeffK(quantity_radius,quantity_lum)(age)
+                        I=interpolator('iconv',m1,feh)
+                        if min(I(t_age)):
+                            fnew.write(lines)
+                            # print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
+                    except:
+                        continue
+
+
+
+
+
+# PO,PS=sorted(PO),sorted(PS)
+# print(max(PO))
+# for p,s in zip(PO,PS):
+#     print(f'{p}\t{s}')
 

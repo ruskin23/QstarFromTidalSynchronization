@@ -161,12 +161,12 @@ if __name__=='__main__':
     parameters['tidal_frequency_breaks']=numpy.array([0.12566371,2.13757534])
     parameters['tidal_frequency_powers']=numpy.array([0,2.66383021,0])
 
-    print(parameters)
+    # print(parameters)
 
-    evolution=Evolution(interpolator,parameters)
-    results =  evolution.calculate_intial_conditions()
-    spin=results['spin']
-    print('Spin Period = ',spin)
+    # evolution=Evolution(interpolator,parameters)
+    # results =  evolution.calculate_intial_conditions()
+    # spin=results['spin']
+    # print('Spin Period = ',spin)
 
 
 

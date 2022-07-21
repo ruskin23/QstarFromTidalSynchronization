@@ -54,7 +54,7 @@ class InitialConditionSolver:
         _logger.info('Trying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
         if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
-            _logger.warning('Encoutnered invalid values, returning NaN')
+            _logger.warning('Encoutnered invalid initial values, returning NaN')
             return scipy.nan
         
         #if initial_eccentricity>0.80  or initial_eccentricity<0:
@@ -93,6 +93,7 @@ class InitialConditionSolver:
 
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+            _logger.warning('Binary was destroyed')
             return scipy.nan
         #     evolution = binary.get_evolution()
         #     self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)

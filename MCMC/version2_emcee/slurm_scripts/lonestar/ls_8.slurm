@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH -J emcee_8
-#SBATCH -n 128  #Total number of tasks to run at one time
+#SBATCH -n 96  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_8/emcee_8.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
@@ -46,7 +46,7 @@ run_system() {
 }
 
 
-for SYSID in 5300878 5393558 5652260 5802470 5871918 6029130 6128027 6283224; do 
+for SYSID in 4285087 4346875 4380283 4579321 4757331 4773155; do 
     run_system $SYSID & 
 done
 
