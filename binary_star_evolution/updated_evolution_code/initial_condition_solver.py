@@ -51,10 +51,11 @@ class InitialConditionSolver:
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
+        _logger.info('Trying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
         if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
-           return scipy.nan
+            _logger.warning('Encoutnered invalid values, returning NaN')
+            return scipy.nan
         
         #if initial_eccentricity>0.80  or initial_eccentricity<0:
         #    _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
@@ -177,12 +178,12 @@ class InitialConditionSolver:
         self.target_eccentricity=self.eccentricity
         
 
-        _logger.info('solving for p and e using function = {} and method {}'.format(self.function,self.method))
+        _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
 
 
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
-        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        _logger.info('\nCalculating first simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
         err_fun=self.initial_condition_errfunc([Pguess,e])
         if numpy.isnan(err_fun):
             _logger.warning('Encontered nan values.')
@@ -195,7 +196,7 @@ class InitialConditionSolver:
         _logger.info('Found first simplex values at Pguess = {} e = {}'.format(repr(Pguess),repr(e)))
 
         Pguess=2*Pguess
-        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        _logger.info('\nCalculating second simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
         err_fun=self.initial_condition_errfunc([Pguess,e])
         if numpy.isnan(err_fun):
             _logger.warning('Encontered nan values.')
@@ -209,7 +210,7 @@ class InitialConditionSolver:
 
 
         e = e + 0.1 if e < 0.3 else -0.1
-        _logger.info('Calculating third simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        _logger.info('\nCalculating third simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
         err_fun=self.initial_condition_errfunc([Pguess,e])
         if numpy.isnan(err_fun):
             _logger.warning('Encontered nan values.')
@@ -221,7 +222,7 @@ class InitialConditionSolver:
 
 
         initial_simplex=numpy.array([simplex_1,simplex_2,simplex_3])
-        _logger.info('Initial Simplex = {}'.format(repr(initial_simplex)))
+        _logger.info('\nInitial Simplex = {}'.format(repr(initial_simplex)))
 
         initial_guess=[self.target_orbital_period,self.target_eccentricity]
 
