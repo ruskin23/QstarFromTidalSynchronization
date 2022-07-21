@@ -51,11 +51,8 @@ class InitialConditionSolver:
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-
-
         _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
-        
         if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
            return scipy.nan
         
@@ -178,90 +175,100 @@ class InitialConditionSolver:
         self.target_age=self.age
         self.target_orbital_period=self.orbital_period
         self.target_eccentricity=self.eccentricity
-
-        initial_guess=[self.target_orbital_period,self.target_eccentricity]
+        
 
         _logger.info('solving for p and e using function = {} and method {}'.format(self.function,self.method))
 
 
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
-        err_fun=numpy.nan
-        n_1=0
-        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(Pguess,e))
-        while numpy.isnan(err_fun):
-            n_1=n_1+1
-            Pguess=Pguess*n_1
-            err_fun=self.initial_condition_errfunc([Pguess,e])
-        simplex_1=(Pguess,e)
+        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        err_fun=self.initial_condition_errfunc([Pguess,e])
+        if numpy.isnan(err_fun):
+            _logger.warning('Encontered nan values.')
+            n_1=0
+            while numpy.isnan(err_fun):
+                n_1=n_1+1
+                Pguess=Pguess*n_1
+                err_fun=self.initial_condition_errfunc([repr(Pguess),repr(e)])
+        simplex_1=[Pguess,e]
+        _logger.info('Found first simplex values at Pguess = {} e = {}'.format(repr(Pguess),repr(e)))
+
+        Pguess=2*Pguess
+        _logger.info('Calculating first simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        err_fun=self.initial_condition_errfunc([Pguess,e])
+        if numpy.isnan(err_fun):
+            _logger.warning('Encontered nan values.')
+            n_1=0
+            while numpy.isnan(err_fun):
+                n_1=n_1+1
+                Pguess=Pguess*n_1
+                err_fun=self.initial_condition_errfunc([Pguess,e])
+        simplex_2=[Pguess,e]
+        _logger.info('Found second simplex values at Pguess = {} e = {}'.format(repr(Pguess),repr(e)))
 
 
-        err_fun=numpy.nan
-        n_1=0
-        _logger.info('Calculating second simplex using Pguess = {} e =  {}'.format(Pguess,e))
-        while numpy.isnan(err_fun):
-            n_1=n_1+1
-            Pguess=2*Pguess*n_1
-            err_fun=self.initial_condition_errfunc([Pguess,e])
-        simplex_2=(Pguess,e)
+        e = e + 0.1 if e < 0.3 else -0.1
+        _logger.info('Calculating third simplex using Pguess = {} e =  {}'.format(repr(Pguess),repr(e)))
+        err_fun=self.initial_condition_errfunc([Pguess,e])
+        if numpy.isnan(err_fun):
+            _logger.warning('Encontered nan values.')
+            while numpy.isnan(err_fun):
+                e = e + (0.1 if e < 0.3 else -0.1)
+                err_fun=self.initial_condition_errfunc([Pguess,e])
+        simplex_3=[Pguess,e]
+        _logger.info('Found second simplex values at Pguess = {} e = {}'.format(repr(Pguess),repr(e)))
 
 
-        err_fun=numpy.nan
-        _logger.info('Calculating second simplex using Pguess = {} e =  {}'.format(Pguess,e))
-        while numpy.isnan(err_fun):
-            e = e + (0.1 if e < 0.3 else -0.1)
-            err_fun=self.initial_condition_errfunc([Pguess,e])
-        simplex_3=(Pguess,e)
-
-
-        initial_simplex=(simplex_1,simplex_2,simplex_3)
+        initial_simplex=numpy.array([simplex_1,simplex_2,simplex_3])
         _logger.info('Initial Simplex = {}'.format(repr(initial_simplex)))
 
+        initial_guess=[self.target_orbital_period,self.target_eccentricity]
+
+        try:
+            if self.function=='least_squares':
+                bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
+                sol = optimize.least_squares(self.initial_condition_errfunc,
+                                initial_guess,
+                                bounds=bounds,
+                                method=self.method
+                                )
+            if self.function=='root':
+                sol = optimize.root(self.initial_condition_errfunc,
+                                initial_guess,
+                                method=self.method
+                                )
+            if self.function=='minimize':
+                bounds=((0.0,numpy.inf), (0.0,0.8))
+                sol = optimize.minimize(self.initial_condition_errfunc,
+                                initial_guess,
+                                method=self.method,
+                                bounds=bounds,
+                                options={'initial_simplex' : initial_simplex}
+                                )
 
 
-        # try:
-        #     if self.function=='least_squares':
-        #         bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
-        #         sol = optimize.least_squares(self.initial_condition_errfunc,
-        #                         initial_guess,
-        #                         bounds=bounds,
-        #                         method=self.method
-        #                         )
-        #     if self.function=='root':
-        #         sol = optimize.root(self.initial_condition_errfunc,
-        #                         initial_guess,
-        #                         method=self.method
-        #                         )
-        #     if self.function=='minimize':
-        #         bounds=((0.0,numpy.inf), (0.0,0.8))
-        #         sol = optimize.minimize(self.initial_condition_errfunc,
-        #                         initial_guess,
-        #                         bounds=bounds,
-        #                         method=self.method
-        #                         )
+            initial_orbital_period_sol,initial_eccentricity_sol=sol.x
+        except:
+            initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
+            self.spin=numpy.inf
 
 
-        #     initial_orbital_period_sol,initial_eccentricity_sol=sol.x
-        # except:
-        #     initial_orbital_period_sol,initial_eccentricity_sol=scipy.nan,scipy.nan
-        #     self.spin=numpy.inf
+        _logger.info('Solver Results:')
+        _logger.info('Intial Orbital Period = {!r} , Initial Eccentricity = {!r}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
+        _logger.info('Final Orbital Period = {!r} , Final Eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
+        _logger.info('Errors: delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+        _logger.info('Final Spin Period = {!r}'.format(self.spin))
+
+        results=dict()
+        results['p_initial']=initial_orbital_period_sol
+        results['e_initial']=initial_eccentricity_sol
+        results['p_final']=self.final_orbital_period
+        results['e_final']=self.final_eccentricity
+        results['delta_p']=self.delta_p
+        results['delta_e']=self.delta_e
+        results['spin']=self.spin
 
 
-        # _logger.info('Solver Results:')
-        # _logger.info('Intial Orbital Period = {!r} , Initial Eccentricity = {!r}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
-        # _logger.info('Final Orbital Period = {!r} , Final Eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
-        # _logger.info('Errors: delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
-        # _logger.info('Final Spin Period = {!r}'.format(self.spin))
-
-        # results=dict()
-        # results['p_initial']=initial_orbital_period_sol
-        # results['e_initial']=initial_eccentricity_sol
-        # results['p_final']=self.final_orbital_period
-        # results['e_final']=self.final_eccentricity
-        # results['delta_p']=self.delta_p
-        # results['delta_e']=self.delta_e
-        # results['spin']=self.spin
-
-
-        # return results
+        return results
 
