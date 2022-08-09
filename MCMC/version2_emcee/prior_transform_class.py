@@ -53,7 +53,7 @@ class prior_transform:
 
         e_cdf=0.0
         for s in self.e_samples:
-            e=(self.self-s)/h_e
+            e=(self.e_prior-s)/h_e
             e_cdf+=erf_fun(e)
         e_cdf/=len(self.e_samples)
         e_cdf_interp = interp1d(e_cdf,self.e_prior)

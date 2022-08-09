@@ -105,7 +105,7 @@ class sampler:
             h_e=pickle.load(f)
         bandwidths=bw[self.system_number]['ISJ']
         params=prior_transform(self.system_number,bandwidths)
-        sampled_params=params.paramter_evaluate(self.uniform_variable,h_e)
+        sampled_params=params.paramter_evaluate(self.uniform_variable,h_e[self.system_number])
         masses=self.param_conversion(sampled_params)
 
         self.params['primary_mass'] = masses[0]
@@ -172,8 +172,8 @@ class sampler:
         self.fixed_params()
         self.sampled_from_data()
         self.get_orbital_period()
-        self.params['function']='minimize'
-        self.params['method']='Nelder-Mead'
+        self.params['function']='root'
+        self.params['method']='lm'
 
         return self.params,alpha,omegaref
 
