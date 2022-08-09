@@ -101,9 +101,11 @@ class sampler:
 
         with open(path.current_directory+'/bandwidth.pickle','rb') as f:
             bw=pickle.load(f)
-        bandwidth=bw[self.system_number]['ISJ']
-        params=prior_transform(self.system_number,bandwidth)
-        sampled_params=params.paramter_evaluate(self.uniform_variable)
+        with open(path.current_directory+'/e_bandwidth.pickle','rb') as f:
+            h_e=pickle.load(f)
+        bandwidths=bw[self.system_number]['ISJ']
+        params=prior_transform(self.system_number,bandwidths)
+        sampled_params=params.paramter_evaluate(self.uniform_variable,h_e)
         masses=self.param_conversion(sampled_params)
 
         self.params['primary_mass'] = masses[0]
