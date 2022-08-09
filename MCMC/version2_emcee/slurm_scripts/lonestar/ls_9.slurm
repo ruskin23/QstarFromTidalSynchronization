@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH -J emcee_8
+#SBATCH -J emcee_9
 #SBATCH -n 96  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_8/emcee_8.out
+#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_9/emcee_9.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
