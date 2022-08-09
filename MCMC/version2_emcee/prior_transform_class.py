@@ -102,39 +102,39 @@ class prior_transform:
         #<------------------------------------------------------------------------------
 
 
-# def corner_plot(system_number,bandwidth=None,method=None):
+def corner_plot(system_number,bandwidth=None,method=None):
 
-#     prior=prior_transform(system_number,bandwidth)
+    prior=prior_transform(system_number,bandwidth)
 
-#     Z_cdf=0.0
-#     for s in prior.Z_samples:
-#         z=(prior.Z_prior-s)/prior.h_Z
-#         Z_cdf+=erf_fun(z)
-#     Z_cdf/=len(prior.Z_samples)
-#     print(max(Z_cdf))
-#     print(min(Z_cdf))
-#     Z_cdf_interp = interp1d(Z_cdf,prior.Z_prior)
+    Z_cdf=0.0
+    for s in prior.Z_samples:
+        z=(prior.Z_prior-s)/prior.h_Z
+        Z_cdf+=erf_fun(z)
+    Z_cdf/=len(prior.Z_samples)
+    print(max(Z_cdf))
+    print(min(Z_cdf))
+    Z_cdf_interp = interp1d(Z_cdf,prior.Z_prior)
 
-#     q=(prior.Q_prior[None,:]-prior.Q_samples[:,None])/prior.h_Q
-#     m=(prior.M_prior[None,:]-prior.M_samples[:,None])/prior.h_M
-#     t=(prior.t_prior[None,:]-prior.t_samples[:,None])/prior.h_t
+    q=(prior.Q_prior[None,:]-prior.Q_samples[:,None])/prior.h_Q
+    m=(prior.M_prior[None,:]-prior.M_samples[:,None])/prior.h_M
+    t=(prior.t_prior[None,:]-prior.t_samples[:,None])/prior.h_t
 
-#     erfq=erf_fun(q)
-#     erfm=erf_fun(m)
-#     erft=erf_fun(t)
+    erfq=erf_fun(q)
+    erfm=erf_fun(m)
+    erft=erf_fun(t)
 
-#     values=[]
-#     for i in range(10000):
-#         rnd_nums=[random.uniform(min(Z_cdf),max(Z_cdf)),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)]
-#         values.append(prior.paramter_evaluate(rnd_nums,Z_cdf_interp,erfq,erfm,erft))
+    values=[]
+    for i in range(10000):
+        rnd_nums=[random.uniform(min(Z_cdf),max(Z_cdf)),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)]
+        values.append(prior.paramter_evaluate(rnd_nums,Z_cdf_interp,erfq,erfm,erft))
 
-#     flat_values = [item for sublist in values for item in sublist]
+    flat_values = [item for sublist in values for item in sublist]
 
-#     d=numpy.array(numpy.vstack(numpy.transpose(numpy.array(flat_values))))
-#     data_corner=d.reshape([len(d)//5,5])
-#     figure=corner.corner(data_corner)
-#     # plt.show()
-#     plt.savefig('compare_plots_bandwidths/system_{}/corner_{}_{}.png'.format(system_number,method,system_number))
+    d=numpy.array(numpy.vstack(numpy.transpose(numpy.array(flat_values))))
+    data_corner=d.reshape([len(d)//5,5])
+    figure=corner.corner(data_corner)
+    # plt.show()
+    plt.savefig('compare_plots_bandwidths/system_{}/corner_{}_{}.png'.format(system_number,method,system_number))
 
 
 # def get_bandwidth(param,data,plot=True,get_value=True,method=None):
