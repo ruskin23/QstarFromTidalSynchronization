@@ -7,7 +7,6 @@ import corner
 import matplotlib.pyplot as plt
 import logging
 import pickle
-from KDEpy import FFTKDE
 
 from scipy.interpolate import interp1d
 

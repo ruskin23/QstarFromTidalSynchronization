@@ -26,10 +26,16 @@ done
 
 
 run_system() {
+
+    sysid=$1
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
-    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_1
-    sysid=$1
+    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_1/system_${sysid}
+
+    if [ ! -d ${OUTPUT_DIR} ]
+    then
+        mkdir ${OUTPUT_DIR}
+    fi
 
     while true; do
         python3 \

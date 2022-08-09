@@ -99,7 +99,7 @@ class sampler:
     def sampled_from_data(self):
 
 
-        with open('bandwidth.pickle','rb') as f:
+        with open(path.current_directory+'/bandwidth.pickle','rb') as f:
             bw=pickle.load(f)
         bandwidth=bw[self.system_number]['ISJ']
         params=prior_transform(self.system_number,bandwidth)
@@ -156,7 +156,7 @@ class sampler:
         return alpha,omegaref
 
     def get_orbital_period(self):
-        with open(path.current_directory+'/catalog/filtering/nominal_value_catalog.txt','r') as f:
+        with open(path.current_directory+'/catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt','r') as f:
             for lines in f:
                 x=lines.split()
                 if self.system_number==x[1]:
@@ -252,10 +252,12 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
 if __name__ == '__main__':
 
+    print('main program initiated')
     
     config=cmdline_parser()
     setup_process(config)
 
+    print('Initializing interpolator')
     serialized_dir =  path.poet_path+"/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
@@ -269,7 +271,11 @@ if __name__ == '__main__':
         True
     )
 
+    print('Interpolator initialized')
+
     initial_state=numpy.random.rand(64,8)
+
+    print('Random state generated')
 
     _logger.info(initial_state)
 
