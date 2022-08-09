@@ -51,11 +51,13 @@ class InitialConditionSolver:
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
 
-        _logger.info('Trying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
+        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
         if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
             _logger.warning('Encoutnered invalid initial values, returning NaN')
-            return scipy.nan
+            if self.function=='minimize': return scipy.nan
+            else: return numpy.array([scipy.nan,scipy.nan])
+
         
         #if initial_eccentricity>0.80  or initial_eccentricity<0:
         #    _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
@@ -89,18 +91,15 @@ class InitialConditionSolver:
         self.final_orbital_period=binary.orbital_period(final_state.semimajor)
         self.final_eccentricity=final_state.eccentricity
 
-        _logger.info(f'final_orbital_period = {self.final_orbital_period}\tfinal_eccentricity = {self.final_eccentricity}')
-
-
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
             _logger.warning('Binary was destroyed')
-            return scipy.nan
+            if self.function=='minimize': return scipy.nan
+            else: return numpy.array([scipy.nan,scipy.nan])
         #     evolution = binary.get_evolution()
         #     self.final_eccentricity,non_nan_index=check_last_nan(evolution.eccentricity)
         #     _logger.warning('Binary system was destroyed at age = {!r} Gyr'.format(evolution.age[non_nan_index]))
         #     self.delta_p=-self.target_orbital_period-self.target_age+evolution.age[non_nan_index]
-        else:
-            self.delta_p=self.final_orbital_period-self.target_orbital_period
+        self.delta_p=self.final_orbital_period-self.target_orbital_period
         self.delta_e=self.final_eccentricity-self.target_eccentricity
 
 
@@ -108,14 +107,15 @@ class InitialConditionSolver:
 
         binary.delete()
 
-        _logger.info('Final Age = {!r}'.format(final_state.age))
+        _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
         if self.function=='minimize':
-            return numpy.sqrt(self.delta_p**2 + self.delta_e**2)
-        else:
-            return numpy.array([self.delta_p,self.delta_e])
+            err_fun =  numpy.sqrt(self.delta_p**2 + self.delta_e**2)
+            _logger.info('Error Function = {!r}'.format(err_fun))
+            return err_fun
+        else: return numpy.array([self.delta_p,self.delta_e])
 
 
 
@@ -160,27 +160,7 @@ class InitialConditionSolver:
         self.spin=scipy.nan
 
 
-
-    def __call__(self, primary, secondary):
-        """
-        Find initial conditions which reproduce the given system now.
-
-        Args:
-            - primary
-
-            - secondary
-        """
-
-        self.primary = primary
-        self.secondary = secondary
-
-        self.target_age=self.age
-        self.target_orbital_period=self.orbital_period
-        self.target_eccentricity=self.eccentricity
-        
-
-        _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
-
+    def calculate_initial_simplex(self):
 
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
@@ -225,6 +205,31 @@ class InitialConditionSolver:
         initial_simplex=numpy.array([simplex_1,simplex_2,simplex_3])
         _logger.info('\nInitial Simplex = {}'.format(repr(initial_simplex)))
 
+        return initial_simplex
+
+
+    def __call__(self, primary, secondary):
+        """
+        Find initial conditions which reproduce the given system now.
+
+        Args:
+            - primary
+
+            - secondary
+        """
+
+        self.primary = primary
+        self.secondary = secondary
+
+        self.target_age=self.age
+        self.target_orbital_period=self.orbital_period
+        self.target_eccentricity=self.eccentricity
+        
+
+        _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
+
+        if self.function=='minimize':initial_simplex=self.calculate_initial_simplex()
+
         initial_guess=[self.target_orbital_period,self.target_eccentricity]
 
         try:
@@ -238,7 +243,8 @@ class InitialConditionSolver:
             if self.function=='root':
                 sol = optimize.root(self.initial_condition_errfunc,
                                 initial_guess,
-                                method=self.method
+                                method=self.method,
+                                options={'xtol': 1e-05, 'ftol': 1e-05}
                                 )
             if self.function=='minimize':
                 bounds=((0.0,numpy.inf), (0.0,0.8))
