@@ -36,7 +36,7 @@ from multiprocessing import Pool, Process, Queue
 from collections import namedtuple
 from Logger import setup_process
 from datetime import date
-
+import pickle
 
 
 import emcee
@@ -98,7 +98,11 @@ class sampler:
 
     def sampled_from_data(self):
 
-        params=prior_transform(self.system_number)
+
+        with open('bandwidth.pickle','rb') as f:
+            bw=pickle.load(f)
+        bandwidth=bw[self.system_number]['ISJ']
+        params=prior_transform(self.system_number,bandwidth)
         sampled_params=params.paramter_evaluate(self.uniform_variable)
         masses=self.param_conversion(sampled_params)
 
