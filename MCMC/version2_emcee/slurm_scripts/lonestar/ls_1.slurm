@@ -3,7 +3,7 @@
 #SBATCH -J emcee_1
 #SBATCH -n 128  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/emcee_1.out
+#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_1/emcee_1.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
@@ -28,7 +28,7 @@ done
 run_system() {
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
-    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output
+    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_1
     sysid=$1
 
     while true; do
