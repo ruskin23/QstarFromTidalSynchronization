@@ -88,8 +88,8 @@ class sampler:
     def param_conversion(self,
                         sampled_params):
 
-        sum_mass=sampled_params[0]
-        mass_ratio=sampled_params[1]
+        sum_mass=sampled_params[1]
+        mass_ratio=sampled_params[2]
 
         primary_mass=(1/(1+mass_ratio))*sum_mass
         secondary_mass=primary_mass*mass_ratio
@@ -104,9 +104,9 @@ class sampler:
 
         self.params['primary_mass'] = masses[0]
         self.params['secondary_mass'] = masses[1]
-        z=sampled_params[2]
+        z=sampled_params[0]
         self.params['feh'] = library.feh_from_z(z)
-        self.params['age'] = sampled_params[3]
+        self.params['age'] = (10**(sampled_params[3]))/1e9
         self.params['eccentricity'] = sampled_params[4]
 
     def fixed_params(self):
