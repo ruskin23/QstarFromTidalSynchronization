@@ -13,6 +13,6 @@ with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emc
 
 print(len(d))
 # print(*d, sep='\t')
-for i in range(8):
+for i in range(11):
     print(*d[8*i:8*(i+1)],sep=' ')
 

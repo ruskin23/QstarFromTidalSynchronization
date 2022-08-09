@@ -2,7 +2,11 @@ import numpy
 import corner
 import matplotlib.pyplot as plt
 import sys
+from pathlib import Path
 
+from scipy.interpolate import interp1d
+
+import random
 
 def kernel_gauss(x,x_i,h):
 
@@ -27,6 +31,12 @@ def get_eccentricity_col(all_chains):
     esinw_samples=all_chains[8]
     ecosw_samples=all_chains[9]
 
+    # plt.hist(esinw_samples**2,bins=100)
+    # plt.show()
+
+    # plt.hist(ecosw_samples**2,bins=100)
+    # plt.show()
+
     e_samples=[]
     for i in range(len(esinw_samples)):
         f=esinw_samples[i]**2 + ecosw_samples[i]**2
@@ -43,7 +53,7 @@ def eccentricity_plots(all_chains):
     figure=corner.corner(sliced_chain)
     plt.show()
 
-def stellar_paramters_plots(all_chains):
+def stellar_paramters_plots(system,all_chains):
     
     
     sliced_chain=all_chains[:,0:4]
@@ -58,29 +68,69 @@ def stellar_paramters_plots(all_chains):
     figure=corner.corner(sliced_chain)
     # plt.show()
     plt.savefig(f'corner_plots_filtered_spin_catalog/corner_{system}.png')
+    compare_dir='/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/compare_plots_bandwidths'+'/system_'+system
+    Path(compare_dir).mkdir(parents=True, exist_ok=True)
+    plt.savefig(compare_dir+f'/corner_og_{system}.png')
+
 
 
 
 if __name__=='__main__':
 
-    systems=[]
-    with open('../filtering/filtered_spin_catalog.txt','r') as f:
-        next(f)
-        for lines in f:
-            x=lines.split()
-            systems.append(x[1])
+
+    A=numpy.load('chains/9892471.npz')
+    eccentricity_col=get_eccentricity_col(A['thinned_chain'])
+
+
+    count, bins_count = numpy.histogram(eccentricity_col, bins=1000)
+    pdf=count/sum(count)
+    e_cdf=numpy.cumsum(pdf)
+
+    e_prior=numpy.linspace(0,1,1000)
+
+    plt.scatter(e_prior,e_cdf)
+
+    e_interp = interp1d(e_cdf,e_prior)
     
-    for system in systems:
+    print(min(e_cdf))
+    print(max(e_cdf))
+
+    e_sampled=[]
+    rnd_array=[]
+    for i in range(10000):
+        rnd=random.uniform(0,1)
+        rnd_array.append(rnd)
+        if rnd<min(e_cdf):e_sampled.append(0)
+        elif rnd>max(e_cdf):e_sampled.append(1)
+        else:e_sampled.append(e_interp(rnd))
         
-        print(system)
-        # A=numpy.load('chains/10198109.npz')
-        A=numpy.load('chains/'+system+'.npz')
+    e_sampled=numpy.array(e_sampled)
+    rnd_array=numpy.array(rnd_array)
+    plt.scatter(e_sampled,rnd_array)
+    plt.show()
 
-        all_chains=A['thinned_chain']
+    # plt.hist(eccentricity_col,bins=100)
+    # plt.show()
 
-        stellar_paramters_plots(all_chains)
 
-    params=['Msum','Q','z','age','d','E','Porb','tPE','esinw','ecosw','b','q11','q12','q21','q22','lnsigmaLC','lnsigmaSED','lnsigmaE','lnsigmad']
+    # systems=[]
+    # with open('../filtering/nominal_value_catalog_Iconv_cutoff.txt','r') as f:
+    #     next(f)
+    #     for lines in f:
+    #         x=lines.split()
+    #         systems.append(x[1])
+    
+    # for system in systems:
+        
+    #     print(system)
+    #     # A=numpy.load('chains/10198109.npz')
+    #     A=numpy.load('chains/'+system+'.npz')
+
+    #     all_chains=A['thinned_chain']
+
+    #     stellar_paramters_plots(system,all_chains)
+
+    # params=['Msum','Q','z','age','d','E','Porb','tPE','esinw','ecosw','b','q11','q12','q21','q22','lnsigmaLC','lnsigmaSED','lnsigmaE','lnsigmad']
 
     # eccentricity_plots(all_chains)
 

@@ -33,16 +33,15 @@ interpolator = manager.get_interpolator_by_name('default')
 
 def stellar_parameter_check(interpolator,feh,t,m1,m2):
 
-    
+
     if numpy.logical_and(numpy.logical_and(feh>-1.014,feh<0.537)
                         ,
                         numpy.logical_and(numpy.logical_and(m1>0.4,m1<1.2),
                                             numpy.logical_and(m2>0.4,m2<1.2))
-                    ):return True
-        
-        # age_max_m1=interpolator('radius', m1, feh).max_age                    
-        # if numpy.logical_and(t>8,(10**t)/1e9<age_max_m1):
-        #     return True
+                    ):
+                    age_max_m1=interpolator('radius', m1, feh).max_age
+                    if numpy.logical_and(t>8,(10**t)/1e9<age_max_m1):
+                        return True
 
 
 
@@ -152,7 +151,7 @@ if __name__=='__main__':
                                     line='\t'.join(params)
                                     fo.write(line)
                                     fo.write('\n')
-                
+
     f_nominal=open('nominal_value_catalog.txt','w')
     f_nominal.write('Number'+'\t'+
             'KIC'+'\t'+
@@ -163,7 +162,7 @@ if __name__=='__main__':
             'age (Gyr)'+'\t'+
             'm1'+'\t'+
             'm2'+'\n')
-    
+
     with open('filtered_spin_catalog.txt','r') as f:
         next(f)
         PO=[]
@@ -184,8 +183,9 @@ if __name__=='__main__':
             spin=x[21]
             PS.append(float(spin))
             f_nominal.write(f'{number}\t{KIC}\t{porb}\t{spin}\t{eccentricity}\t{feh}\t{age}\t{m1}\t{m2}\n')
+    f_nominal.close()
 
-    #Total Systems with morph<0.5
+    # Total Systems with morph<0.5
     maxlike_data = pandas.read_csv(
         'paper_maxlike_pars.dat',
         sep=r'\s+'
@@ -210,7 +210,7 @@ if __name__=='__main__':
                     try:
                         T=TeffK(quantity_radius,quantity_lum)(age)
                         I=interpolator('iconv',m1,feh)
-                        if min(I(t_age)):
+                        if min(I(t_age))>0:
                             fnew.write(lines)
                             # print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
                     except:
@@ -218,7 +218,7 @@ if __name__=='__main__':
 
 
 
-
+# print(library.z_from_feh(-0.1309375573239616))
 
 # PO,PS=sorted(PO),sorted(PS)
 # print(max(PO))

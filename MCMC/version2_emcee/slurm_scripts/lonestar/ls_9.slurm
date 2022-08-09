@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH -J emcee_7
-#SBATCH -n 128  #Total number of tasks to run at one time
+#SBATCH -J emcee_9
+#SBATCH -n 96  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
-#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_7/emcee_7.out
+#SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/node_9/emcee_9.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
 #SBATCH -t 2-00:00:00
@@ -26,7 +26,7 @@ run_system() {
     sysid=$1
     SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emcee
     OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
-    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_7/system_${sysid}
+    OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/node_8/system_${sysid}
 
     if [ ! -d ${OUTPUT_DIR} ] 
     then
@@ -46,7 +46,7 @@ run_system() {
 }
 
 
-for SYSID in 5181455 5393558 5652260 5802470 5871918 6029130 6312521 6359798; do 
+for SYSID in 7987749 8364119 8381592 8746310 8984706 9353182 9532123 9656543; do 
     run_system $SYSID & 
 done
 
