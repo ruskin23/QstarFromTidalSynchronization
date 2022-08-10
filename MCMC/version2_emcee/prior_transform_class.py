@@ -82,8 +82,8 @@ class prior_transform:
         t_p=numpy.exp(-0.5*(((t_value-self.t_samples)/self.h_t)**2))
 
 
-        F_e=numpy.dot(Z_p*Q_p*M_p*t_p,erft)
+        F_e=numpy.dot(Z_p*Q_p*M_p*t_p,erfe)
         F_e/=F_e.max()
-        e_value=self.t_prior[numpy.argmin(abs(F_e-uniform_values[4]))]
+        e_value=self.e_prior[numpy.argmin(abs(F_e-uniform_values[4]))]
 
         return [Z_value,M_value,Q_value,t_value,e_value] 
