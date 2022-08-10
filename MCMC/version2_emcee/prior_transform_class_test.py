@@ -62,7 +62,7 @@ class prior_transform:
         # self.h_e=0.0002
 
 
-    def paramter_evaluate(self,uniform_values,Z_cdf_interp,e_cdf_interp,e_cdf,erfq,erfm,erft):
+    def paramter_evaluate(self,uniform_values,Z_cdf_interp,erfq,erfm,erft,erfe):
     # def paramter_evaluate(self,uniform_values):
 
         # Z_cdf=0.0
@@ -99,6 +99,12 @@ class prior_transform:
         F_t=numpy.dot(Z_p*Q_p*M_p,erft)
         F_t/=F_t.max()
         t_value=self.t_prior[numpy.argmin(abs(F_t-uniform_values[3]))]
+        t_p=numpy.exp(-0.5*(((t_value-self.t_samples)/self.h_t)**2))
+
+
+        F_e=numpy.dot(Z_p*Q_p*M_p*t_p,erfe)
+        F_e/=F_e.max()
+        e_value=self.t_prior[numpy.argmin(abs(F_e-uniform_values[3]))]
 
 
         # e_value=e_cdf_interp(uniform_values[4])
@@ -106,9 +112,9 @@ class prior_transform:
         # pdf=count/sum(count)
         # e_cdf=numpy.cumsum(pdf)
         # e_cdf_interp = interp1d(e_cdf,self.e_prior)
-        if uniform_values[4]<min(e_cdf):e_value=min(self.e_samples)
-        elif uniform_values[4]>max(e_cdf):e_value=max(self.e_samples)
-        else:e_value=e_cdf_interp(uniform_values[4])        
+        # if uniform_values[4]<min(e_cdf):e_value=min(self.e_samples)
+        # elif uniform_values[4]>max(e_cdf):e_value=max(self.e_samples)
+        # else:e_value=e_cdf_interp(uniform_values[4])        
         # e_value=self.e_prior[numpy.argmin(abs(e_cdf-uniform_values[4]))]
 
         #---------------------------------------------------------------------------->
@@ -127,26 +133,28 @@ def corner_plot(system_number,bandwidth=None,method=None):
     Z_cdf/=len(prior.Z_samples)
     Z_cdf_interp = interp1d(Z_cdf,prior.Z_prior)
 
-    e_cdf=0.0
-    for s in prior.e_samples:
-        e=(prior.e_prior-s)/prior.h_e
-        e_cdf+=erf_fun(e)
-    e_cdf/=len(prior.e_samples)
-    e_cdf_interp = interp1d(e_cdf,prior.e_prior)
+    # e_cdf=0.0
+    # for s in prior.e_samples:
+    #     e=(prior.e_prior-s)/prior.h_e
+    #     e_cdf+=erf_fun(e)
+    # e_cdf/=len(prior.e_samples)
+    # e_cdf_interp = interp1d(e_cdf,prior.e_prior)
 
 
     q=(prior.Q_prior[None,:]-prior.Q_samples[:,None])/prior.h_Q
     m=(prior.M_prior[None,:]-prior.M_samples[:,None])/prior.h_M
     t=(prior.t_prior[None,:]-prior.t_samples[:,None])/prior.h_t
+    e=(prior.e_prior[None,:]-prior.e_samples[:,None])/prior.h_e
 
     erfq=erf_fun(q)
     erfm=erf_fun(m)
     erft=erf_fun(t)
+    erfe=erf_fun(e)
 
     values=[]
     for i in range(5000):
         rnd_nums=[random.uniform(min(Z_cdf),max(Z_cdf)),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1),random.uniform(0,1)]
-        values.append(prior.paramter_evaluate(rnd_nums,Z_cdf_interp,e_cdf_interp,e_cdf,erfq,erfm,erft))
+        values.append(prior.paramter_evaluate(rnd_nums,Z_cdf_interp,erfq,erfm,erft,erfe))
 
     flat_values = [item for sublist in values for item in sublist]
 
@@ -192,12 +200,12 @@ if __name__ == '__main__':
         next(f)
         for lines in f:
             x=lines.split()
-            system_number = x[1]
+            system_number = '9892471'#x[1]
             print('\nSystem = {}'.format(system_number))
             system_chains=numpy.load(path.current_directory+'/catalog/samples/chains/'+system_number+'.npz')
             all_chains=numpy.transpose(system_chains['thinned_chain'])
             temp_dict=dict()
-            for b in ['silverman','ISJ']:
+            for b in ['ISJ']:
                 print('Bandwidth Method = {}'.format(b))
                 bandwidth=[]
                 params=['M','Q','Z','t','e']
@@ -211,9 +219,10 @@ if __name__ == '__main__':
                 temp_dict[b]=bandwidth
                 corner_plot(system_number,bandwidth=bandwidth,method=b)
             Bandwidths[system_number]=temp_dict
+            break
     
-    with open('bandwidth2.pickle','wb') as f:
-        pickle.dump(Bandwidths,f)
+    # with open('bandwidth2.pickle','wb') as f:
+    #     pickle.dump(Bandwidths,f)
 
     
     # extra=False
