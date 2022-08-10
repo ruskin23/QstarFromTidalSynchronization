@@ -54,7 +54,7 @@ class prior_transform:
         q=(self.Q_prior[None,:]-self.Q_samples[:,None])/self.h_Q
         m=(self.M_prior[None,:]-self.M_samples[:,None])/self.h_M
         t=(self.t_prior[None,:]-self.t_samples[:,None])/self.h_t
-        e=(self.e_prior[None,:]-self.e_samples[:,None])/self.h_e
+        e=(self.e_prior[None,:]-self.e_samples[:,None])/h_e
 
         erfq=erf_fun(q)
         erfm=erf_fun(m)
