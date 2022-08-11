@@ -16,7 +16,7 @@ from directories import directories
 home_dir=str(Path.home())
 path=directories(home_dir)
 
-from KDEpy import FFTKDE
+# from KDEpy import FFTKDE
 
 
 # _logger = logging.getLogger(__name__)
@@ -245,11 +245,11 @@ def get_sampling_utils(system_number):
     sampling_util_dict['t_prior']=t_prior
     sampling_util_dict['e_prior']=e_prior
 
-    sampling_util_dict['erfq']=erfq
-    sampling_util_dict['erfm']=erfm
-    sampling_util_dict['erft']=erft
-    sampling_util_dict['erfe']=erfe
-    
+    # sampling_util_dict['erfq']=erfq
+    # sampling_util_dict['erfm']=erfm
+    # sampling_util_dict['erft']=erft
+    # sampling_util_dict['erfe']=erfe
+
     sampling_util_dict['h_M']=h_M
     sampling_util_dict['h_Q']=h_Q
     sampling_util_dict['h_Z']=h_Z
@@ -261,15 +261,16 @@ def get_sampling_utils(system_number):
 if __name__ == '__main__':
 
     UTILS=dict()
+    ls_debug_sys=['10031409', '10215422', '10330495', '10385682', '10935310', '10965963', '11147276', '11228612']
     with open(path.current_directory+'/catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt','r') as f:
         next(f)
         for lines in f:
             x=lines.split()
             system_number=x[1]
-            util_dict=get_sampling_utils(system_number)
-
-            # with open(path.scratch_directory+f'/sampling_util/util_{system_number}.pickle','wb') as f:
-            #     pickle.dump(util_dict,f)
+            if system_number in ls_debug_sys:
+                util_dict=get_sampling_utils(system_number)
+                with open(path.scratch_directory+f'/sampling_util/util_{system_number}.pickle','wb') as f:
+                    pickle.dump(util_dict,f)
 
     # Bandwidths=dict()
     # with open('catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt','r') as f:
