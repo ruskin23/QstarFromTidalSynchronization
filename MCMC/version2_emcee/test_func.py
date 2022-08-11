@@ -83,6 +83,15 @@ if __name__=='__main__':
 
     # print(pick)
 
-    with open('bandwidth.pickle','rb') as f:
-        p=pickle.load(f)
-    print(p['9971475']['ISJ'])
+    # with open('bandwidth.pickle','rb') as f:
+    #     p=pickle.load(f)
+    # print(p['9971475']['ISJ'])
+
+
+    a=numpy.array([1,2,3,4,5])
+    b=numpy.array([1,2,3])
+
+    print(a[None,:])
+    print(b[:,None])
+    c=a[None,:]-b[:,None]
+    print(c)
