@@ -1,6 +1,7 @@
 import numpy
 from utils import erf_fun
 import logging
+import pickle
 
 from scipy.interpolate import interp1d
 
@@ -12,11 +13,15 @@ path=directories(home_dir)
 
 class prior_transform:
 
-    def __init__(self,system_num,sampling_util_dict):
+    def __init__(self,system_num):
 
         self.system_num=system_num
 
-        for item,value in sampling_util_dict.items():
+        with open(path.scratch_directory+f'/sampling_util/util_{system_num}.pickle','rb') as f:
+            sampling_utils=pickle.load(f)
+
+
+        for item,value in sampling_utils.items():
             setattr(self,item,value)
 
         # system_chains=numpy.load(path.current_directory+'/catalog/samples/chains/'+system_num+'.npz')

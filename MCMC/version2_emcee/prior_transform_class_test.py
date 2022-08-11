@@ -264,10 +264,10 @@ if __name__ == '__main__':
         for lines in f:
             x=lines.split()
             system_number=x[1]
-            UTILS[system_number]=get_sampling_utils(system_number)
+            util_dict=get_sampling_utils(system_number)
 
-    with open(path.current_directory+'/SAMPLING_UTILS.pickle','wb') as f:
-        pickle.dump(UTILS,f)
+            with open(path.scratch_directory+f'/sampling_util/util_{system_number}.pickle','wb') as f:
+                pickle.dump(util_dict,f)
 
     # Bandwidths=dict()
     # with open('catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt','r') as f:
