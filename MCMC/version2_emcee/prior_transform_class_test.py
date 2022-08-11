@@ -16,6 +16,8 @@ from directories import directories
 home_dir=str(Path.home())
 path=directories(home_dir)
 
+# from KDEpy import FFTKDE
+
 
 # _logger = logging.getLogger(__name__)
 
@@ -41,12 +43,12 @@ class prior_transform:
 
         minmaxdiff_Z=abs(max(self.Z_samples)-min(self.Z_samples))
         minmaxdiff_e=abs(max(self.e_samples)-min(self.e_samples))
-        self.M_prior=numpy.linspace(min(self.M_samples), max(self.M_samples), 10000)
-        self.Q_prior=numpy.linspace(min(self.Q_samples), max(self.Q_samples), 10000)
-        self.Z_prior=numpy.linspace(min(self.Z_samples)-minmaxdiff_Z, max(self.Z_samples)+minmaxdiff_Z,10000)
-        # self.Z_prior=numpy.linspace(min(self.Z_samples), max(self.Z_samples),10000)
-        self.t_prior=numpy.linspace(min(self.t_samples), max(self.t_samples), 10000)
-        self.e_prior=numpy.linspace(max(min(self.e_samples),0),min(max(self.e_samples),1),10000)
+        self.M_prior=numpy.linspace(min(self.M_samples), max(self.M_samples), 5000)
+        self.Q_prior=numpy.linspace(min(self.Q_samples), max(self.Q_samples), 5000)
+        self.Z_prior=numpy.linspace(min(self.Z_samples)-minmaxdiff_Z, max(self.Z_samples)+minmaxdiff_Z,5000)
+        # self.Z_prior=numpy.linspace(min(self.Z_samples), max(self.Z_samples),5000)
+        self.t_prior=numpy.linspace(min(self.t_samples), max(self.t_samples), 5000)
+        self.e_prior=numpy.linspace(max(min(self.e_samples),0),min(max(self.e_samples),1),5000)
         print(self.e_prior)
 
         self.bandwidth=bandwidth
