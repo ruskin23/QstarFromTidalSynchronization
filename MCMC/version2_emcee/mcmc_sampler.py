@@ -11,6 +11,8 @@ import scipy
 
 from pathlib import Path
 from directories import directories
+from utils import erf_fun
+
 
 home_dir=str(Path.home())
 path=directories(home_dir)
@@ -78,10 +80,12 @@ class sampler:
 
     def __init__(self,
                 system_number,
-                uniform_variables):
+                uniform_variables,
+                sampling_utils):
 
         self.system_number=system_number
         self.uniform_variable=uniform_variables
+        self.sampling_utils=sampling_utils
 
         self.params=dict()
 
@@ -96,16 +100,12 @@ class sampler:
 
         return [primary_mass,secondary_mass]
 
+    
+
     def sampled_from_data(self):
-
-
-        with open(path.current_directory+'/bandwidth.pickle','rb') as f:
-            bw=pickle.load(f)
-        with open(path.current_directory+'/e_bandwidth.pickle','rb') as f:
-            h_e=pickle.load(f)
-        bandwidths=bw[self.system_number]['ISJ']
-        params=prior_transform(self.system_number,bandwidths)
-        sampled_params=params.paramter_evaluate(self.uniform_variable,h_e[self.system_number])
+        
+        params=prior_transform(self.system_number,self.sampling_util_dict)
+        sampled_params=params.paramter_evaluate(self.uniform_variable)
         masses=self.param_conversion(sampled_params)
 
         self.params['primary_mass'] = masses[0]
@@ -191,18 +191,11 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
             repr(unit_cube_values)
         )
         return invalid_values
-    #             len(log_likelihood.parameter_order)
-    #             -
-    #             len(exclude_from_blob)
-    #             +
-    #             (2 if track_final_eccentricity else 1)
-    #         )
-    #     )
    
 
     _logger.info('Begin Conversion using %s',repr(unit_cube_values))
 
-    sampled_params=sampler(system_number,unit_cube_values)
+    sampled_params=sampler(system_number,unit_cube_values,sampling_utils)
     parameter_set,alpha,omegaref=sampled_params()
 
     _logger.info('Parameters: %s',repr(parameter_set))
@@ -252,6 +245,7 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     return ((log_likelihood,) + parameters)
 
 
+
 if __name__ == '__main__':
 
     print('main program initiated')
@@ -297,7 +291,7 @@ if __name__ == '__main__':
     nwalkers=64
     ndim=8
     
-
+    sampling_utils=get_sampling_utils(system_number)
     backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
     parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
@@ -315,7 +309,7 @@ if __name__ == '__main__':
         sampler_emcee=emcee.EnsembleSampler(nwalkers,
                                             ndim,
                                             log_probablity,
-                                            args=(interpolator,system_number,observed_spin),
+                                            args=(interpolator,system_number,sampling_utils,observed_spin),
                                             blobs_dtype=blobs_dtype,
                                             backend=backend_reader,
                                             pool=UnchunkedPool(workers)
