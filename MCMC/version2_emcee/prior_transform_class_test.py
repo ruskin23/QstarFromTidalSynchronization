@@ -250,6 +250,13 @@ def get_sampling_utils(system_number):
     # sampling_util_dict['erft']=erft
     # sampling_util_dict['erfe']=erfe
 
+
+    numpy.save(path.scratch_directory+f'/sampling_util/erfq_{system_number}',erfq, allow_pickle=True)
+    numpy.save(path.scratch_directory+f'/sampling_util/erfm_{system_number}',erfm, allow_pickle=True)
+    numpy.save(path.scratch_directory+f'/sampling_util/erft_{system_number}',erft, allow_pickle=True)
+    numpy.save(path.scratch_directory+f'/sampling_util/erfe_{system_number}',erfe, allow_pickle=True)
+
+
     sampling_util_dict['h_M']=h_M
     sampling_util_dict['h_Q']=h_Q
     sampling_util_dict['h_Z']=h_Z

@@ -33,20 +33,20 @@ run_system() {
         mkdir ${OUTPUT_DIR}
     fi
 
-    while true; do
-        python3 \
-            ${SOURCE_DIR}/mcmc_sampler.py \
-            --system ${sysid}\
-            --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
-            --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
-            >\
-            ${OUTPUT_DIR}/sample_${sysid}.outerr\
-            2>&1
-        done
+    # while true; do
+    python3 \
+        ${SOURCE_DIR}/mcmc_sampler.py \
+        --system ${sysid}\
+        --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
+        --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
+        >\
+        ${OUTPUT_DIR}/sample_${sysid}.outerr\
+        2>&1
+        # done
 }
 
 
-for SYSID in 10031409 10215422 10330495 10385682 10935310 10965963 11147276 11228612; do 
+for SYSID in 10031409 10215422 10330495 10385682 10935310; do 
     run_system $SYSID & 
 done
 

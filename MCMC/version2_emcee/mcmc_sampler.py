@@ -102,6 +102,7 @@ class sampler:
 
     def sampled_from_data(self):
         
+        
         params=prior_transform(self.system_number)
         sampled_params=params.paramter_evaluate(self.uniform_variable)
         masses=self.param_conversion(sampled_params)
