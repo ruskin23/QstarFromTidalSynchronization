@@ -14,30 +14,30 @@ home_dir=str(Path.home())
 path=directories(home_dir)
 
 
-# class kernel_gauss():
+class kernel_gauss():
 
-#     def __init__(self,bandwidth):
+    def __init__(self,bandwidth):
 
-#         self.bandwidth=bandwidth
+        self.bandwidth=bandwidth
 
 
-#     def pdf(self,u):
+    def pdf(self,u):
 
-#         y = u/self.bandwidth
+        y = u/self.bandwidth
 
-#         K_h = ( 1
-#                 /
-#                 (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
-#                 ) * numpy.exp(-0.5*y*y)
+        K_h = ( 1
+                /
+                (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
+                ) * numpy.exp(-0.5*y*y)
 
-#         return K_h
+        return K_h
     
 
-#     def cdf(self,u):
+    def cdf(self,u):
 
-#         K_c = erf_fun(u/self.bandwidth)
+        K_c = erf_fun(u/self.bandwidth)
 
-#         return K_c 
+        return K_c 
         
 
 class DiscreteSampling(rv_continuous):
@@ -175,7 +175,7 @@ if __name__=='__main__':
                 sampled_values = numpy.append(sampled_values,get_sample(_quantities,
                                                                         _samples,
                                                                         _bandwidths,
-                                                                        unit_cube_iter)                                   
+                                                                        unit_cube_iter) 
                                             )
 
             sampled_values=numpy.reshape(sampled_values,(len(sampled_values)//5,5))
