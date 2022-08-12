@@ -100,8 +100,7 @@ class sampler:
 
     
 
-    def sampled_from_data(self):
-        
+    def sampled_from_coupled(self):
         
         params=prior_transform(self.system_number)
         sampled_params=params.paramter_evaluate(self.uniform_variable)
@@ -169,7 +168,7 @@ class sampler:
 
         alpha,omegaref=self.uniformly_sampled()
         self.fixed_params()
-        self.sampled_from_data()
+        self.sampled_from_coupled()
         self.get_orbital_period()
         self.params['function']='root'
         self.params['method']='lm'
