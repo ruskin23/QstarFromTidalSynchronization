@@ -222,13 +222,9 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     
     angmom=IntialSecondaryAngmom(interpolator,parameter_set)
 
-
     initial_conditions=InitialConditionSolver(interpolator,parameter_set,secondary_angmom=angmom())
 
     spin=initial_conditions(primary,secondary)
-    _logger.info('Initial Condition solver results:')
-    for key,values in results.items():
-        _logger.info(f'{key}\t{values}\n')
 
     log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
     p_names=['primary_mass',
