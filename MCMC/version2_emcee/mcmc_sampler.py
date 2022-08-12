@@ -227,6 +227,9 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     spin=initial_conditions(primary,secondary)
 
     log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
+
+    _logger.info('log_likelihood={!r}'.format(log_likelihood))
+
     p_names=['primary_mass',
              'secondary_mass',
              'feh',
