@@ -262,21 +262,11 @@ class InitialConditionSolver:
             self.spin=numpy.inf
 
 
-        _logger.info('Solver Results:')
-        _logger.info('Intial Orbital Period = {!r} , Initial Eccentricity = {!r}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
-        _logger.info('Final Orbital Period = {!r} , Final Eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
-        _logger.info('Errors: delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
-        _logger.info('Final Spin Period = {!r}'.format(self.spin))
+        _logger.info('Solver_Results:')
+        _logger.info('Intial_Orbital_Period={!r} , Initial_Eccentricity={!r}'.format(initial_orbital_period_sol,initial_eccentricity_sol))
+        _logger.info('Final_Orbital_Period={!r} , Final_Eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
+        _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
+        _logger.info('Final_Spin_Period={!r}'.format(self.spin))
 
-        results=dict()
-        results['p_initial']=initial_orbital_period_sol
-        results['e_initial']=initial_eccentricity_sol
-        results['p_final']=self.final_orbital_period
-        results['e_final']=self.final_eccentricity
-        results['delta_p']=self.delta_p
-        results['delta_e']=self.delta_e
-        results['spin']=self.spin
-
-
-        return results
+        return self.spin
 
