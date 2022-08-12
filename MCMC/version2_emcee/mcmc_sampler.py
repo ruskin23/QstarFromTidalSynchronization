@@ -103,7 +103,7 @@ class sampler:
     def sampled_from_coupled(self):
         
         params=prior_transform(self.system_number)
-        sampled_params=params.paramter_evaluate(self.uniform_variable)
+        sampled_params=params.get_samples(self.uniform_variable)
         masses=self.param_conversion(sampled_params)
 
         self.params['primary_mass'] = masses[0]
@@ -225,11 +225,10 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
     initial_conditions=InitialConditionSolver(interpolator,parameter_set,secondary_angmom=angmom())
 
-    results=initial_conditions(primary,secondary)
+    spin=initial_conditions(primary,secondary)
     _logger.info('Initial Condition solver results:')
     for key,values in results.items():
         _logger.info(f'{key}\t{values}\n')
-    spin=results['spin']
 
     log_likelihood=scipy.stats.norm(observed_spin['value'],observed_spin['sigma']).logpdf(spin)
     p_names=['primary_mass',
