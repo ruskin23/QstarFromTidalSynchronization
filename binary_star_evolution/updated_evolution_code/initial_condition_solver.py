@@ -57,6 +57,9 @@ class InitialConditionSolver:
 
         if self.initial_guess is not None:
             if initial_orbital_period==self.initial_guess[0] and initial_eccentricity==self.initial_guess[1]:
+                _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
+                _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+                _logger.info('Spin Period = %s',repr(self.spin))
                 return numpy.array(self.err_intial_guess)
 
         if numpy.isnan(initial_orbital_period) or numpy.isnan(initial_eccentricity):
@@ -215,7 +218,9 @@ class InitialConditionSolver:
 
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
+        n=0
         while True:
+            n=n+1
             dp,de=self.initial_condition_errfunc([Pguess,e])
             if numpy.isnan(dp) or numpy.isnan(de):
                 Pguess+=0.5
@@ -223,6 +228,7 @@ class InitialConditionSolver:
             else:
                 self.initial_guess=[Pguess,e]
                 self.err_intial_guess=[dp,de]
+                _logger.info('Found non Nan intial guess in {!r} try. dp={!r},de={!r}'.format(n,dp,de))
                 break
             
 
