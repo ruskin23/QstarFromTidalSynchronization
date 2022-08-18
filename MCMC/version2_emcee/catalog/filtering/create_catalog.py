@@ -207,14 +207,15 @@ if __name__=='__main__':
                     quantity_radius=interpolator('radius',m1, feh)
                     quantity_lum=interpolator('lum',m1, feh)
                     t_age=numpy.linspace(5e-3,age,1000)
-                    try:
-                        T=TeffK(quantity_radius,quantity_lum)(age)
-                        I=interpolator('iconv',m1,feh)
-                        if min(I(t_age))>0:
-                            fnew.write(lines)
-                            # print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
-                    except:
-                        continue
+                    # try:
+                    T=TeffK(quantity_radius,quantity_lum)(age)
+                    I=interpolator('iconv',m1,feh)
+                    if min(I(t_age))>0:
+                        print(x[1])
+                        fnew.write(lines)
+                        # print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
+                    # except:
+                    #     continue
 
 
 

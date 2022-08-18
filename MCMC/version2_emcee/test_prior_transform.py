@@ -82,10 +82,8 @@ class DiscreteSampling(rv_continuous):
         self._width=width
         self.weights=weights
         self.kernel=kernel_gauss(width)
-        super().__init__(a=(self._samples.min()),
-                        b=(self._samples.max()))
-
-
+        super().__init__(a=-numpy.inf,
+                         b=numpy.inf)
 
 def get_sample(_quantities,
                 _samples,
@@ -167,17 +165,14 @@ if __name__=='__main__':
 
             sampled_values=[]
 
-            for i in range(5000):
+            for i in range(1):
 
                 unit_cube=numpy.random.rand(5)
                 unit_cube_iter=iter(unit_cube)
 
-                sampled_values = numpy.append(sampled_values,get_sample(_quantities,
-                                                                        _samples,
-                                                                        _bandwidths,
-                                                                        unit_cube_iter) 
-                                            )
-
+                sampled_values = numpy.append(sampled_values,get_sample(_quantities,_samples,_bandwidths,unit_cube_iter))
+                
+            print(sampled_values)
             sampled_values=numpy.reshape(sampled_values,(len(sampled_values)//5,5))
 
             figure=corner.corner(sampled_values)
