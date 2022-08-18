@@ -5,7 +5,6 @@ import logging
 import sys
 import os
 from pathlib import Path
-from turtle import numinput
 from directories import directories
 
 home_dir=str(Path.home())
