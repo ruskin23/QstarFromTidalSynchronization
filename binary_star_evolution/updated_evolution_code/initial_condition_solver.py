@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+from cmath import isnan
 import logging
 import sys
 import os
 from pathlib import Path
+from turtle import numinput
 from directories import directories
 
 home_dir=str(Path.home())
@@ -53,18 +55,18 @@ class InitialConditionSolver:
 
         _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
+        if self.initial_guess is not None:
+            if initial_orbital_period==self.initial_guess[0] and initial_eccentricity==self.initial_guess[1]:
+                return numpy.array(self.err_intial_guess)
+
+        if numpy.isnan(initial_orbital_period) or numpy.isnan(initial_eccentricity):
+            _logger.warning('Solver using NaN as initial values.')
+            raise ValueError('Solution cant be found as solver is trying NaN as initial values')
+
         if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
             _logger.warning('Encoutnered invalid initial values, returning NaN')
             if self.function=='minimize': return scipy.nan
             else: return numpy.array([scipy.nan,scipy.nan])
-
-        
-        #if initial_eccentricity>0.80  or initial_eccentricity<0:
-        #    _logger.warning('Encoutnered invalid value for eccentricity = {!r}'.format(initial_eccentricity))
-        #    return -self.target_orbital_period,initial_eccentricity-self.target_eccentricity
-        #if initial_orbital_period<0:
-        #    _logger.warning('Encoutnered invalid value for orbtial period = {!r}'.format(initial_orbital_period))
-        #    return initial_orbital_period-self.target_orbital_period,-self.target_eccentricity
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -92,6 +94,7 @@ class InitialConditionSolver:
         self.final_eccentricity=final_state.eccentricity
 
         if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+            _logger.warning('Enountered NaN in final_orbital_period={!r} or final_eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
             _logger.warning('Binary was destroyed')
             if self.function=='minimize': return scipy.nan
             else: return numpy.array([scipy.nan,scipy.nan])
@@ -158,6 +161,7 @@ class InitialConditionSolver:
         self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
         self.delta_p,self.delta_e=scipy.nan,scipy.nan
         self.spin=scipy.nan
+        self.initial_guess=None
 
 
     def calculate_initial_simplex(self):
@@ -207,6 +211,20 @@ class InitialConditionSolver:
 
         return initial_simplex
 
+    def calculate_good_initial_guess(self):
+
+        Pguess=self.target_orbital_period
+        e=self.target_eccentricity
+        while True:
+            dp,de=self.initial_condition_errfunc([Pguess,e])
+            if numpy.isnan(dp) or numpy.isnan(de):
+                Pguess+=0.5
+                continue
+            else:
+                self.initial_guess=[Pguess,e]
+                self.err_intial_guess=[dp,de]
+                break
+            
 
     def __call__(self, primary, secondary):
         """
@@ -228,28 +246,32 @@ class InitialConditionSolver:
 
         _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
 
-        if self.function=='minimize':initial_simplex=self.calculate_initial_simplex()
 
-        initial_guess=[self.target_orbital_period,self.target_eccentricity]
+        if self.function=='minimize':
+            self.initial_guess=[self.target_orbital_period,self.target_eccentricity]
+            initial_simplex=self.calculate_initial_simplex()
+        else:
+            self.calculate_good_initial_guess()
+        
 
         try:
             if self.function=='least_squares':
                 bounds=(numpy.array([0.0,0.0]), numpy.array([numpy.inf,0.8]))
                 sol = optimize.least_squares(self.initial_condition_errfunc,
-                                initial_guess,
+                                self.initial_guess,
                                 bounds=bounds,
                                 method=self.method
                                 )
             if self.function=='root':
                 sol = optimize.root(self.initial_condition_errfunc,
-                                initial_guess,
+                                self.initial_guess,
                                 method=self.method,
-                                options={'xtol': 1e-05, 'ftol': 1e-05}
+                                options={'xtol': 0.0, 'ftol': 1e-05}
                                 )
             if self.function=='minimize':
                 bounds=((0.0,numpy.inf), (0.0,0.8))
                 sol = optimize.minimize(self.initial_condition_errfunc,
-                                initial_guess,
+                                self.initial_guess,
                                 method=self.method,
                                 bounds=bounds,
                                 options={'initial_simplex' : initial_simplex}
@@ -267,6 +289,18 @@ class InitialConditionSolver:
         _logger.info('Final_Orbital_Period={!r} , Final_Eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
         _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Final_Spin_Period={!r}'.format(self.spin))
+
+        if numpy.isfinite(self.spin):
+            sum_of_squares=numpy.sqrt(self.delta_p**2+self.delta_e**2)
+            if sum_of_squares>1e-3:
+                _logger.info('Error Margins not good enough. Setting Spin=inf')
+                self.spin=numpy.inf
+            if numpy.isnan(self.spin):
+                _logger.info('Spin=NaN. Setting Spin=inf')
+                self.spin=numpy.inf
+        if numpy.isnan(self.spin):
+            _logger.warning('Spin=Nan after solver. Setting Spin=inf')
+            self.spin=numpy.inf
 
         return self.spin
 

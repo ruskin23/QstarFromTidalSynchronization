@@ -110,40 +110,21 @@ if __name__=='__main__':
         True
     )
 
-
-
     parameters=dict()
 
     parameters['function']=args.f
     parameters['method']=args.m
 
-    if args.system is not None:
-        parameters['system']=args.system
-        with open('SpinlogQCatalog_el0.4.txt','r') as f:
-            for lines in f:
-                x=lines.split()
-                if x[0]==args.system:
-                    primary_mass=float(x[15])
-                    massratio=float(x[14])
-                    secondary_mass=massratio*primary_mass
-                    age=float(x[16])
-                    feh=float(x[17])
-                    spin_period=float(x[12])
-                    orbital_period=float(x[6])
-                    eccentricity=float(x[8])
-                    Wdisk=4.1
-                    logQ=12.0
+    parameters['primary_mass']=0.8702751082448668
+    parameters['secondary_mass']=0.8404587704560754
+    parameters['age']=9.168832649763575
+    parameters['feh']= -0.5493213649220865
+    parameters['orbital_period']= 3.42059777531
 
-    parameters['primary_mass']=1.1658448881966939
-    parameters['secondary_mass']=0.9888097664579607
-    parameters['age']=9.216468955586022
-    parameters['feh']=-0.05064338050301873
-    parameters['orbital_period']=3.85683789634
-
-    parameters['eccentricity']=0.002002002002002002
+    parameters['eccentricity']=0.013787175999258086
     parameters['spin_period']=10
     # parameters['logQ']=logQ
-    parameters['Wdisk']=1.732067472153498
+    parameters['Wdisk']= 3.9415297170149084
 
     parameters['dissipation']=True
     parameters['disk_dissipation_age']=5e-3
@@ -155,17 +136,17 @@ if __name__=='__main__':
     parameters['evolution_max_time_step']=1e-3
     parameters['evolution_precision']=1e-6
     parameters['inclination']=0.0
-    parameters['phase_lag_max']=1.693086756439075e-12
+    parameters['phase_lag_max']=1.2398415749904416e-06
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
-    parameters['tidal_frequency_breaks']=numpy.array([8.01221273])
-    parameters['tidal_frequency_powers']=numpy.array([ 0.0,-2.00791392])
+    parameters['tidal_frequency_breaks']=numpy.array([0.60887346])
+    parameters['tidal_frequency_powers']=numpy.array([ 0.0, -0.35639464])
 
     print(parameters)
 
     evolution=Evolution(interpolator,parameters)
-    results =  evolution.calculate_intial_conditions()
-    spin=results['spin']
+    spin =  evolution.calculate_intial_conditions()
+    # spin=results['spin']
     print('Spin Period = ',spin)
 
 
