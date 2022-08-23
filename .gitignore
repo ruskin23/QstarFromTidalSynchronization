@@ -9,6 +9,8 @@
 *.h5
 *.unsaved_steps
 *.sqlite
+*.outerr
+*.tar.gz
 #vim swap files
 .*.swp
 /home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/output_data/
