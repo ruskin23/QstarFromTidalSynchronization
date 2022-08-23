@@ -166,8 +166,8 @@ if __name__=='__main__':
     parameters['diff_rot_coupling_timescale']=5e-3
     parameters['wind_strength']=0.17
     parameters['print_cfile']=False
-    parameters['evolution_max_time_step']=1e-3
-    parameters['evolution_precision']=1e-6
+    parameters['evolution_max_time_step']=1e-2
+    parameters['evolution_precision']=1e-5
     parameters['inclination']=0.0
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])

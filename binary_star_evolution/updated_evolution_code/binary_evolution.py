@@ -20,8 +20,8 @@ from orbital_evolution.star_interface import EvolvingStar
 from orbital_evolution.planet_interface import LockedPlanet
 
 from initial_secondary_angmom import IntialSecondaryAngmom
-from ICS_NESTED import  InitialConditionSolver
-# from ICS_TWO_STEP import InitialConditionSolver
+# from initial_condition_solver import  InitialConditionSolver
+from nested_solver import InitialConditionSolver
 from create_objects import BinaryObjects
 
 wsun = 0.24795522138

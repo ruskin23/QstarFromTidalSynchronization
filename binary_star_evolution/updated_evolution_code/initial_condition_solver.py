@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from cmath import isnan
+import time
 import logging
 import sys
 from pathlib import Path
@@ -33,6 +33,9 @@ def check_last_nan(a):
         if check == False:
             return(val,len(a)-i-1)
 
+
+
+
 class InitialConditionSolver:
     """Find initial orbital period and eccentricity which reproduce
         current orbital period and eccentricity of a given system """
@@ -42,15 +45,16 @@ class InitialConditionSolver:
 
         initial_orbital_period=initial_conditions[0]
         initial_eccentricity=initial_conditions[1]
+        initial_conditions=tuple([initial_orbital_period,initial_eccentricity])
 
-        _logger.info('Trying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
+        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
 
-        if self.initial_guess is not None and self.function=='root':
-            if initial_orbital_period==self.initial_guess[0] and initial_eccentricity==self.initial_guess[1]:
-                _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
-                _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
-                _logger.info('Spin Period = %s',repr(self.spin))
-                return numpy.array(self.err_intial_guess)
+        # if self.initial_guess is not None and self.function=='root':
+        #     if initial_orbital_period==self.initial_guess[0] and initial_eccentricity==self.initial_guess[1]:
+        #         _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
+        #         _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+        #         _logger.info('Spin Period = %s',repr(self.spin))
+        #         return numpy.array(self.err_intial_guess)
 
         if numpy.isnan(initial_orbital_period) or numpy.isnan(initial_eccentricity):
             _logger.warning('Solver using NaN as initial values.')
@@ -71,6 +75,9 @@ class InitialConditionSolver:
                                                     initial_eccentricity=initial_eccentricity,
                                                     secondary_angmom=self.secondary_angmom)
 
+
+            # time_start=time.time()
+
             binary.evolve(
                 self.age,
                 self.evolution_max_time_step,
@@ -78,6 +85,10 @@ class InitialConditionSolver:
                 None,
                 timeout=3600
             )
+
+            # time_diff=time.time()-time_start
+            
+            # _logger.info('\n\nTIME TAKEN FOR EVOLUTION = {!r} mins {!r} s\n\n'.format(time_diff//60,time_diff%60))
 
             final_state=binary.final_state()
             if final_state.age != self.target_age:
@@ -460,7 +471,8 @@ class InitialConditionSolver:
         else:
             self.calculate_good_initial_guess()
         
-        self.nested_solver()
+        # self.nested_solver()
+        time_start=time.time()
 
         try:
             if self.function=='least_squares':
@@ -498,14 +510,17 @@ class InitialConditionSolver:
         _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Final_Spin_Period={!r}'.format(self.spin))
 
-        if numpy.isfinite(self.spin):
-            sum_of_squares=numpy.sqrt(self.delta_p**2+self.delta_e**2)
-            if sum_of_squares>1e-3:
-                _logger.info('Error Margins not good enough. Finding root using Nested_Solver')
-                self.check_if_no_solution()
-        if numpy.isnan(self.spin):
-            _logger.warning('Spin=Nan after solver. Setting Spin=inf')
-            self.spin=numpy.inf
+        time_diff=time.time()-time_start
+        _logger.info('\n\nTOTAL TIME TAKEN = {!r} mins {!r} s\n\n'.format(time_diff//60,time_diff%60))
+
+        # if numpy.isfinite(self.spin):
+        #     sum_of_squares=numpy.sqrt(self.delta_p**2+self.delta_e**2)
+        #     if sum_of_squares>1e-3:
+        #         _logger.info('Error Margins not good enough. Finding root using Nested_Solver')
+        #         self.check_if_no_solution()
+        # if numpy.isnan(self.spin):
+        #     _logger.warning('Spin=Nan after solver. Setting Spin=inf')
+        #     self.spin=numpy.inf
 
         return self.spin
 

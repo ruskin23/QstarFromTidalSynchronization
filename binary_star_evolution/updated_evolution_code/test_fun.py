@@ -59,6 +59,10 @@ cache=dict()
 cache[(1,2)]={'a':1.2,'b':4.2}
 cache[(3,4)]={'a':1.2,'b':4.2}
 
+
+print(list(cache.keys())[-1])
+
 name='a'
 if (1,2) in cache:
     print(cache[(1,2)]['a'])
+

@@ -119,7 +119,3 @@ class BinaryObjects():
         if 'logQ' in parameters: self.convective_phase_lag=phase_lag(self.logQ)
         else: self.convective_phase_lag=self.phase_lag_max
 
-        print(type(self.tidal_frequency_breaks))
-        print(self.tidal_frequency_breaks)
-        print(len(self.tidal_frequency_breaks))
-

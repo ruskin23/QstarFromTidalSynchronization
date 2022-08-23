@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from cmath import isnan
 import logging
 import sys
 from pathlib import Path
@@ -16,14 +15,9 @@ from orbital_evolution.transformations import phase_lag
 from create_objects import BinaryObjects
 
 import scipy
-from scipy import optimize
 import numpy
 
-from lmfit import minimize, Parameters, Parameter, report_fit
-from functools import lru_cache
-
-wsun = 0.24795522138
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger()
 
 
 def check_last_nan(a):
@@ -248,7 +242,9 @@ class InitialConditionSolver:
         P_a=P_guess
         
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
-
+ 
+        if P_a//10>=1 or P_b//10>=1:xtol,rtol=1e-4,1e-5
+        else:xtol,rtol=1e-3,1e-5
         return scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=1e-4,rtol=1e-5)
 
 
@@ -267,7 +263,7 @@ class InitialConditionSolver:
             try:
                 _=self.initial_condition_errfunc((P_guess,e_ulimit))
                 if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
-                    _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 1.0'.format(P_guess))
+                    _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 10.0'.format(P_guess))
                     P_guess+=10.0
                     continue
                 else:
@@ -357,8 +353,12 @@ class InitialConditionSolver:
                 while True:
                     try:
                         _=self.initial_condition_errfunc((P_guess,eccentricity))
-                        break
+                        if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+                            _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 5.0'.format(P_guess))
+                            P_guess+=5.0
+                        else:break
                     except:
+                        _logger.info('\nSolver crashed for orbital period = {!r}. Increasing orbital period by 5.0'.format(P_guess))
                         P_guess+=5.0
                         
                 p_root=self.orbital_period_solver(eccentricity,P_guess=P_guess)
@@ -398,8 +398,9 @@ class InitialConditionSolver:
         
         self.nested_solver()
 
+        cached_ic_tuples=list(self.solver_cache.keys())
         _logger.info('Solver_Results:')
-        _logger.info('Intial_Orbital_Period={!r} , Initial_Eccentricity={!r}'.format(self.solver_cache.keys()[-1][0],self.solver_cache.keys()[-1][1]))
+        _logger.info('Intial_Orbital_Period={!r} , Initial_Eccentricity={!r}'.format(cached_ic_tuples[0],cached_ic_tuples[1]))
         _logger.info('Final_Orbital_Period={!r} , Final_Eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
         _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Final_Spin_Period={!r}'.format(self.spin))
