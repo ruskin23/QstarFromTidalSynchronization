@@ -24,40 +24,6 @@ class InitialConditionSolver:
         current orbital period and eccentricity of a given system """
 
 
-
-    def check_if_no_solution(self):
-
-        P_guess=10+self.initial_guess[0]
-
-        e_ulimit=0.70
-
-        _logger.info('\nChecking if a solutions exists at high e={!r}'.format(e_ulimit))
-        while True:
-            try:
-                _=self.initial_condition_errfunc((P_guess,e_ulimit))
-                if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
-                    _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 10.0'.format(P_guess))
-                    P_guess+=10.0
-                    continue
-                else:
-                    _logger.info('\nFound non-Nan eccenctricity upper limit at e={!r}'.format(e_ulimit))
-                    break
-            except:
-                _logger.info('\nSolver crashed for eccentricity = {!r}. Decreasing eccentricity upper limit by 0.02'.format(e_ulimit))
-                P_guess+=10.0
-                # e_ulimit-=0.02
-                continue
-            
-        
-        _logger.info('\nSolving for orbital period at eccentricity upper limit')
-        
-        _=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
-
-        _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Eccentricity_Limit={!r}'.format(self.final_eccentricity,e_ulimit))
-        
-        return e_ulimit,self.delta_e
-
-
     def initial_condition_errfunc(self,initial_conditions):
         """Error function which returns the difference between final values and intial values"""
 
@@ -124,8 +90,6 @@ class InitialConditionSolver:
                                                     'delta_p':self.delta_p,
                                                     'delta_e':self.delta_e,
                                                     'spin':self.spin}
-            
-
         else:
             current_cache=self.solver_cache[initial_conditions]
             self.final_orbital_period=current_cache['final_orbital_period']
@@ -141,6 +105,39 @@ class InitialConditionSolver:
 
         return self.delta_p
 
+
+
+    def check_if_no_solution(self):
+
+        P_guess=10+self.initial_guess[0]
+
+        e_ulimit=0.70
+
+        _logger.info('\nChecking if a solutions exists at high e={!r}'.format(e_ulimit))
+        while True:
+            try:
+                _=self.initial_condition_errfunc((P_guess,e_ulimit))
+                if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+                    _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 10.0'.format(P_guess))
+                    P_guess+=10.0
+                    continue
+                else:
+                    _logger.info('\nFound non-Nan eccenctricity upper limit at e={!r}'.format(e_ulimit))
+                    break
+            except:
+                _logger.info('\nSolver crashed for eccentricity = {!r}. Decreasing eccentricity upper limit by 0.02'.format(e_ulimit))
+                P_guess+=10.0
+                # e_ulimit-=0.02
+                continue
+            
+        
+        _logger.info('\nSolving for orbital period at eccentricity upper limit')
+        
+        _=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
+
+        _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Eccentricity_Limit={!r}'.format(self.final_eccentricity,e_ulimit))
+        
+        return e_ulimit,self.delta_e
 
 
 
@@ -211,19 +208,6 @@ class InitialConditionSolver:
     def brent_orbital_period_func(self,Pguess,eccentricity):
         return self.initial_condition_errfunc((Pguess,eccentricity))
 
-    def evaluate_dp(self,P_guess,eccentricity):
-
-        try:
-            dp=self.brent_orbital_period_func(P_guess,eccentricity)
-            if numpy.isnan(dp):
-                _logger.info('\nEncountered NaN for initial conditions ({!r},{!r})'.format(P_guess,eccentricity))
-        except:
-            _logger.info('\nSolver Crashed for initial conditions ({!r},{!r}).'.format(P_guess,eccentricity))
-            dp=scipy.nan
-        
-        return dp
-
-
 
     def orbital_period_solver(self,
                               eccentricity,
@@ -234,42 +218,36 @@ class InitialConditionSolver:
             P_guess=self.initial_guess[0]
 
         _logger.info('\nFinding first limit for orbital Period')
-
         dp_initial=scipy.nan
         while numpy.isnan(dp_initial) and P_guess<60:
-            dp_initial=self.evaluate_dp(P_guess,eccentricity)
+            try:    
+                dp_initial=self.brent_orbital_period_func(P_guess,eccentricity)
+                if numpy.isnan(dp_initial):
+                    _logger.info('\nEncountered NaN for initial conditions ({!r},{!r}). Increasing first orbital period limit by 5.0'.format(P_guess,eccentricity))
+                    P_guess+=5.0
+            except:
+                _logger.info('\nSolver Crashed for initial conditions ({!r},{!r}). Increasing first orbital period limit by 5.0'.format(P_guess,eccentricity))
+                P_guess+=5.0
 
         if numpy.isnan(dp_initial):
-            _logger.info('\nCouldnt find first limit for orbitial period. Returning NaN')
+            _logger.info('\nCouldnt find first limit for orbitial period. Returning Nan')
             return scipy.nan
 
         dp_new=dp_initial
-        P_a=P_guess
         
         _logger.info('\nFinding second limit for orbital period with initial_delta_p = {!r}'.format(dp_initial))
         while dp_new*dp_initial>0 and P_guess<60 and P_guess>0:
             
-            
+            P_b=P_guess
             if dp_initial<0: P_guess+=+5.0
-            else: 
-                if P_guess>self.initial_guess[0]: P_guess-=2.0
-                else:
-                    _logger.info('P_guess went below good initial condition. Checking if solution is possible')
-                    P_guess=P_a+0.5
-                    dp_check=self.evaluate_dp(P_guess,eccentricity)
-                    if numpy.isnan(dp_check):
-                        _logger.info('No Solution for Second Limit')
-                    else:
-                        if dp_check*dp_initial<0:
-                            _logger.info('Found Second Limit at P={!r}'.format(P_guess))
-                            dp_new=dp_check
-                        else:
-                            dp_new=scipy.nan
-
-                    break
-                            
-            
-            dp_new=self.evaluate_dp(P_guess,eccentricity)
+            else: P_guess-=2.0
+            dp_new=self.brent_orbital_period_func(P_guess,eccentricity)
+            try:
+                if numpy.isnan(dp_new):
+                    _logger.info('\nEncountered NaN for initial conditions ({!r},{!r}). Changing second orbitial period limit'.format(P_guess,eccentricity))
+            except:
+                _logger.info('\nSolver Crashed for initial conditions ({!r},{!r}). Changing second orbitial period limit'.format(P_guess,eccentricity))
+                
         
         if numpy.isnan(dp_new):
             _logger.info('\nCouldnt find second limit for orbitial period. Returning NaN')
@@ -279,10 +257,12 @@ class InitialConditionSolver:
             _logger.info('\nBounds are not opposite.No solution found for orbital_period')
             return scipy.nan
 
-        P_b=P_guess
-
+        P_a=P_guess
+        
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
  
+        if P_a//10>=1 or P_b//10>=1:xtol,rtol=1e-4,1e-5
+        else:xtol,rtol=1e-3,1e-5
         return scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=1e-4,rtol=1e-5)
 
 
@@ -313,25 +293,21 @@ class InitialConditionSolver:
             P_guess=self.initial_guess[0]
             e_llimit=self.initial_guess[1]
 
-            #should be irrelevant
             while True:
                 _=self.initial_condition_errfunc((P_guess,e_llimit))
-                if numpy.logical_or(numpy.isnan(self.solver_cache[(P_guess,e_llimit)]['final_orbital_period']),
-                                    numpy.isnan(self.solver_cache[(P_guess,e_llimit)]['final_eccentricity'])):
+                if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
                     _logger.info('\nIncreasing eccentricity lower limit by 0.02')
                     e_llimit+=0.02
                     continue
                 else:
                     _logger.info('\nFound non-Nan eccenctricity lower limit at e={!r}'.format(e_llimit))
                     break
-            #--------------------
+
+            _=self.orbital_period_solver(e_llimit,P_guess=P_guess)
+            de_llimit=self.delta_e
             
-            p_root=self.orbital_period_solver(e_llimit,P_guess=P_guess)
-            if numpy.isnan(p_root):de_llimit=scipy.nan
-            else: de_llimit=self.delta_e
-            
-            if de_llimit*de_ulimit>0 or numpy.isnan(de_llimit):
-                _logger.info('\nNo solution cannot exist between eccentricity limit. Error lower limit = {!r} Error upper limit = {!r}'.format(de_llimit,de_ulimit))
+            if de_llimit*de_ulimit>0:
+                _logger.info('\nNo solution can exist between eccentricity limit. Error lower limit = {!r} Error upper limit = {!r}'.format(de_llimit,de_ulimit))
                 return scipy.nan 
             else:
                 e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-5,rtol=1e-6)
@@ -345,30 +321,19 @@ class InitialConditionSolver:
 
             _logger.info('\nFinding lower limit for eccentricity')
             p_root=self.orbital_period_solver(e_llimit,P_guess=P_guess)
-            if numpy.isnan(p_root):
-                _logger.info('\nSolver cannot find orbital period at lower eccentricity limit. No Solution')
-                return scipy.nan
-            else:_logger.info('\nFound orbital period P={!r} at lower eccentricity limit e={!r}'.format(p_root,e_llimit))
+            _logger.info('\nFound orbital period P={!r} at lower eccentricity limit e={!r}'.format(p_root,e_llimit))
             
             _logger.info('\nFinding upper limit for eccentricity')
-            last_cached_ic=list(self.solver_cache.keys())[-1]
-            print(last_cached_ic)
-            print(self.solver_cache[last_cached_ic])
-            de_initial=self.solver_cache[last_cached_ic]['delta_e']
+            de_initial=self.delta_e
             de_new=de_initial
-            eccentricity=e_llimit+abs(de_initial)
-            P_guess=p_root
-            
+            eccentricity=e_llimit
             while de_new*de_initial>0 and eccentricity<0.75:
-                
-                eccentricity+=0.1
-                _logger.info('Increasing upper eccentricity limit by 0.1. e_new={!r}'.format(eccentricity))
+                eccentricity+=0.2
 
                 while True:
                     try:
                         _=self.initial_condition_errfunc((P_guess,eccentricity))
-                        if numpy.logical_or(numpy.isnan(self.solver_cache[(P_guess,eccentricity)]['delta_p']),
-                                            numpy.isnan(self.solver_cache[(P_guess,eccentricity)]['delta_e'])):
+                        if numpy.logical_or(numpy.isnan(self.delta_p),numpy.isnan(self.delta_e)):
                             _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 5.0'.format(P_guess))
                             P_guess+=5.0
                         else:break
@@ -377,13 +342,8 @@ class InitialConditionSolver:
                         P_guess+=5.0
                         
                 p_root=self.orbital_period_solver(eccentricity,P_guess=P_guess)
-                if numpy.isnan(p_root):
-                    _logger.info('\nSolver cannot find orbital period at upper eccentricity limit. No Solution')
-                    return scipy.nan
-
-                last_cached_ic=list(self.solver_cache.keys())[-1]
-                de_new=self.solver_cache[(last_cached_ic[0],last_cached_ic[1])]['delta_e']
-                _logger.info('\nFound orbital period P={!r} at upper eccentricity limit e={!r} with de={!r}'.format(p_root,eccentricity,de_new))
+                _logger.info('\nFound orbital period P={!r} at upper eccentricity limit e={!r}'.format(p_root,eccentricity))
+                de_new=self.delta_e
 
             e_ulimit=eccentricity
             if de_new*de_initial>0:

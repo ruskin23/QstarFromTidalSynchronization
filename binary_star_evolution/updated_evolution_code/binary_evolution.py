@@ -27,7 +27,7 @@ from create_objects import BinaryObjects
 wsun = 0.24795522138
 #wsun=1.0
 
-_logger=logging.getLogger(__name__)
+_logger=logging.getLogger()
 
 class Evolution:
 

@@ -486,7 +486,7 @@ class InitialConditionSolver:
                 sol = optimize.root(self.initial_condition_errfunc,
                                 self.initial_guess,
                                 method=self.method,
-                                options={'xtol': 0.0, 'ftol': 1e-05, 'eps':numpy.sqrt(self.evolution_precision)}
+                                options={'xtol': 0.0, 'ftol': 1e-05}#, 'eps':numpy.sqrt(self.evolution_precision)}
                                 )
             if self.function=='minimize':
                 bounds=((0.0,numpy.inf), (0.0,0.8))
