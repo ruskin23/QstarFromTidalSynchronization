@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from cmath import isnan
 import logging
 import sys
 from pathlib import Path
@@ -237,9 +238,11 @@ class InitialConditionSolver:
         _logger.info('\nFinding first limit for orbital Period')
 
         dp_initial=scipy.nan
-        while numpy.isnan(dp_initial) and P_guess<60:
+        while P_guess<60:
             dp_initial=self.evaluate_dp(P_guess,eccentricity)
-            P_guess+=5.0
+            if numpy.isnan(dp_initial):P_guess+=5.0
+            else:break
+            
         
         if numpy.isnan(dp_initial):
             _logger.info('\nCouldnt find first limit for orbitial period. Returning NaN')
@@ -249,8 +252,6 @@ class InitialConditionSolver:
         if abs(dp_initial)<1e-4:
             _logger.info('\nSolution already found. Skipping orbital period solver')
             return P_guess
-
-        
 
         dp_new=dp_initial
         P_a=P_guess
