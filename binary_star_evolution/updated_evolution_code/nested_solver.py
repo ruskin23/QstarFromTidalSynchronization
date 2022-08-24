@@ -287,9 +287,11 @@ class InitialConditionSolver:
         
         _=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
 
-        _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Eccentricity_Limit={!r}'.format(self.final_eccentricity,e_ulimit))
+        solution_check=self.final_eccentricity>self.target_eccentricity
+
+        _logger.info('\nSolution Check completed with Final_Eccentricity={!r} > Target_Eccentricity={!r} = {!r} at Eccentricity_Limit={!r}'.format(self.final_eccentricity,self.target_eccentricity,solution_check,e_ulimit))
         
-        return self.final_eccentricity>self.target_eccentricity,e_ulimit,self.delta_e
+        return solution_check,e_ulimit,self.delta_e
 
     def brent_eccentricity_func(self,eccentricity,Pguess):
 
@@ -311,7 +313,7 @@ class InitialConditionSolver:
             
 
             P_guess=self.initial_guess[0]
-            e_llimit=0.0
+            e_llimit=self.initial_guess[1]
 
             while True:
                 _=self.initial_condition_errfunc((P_guess,e_llimit))
@@ -371,6 +373,7 @@ class InitialConditionSolver:
                 return scipy.nan
 
             e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-4,rtol=1e-5)
+            return self.spin
 
             
 
@@ -396,7 +399,7 @@ class InitialConditionSolver:
 
         self.calculate_good_initial_guess()
         
-        self.nested_solver()
+        _=self.nested_solver()
 
         cached_ic_tuples=list(self.solver_cache.keys())
         _logger.info('Solver_Results:')
@@ -406,7 +409,7 @@ class InitialConditionSolver:
         _logger.info('Final_Spin_Period={!r}'.format(self.spin))
 
         if numpy.isnan(self.spin):
-            _logger.warning('Spin=Nan after solver. Setting Spin=inf')
+            _logger.warning('Spin=NaN after solver. Setting Spin=inf')
             self.spin=numpy.inf
 
         return self.spin
