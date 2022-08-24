@@ -52,11 +52,12 @@ class InitialConditionSolver:
         
         _logger.info('\nSolving for orbital period at eccentricity upper limit')
         
-        _=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
+        p_root=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
 
         _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Eccentricity_Limit={!r}'.format(self.final_eccentricity,e_ulimit))
         
-        return e_ulimit,self.delta_e
+        if numpy.isnan(p_root):return scipy.nan,scipy.nan
+        else: return e_ulimit,self.delta_e
 
 
     def initial_condition_errfunc(self,initial_conditions):
@@ -318,6 +319,10 @@ class InitialConditionSolver:
         if self.final_eccentricity<1e-8:
             _logger.info('\nFinal eccentricity = {!r} is less than 1e-8.'.format(self.final_eccentricity))
             e_ulimit,de_ulimit=self.check_if_no_solution()
+            
+            if numpy.isnan(de_llimit):
+                _logger.info('Solution check crashed')
+                return scipy.nan
 
             if self.final_eccentricity<self.target_eccentricity: 
                 _logger.info('No Solution exist as Final Eccentricity={!r} < Target Eccentricity={!r} at e=0.7'.format(self.final_eccentricity,self.target_eccentricity))
