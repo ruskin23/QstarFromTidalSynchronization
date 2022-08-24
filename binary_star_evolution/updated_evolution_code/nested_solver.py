@@ -217,6 +217,7 @@ class InitialConditionSolver:
             dp=self.brent_orbital_period_func(P_guess,eccentricity)
             if numpy.isnan(dp):
                 _logger.info('\nEncountered NaN for initial conditions ({!r},{!r})'.format(P_guess,eccentricity))
+                dp=-P_guess
         except:
             _logger.info('\nSolver Crashed for initial conditions ({!r},{!r}).'.format(P_guess,eccentricity))
             dp=scipy.nan
@@ -239,44 +240,47 @@ class InitialConditionSolver:
         while numpy.isnan(dp_initial) and P_guess<60:
             dp_initial=self.evaluate_dp(P_guess,eccentricity)
             P_guess+=5.0
-
-        last_cached_ic=list(self.solver_cache.keys())[-1]
-        if abs(self.solver_cache[last_cached_ic]['delta_p'])<1e-4:
-            _logger.info('\nSolution already found. Skipping orbital period solver')
-            return P_guess
-
+        
         if numpy.isnan(dp_initial):
             _logger.info('\nCouldnt find first limit for orbitial period. Returning NaN')
             return scipy.nan
 
+        
+        if abs(dp_initial)<1e-4:
+            _logger.info('\nSolution already found. Skipping orbital period solver')
+            return P_guess
+
+        
+
         dp_new=dp_initial
         P_a=P_guess
         
+        last_cached_ic=list(self.solver_cache.keys())[-1]
         _logger.info('\nFinding second limit for orbital period with initial_delta_p = {!r}'.format(dp_initial))
         while dp_new*dp_initial>0 and P_guess<60 and P_guess>0:
             
             if self.solver_cache[last_cached_ic]['final_orbital_period']<last_cached_ic[0]:
                 if dp_initial<0: P_guess+=+5.0
-                else: 
-                    if P_guess>self.initial_guess[0]: P_guess-=2.0
-                    else:
-                        _logger.info('P_guess went below good initial condition. Checking if solution is possible')
-                        P_guess=P_a+0.5
-                        dp_check=self.evaluate_dp(P_guess,eccentricity)
-                        if numpy.isnan(dp_check):
-                            _logger.info('No Solution for Second Limit')
-                        else:
-                            if dp_check*dp_initial<0:
-                                _logger.info('Found Second Limit at P={!r}'.format(P_guess))
-                                dp_new=dp_check
-                            else:
-                                dp_new=scipy.nan
+                else: P_guess-=2.0
+                    # if P_guess>self.initial_guess[0]: P_guess-=2.0
+                    # else:
+                    #     _logger.info('P_guess went below good initial condition. Checking if solution is possible')
+                    #     P_guess=P_a+0.5
+                    #     dp_check=self.evaluate_dp(P_guess,eccentricity)
+                    #     if numpy.isnan(dp_check):
+                    #         _logger.info('No Solution for Second Limit')
+                    #     else:
+                    #         if dp_check*dp_initial<0:
+                    #             _logger.info('Found Second Limit at P={!r}'.format(P_guess))
+                    #             dp_new=dp_check
+                    #         else:
+                    #             dp_new=scipy.nan
 
-                        break
+                    #     break
             
             else:
                 P_guess=P_guess-0.5
-                            
+
             
             dp_new=self.evaluate_dp(P_guess,eccentricity)
         
