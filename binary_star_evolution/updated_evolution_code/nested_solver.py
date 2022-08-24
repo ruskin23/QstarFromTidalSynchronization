@@ -320,7 +320,7 @@ class InitialConditionSolver:
             e_ulimit,de_ulimit=self.check_if_no_solution()
 
             if self.final_eccentricity<self.target_eccentricity: 
-                _logger.info('No Solution exist as Final Eccentricity={!r} < Target Eccentricity={!r} at e=0.7'.format(self.Final_Eccentricity,self.target_eccentricity))
+                _logger.info('No Solution exist as Final Eccentricity={!r} < Target Eccentricity={!r} at e=0.7'.format(self.final_eccentricity,self.target_eccentricity))
                 return scipy.nan
             
 
@@ -375,12 +375,14 @@ class InitialConditionSolver:
             _logger.info('\nFinding upper limit for eccentricity')
             de_initial=self.solver_cache[last_cached_ic]['delta_e']
             de_new=de_initial
-            eccentricity=e_llimit+abs(de_initial)
+            eccentricity=e_llimit
             P_guess=p_root
             
             while de_new*de_initial>0 and eccentricity<0.75:
                 
-                eccentricity+=0.1
+                if numpy.isnan(de_new):eccentricity+=0.1
+                else: eccentricity+=min(abs(1.5*de_new),0.1)
+
                 _logger.info('Increasing upper eccentricity limit by 0.1. e_new={!r}'.format(eccentricity))
 
                 while True:
