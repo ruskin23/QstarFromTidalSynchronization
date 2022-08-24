@@ -418,6 +418,7 @@ class InitialConditionSolver:
 
             _logger.info('\nFinding eccentricity root between e_a={!r} and e_b={!r}'.format(e_llimit,e_ulimit))
             e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-4,rtol=1e-5)
+            return self.spin
 
             
 
@@ -443,7 +444,7 @@ class InitialConditionSolver:
 
         self.calculate_good_initial_guess()
         
-        self.nested_solver()
+        spin=self.nested_solver()
 
         cached_ic_tuples=list(self.solver_cache.keys())
         initial_conditions_results=cached_ic_tuples[-1]
@@ -451,11 +452,11 @@ class InitialConditionSolver:
         _logger.info('Intial_Orbital_Period={!r} , Initial_Eccentricity={!r}'.format(initial_conditions_results[0],initial_conditions_results[1]))
         _logger.info('Final_Orbital_Period={!r} , Final_Eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
         _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
-        _logger.info('Final_Spin_Period={!r}'.format(self.spin))
+        _logger.info('Final_Spin_Period={!r}'.format(spin))
 
-        if numpy.isnan(self.spin):
+        if numpy.isnan(spin):
             _logger.warning('Spin=Nan after solver. Setting Spin=inf')
-            self.spin=numpy.inf
+            spin=numpy.inf
 
-        return self.spin
+        return spin
 
