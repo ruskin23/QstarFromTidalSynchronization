@@ -240,7 +240,7 @@ class InitialConditionSolver:
             dp_initial=self.evaluate_dp(P_guess,eccentricity)
             P_guess+=5.0
 
-        last_cached_ic=list(self.solver_cache.keys)[-1]
+        last_cached_ic=list(self.solver_cache.keys())[-1]
         if abs(self.solver_cache[last_cached_ic]['delta_p'])<1e-4:
             _logger.info('\nSolution already found. Skipping orbital period solver')
             return P_guess
