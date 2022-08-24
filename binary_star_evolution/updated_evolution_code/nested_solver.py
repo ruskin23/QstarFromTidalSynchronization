@@ -320,7 +320,7 @@ class InitialConditionSolver:
             _logger.info('\nFinal eccentricity = {!r} is less than 1e-8.'.format(self.final_eccentricity))
             e_ulimit,de_ulimit=self.check_if_no_solution()
             
-            if numpy.isnan(de_llimit):
+            if numpy.isnan(de_ulimit):
                 _logger.info('Solution check crashed')
                 return scipy.nan
 
