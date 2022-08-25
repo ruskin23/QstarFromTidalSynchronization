@@ -454,7 +454,7 @@ class InitialConditionSolver:
         self.target_eccentricity=self.eccentricity
         
         for _quantity in [self.primary_mass,self.secondary_mass]:
-            I=self.interpolator('iconv',_quantity+'_mass',self.feh)
+            I=self.interpolator('iconv',_quantity,self.feh)
             if min(I(self.target_age))<0:
                 _logger.warning('\nConvective envelope moment of inertia goes to less than zero for sampled age')
                 _logger.info('Final_Spin_Period=inf')
