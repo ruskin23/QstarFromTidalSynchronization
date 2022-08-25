@@ -453,10 +453,11 @@ class InitialConditionSolver:
         self.target_orbital_period=self.orbital_period
         self.target_eccentricity=self.eccentricity
         
+        age_array=numpy.linspace(5e-3,self.target_age,10000)
         for _quantity in [self.primary_mass,self.secondary_mass]:
-            I=self.interpolator('iconv',_quantity,self.feh)
-            if min(I(self.target_age))<0:
-                _logger.warning('\nConvective envelope moment of inertia goes to less than zero for sampled age')
+            I=self.interpolator('iconv',_quantity,self.feh)(age_array)
+            if min(I)<0:
+                _logger.warning('\nConvective envelope moment of inertia goes to less than zero I_min={!r} for at age={!r}'.format(min(I),age_array[numpy.argmin(I)]))
                 _logger.info('Final_Spin_Period=inf')
                 return numpy.inf
 
