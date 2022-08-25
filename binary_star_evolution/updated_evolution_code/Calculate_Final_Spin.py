@@ -203,6 +203,11 @@ if __name__=='__main__':
                             a=float(x[1][1:])
                             b=float(x[-1][:-1])
                             parameters[x[0]]=numpy.array([a,b])
+                        elif len(x)==4:
+                            a=float(x[1][1:])
+                            b=float(x[-2])
+                            parameters[x[0]]=numpy.array([a,b])
+
 
                     if x[0]=='tidal_frequency_powers':
                         if len(x)==4:
@@ -217,7 +222,8 @@ if __name__=='__main__':
                         parameters[x[0]]=numpy.array(value)
 
 
-    
+    age_max_m1=interpolator('radius', parameters['primary_mass'], parameters['feh']).max_age
+    print(age_max_m1,parameters['age'])
     #Bad Solution for both dp and de
     # parameters['primary_mass']=1.0780738620002064
     # parameters['secondary_mass']=1.0256723503503944

@@ -26,11 +26,16 @@ def get_parameters_logfile(logfilename):
 
                 if x[0]=='tidal_frequency_breaks':
                     x=lines.split()
+                    print(len(x))
                     if len(x)==2:
                         parameters[x[0]]=numpy.atleast_1d(float(x[1][1:-1]))
                     elif len(x)==3:
                         a=float(x[1][1:])
                         b=float(x[-1][:-1])
+                        parameters[x[0]]=numpy.array([a,b])
+                    elif len(x)==4:
+                        a=float(x[1][1:])
+                        b=float(x[-2])
                         parameters[x[0]]=numpy.array([a,b])
 
                 if x[0]=='tidal_frequency_powers':
@@ -46,7 +51,7 @@ def get_parameters_logfile(logfilename):
                     parameters[x[0]]=numpy.array(value)
     return parameters
 
-p=get_parameters_logfile('10031409_20220820112659_4072302.log')
+p=get_parameters_logfile('10215422_20220824151945_575947.log')
 print(p)
 tp=p['tidal_frequency_breaks']
 print(len(tp))

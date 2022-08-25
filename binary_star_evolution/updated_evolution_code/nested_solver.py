@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from cmath import isnan
+import time
 import logging
 import sys
 from pathlib import Path
@@ -33,7 +33,7 @@ class InitialConditionSolver:
         e_ulimit=0.70
 
         _logger.info('\nChecking if a solutions exists at high e={!r}'.format(e_ulimit))
-        while True:
+        while P_guess<60:
             try:
                 _=self.initial_condition_errfunc((P_guess,e_ulimit))
                 if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
@@ -197,18 +197,22 @@ class InitialConditionSolver:
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
         n=0
-        while True:
-            n=n+1
-            _=self.initial_condition_errfunc((Pguess,e))
-            if numpy.isnan(self.delta_p) or numpy.isnan(self.delta_e):
-                Pguess+=0.5
-                continue
-            else:
-                self.initial_guess=[Pguess,e]
-                self.err_intial_guess=[self.delta_p,self.delta_e]
-                _logger.info('\nFound non-NaN intial guess in {!r} tries. dp={!r},de={!r}'.format(n,self.delta_p,self.delta_e))
-                break
-
+        while Pguess<60:
+            n+=1
+            try:
+                _=self.initial_condition_errfunc((Pguess,e))
+                if numpy.isnan(self.delta_p) or numpy.isnan(self.delta_e):
+                    Pguess+=1.0
+                    continue
+                else:
+                    self.initial_guess=[Pguess,e]
+                    self.err_intial_guess=[self.delta_p,self.delta_e]
+                    _logger.info('\nFound non-NaN intial guess in {!r} tries. dp={!r},de={!r}'.format(n,self.delta_p,self.delta_e))
+                    break
+            except:
+                Pguess+=1.0
+        
+        return Pguess<60
 
     def brent_orbital_period_func(self,Pguess,eccentricity):
         return self.initial_condition_errfunc((Pguess,eccentricity))
@@ -220,6 +224,14 @@ class InitialConditionSolver:
             if numpy.isnan(dp):
                 _logger.info('\nEncountered NaN for initial conditions ({!r},{!r})'.format(P_guess,eccentricity))
                 dp=-P_guess
+                ic_tuple=(P_guess,eccentricity)
+                if ic_tuple not in self.solver_cache:
+                    self.solver_cache[ic_tuple]=dict()
+                self.solver_cache[ic_tuple]={'final_orbital_period':0.0,
+                                                'final_eccentricity':scipy.nan,
+                                                'delta_p':dp,
+                                                'delta_e':scipy.nan,
+                                                'spin':scipy.nan}
         except:
             _logger.info('\nSolver Crashed for initial conditions ({!r},{!r}).'.format(P_guess,eccentricity))
             dp=scipy.nan
@@ -263,27 +275,10 @@ class InitialConditionSolver:
             
             if self.solver_cache[last_cached_ic]['final_orbital_period']<last_cached_ic[0]:
                 if dp_initial<0: P_guess+=+5.0
-                else: P_guess-=2.0
-                    # if P_guess>self.initial_guess[0]: P_guess-=2.0
-                    # else:
-                    #     _logger.info('P_guess went below good initial condition. Checking if solution is possible')
-                    #     P_guess=P_a+0.5
-                    #     dp_check=self.evaluate_dp(P_guess,eccentricity)
-                    #     if numpy.isnan(dp_check):
-                    #         _logger.info('No Solution for Second Limit')
-                    #     else:
-                    #         if dp_check*dp_initial<0:
-                    #             _logger.info('Found Second Limit at P={!r}'.format(P_guess))
-                    #             dp_new=dp_check
-                    #         else:
-                    #             dp_new=scipy.nan
-
-                    #     break
-            
+                else: P_guess-=2.0            
             else:
                 P_guess=P_guess-0.5
 
-            
             dp_new=self.evaluate_dp(P_guess,eccentricity)
         
         if numpy.isnan(dp_new):
@@ -333,7 +328,7 @@ class InitialConditionSolver:
             e_llimit=self.initial_guess[1]
 
             #should be irrelevant
-            while True:
+            while e_llimit<0.75:
                 _=self.initial_condition_errfunc((P_guess,e_llimit))
                 if numpy.logical_or(numpy.isnan(self.solver_cache[(P_guess,e_llimit)]['final_orbital_period']),
                                     numpy.isnan(self.solver_cache[(P_guess,e_llimit)]['final_eccentricity'])):
@@ -372,8 +367,7 @@ class InitialConditionSolver:
             
             
             last_cached_ic=list(self.solver_cache.keys())[-1]
-            if numpy.logical_and(abs(self.solver_cache[last_cached_ic]['delta_p'])<1e-5,
-                                 abs(self.solver_cache[last_cached_ic]['delta_e'])<1e-5):
+            if abs(self.solver_cache[last_cached_ic]['delta_e'])<1e-4:
                 _logger.info('Solution already found. Skipping eccenrticity solver')
                 return self.solver_cache[last_cached_ic]['spin']
             
@@ -383,14 +377,22 @@ class InitialConditionSolver:
             eccentricity=e_llimit
             P_guess=p_root
             
-            while de_new*de_initial>0 and eccentricity<0.75:
+            while de_new*de_initial>0: 
+
+                if abs(de_new)<1e-8 or self.solver_cache[last_cached_ic]['final_eccentricity']<abs(de_new):
+                    eccentricity,de_new=self.check_if_no_solution()
+                    break
                 
-                if numpy.isnan(de_new):eccentricity+=0.1
-                else: eccentricity+=min(abs(1.5*de_new),0.1)
+                if numpy.isnan(de_new):increment=0.1
+                elif self.solver_cache[last_cached_ic]['final_eccentricity']<last_cached_ic[1]:increment=min(abs(1.5*de_new),0.1)
+                else: increment=-min(abs(1.5*de_new),0.1)
+                
+                eccentricity+=increment
+                if numpy.logical_or(eccentricity>0.75,eccentricity<0):break
 
-                _logger.info('Increasing upper eccentricity limit by 0.1. e_new={!r}'.format(eccentricity))
+                _logger.info('Increasing upper eccentricity limit by {!r}. e_new={!r}'.format(increment,eccentricity))
 
-                while True:
+                while P_guess<60:
                     try:
                         _=self.initial_condition_errfunc((P_guess,eccentricity))
                         if numpy.logical_or(numpy.isnan(self.solver_cache[(P_guess,eccentricity)]['delta_p']),
@@ -403,6 +405,7 @@ class InitialConditionSolver:
                         P_guess+=5.0
                         
                 p_root=self.orbital_period_solver(eccentricity,P_guess=P_guess)
+                
                 if numpy.isnan(p_root):
                     _logger.info('\nSolver cannot find orbital period at upper eccentricity limit. No Solution')
                     return scipy.nan
@@ -411,10 +414,21 @@ class InitialConditionSolver:
                 de_new=self.solver_cache[(last_cached_ic[0],last_cached_ic[1])]['delta_e']
                 _logger.info('\nFound orbital period P={!r} at upper eccentricity limit e={!r} with de={!r}'.format(p_root,eccentricity,de_new))
 
-            e_ulimit=eccentricity
-            if de_new*de_initial>0:
-                _logger.info('\nNo solution found for eccentricity')
+                
+            
+            if numpy.isnan(de_new):
+                _logger.info('\ndelta_e at upper limit is NaN. No solution found for eccentricity')
                 return scipy.nan
+            else: e_ulimit=eccentricity
+
+            if de_new*de_initial>0:
+                _logger.info('\nBounds are of same sign. No solution found for eccentricity')
+                return scipy.nan
+
+            if abs(de_new)<1e-4:
+                last_cached_ic=list(self.solver_cache.keys())[-1]
+                _logger.info('Solution already found. Skipping eccenrticity solver')
+                return self.solver_cache[last_cached_ic]['spin']
 
             _logger.info('\nFinding eccentricity root between e_a={!r} and e_b={!r}'.format(e_llimit,e_ulimit))
             e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-4,rtol=1e-5)
@@ -439,12 +453,20 @@ class InitialConditionSolver:
         self.target_orbital_period=self.orbital_period
         self.target_eccentricity=self.eccentricity
         
+        for _quantity in ['primary','secondary']:
+            I=self.interpolator('iconv',_quantity+'_mass',self.feh)
+            if min(I(self.target_age))<0:
+                _logger.warning('\nConvective envelope moment of inertia goes to less than zero for sampled age')
+                _logger.info('Final_Spin_Period=inf')
+                return numpy.inf
 
         _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
 
         self.calculate_good_initial_guess()
         
+        t=time.time()
         spin=self.nested_solver()
+        print('time taken={}'.format(time.time()-t))
 
         cached_ic_tuples=list(self.solver_cache.keys())
         initial_conditions_results=cached_ic_tuples[-1]
