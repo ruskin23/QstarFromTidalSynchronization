@@ -418,7 +418,9 @@ class InitialConditionSolver:
                 elif self.solver_cache[last_cached_ic]['final_eccentricity']<last_cached_ic[1]:increment=0.1#min(abs(2.5*de_new),0.1)
                 else: increment=-min(abs(1.5*de_new),0.1)
                 
-                eccentricity+=increment
+                if eccentricity>0.65 and eccentricity<0.75:eccentricity=0.75
+                else: eccentricity+=increment
+                
                 if numpy.logical_or(eccentricity>0.75,eccentricity<0):
                     _logger.warning('eccentricity limit reached, e={!r}, while incrementing eccentriciy to find upper limit'.format(eccentricity))
                     break
