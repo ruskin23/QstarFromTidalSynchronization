@@ -296,34 +296,30 @@ class InitialConditionSolver:
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
 
         xtol,rtol=1e-4,1e-5
-        while True:
-            try:
-                p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
-            except Exception as e:
-                cached_ic_list=list(self.solver_cache.keys())
-                _logger.info('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
-                last_cached_ic=cached_ic_list[-1]
-                final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
-                _logger.info('Last successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
-                p_root=scipy.nan
+        try:
+            p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
             cached_ic_list=list(self.solver_cache.keys())
             last_cached_ic=cached_ic_list[-1]
             dp=self.solver_cache[last_cached_ic]['delta_p']
-            if abs(dp)>1e-2:
-                _logger.info('delta_p>0.01 reducing brentq tolerance by 1e-2')
-                xtol/=100
-                rtol/=100
-            else:break
-
-
+            if dp>1e-1:
+                _logger.warning('Bad Solution Found. dp={!r} is not small enough'.format(dp))
+                p_root=scipy.nan
+        except Exception as e:
+            cached_ic_list=list(self.solver_cache.keys())
+            _logger.info('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
+            last_cached_ic=cached_ic_list[-1]
+            final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
+            _logger.info('\nLast successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
+            p_root=scipy.nan
+        
         return p_root
 
     def brent_eccentricity_func(self,eccentricity,Pguess):
 
         p_root=self.orbital_period_solver(eccentricity,P_guess=Pguess)
         if numpy.isnan(p_root):
-            _logger.info('\nGot p_root=NaN for eccentricity={!r}. Returning delta_e=Nan'.format(eccentricity))
-            return scipy.nan
+            _logger.warning('\nGot p_root=NaN for eccentricity={!r}. Exiting Solver'.format(eccentricity))
+            raise ValueError()
         else:
             _logger.info('\nFor initial_condictions=({!r},{!r}) Found delta_e={!r}'.format(eccentricity,Pguess,self.delta_e))
             return self.delta_e
@@ -373,10 +369,13 @@ class InitialConditionSolver:
             if de_llimit*de_ulimit>0 or numpy.isnan(de_llimit):
                 _logger.info('\nNo solution cannot exist between eccentricity limit. Error lower limit = {!r} Error upper limit = {!r}'.format(de_llimit,de_ulimit))
                 return scipy.nan 
-            else:
+            try:
                 e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-5,rtol=1e-6)
                 _logger.info('\nEccentricity root found. E_ROOT={!r}'.format(e_root))
                 return self.spin
+            except:
+                _logger.warning('Eccenricity Solver crashed')
+                return scipy.nan
 
         else:
 
@@ -410,7 +409,7 @@ class InitialConditionSolver:
 
                 last_cached_ic=list(self.solver_cache.keys())[-1]
                 final_e=self.solver_cache[last_cached_ic]['final_eccentricity']
-                if final_e<abs(de_new) and abs(final_e-abs(de_new))>1e-2:
+                if final_e<1e-4:
                     eccentricity,de_new=self.check_if_no_solution()
                     break
                 
@@ -465,8 +464,12 @@ class InitialConditionSolver:
                 return scipy.nan
 
             _logger.info('\nFinding eccentricity root between e_a={!r} and e_b={!r}'.format(e_llimit,e_ulimit))
-            e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-4,rtol=1e-5)
-            return self.spin
+            try:
+                e_root=scipy.optimize.brentq(self.brent_eccentricity_func,e_llimit,e_ulimit,args=(P_guess,),xtol=1e-4,rtol=1e-5)
+                return self.spin
+            except:
+                _logger.warning('\nEccentriciy solver crashed')
+                return scipy.nan
 
             
 
