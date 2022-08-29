@@ -31,7 +31,7 @@ class InitialConditionSolver:
 
         P_guess=10+self.initial_guess[0]
 
-        e_ulimit=0.70
+        e_ulimit=0.7
 
         _logger.info('\nChecking if a solutions exists at high e={!r}'.format(e_ulimit))
         
@@ -152,8 +152,8 @@ class InitialConditionSolver:
     def __init__(self,
                 interpolator,
                 parameters,
-                evolution_max_time_step=1e-3,
-                evolution_precision=1e-6,
+                evolution_max_time_step=1e-2,
+                evolution_precision=1e-5,
                 secondary_angmom=None,
                 initial_guess=None):
         """
@@ -294,16 +294,27 @@ class InitialConditionSolver:
         P_b=P_guess
 
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
- 
-        try:
-            p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=1e-4,rtol=1e-5)
-        except Exception as e:
+
+        xtol,rtol=1e-4,1e-5
+        while True:
+            try:
+                p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
+            except Exception as e:
+                cached_ic_list=list(self.solver_cache.keys())
+                _logger.info('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
+                last_cached_ic=cached_ic_list[-1]
+                final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
+                _logger.info('Last successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
+                p_root=scipy.nan
             cached_ic_list=list(self.solver_cache.keys())
-            _logger.info('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
             last_cached_ic=cached_ic_list[-1]
-            final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
-            _logger.info('Last successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
-            p_root=scipy.nan
+            dp=self.solver_cache[last_cached_ic]['delta_p']
+            if abs(dp)>1e-2:
+                _logger.info('delta_p>0.01 reducing brentq tolerance by 1e-2')
+                xtol/=100
+                rtol/=100
+            else:break
+
 
         return p_root
 
@@ -311,7 +322,7 @@ class InitialConditionSolver:
 
         p_root=self.orbital_period_solver(eccentricity,P_guess=Pguess)
         if numpy.isnan(p_root):
-            _logger('\nGot p_root=NaN for eccentricity={!r}. Returning delta_e=Nan'.format(eccentricity))
+            _logger.info('\nGot p_root=NaN for eccentricity={!r}. Returning delta_e=Nan'.format(eccentricity))
             return scipy.nan
         else:
             _logger.info('\nFor initial_condictions=({!r},{!r}) Found delta_e={!r}'.format(eccentricity,Pguess,self.delta_e))
@@ -352,12 +363,13 @@ class InitialConditionSolver:
                 else:
                     _logger.info('\nFound non-Nan eccenctricity lower limit at e={!r}'.format(e_llimit))
                     break
-            #--------------------
+            
             
             p_root=self.orbital_period_solver(e_llimit,P_guess=P_guess)
             if numpy.isnan(p_root):de_llimit=scipy.nan
             else: de_llimit=self.delta_e
-            
+            #--------------------
+
             if de_llimit*de_ulimit>0 or numpy.isnan(de_llimit):
                 _logger.info('\nNo solution cannot exist between eccentricity limit. Error lower limit = {!r} Error upper limit = {!r}'.format(de_llimit,de_ulimit))
                 return scipy.nan 
@@ -494,6 +506,9 @@ class InitialConditionSolver:
         _logger.info('Final_Orbital_Period={!r} , Final_Eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
         _logger.info('Errors: delta_p={!r} , delta_e={!r}'.format(self.delta_p,self.delta_e))
         _logger.info('Final_Spin_Period={!r}'.format(spin))
+
+        if self.delta_p>0.1 or self.delta_e>0.1:
+            _logger.warning('Solver did not find good solutions. delta_p={!r} delta_e={!r}'.format(self.delta_p,self.delta_e))
 
         if numpy.isnan(spin):
             _logger.warning('Spin=Nan after solver. Setting Spin=inf')

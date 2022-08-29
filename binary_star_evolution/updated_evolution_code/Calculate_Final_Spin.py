@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import pickle
 import sys
 import os
 from pathlib import Path
@@ -261,8 +262,8 @@ if __name__=='__main__':
     # parameters['diff_rot_coupling_timescale']=5e-3
     # parameters['wind_strength']=0.17
     # parameters['print_cfile']=False
-    # parameters['evolution_max_time_step']=1e-3
-    # parameters['evolution_precision']=1e-6
+    # parameters['evolution_max_time_step']=1e-2
+    # parameters['evolution_precision']=1e-5
     # parameters['inclination']=0.0
     # parameters['phase_lag_max']= 5.720283932423398e-07
     # parameters['spin_frequency_breaks']=None
@@ -297,10 +298,14 @@ if __name__=='__main__':
     # parameters['tidal_frequency_breaks']=numpy.array([0.60887346])
     # parameters['tidal_frequency_powers']=numpy.array([ 0.0, -0.35639464])
 
+    # parameters['orbital_period']=14.548202016011132
+    # parameters['eccentricity']=0.7
 
     print(parameters)
 
+
     evolution=Evolution(interpolator,parameters)
+    # binary=evolution.evolve_binary()
     spin =  evolution.calculate_intial_conditions()
     print('Spin Period = ',spin)
 

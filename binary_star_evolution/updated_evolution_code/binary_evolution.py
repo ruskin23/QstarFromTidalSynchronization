@@ -72,7 +72,7 @@ class Evolution:
         if parameter is not None:
             self.parameters[parameter]=parameter_value
             setattr(self,parameter,parameter_value)
-        if self.parameters['logQ']==True:self.convective_phase_lag=phase_lag(self.logQ)
+        # if 'logQ' in self.parameters['logQ']:self.convective_phase_lag=phase_lag(self.logQ)
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
         _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SecondaryAngmom())))
@@ -102,6 +102,17 @@ class Evolution:
                         self.evolution_precision,
                         None,
                         timeout=3600)
+
+
+            
+            final_state=binary.final_state()
+
+            final_orbital_period=binary.orbital_period(final_state.semimajor)
+            final_eccentricity=final_state.eccentricity
+            _logger.info('final values={!r}'.format((final_orbital_period,final_eccentricity)))
+            _logger.info('deltas={!r}'.format((final_orbital_period-2.54459418146,final_eccentricity-0.011290408824073055)))
+             
+
             return binary
 
         

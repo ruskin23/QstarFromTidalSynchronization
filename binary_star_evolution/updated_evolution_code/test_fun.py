@@ -1,3 +1,4 @@
+from copyreg import pickle
 import errno
 import numpy
 from scipy import optimize
@@ -65,4 +66,3 @@ print(list(cache.keys())[-1])
 name='a'
 if (1,2) in cache:
     print(cache[(1,2)]['a'])
-
