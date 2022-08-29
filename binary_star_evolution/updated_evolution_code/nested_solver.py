@@ -415,7 +415,7 @@ class InitialConditionSolver:
                     break
                 
                 if numpy.isnan(de_new):increment=0.1
-                elif self.solver_cache[last_cached_ic]['final_eccentricity']<last_cached_ic[1]:increment=min(abs(2.5*de_new),0.1)
+                elif self.solver_cache[last_cached_ic]['final_eccentricity']<last_cached_ic[1]:increment=0.1#min(abs(2.5*de_new),0.1)
                 else: increment=-min(abs(1.5*de_new),0.1)
                 
                 eccentricity+=increment
