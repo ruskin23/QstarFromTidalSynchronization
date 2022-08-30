@@ -30,8 +30,9 @@ class prior_transform:
         Z_samples=all_chains[2]
         t_samples=all_chains[3]
 
-        ecosw_samples=all_chains[8]
-        esinw_samples=all_chains[9]
+        esinw_samples=all_chains[8]
+        ecosw_samples=all_chains[9]
+        
         e_samples=numpy.sqrt(ecosw_samples**2 + esinw_samples**2)
 
         with open(path.current_directory+'/bandwidth.pickle','rb') as f:
@@ -41,7 +42,7 @@ class prior_transform:
         with open(path.current_directory+'/e_bandwidth.pickle','rb') as f:
             bw_e=pickle.load(f)
         _logger.info('Eccentricity Bandwidth: {!r}'.format(bw_e[system_num]))
-        
+
         h_M=bw[0]
         h_Q=bw[1]
         h_Z=bw[2]

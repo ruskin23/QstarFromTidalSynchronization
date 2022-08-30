@@ -11,7 +11,6 @@ import scipy
 
 from pathlib import Path
 from directories import directories
-from utils import erf_fun
 
 
 home_dir=str(Path.home())
@@ -20,9 +19,6 @@ sys.path.append(path.poet_path+'/PythonPackage')
 sys.path.append(path.poet_path+'/scripts')
 sys.path.append(path.binary_directory)
 
-# sys.path.append('/home/ruskin/projects/poet/PythonPackage')
-# sys.path.append('/home/ruskin/projects/poet/scripts')
-# sys.path.append('/home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/updated_evolution_code')
 
 from stellar_evolution.library_interface import library
 from create_objects import BinaryObjects
@@ -34,11 +30,8 @@ from stellar_evolution.manager import StellarEvolutionManager
 from orbital_evolution.evolve_interface import library as \
     orbital_evolution_library
 from orbital_evolution.transformations import phase_lag
-from multiprocessing import Pool, Process, Queue
-from collections import namedtuple
+from multiprocessing import Pool
 from Logger import setup_process
-from datetime import date
-import pickle
 
 
 import emcee
@@ -99,7 +92,11 @@ class sampler:
         return [primary_mass,secondary_mass]
 
     
+    def max_allowed_age(self,mass,feh,sampled_age):
+        age_max=self.interpolator('radius', mass, feh).max_age
+        return age_max
 
+    
     def sampled_from_coupled(self):
         
         params=prior_transform(self.system_number)
@@ -112,6 +109,15 @@ class sampler:
         self.params['feh'] = library.feh_from_z(z)
         self.params['age'] = (10**(sampled_params[3]))/1e9
         self.params['eccentricity'] = sampled_params[4]
+
+        for _quantity in ['primary','secondary']:
+            age_max=self.max_allowed_age(self.params[_quantity+'_mass'],self.params['feh'],self.params['age'])
+            if self.params['age']>age_max:
+                _logger.info('Sampled age is greater than max age allowed from interpolator. Setting sampled_age=age_max-1e-4')
+                self.params['age']=age_max-1e-4
+            
+
+
 
     def fixed_params(self):
 
@@ -141,13 +147,7 @@ class sampler:
             phase_lag_max=phase_lag_sampled*((omegamin/omegaref)**alpha)
 
         self.params['phase_lag_max']=phase_lag_max
-
-        
         self.params['tidal_frequency_powers']=tidal_power
-
-
-        # self.params['tidal_frequency_breaks']=None
-        # self.params['tidal_frequency_powers']=numpy.array([0.0])
         self.params['spin_frequency_breaks']=None
         self.params['spin_frequency_powers']=numpy.array([0.0])
 
@@ -170,8 +170,8 @@ class sampler:
         self.fixed_params()
         self.sampled_from_coupled()
         self.get_orbital_period()
-        self.params['function']='root'
-        self.params['method']='lm'
+        self.params['function']='nested'
+        self.params['method']='brentq'
 
         return self.params,alpha,omegaref
 

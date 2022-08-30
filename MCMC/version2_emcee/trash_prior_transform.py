@@ -212,8 +212,8 @@ def get_sampling_utils(system_number):
     Z_samples=all_chains[2]
     t_samples=all_chains[3]
 
-    ecosw_samples=all_chains[8]
-    esinw_samples=all_chains[9]
+    ecosw_samples=all_chains[9]
+    esinw_samples=all_chains[8]
     e_samples=numpy.sqrt(ecosw_samples**2 + esinw_samples**2)
 
     M_prior=numpy.linspace(min(M_samples), max(M_samples), 10000)

@@ -299,23 +299,21 @@ class InitialConditionSolver:
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
 
         xtol,rtol=1e-4,1e-5
-        p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
-
-        # try:
-        #     p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
-        #     cached_ic_list=list(self.solver_cache.keys())
-        #     last_cached_ic=cached_ic_list[-1]
-        #     dp=self.solver_cache[last_cached_ic]['delta_p']
-        #     if dp>1e-1:
-        #         _logger.warning('Bad Solution Found. dp={!r} is not small enough'.format(dp))
-        #         p_root=scipy.nan
-        # except Exception as e:
-        #     _logger.warning('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
-        #     cached_ic_list=list(self.solver_cache.keys())
-        #     last_cached_ic=cached_ic_list[-1]
-        #     final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
-        #     _logger.info('\nLast successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
-        #     p_root=scipy.nan
+        try:
+            p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
+            cached_ic_list=list(self.solver_cache.keys())
+            last_cached_ic=cached_ic_list[-1]
+            dp=self.solver_cache[last_cached_ic]['delta_p']
+            if dp>1e-1:
+                _logger.warning('Bad Solution Found. dp={!r} is not small enough'.format(dp))
+                p_root=scipy.nan
+        except Exception as e:
+            _logger.warning('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
+            cached_ic_list=list(self.solver_cache.keys())
+            last_cached_ic=cached_ic_list[-1]
+            final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
+            _logger.info('\nLast successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
+            p_root=scipy.nan
         
         return p_root
 

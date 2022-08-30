@@ -119,8 +119,9 @@ def get_system_params(systemKIC):
     Q_samples=all_chains[1]
     Z_samples=all_chains[2]
     t_samples=all_chains[3]
-    ecosw_samples=all_chains[8]
-    esinw_samples=all_chains[9]
+    esinw_samples=all_chains[8]
+    ecosw_samples=all_chains[9]
+    
     e_samples=numpy.sqrt(ecosw_samples**2 + esinw_samples**2)
 
     _quantities=['Z','M','Q','t','e']
