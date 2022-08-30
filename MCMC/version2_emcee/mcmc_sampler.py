@@ -73,12 +73,10 @@ class sampler:
 
     def __init__(self,
                 system_number,
-                uniform_variables,
-                interpolator):
+                uniform_variables):
 
         self.system_number=system_number
         self.uniform_variable=uniform_variables
-        self.interpolator=interpolator
 
         self.params=dict()
 
@@ -93,12 +91,7 @@ class sampler:
 
         return [primary_mass,secondary_mass]
 
-    
-    def max_allowed_age(self,mass,feh,sampled_age):
-        age_max=self.interpolator('radius', mass, feh).max_age
-        return age_max
 
-    
     def sampled_from_coupled(self):
         
         params=prior_transform(self.system_number)
@@ -110,14 +103,7 @@ class sampler:
         z=sampled_params[0]
         self.params['feh'] = library.feh_from_z(z)
         self.params['age'] = (10**(sampled_params[3]))/1e9
-        self.params['eccentricity'] = sampled_params[4]
-
-        for _quantity in ['primary','secondary']:
-            age_max=self.max_allowed_age(self.params[_quantity+'_mass'],self.params['feh'],self.params['age'])
-            if self.params['age']>age_max:
-                _logger.info('Sampled age is greater than max age allowed from interpolator. Setting sampled_age=age_max-1e-4')
-                self.params['age']=age_max-1e-4
-            
+        self.params['eccentricity'] = sampled_params[4]            
 
 
 
@@ -195,11 +181,10 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
     _logger.info('Begin Conversion using %s',repr(unit_cube_values))
 
-    sampled_params=sampler(system_number,unit_cube_values,interpolator)
+    sampled_params=sampler(system_number,unit_cube_values)
     parameter_set,alpha,omegaref=sampled_params()
 
     _logger.info('Parameters: %s',repr(parameter_set))
-
 
     if parameter_set['feh'] < -1.014 or parameter_set['feh'] > 0.53:
         _logger.warning('feh value = %s is out of POET range (-1.014,0.53)',repr(parameter_set['feh']))
@@ -212,6 +197,16 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     if parameter_set['secondary_mass'] < 0.4 or parameter_set['secondary_mass'] > 1.2:
         _logger.warning('secondary mass value = %s is out of POET range (0.4,1.2)',repr(parameter_set['secondary_mass']))
         return invalid_values
+    
+
+    for _quantity in ['primary','secondary']:
+        age_max=interpolator('radius', 
+                             parameter_set[_quantity+'_mass'], 
+                             parameter_set[_quantity+'_feh']
+                             ).max_age
+        if parameter_set['age']>age_max:
+            _logger.info('Sampled age is greater than max age allowed from interpolator. Setting sampled_age=age_max-1e-4')
+            parameter_set['age']=age_max-1e-4
 
 
     _logger.info('\nSampled Parameters:')
