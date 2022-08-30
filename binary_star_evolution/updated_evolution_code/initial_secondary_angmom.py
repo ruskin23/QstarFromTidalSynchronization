@@ -50,7 +50,7 @@ class IntialSecondaryAngmom:
 
         angmom_array=numpy.array([disk_state.envelope_angmom, disk_state.core_angmom])
 
-        _logger.info('Initial Secondary Angular Momentum = {!r}'.format(repr(angmom_array)))
+        _logger.info('Initial Secondary Angular Momentum = {!r}'.format(angmom_array))
 
         return angmom_array
 

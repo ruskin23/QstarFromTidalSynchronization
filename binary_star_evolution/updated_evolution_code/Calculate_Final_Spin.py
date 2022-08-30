@@ -80,23 +80,23 @@ def plot_evolution(evolved_binary):
     wsun = 0.24795522138
     evolution=evolved_binary.get_evolution()
 
-    wenv_secondary = (evolution.secondary_envelope_angmom / evolved_binary.secondary.envelope_inertia(evolution.age)) / wsun
-    wcore_secondary = (evolution.secondary_core_angmom / evolved_binary.secondary.core_inertia(evolution.age)) / wsun
-    wenv_primary = (evolution.primary_envelope_angmom / evolved_binary.primary.envelope_inertia(evolution.age)) / wsun
-    wcore_primary = (evolution.primary_core_angmom / evolved_binary.primary.core_inertia(evolution.age)) / wsun
-    orbitalfrequncy = evolved_binary.orbital_frequency(evolution.semimajor) / wsun
+    wenv_secondary = evolution.secondary_envelope_angmom / evolved_binary.secondary.envelope_inertia(evolution.age)
+    wcore_secondary = evolution.secondary_core_angmom / evolved_binary.secondary.core_inertia(evolution.age)
+    wenv_primary = evolution.primary_envelope_angmom / evolved_binary.primary.envelope_inertia(evolution.age)
+    wcore_primary = evolution.primary_core_angmom / evolved_binary.primary.core_inertia(evolution.age)
+    orbitalfrequncy = evolved_binary.orbital_frequency(evolution.semimajor)
 
     pyplot.semilogx(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
     pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
-    pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
-    pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
+    # pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
+    # pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
 
     pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
     pyplot.legend(loc='upper right')
     pyplot.ylabel('Spin Freuqncy')
     pyplot.xlabel('age')
-    pyplot.ylim(top=100)
-    pyplot.ylim(bottom=-20)
+    # pyplot.ylim(top=100)
+    # pyplot.ylim(bottom=-20)
     pyplot.show()
 
 def get_initial_conditions(evolution):
@@ -146,7 +146,9 @@ if __name__=='__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    eccentricity_path=os.path.join(path.scratch_directory,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
+
+    
 
     orbital_evolution_library.prepare_eccentricity_expansion(
         eccentricity_path,
@@ -224,123 +226,15 @@ if __name__=='__main__':
 
 
     age_max_m1=interpolator('radius', parameters['primary_mass'], parameters['feh']).max_age
-    print(age_max_m1,parameters['age'])
-    #Bad Solution for both dp and de
-    # parameters['primary_mass']=1.0780738620002064
-    # parameters['secondary_mass']=1.0256723503503944
-    # parameters['age']=3.452331590976395
-    # parameters['feh']= -0.18318213164525268
-    # parameters['orbital_period']= 4.14387936268
+    print('max_age_allowed {} target_age {}'.format(age_max_m1,parameters['age']))
 
-    # parameters['eccentricity']=0.005117792869355689
-    # parameters['spin_period']=10
-    # parameters['Wdisk']= 1.4460263992995446
-
-    # parameters['phase_lag_max']=1.2336514749258355e-08
-    # parameters['spin_frequency_breaks']=None
-    # parameters['spin_frequency_powers']=numpy.array([0.0])
-    # parameters['tidal_frequency_breaks']=numpy.array([0.12566371,0.30692368])
-    # parameters['tidal_frequency_powers']=numpy.array([ 0.0,0.19434417,0.0])
-
-
-
-    #Final eccentricity<1e-8
-    # parameters['primary_mass']=1.1993719870830584
-    # parameters['secondary_mass']=1.1462126964961248
-    # parameters['age']= 1.2135404663745835
-    # parameters['feh']=  -0.03896229835997274
-    # parameters['orbital_period']= 4.14387936268
-
-    # parameters['eccentricity']=  0.0035652680385221984
-    # parameters['spin_period']=10
-    # parameters['Wdisk']=1.4460263992995446
-
-    # parameters['dissipation']=True
-    # parameters['disk_dissipation_age']=5e-3
-    # parameters['wind']=True
-    # parameters['wind_saturation_frequency']=2.54
-    # parameters['diff_rot_coupling_timescale']=5e-3
-    # parameters['wind_strength']=0.17
-    # parameters['print_cfile']=False
-    # parameters['evolution_max_time_step']=1e-2
-    # parameters['evolution_precision']=1e-5
-    # parameters['inclination']=0.0
-    # parameters['phase_lag_max']= 5.720283932423398e-07
-    # parameters['spin_frequency_breaks']=None
-    # parameters['spin_frequency_powers']=numpy.array([0.0])
-    # parameters['tidal_frequency_breaks']=numpy.array( [0.12566371,0.20936707])
-    # parameters['tidal_frequency_powers']=numpy.array( [0.0,0.12528201,0.0])
-
-    #Extremely Slow where Final eccentricity<1e-8
-    # parameters['primary_mass']=0.8702751082448668
-    # parameters['secondary_mass']=0.8404587704560754
-    # parameters['age']=9.168832649763575
-    # parameters['feh']= -0.5493213649220865
-    # parameters['orbital_period']= 3.42059777531
-
-    # parameters['eccentricity']=0.013787175999258086
-    # parameters['spin_period']=10
-    # parameters['Wdisk']= 3.9415297170149084
-
-    # parameters['dissipation']=True
-    # parameters['disk_dissipation_age']=5e-3
-    # parameters['wind']=True
-    # parameters['wind_saturation_frequency']=2.54
-    # parameters['diff_rot_coupling_timescale']=5e-3
-    # parameters['wind_strength']=0.17
-    # parameters['print_cfile']=False
-    # parameters['evolution_max_time_step']=1e-3
-    # parameters['evolution_precision']=1e-6
-    # parameters['inclination']=0.0
-    # parameters['phase_lag_max']=1.2398415749904416e-06
-    # parameters['spin_frequency_breaks']=None
-    # parameters['spin_frequency_powers']=numpy.array([0.0])
-    # parameters['tidal_frequency_breaks']=numpy.array([0.60887346])
-    # parameters['tidal_frequency_powers']=numpy.array([ 0.0, -0.35639464])
-
-    # parameters['orbital_period']=14.548202016011132
-    # parameters['eccentricity']=0.7
+    parameters['orbital_period'] = 12.14387936268
+    parameters['eccentricity'] = 0.7
 
     print(parameters)
 
-
     evolution=Evolution(interpolator,parameters)
-    # binary=evolution.evolve_binary()
-    spin =  evolution.calculate_intial_conditions()
-    print('Spin Period = ',spin)
-
-
-
-
-
-
-
-    
-    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_temp_cutoff.txt','w') as fnew:
-    #     fnew.write('Number\tKIC\tPorb\tspin\teccentricity\tfeh\tage(Gyr)\tm1\tm2\n')
-    #     with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog.txt','r') as f:
-    #         next(f)
-    #         for lines in f:
-    #             x=lines.split()
-    #             feh=float(x[5])
-    #             age=float(x[6])
-    #             m1=float(x[7])
-    #             m2=float(x[8])
-    #             quantity_radius=interpolator('radius',m1, feh)
-    #             quantity_lum=interpolator('lum',m1, feh)
-    #             t_age=numpy.linspace(5e-3,age,1000)
-    #             try:
-    #                 T=TeffK(quantity_radius,quantity_lum)(age)
-    #                 I=interpolator('iconv',m1,feh)
-    #                 if min(I(t_age)):
-    #                     fnew.write(lines)
-    #                     print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
-    #             except:
-    #                 continue
-
-
-    # I=interpolator('iconv',1.0368188571870431,0.0)
-
-    # t_age=numpy.linspace(5e-3,6,1000)
-    # pyplot.plot(t_age,T(t_age))
-    # pyplot.show()
+    evolved_binary=evolution.evolve_binary()
+    plot_evolution(evolved_binary)
+    # spin =  evolution.calculate_intial_conditions()
+    # print('Spin Period = ',spin)

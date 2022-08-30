@@ -66,3 +66,14 @@ print(list(cache.keys())[-1])
 name='a'
 if (1,2) in cache:
     print(cache[(1,2)]['a'])
+
+def twoSum(self, nums: List[int], target: int) -> List[int]:
+    
+    x=numpy.array(List)
+    y=numpy.transpose(x)
+    xx,yy=numpy.meshgrid(x,y)
+    zz=xx+yy
+    for i in range(len(x)):
+        for j in range(len(y)):
+            if z[i,j]==target:
+                return [i,j]

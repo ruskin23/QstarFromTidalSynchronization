@@ -1,31 +1,19 @@
 #!/usr/bin/env python3
-from distutils.log import info
 import sys
 from pathlib import Path
 from directories import directories
 import logging
-
 
 home_dir=str(Path.home())
 path=directories(home_dir)
 sys.path.append(path.poet_path+'/PythonPackage')
 sys.path.append(path.poet_path+'/scripts')
 
-from stellar_evolution.manager import StellarEvolutionManager
-from orbital_evolution.evolve_interface import library as \
-    orbital_evolution_library
-from orbital_evolution.binary import Binary
 from orbital_evolution.transformations import phase_lag
-from orbital_evolution.star_interface import EvolvingStar
-from orbital_evolution.planet_interface import LockedPlanet
 
 from initial_secondary_angmom import IntialSecondaryAngmom
-# from initial_condition_solver import  InitialConditionSolver
 from nested_solver import InitialConditionSolver
 from create_objects import BinaryObjects
-
-wsun = 0.24795522138
-#wsun=1.0
 
 _logger=logging.getLogger()
 
@@ -75,13 +63,19 @@ class Evolution:
         # if 'logQ' in self.parameters['logQ']:self.convective_phase_lag=phase_lag(self.logQ)
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SecondaryAngmom())))
+        secondary_angmom=SecondaryAngmom()
+        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(secondary_angmom))
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
         primary=binary_system.create_star(self.primary_mass,dissipation=True)
         secondary=binary_system.create_star(self.secondary_mass,dissipation=True)
-        binary=binary_system.create_binary_system(primary,secondary,secondary_angmom=SecondaryAngmom())
+        binary=binary_system.create_binary_system(primary,
+                                                  secondary,
+                                                  initial_orbital_period=self.orbital_period,
+                                                  initial_eccentricity=self.eccentricity,
+                                                  secondary_angmom=secondary_angmom
+                                                  )
 
         if self.print_cfile==True:
             if self.breaks==True:
@@ -98,20 +92,18 @@ class Evolution:
                 eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt")
         else:
             binary.evolve(self.age,
-                        self.evolution_max_time_step,
-                        self.evolution_precision,
-                        None,
-                        timeout=3600)
+                          self.evolution_max_time_step,
+                          self.evolution_precision,
+                          None,
+                          timeout=3600)
 
 
-            
+
             final_state=binary.final_state()
 
             final_orbital_period=binary.orbital_period(final_state.semimajor)
             final_eccentricity=final_state.eccentricity
-            _logger.info('final values={!r}'.format((final_orbital_period,final_eccentricity)))
-            _logger.info('deltas={!r}'.format((final_orbital_period-2.54459418146,final_eccentricity-0.011290408824073055)))
-             
+            print('final_eccntricity {} \nfinal orbital period {} \nfinal age {}'.format(final_eccentricity,final_orbital_period,final_state.age))
 
             return binary
 

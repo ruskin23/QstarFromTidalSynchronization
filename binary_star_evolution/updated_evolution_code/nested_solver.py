@@ -1,99 +1,98 @@
 #!/usr/bin/env python3
 
-from cmath import isnan
 import time
 import logging
 import sys
+import scipy
+import numpy
+
 from pathlib import Path
 from directories import directories
-
-home_dir=str(Path.home())
-path=directories(home_dir)
-sys.path.append(path.poet_path+'/PythonPackage')
-sys.path.append(path.poet_path+'/scripts')
-
 
 from orbital_evolution.transformations import phase_lag
 from create_objects import BinaryObjects
 
-import scipy
-import numpy
+home_dir = str(Path.home())
+path = directories(home_dir)
+sys.path.append(path.poet_path+'/PythonPackage')
+sys.path.append(path.poet_path+'/scripts')
+
 
 _logger = logging.getLogger()
 
 class InitialConditionSolver:
     """Find initial orbital period and eccentricity which reproduce
-        current orbital period and eccentricity of a given system """
-
-
+    current orbital period and eccentricity of a given system """
 
     def check_if_no_solution(self):
 
-        P_guess=10+self.initial_guess[0]
+        P_guess = 10+self.initial_guess[0]
 
-        e_ulimit=0.7
+        e_ulimit = 0.7
 
         _logger.info('\nChecking if a solutions exists at high e={!r}'.format(e_ulimit))
-        
-        #FIND NON-NAN INITIAL VALUE
-        while P_guess<60:
+
+        # FIND NON-NAN INITIAL VALUE
+        while P_guess < 60:
             try:
-                _=self.initial_condition_errfunc((P_guess,e_ulimit))
-                if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
-                    _logger.info('\nSolver returned Nan for orbital period = {!r}. Increasing orbital period by 10.0'.format(P_guess))
+                _ = self.initial_condition_errfunc((P_guess,e_ulimit))
+                if numpy.logical_or(numpy.isnan(self.final_orbital_period),
+                                    numpy.isnan(self.final_eccentricity)):
+                    _logger.info('\nSolver returned Nan for orbital period = {!r}.'.format(P_guess))
+                    _logger.info('Increasing orbital period by 10.0')
                     P_guess+=10.0
                     continue
                 else:
                     _logger.info('\nFound non-Nan eccenctricity upper limit at e={!r}'.format(e_ulimit))
                     break
             except:
-                _logger.info('\nSolver crashed for eccentricity = {!r}. Decreasing eccentricity upper limit by 0.02'.format(e_ulimit))
+                _logger.warning('\nSolver crashed for eccentricity = {!r}.'.format(e_ulimit))
+                _logger.warning('Decreasing eccentricity upper limit by 0.02')
                 P_guess+=10.0
-                # e_ulimit-=0.02
                 continue
-            
-        
+
         _logger.info('\nSolving for orbital period at eccentricity upper limit')
-        
-        p_root=self.orbital_period_solver(e_ulimit,P_guess=P_guess)
-        
-        if numpy.isnan(p_root):return scipy.nan,scipy.nan
+
+        p_root = self.orbital_period_solver(e_ulimit, P_guess=P_guess)
+
+        if numpy.isnan(p_root):
+            return scipy.nan, scipy.nan
         else: 
-            _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Initial_eccentriciy={!r}'.format(self.final_eccentricity,e_ulimit))
-            return e_ulimit,self.delta_e
+            _logger.info('\nSolution Check completed with Final_Eccentricity={!r} at Initial_eccentriciy={!r}'.format(self.final_eccentricity, e_ulimit))
+            return e_ulimit, self.delta_e
 
 
     def initial_condition_errfunc(self,initial_conditions):
         """Error function which returns the difference between final values and intial values"""
 
-        initial_orbital_period=initial_conditions[0]
-        initial_eccentricity=initial_conditions[1]
+        initial_orbital_period = initial_conditions[0]
+        initial_eccentricity = initial_conditions[1]
 
-        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period,initial_eccentricity))
+        _logger.info('\nTrying Porb_initial = {!r} , e_initial = {!r}'.format(initial_orbital_period, initial_eccentricity))
 
-        if self.initial_guess is not None and self.function=='root':
-            if initial_orbital_period==self.initial_guess[0] and initial_eccentricity==self.initial_guess[1]:
-                _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
-                _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
-                _logger.info('Spin Period = %s',repr(self.spin))
+        if self.initial_guess is not None and self.function == 'root':
+            if initial_orbital_period == self.initial_guess[0] and initial_eccentricity == self.initial_guess[1]:
+                _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period, self.final_eccentricity))
+                _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p, self.delta_e))
+                _logger.info('Spin Period = {!r}}'.format(self.spin))
                 return numpy.array(self.err_intial_guess[0])
 
         if numpy.isnan(initial_orbital_period) or numpy.isnan(initial_eccentricity):
             _logger.warning('Solver using NaN as initial values.')
             raise ValueError('Solution cant be found as solver is trying NaN as initial values')
 
-        if initial_eccentricity>0.80  or initial_eccentricity<0 or initial_orbital_period<0:
+        if initial_eccentricity > 0.80  or initial_eccentricity < 0 or initial_orbital_period < 0:
             _logger.warning('Encoutnered invalid initial values, returning NaN')
             return scipy.nan
 
         if initial_conditions not in self.solver_cache:
-            binary_system=BinaryObjects(self.interpolator,self.parameters)
+            binary_system = BinaryObjects(self.interpolator, self.parameters)
 
-            binary=binary_system.create_binary_system(self.primary,
-                                                    self.secondary,
-                                                    initial_orbital_period=initial_orbital_period,
-                                                    initial_eccentricity=initial_eccentricity,
-                                                    secondary_angmom=self.secondary_angmom)
+            binary = binary_system.create_binary_system(self.primary,
+                                                        self.secondary,
+                                                        initial_orbital_period=initial_orbital_period,
+                                                        initial_eccentricity=initial_eccentricity,
+                                                        secondary_angmom=self.secondary_angmom)
 
             binary.evolve(
                 self.age,
@@ -106,41 +105,46 @@ class InitialConditionSolver:
             final_state=binary.final_state()
             if final_state.age != self.target_age:
                 _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr'.format(final_state.age))
-                assert(final_state.age==self.target_age)
+                assert(final_state.age == self.target_age)
 
             
             self.final_orbital_period=binary.orbital_period(final_state.semimajor)
             self.final_eccentricity=final_state.eccentricity
-            if numpy.logical_or(numpy.isnan(self.final_orbital_period),numpy.isnan(self.final_eccentricity)):
+            if numpy.logical_or(numpy.isnan(self.final_orbital_period),
+                                numpy.isnan(self.final_eccentricity)):
                 _logger.warning('Enountered NaN in final_orbital_period={!r} or final_eccentricity={!r}'.format(self.final_orbital_period,self.final_eccentricity))
                 _logger.warning('Binary was destroyed. Setting final orbital period as zero!')
-                self.final_orbital_period=0.0
+                self.final_orbital_period = 0.0
 
-            self.delta_p=self.final_orbital_period-self.target_orbital_period
-            self.delta_e=self.final_eccentricity-self.target_eccentricity
+            self.delta_p = self.final_orbital_period-self.target_orbital_period
+            self.delta_e = self.final_eccentricity-self.target_eccentricity
 
-            self.spin=(2*numpy.pi*binary.primary.envelope_inertia(final_state.age)/final_state.primary_envelope_angmom)
+            self.spin=(2
+                       * numpy.pi
+                       * binary.primary.envelope_inertia(final_state.age)
+                       / final_state.primary_envelope_angmom
+                       )
 
             binary.delete()
 
-            self.solver_cache[initial_conditions]={'final_orbital_period':self.final_orbital_period,
-                                                    'final_eccentricity':self.final_eccentricity,
-                                                    'delta_p':self.delta_p,
-                                                    'delta_e':self.delta_e,
-                                                    'spin':self.spin}
+            self.solver_cache[initial_conditions] = {'final_orbital_period' : self.final_orbital_period,
+                                                     'final_eccentricity' : self.final_eccentricity,
+                                                     'delta_p' : self.delta_p,
+                                                     'delta_e' : self.delta_e,
+                                                     'spin' : self.spin}
             
 
         else:
-            current_cache=self.solver_cache[initial_conditions]
-            self.final_orbital_period=current_cache['final_orbital_period']
-            self.final_eccentricity=current_cache['final_eccentricity']
-            self.delta_p=current_cache['delta_p']
-            self.delta_e=current_cache['delta_e']
-            self.spin=current_cache['spin']
+            current_cache = self.solver_cache[initial_conditions]
+            self.final_orbital_period = current_cache['final_orbital_period']
+            self.final_eccentricity = current_cache['final_eccentricity']
+            self.delta_p = current_cache['delta_p']
+            self.delta_e = current_cache['delta_e']
+            self.spin = current_cache['spin']
 
 
-        _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period,self.final_eccentricity))
-        _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p,self.delta_e))
+        _logger.info('final_orbital_period = {!r} , final_eccentricity = {!r}'.format(self.final_orbital_period, self.final_eccentricity))
+        _logger.info('delta_p = {!r} , delta_e = {!r}'.format(self.delta_p, self.delta_e))
         _logger.info('Spin Period = %s',repr(self.spin))
 
         return self.delta_p
@@ -150,12 +154,12 @@ class InitialConditionSolver:
 
 
     def __init__(self,
-                interpolator,
-                parameters,
-                evolution_max_time_step=1e-2,
-                evolution_precision=1e-5,
-                secondary_angmom=None,
-                initial_guess=None):
+                 interpolator,
+                 parameters,
+                 evolution_max_time_step=1e-2,
+                 evolution_precision=1e-5,
+                 secondary_angmom=None,
+                 initial_guess=None):
         """
         Args:
 
@@ -184,17 +188,16 @@ class InitialConditionSolver:
         self.evolution_max_time_step=evolution_max_time_step
         self.evolution_precision = evolution_precision
         self.secondary_angmom = secondary_angmom
-        self.initial_guess=initial_guess
+        self.initial_guess = initial_guess
 
-        self.final_orbital_period,self.final_eccentricity=scipy.nan,scipy.nan
-        self.delta_p,self.delta_e=scipy.nan,scipy.nan
-        self.spin=scipy.nan
+        self.final_orbital_period,self.final_eccentricity = scipy.nan,scipy.nan
+        self.delta_p,self.delta_e = scipy.nan,scipy.nan
+        self.spin = scipy.nan
 
-        self.solver_cache=dict()
-        
+        self.solver_cache = dict()
 
 
-    def calculate_good_initial_guess(self):
+    def _calculate_good_initial_guess(self):
 
         Pguess=self.target_orbital_period
         e=self.target_eccentricity
@@ -296,21 +299,23 @@ class InitialConditionSolver:
         _logger.info('\nUsing brentq method to solve between orbital periods a={!r} and b={!r}'.format(P_a,P_b))
 
         xtol,rtol=1e-4,1e-5
-        try:
-            p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
-            cached_ic_list=list(self.solver_cache.keys())
-            last_cached_ic=cached_ic_list[-1]
-            dp=self.solver_cache[last_cached_ic]['delta_p']
-            if dp>1e-1:
-                _logger.warning('Bad Solution Found. dp={!r} is not small enough'.format(dp))
-                p_root=scipy.nan
-        except Exception as e:
-            cached_ic_list=list(self.solver_cache.keys())
-            _logger.info('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
-            last_cached_ic=cached_ic_list[-1]
-            final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
-            _logger.info('\nLast successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
-            p_root=scipy.nan
+        p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
+
+        # try:
+        #     p_root=scipy.optimize.brentq(self.brent_orbital_period_func,P_a,P_b,args=(eccentricity,),xtol=xtol,rtol=rtol)
+        #     cached_ic_list=list(self.solver_cache.keys())
+        #     last_cached_ic=cached_ic_list[-1]
+        #     dp=self.solver_cache[last_cached_ic]['delta_p']
+        #     if dp>1e-1:
+        #         _logger.warning('Bad Solution Found. dp={!r} is not small enough'.format(dp))
+        #         p_root=scipy.nan
+        # except Exception as e:
+        #     _logger.warning('\nOrbital Period Solver Crashed with Exception={!r} while using brentq method while finding solution'.format(e))
+        #     cached_ic_list=list(self.solver_cache.keys())
+        #     last_cached_ic=cached_ic_list[-1]
+        #     final_e_last=self.solver_cache[last_cached_ic]['final_eccentricity']
+        #     _logger.info('\nLast successful evolution gave final_eccentricity={!r} for initial_eccentricity={!r}'.format(final_e_last,last_cached_ic[1]))
+        #     p_root=scipy.nan
         
         return p_root
 
@@ -500,7 +505,7 @@ class InitialConditionSolver:
 
         _logger.info('\nSolving for p and e using function = {} and method {}'.format(self.function,self.method))
 
-        self.calculate_good_initial_guess()
+        self._calculate_good_initial_guess()
         
         t=time.time()
         spin=self.nested_solver()
