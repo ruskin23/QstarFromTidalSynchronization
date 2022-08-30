@@ -27,7 +27,7 @@ sys.path.append(path.binary_directory)
 from stellar_evolution.library_interface import library
 from create_objects import BinaryObjects
 from prior_transform_class import prior_transform
-from initial_condition_solver import InitialConditionSolver
+from nested_solver import InitialConditionSolver
 from initial_secondary_angmom import IntialSecondaryAngmom
 
 from stellar_evolution.manager import StellarEvolutionManager
