@@ -202,7 +202,7 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     for _quantity in ['primary','secondary']:
         age_max=interpolator('radius', 
                              parameter_set[_quantity+'_mass'], 
-                             parameter_set[_quantity+'_feh']
+                             parameter_set['feh']
                              ).max_age
         if parameter_set['age']>age_max:
             _logger.info('Sampled age is greater than max age allowed from interpolator. Setting sampled_age=age_max-1e-4')
