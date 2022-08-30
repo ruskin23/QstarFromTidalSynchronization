@@ -121,7 +121,7 @@ class Evolution:
 
         try:
             self.convective_phase_lag=phase_lag(self.logQ)
-            _logger,info('Convective Phase lag = ',self.convective_phase_lag)
+            _logger.info('Convective Phase lag = ',self.convective_phase_lag)
         except:
             self.parameter_logQ=True
 

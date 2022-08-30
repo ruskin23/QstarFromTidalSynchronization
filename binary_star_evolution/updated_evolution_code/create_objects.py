@@ -119,6 +119,3 @@ class BinaryObjects():
             setattr(self,item,value)
         if 'logQ' in parameters: self.convective_phase_lag=phase_lag(self.logQ)
         else: self.convective_phase_lag=self.phase_lag_max
-
-        for key,values in parameters.items():
-            print('{} {}'.format(repr(key),repr(values)))
