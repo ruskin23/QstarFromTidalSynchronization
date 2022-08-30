@@ -73,10 +73,12 @@ class sampler:
 
     def __init__(self,
                 system_number,
-                uniform_variables):
+                uniform_variables,
+                interpolator):
 
         self.system_number=system_number
         self.uniform_variable=uniform_variables
+        self.interpolator=interpolator
 
         self.params=dict()
 
@@ -193,7 +195,7 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
     _logger.info('Begin Conversion using %s',repr(unit_cube_values))
 
-    sampled_params=sampler(system_number,unit_cube_values)
+    sampled_params=sampler(system_number,unit_cube_values,interpolator)
     parameter_set,alpha,omegaref=sampled_params()
 
     _logger.info('Parameters: %s',repr(parameter_set))
