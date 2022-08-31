@@ -97,7 +97,7 @@ class InitialConditionSolver:
 
             time_steps=[1/10**k for k in [2,3,4]]
             for dt in time_steps:
-                _logger.info('\nCalculating evolution using a time step {!r}'.format(dt))
+                _logger.info('Calculating evolution using a time step {!r}'.format(dt))
                 binary.evolve(
                     self.age,
                     dt,
@@ -106,10 +106,10 @@ class InitialConditionSolver:
                     timeout=3600
                 )
                 final_state=binary.final_state()
-                _logger.info('\nEvolution reached till Age = {!r} Gyr. Target Age = {!r}'.format(final_state.age,self.target_age))
                 if final_state.age == self.target_age:break
+                else:_logger.info('Evolution did not reach target age. Decreasing time step')
             if final_state.age!=self.target_age:
-                _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr.'.format(final_state.age))
+                _logger.warning('\nEvolution did not reach target age, crashed at age = {!r} Gyr.'.format(final_state.age))
                 assert(final_state.age == self.target_age)
 
             
