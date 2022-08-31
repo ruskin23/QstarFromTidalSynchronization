@@ -184,7 +184,9 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     sampled_params=sampler(system_number,unit_cube_values)
     parameter_set,alpha,omegaref=sampled_params()
 
-    _logger.info('Parameters: %s',repr(parameter_set))
+    for key,value in parameter_set.items():
+        _logger.info('parameters[{}]={}'.format(key,value))
+
 
     if parameter_set['feh'] < -1.014 or parameter_set['feh'] > 0.53:
         _logger.warning('feh value = %s is out of POET range (-1.014,0.53)',repr(parameter_set['feh']))
@@ -310,63 +312,3 @@ if __name__ == '__main__':
         sampler_emcee.run_mcmc(initial_state,nsteps=1000,progress=False)
 
 
-
-
-
-
-#run on ganymede
-#run slurm script on debug node
-#print fraction of time masses are out of bounds using prior corner plots
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # get_params=sampler(system_number,uniform_variables)
-        # parameters=get_params()
-
-        # if numpy.logical_or(parameters['feh']<-1.014,
-        #                     parameters['feh']>0.537):
-        #                     continue
-        
-        # if numpy.logical_or(numpy.logical_or(parameters['primary_mass']<0.4,
-        #                                      parameters['primary_mass']>1.2),
-        #                     numpy.logical_or(parameters['secondary_mass']<0.4,
-        #                                     parameters['secondary_mass']>1.2)
-        #                     ):
-        #                     continue
-
-        # for key,values in parameters.items():
-        #     print(f'{key}\t{values}\n')
-
-        # stars=BinaryObjects(interpolator,parameters)
-        # primary=stars.create_star(parameters['primary_mass'])
-        # secondary=stars.create_star(parameters['secondary_mass'])
-        
-        # angmom=IntialSecondaryAngmom(interpolator,parameters)
-
-
-        # initial_conditions=InitialConditionSolver(interpolator,parameters,secondary_angmom=angmom())
-        # try:
-        #     results=initial_conditions(primary,secondary)
-        # except:
-        #     continue
-
-        # if numpy.isnan(results['spin']):
-        #     print('\n')
-        #     break
-        # else: continue
