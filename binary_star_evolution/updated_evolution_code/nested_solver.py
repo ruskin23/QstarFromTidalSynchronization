@@ -3,6 +3,7 @@
 import time
 import logging
 import sys
+from typing import final
 import scipy
 import numpy
 
@@ -94,17 +95,21 @@ class InitialConditionSolver:
                                                         initial_eccentricity=initial_eccentricity,
                                                         secondary_angmom=self.secondary_angmom)
 
-            binary.evolve(
-                self.age,
-                self.evolution_max_time_step,
-                self.evolution_precision,
-                None,
-                timeout=3600
-            )
-
-            final_state=binary.final_state()
-            if final_state.age != self.target_age:
-                _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr'.format(final_state.age))
+            time_steps=[1/10**k for k in [2,3,4]]
+            for dt in time_steps:
+                _logger.info('\nCalculating evolution using a time step {!r}'.format(dt))
+                binary.evolve(
+                    self.age,
+                    dt,
+                    self.evolution_precision,
+                    None,
+                    timeout=3600
+                )
+                final_state=binary.final_state()
+                _logger.info('\nEvolution reached till Age = {!r} Gyr. Target Age = {!r}'.format(final_state.age,self.target_age))
+                if final_state.age == self.target_age:break
+            if final_state.age!=self.target_age:
+                _logger.warning('Evolution did not reach target age, crashed at age = {!r} Gyr.'.format(final_state.age))
                 assert(final_state.age == self.target_age)
 
             

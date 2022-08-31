@@ -82,6 +82,17 @@ def create_binary_system(primary,
     """Create a binary system to evolve from the given objects."""
 
 
+    if isinstance(secondary, LockedPlanet):
+        spin_angmom = numpy.array([0.0])
+        inclination = None
+        periapsis = None
+    else:
+        secondary.select_interpolation_region(disk_dissipation_age)
+        spin_angmom = secondary_angmom
+        print('secondary angmom {}'.format(secondary_angmom))
+        inclination = numpy.array([0.0])
+        periapsis = numpy.array([0.0])
+
     primary.select_interpolation_region(primary.core_formation_age())
 
     print('\nCreating binary with:')
@@ -108,17 +119,6 @@ def create_binary_system(primary,
                         inclination=None,
                         periapsis=None,
                         evolution_mode='LOCKED_SURFACE_SPIN')
-
-    if isinstance(secondary, LockedPlanet):
-        spin_angmom = numpy.array([0.0])
-        inclination = None
-        periapsis = None
-    else:
-        secondary.select_interpolation_region(disk_dissipation_age)
-        spin_angmom = secondary_angmom
-        print('secondary angmom {}'.format(secondary_angmom))
-        inclination = numpy.array([0.0])
-        periapsis = numpy.array([0.0])
 
     print('\nconfiguring secondary with:')
     print('\nage = {}'.format(repr(disk_dissipation_age)))
@@ -258,29 +258,30 @@ if __name__=='__main__':
     
     parameters=dict()
 
+
     parameters['disk_dissipation_age']=5e-3
     parameters['wind_saturation_frequency']=2.54
     parameters['diff_rot_coupling_timescale']=5e-3
     parameters['wind_strength']=0.17
-    parameters['evolution_max_time_step']=1e-2
-    parameters['evolution_precision']=1e-5
+    parameters['evolution_max_time_step']=1e-3
+    parameters['evolution_precision']=1e-6
     parameters['inclination']=0.0
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
 
-    parameters['primary_mass']=0.9972238194452616
-    parameters['secondary_mass']=0.7067481573996018
-    parameters['feh']= 0.23453536043318451
-    parameters['age']=7.627475419905787
-    parameters['Wdisk']=1.223357025376092
+    parameters['primary_mass']= 1.1922266117013909
+    parameters['secondary_mass']=1.1422059207253767
+    parameters['feh']= -0.13998517587686793
+    parameters['age']= 1.0813742164483169
+    parameters['Wdisk']= 2.8172517168671987
 
-    parameters['orbital_period']=9.288559077956364
-    parameters['eccentricity']=0.2111204612539938 
+    parameters['orbital_period']= 4.044934779104382
+    parameters['eccentricity']=0.7
 
-    parameters['phase_lag_max']= 6.500842612574014e-09
-    parameters['tidal_frequency_breaks']=numpy.array([9.42144622])
-    parameters['tidal_frequency_powers']=numpy.array([ 0.0, -0.88014652])
+    parameters['phase_lag_max']=  5.0425039180994065e-08
+    parameters['tidal_frequency_breaks']=numpy.array([5.08889636])
+    parameters['tidal_frequency_powers']=numpy.array([ 0.0, -2.17268687])
   
 
     print(parameters)
