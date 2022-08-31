@@ -35,13 +35,12 @@ class BinaryObjects():
 
         if dissipation:
             star.set_dissipation(zone_index=0,
-                                tidal_frequency_breaks=self.tidal_frequency_breaks,
-                                spin_frequency_breaks=self.spin_frequency_breaks,
-                                tidal_frequency_powers=self.tidal_frequency_powers,
-                                spin_frequency_powers=self.spin_frequency_powers,
-                                reference_phase_lag=self.convective_phase_lag)
-
-
+                                 tidal_frequency_breaks=self.tidal_frequency_breaks,
+                                 spin_frequency_breaks=self.spin_frequency_breaks,
+                                 tidal_frequency_powers=self.tidal_frequency_powers,
+                                 spin_frequency_powers=self.spin_frequency_powers,
+                                 reference_phase_lag=self.convective_phase_lag)
+            
         return star
 
 
@@ -53,23 +52,21 @@ class BinaryObjects():
                              secondary_angmom=None):
         """Create a binary system to evolve from the given objects."""
 
+
         if initial_orbital_period is None:initial_orbital_period=self.orbital_period
         if initial_eccentricity is None:initial_eccentricity=self.eccentricity
 
-
         if isinstance(secondary, LockedPlanet):
-            spin_angmom=numpy.array([0.0])
-            inclination=None
-            periapsis=None
+            spin_angmom = numpy.array([0.0])
+            inclination = None
+            periapsis = None
         else:
             secondary.select_interpolation_region(self.disk_dissipation_age)
-            spin_angmom=secondary_angmom
-            inclination=numpy.array([0.0])
-            periapsis=numpy.array([0.0])
-
+            spin_angmom = secondary_angmom
+            inclination = numpy.array([0.0])
+            periapsis = numpy.array([0.0])
 
         primary.select_interpolation_region(primary.core_formation_age())
-
 
         binary = Binary(primary=primary,
                         secondary=secondary,
@@ -80,7 +77,6 @@ class BinaryObjects():
                         disk_dissipation_age=self.disk_dissipation_age,
                         secondary_formation_age=self.disk_dissipation_age)
 
-
         binary.configure(age=primary.core_formation_age(),
                          semimajor=float('nan'),
                          eccentricity=float('nan'),
@@ -89,19 +85,17 @@ class BinaryObjects():
                          periapsis=None,
                          evolution_mode='LOCKED_SURFACE_SPIN')
 
-
         secondary.configure(age=self.disk_dissipation_age,
                             companion_mass=primary.mass,
                             semimajor=binary.semimajor(initial_orbital_period),
                             eccentricity=initial_eccentricity,
-                            spin_angmom=spin_angmom,
+                            spin_angmom=(spin_angmom),
                             inclination=inclination,
                             periapsis=periapsis,
                             locked_surface=False,
                             zero_outer_inclination=True,
                             zero_outer_periapsis=True
                             )
-
 
         primary.detect_stellar_wind_saturation()
         if isinstance(secondary, EvolvingStar):secondary.detect_stellar_wind_saturation()

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from operator import ge
 import time
 import logging
 import sys
@@ -11,6 +12,7 @@ from directories import directories
 
 from orbital_evolution.transformations import phase_lag
 from create_objects import BinaryObjects
+from test_evolution import evolve_binary
 
 home_dir = str(Path.home())
 path = directories(home_dir)
@@ -47,7 +49,7 @@ class InitialConditionSolver:
                     break
             except:
                 _logger.warning('\nSolver crashed for eccentricity = {!r}.'.format(e_ulimit))
-                _logger.warning('Decreasing eccentricity upper limit by 0.02')
+                _logger.warning('Increasing orbital period by 10.0')
                 P_guess+=10.0
                 continue
 
@@ -156,8 +158,8 @@ class InitialConditionSolver:
     def __init__(self,
                  interpolator,
                  parameters,
-                 evolution_max_time_step=1e-2,
-                 evolution_precision=1e-5,
+                 evolution_max_time_step=1e-3,
+                 evolution_precision=1e-6,
                  secondary_angmom=None,
                  initial_guess=None):
         """
@@ -204,18 +206,18 @@ class InitialConditionSolver:
         n=0
         while Pguess<60:
             n+=1
-            try:
-                _=self.initial_condition_errfunc((Pguess,e))
-                if numpy.isnan(self.delta_p) or numpy.isnan(self.delta_e):
-                    Pguess+=1.0
-                    continue
-                else:
-                    self.initial_guess=[Pguess,e]
-                    self.err_intial_guess=[self.delta_p,self.delta_e]
-                    _logger.info('\nFound non-NaN intial guess in {!r} tries. dp={!r},de={!r}'.format(n,self.delta_p,self.delta_e))
-                    break
-            except:
+            # try:
+            _=self.initial_condition_errfunc((Pguess,e))
+            if numpy.isnan(self.delta_p) or numpy.isnan(self.delta_e):
                 Pguess+=1.0
+                continue
+            else:
+                self.initial_guess=[Pguess,e]
+                self.err_intial_guess=[self.delta_p,self.delta_e]
+                _logger.info('\nFound non-NaN intial guess in {!r} tries. dp={!r},de={!r}'.format(n,self.delta_p,self.delta_e))
+                break
+        # except:
+        #         Pguess+=1.0
         
         return Pguess<60
 

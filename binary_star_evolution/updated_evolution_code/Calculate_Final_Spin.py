@@ -86,12 +86,12 @@ def plot_evolution(evolved_binary):
     wcore_primary = evolution.primary_core_angmom / evolved_binary.primary.core_inertia(evolution.age)
     orbitalfrequncy = evolved_binary.orbital_frequency(evolution.semimajor)
 
-    pyplot.semilogx(evolution.age, wenv_primary, color="b", label='Primary Star Envelope')
-    pyplot.semilogx(evolution.age, wenv_secondary, color="r", label='Secondary Star Envelope')
+    pyplot.semilogx(evolution.age, 2*numpy.pi/wenv_primary, color="b", label='Primary Star Envelope')
+    pyplot.semilogx(evolution.age, 2*numpy.pi/wenv_secondary, color="r", label='Secondary Star Envelope')
     # pyplot.semilogx(evolution.age, wcore_primary, color="b", linestyle='--', label='Primary Star Core')
     # pyplot.semilogx(evolution.age, wcore_secondary, color="r",linestyle='--', label='Secondary Star Core')
 
-    pyplot.semilogx(evolution.age, orbitalfrequncy, "-k", label='Orbital Frequency')
+    pyplot.semilogx(evolution.age, 2*numpy.pi/orbitalfrequncy, "-k", label='Orbital Frequency')
     pyplot.legend(loc='upper right')
     pyplot.ylabel('Spin Freuqncy')
     pyplot.xlabel('age')
@@ -163,78 +163,42 @@ if __name__=='__main__':
     parameters['method']=args.m
 
     parameters['dissipation']=True
-    parameters['disk_dissipation_age']=5e-3
     parameters['wind']=True
+    parameters['disk_dissipation_age']=5e-3
     parameters['wind_saturation_frequency']=2.54
     parameters['diff_rot_coupling_timescale']=5e-3
     parameters['wind_strength']=0.17
-    parameters['print_cfile']=False
-    parameters['evolution_max_time_step']=1e-2
-    parameters['evolution_precision']=1e-5
+    parameters['evolution_max_time_step']=1e-3
+    parameters['evolution_precision']=1e-6
     parameters['inclination']=0.0
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
 
+    parameters['primary_mass']=1.1065461567186323
+    parameters['secondary_mass']=1.0549958257973389
+    parameters['feh']=-0.2247087177757287
+    parameters['age']=2.5789096627923342
+    parameters['Wdisk']=2.9860569168685247
 
-    if args.logfile is not None:
-        _simple_quantities=['primary_mass',
-                    'secondary_mass',
-                    'feh',
-                    'age',
-                    'Wdisk',
-                    'orbital_period',
-                    'eccentricity',
-                    'phase_lag_max']
+    parameters['orbital_period']=14.14387936268
+    parameters['eccentricity']=0.7
 
-
-        with open('logfile/files/'+args.logfile,'r') as f:
-            for i,lines in enumerate(f):
-
-                if i>6 and i<42 and i%2==1:
-
-                    x=lines.split()
-
-                    if x[0] in _simple_quantities:
-                        parameters[x[0]]=float(x[1])
-
-                    if x[0]=='tidal_frequency_breaks':
-                        x=lines.split()
-                        if len(x)==2:
-                            parameters[x[0]]=numpy.atleast_1d(float(x[1][1:-1]))
-                        elif len(x)==3:
-                            a=float(x[1][1:])
-                            b=float(x[-1][:-1])
-                            parameters[x[0]]=numpy.array([a,b])
-                        elif len(x)==4:
-                            a=float(x[1][1:])
-                            b=float(x[-2])
-                            parameters[x[0]]=numpy.array([a,b])
-
-
-                    if x[0]=='tidal_frequency_powers':
-                        if len(x)==4:
-                            a=float(x[2])
-                            b=float(x[3][0:-1])
-                            value=numpy.array([a,b])
-                        elif len(x)==5:
-                            a=float(x[1][1:])
-                            b=float(x[2])
-                            c=float(x[3])
-                            value=numpy.array([a,b,c])
-                        parameters[x[0]]=numpy.array(value)
+    parameters['phase_lag_max']=1.6271282835847277e-06
+    parameters['tidal_frequency_breaks']=numpy.array([5.4578476])
+    parameters['tidal_frequency_powers']=numpy.array([ 0.0,-2.41252809])
 
 
     age_max_m1=interpolator('radius', parameters['primary_mass'], parameters['feh']).max_age
     print('max_age_allowed {} target_age {}'.format(age_max_m1,parameters['age']))
 
-    parameters['orbital_period'] = 12.14387936268
+    parameters['orbital_period'] = 14.14387936268
     parameters['eccentricity'] = 0.7
 
     print(parameters)
 
     evolution=Evolution(interpolator,parameters)
-    evolved_binary=evolution.evolve_binary()
-    plot_evolution(evolved_binary)
-    # spin =  evolution.calculate_intial_conditions()
-    # print('Spin Period = ',spin)
+    # evolved_binary=evolution.evolve_binary()
+    # plot_evolution(evolved_binary)
+    spin =  evolution.calculate_intial_conditions()
+    print('Spin Period = ',spin)

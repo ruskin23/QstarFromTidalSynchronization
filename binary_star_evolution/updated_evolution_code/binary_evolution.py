@@ -22,8 +22,8 @@ class Evolution:
     def calculate_intial_conditions(self):
 
         SecondaryAngmom=IntialSecondaryAngmom(self.interpolator,self.parameters)
-        SA=SecondaryAngmom()
-        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(SA)))
+        secondary_angmom=SecondaryAngmom()
+        _logger.info('Seconary Initial Angular Momentum = {!r}'.format(repr(secondary_angmom)))
 
         binary_system=BinaryObjects(self.interpolator,self.parameters)
 
@@ -33,7 +33,7 @@ class Evolution:
 
         FindIC=InitialConditionSolver(self.interpolator,
                                       self.parameters,
-                                      secondary_angmom=SA)
+                                      secondary_angmom=secondary_angmom)
 
         spin = FindIC(primary,secondary)
 
@@ -77,35 +77,21 @@ class Evolution:
                                                   secondary_angmom=secondary_angmom
                                                   )
 
-        if self.print_cfile==True:
-            if self.breaks==True:
-                create_c_code='debug/cfile_'+self.system+'_withbreaks.cpp'
-            else:
-                create_c_code='debug/cfile_'+self.system+'.cpp'
-
-            binary.evolve(
-                self.age,
-                self.evolution_max_time_step,
-                self.evolution_precision,
-                None,
-                create_c_code=create_c_code,
-                eccentricity_expansion_fname=b"eccentricity_expansion_coef.txt")
-        else:
-            binary.evolve(self.age,
-                          self.evolution_max_time_step,
-                          self.evolution_precision,
-                          None,
-                          timeout=3600)
+        binary.evolve(self.age,
+                      self.evolution_max_time_step,
+                      self.evolution_precision,
+                      None,
+                      timeout=3600)
 
 
 
-            final_state=binary.final_state()
+        final_state=binary.final_state()
 
-            final_orbital_period=binary.orbital_period(final_state.semimajor)
-            final_eccentricity=final_state.eccentricity
-            print('final_eccntricity {} \nfinal orbital period {} \nfinal age {}'.format(final_eccentricity,final_orbital_period,final_state.age))
+        final_orbital_period=binary.orbital_period(final_state.semimajor)
+        final_eccentricity=final_state.eccentricity
+        print('final_eccntricity {} \nfinal orbital period {} \nfinal age {}'.format(final_eccentricity,final_orbital_period,final_state.age))
 
-            return binary
+        return binary
 
         
 
