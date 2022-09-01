@@ -3,7 +3,6 @@
 import time
 import logging
 import sys
-from typing import final
 import scipy
 import numpy
 
