@@ -3,7 +3,6 @@
 import time
 import logging
 import sys
-from typing import final
 import scipy
 import numpy
 
@@ -87,22 +86,33 @@ class InitialConditionSolver:
             return scipy.nan
 
         if initial_conditions not in self.solver_cache:
-            binary_system = BinaryObjects(self.interpolator, self.parameters)
+ 
 
-            binary = binary_system.create_binary_system(self.primary,
-                                                        self.secondary,
-                                                        initial_orbital_period=initial_orbital_period,
-                                                        initial_eccentricity=initial_eccentricity,
-                                                        secondary_angmom=self.secondary_angmom)
+            for dt in [1/10**k for k in [2,3,4]]:
 
-            binary.evolve(
-                self.age,
-                self.evolution_max_time_step,
-                self.evolution_precision,
-                None,
-                timeout=3600
-            )
-            final_state=binary.final_state()
+                _logger.info('Calculating Evolution with time step  {!r}'.format(dt))
+
+                binary_system = BinaryObjects(self.interpolator, self.parameters)
+
+                binary = binary_system.create_binary_system(self.primary,
+                                                            self.secondary,
+                                                            initial_orbital_period=initial_orbital_period,
+                                                            initial_eccentricity=initial_eccentricity,
+                                                            secondary_angmom=self.secondary_angmom)
+
+                binary.evolve(
+                    self.age,
+                    dt,
+                    self.evolution_precision,
+                    None,
+                    timeout=3600)
+
+                final_state=binary.final_state()
+                if final_state.age==self.target_age:break
+                else:
+                    _logger.warning('Evolution did not reach final age {!r}. Crashed at age {!r}'.format(self.target_age,final_state.age))
+                    _logger.warning('Reducing time step by {!r}'.format(dt/10))
+
             if final_state.age!=self.target_age:
                 _logger.warning('\nEvolution did not reach target age, crashed at age = {!r} Gyr.'.format(final_state.age))
                 assert(final_state.age == self.target_age)

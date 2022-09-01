@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-import pickle
 import sys
 import os
 from pathlib import Path
-from tkinter.messagebox import NO
 from directories import directories
 
 home_dir=str(Path.home())
@@ -126,10 +124,6 @@ if __name__=='__main__':
                         dest='system',
                         default=None,
                         help='pick system from a file')
-    parser.add_argument('-l',
-                        dest='logfile',
-                        default=None,
-                        help='select logfile to get parameters')
 
     parser.add_argument('-f')
     parser.add_argument('-m')
@@ -175,25 +169,21 @@ if __name__=='__main__':
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
 
-    parameters['primary_mass']=1.1065461567186323
-    parameters['secondary_mass']=1.0549958257973389
-    parameters['feh']=-0.2247087177757287
-    parameters['age']=2.5789096627923342
-    parameters['Wdisk']=2.9860569168685247
+    parameters["primary_mass"]=0.9241915970492054
+    parameters["secondary_mass"]=0.8593663624245791
+    parameters["feh"]=0.46458608151644215
+    parameters["age"]=6.289791713929844
+    parameters["Wdisk"]=1.1954168402393623
+    parameters["phase_lag_max"]=6.251364607650211e-09
+    parameters["tidal_frequency_breaks"]=numpy.array([0.12566371,7.02469755])
+    parameters["tidal_frequency_powers"]=numpy.array([0.0,1.51411758, 0.0])
 
-    parameters['orbital_period']=14.14387936268
-    parameters['eccentricity']=0.7
-
-    parameters['phase_lag_max']=1.6271282835847277e-06
-    parameters['tidal_frequency_breaks']=numpy.array([5.4578476])
-    parameters['tidal_frequency_powers']=numpy.array([ 0.0,-2.41252809])
+    parameters['orbital_period']= 11.653641112734459
+    parameters['eccentricity']= 0.4406876762698404
 
 
     age_max_m1=interpolator('radius', parameters['primary_mass'], parameters['feh']).max_age
     print('max_age_allowed {} target_age {}'.format(age_max_m1,parameters['age']))
-
-    parameters['orbital_period'] = 14.14387936268
-    parameters['eccentricity'] = 0.7
 
     print(parameters)
 

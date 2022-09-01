@@ -233,13 +233,19 @@ def evolve_binary(interp,
 
     binary = get_binary_system(interpolator, parameters, secondary_angmom=secondary_angmom)
 
-    binary.evolve(parameters.age,
-                  parameters.evolution_max_time_step,
-                  parameters.evolution_precision,
-                  None,
-                  timeout=3600)
+    for dt in [1/10**k for k in [2,3,4]]:
+        print('\nStarting evolution with dt {!r}'.format(dt))
+        binary = get_binary_system(interpolator, parameters, secondary_angmom=secondary_angmom)
+        binary.evolve(parameters.age,
+                    dt,
+                    parameters.evolution_precision,
+                    None,
+                    timeout=3600)
 
-    final_state=binary.final_state()
+        final_state=binary.final_state()
+        print('Reached age {!r}'.format(final_state.age))
+        if final_state.age==parameters.age:break
+        else:print('Evolution did not reach required age. Reducing by 1e-1')
 
     final_orbital_period=binary.orbital_period(final_state.semimajor)
     final_eccentricity=final_state.eccentricity
