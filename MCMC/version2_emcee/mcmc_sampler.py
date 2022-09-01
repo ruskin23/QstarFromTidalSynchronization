@@ -184,8 +184,18 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
     sampled_params=sampler(system_number,unit_cube_values)
     parameter_set,alpha,omegaref=sampled_params()
 
-    for key,value in parameter_set.items():
-        _logger.info('parameters[{}]={}'.format(key,value))
+    _quantities=['primary_mass',
+                'secondary_mass',
+                'feh',
+                'age',
+                'Wdisk'
+                'phase_lag_max',
+                'tidal_frequency_breaks',
+                'tidal_frequency_powers']
+
+    _logger.info('\nFor debugging')
+    for key in _quantities:
+        _logger.info('parameters["{}"]={}'.format(key,parameter_set[key]))
 
 
     if parameter_set['feh'] < -1.014 or parameter_set['feh'] > 0.53:
