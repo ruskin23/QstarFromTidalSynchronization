@@ -269,20 +269,18 @@ if __name__=='__main__':
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
+    parameters['Wdisk']=3.198953282185807
+    parameters['primary_mass']=0.8220187083597497
+    parameters['secondary_mass']=0.5384657839157082
+    parameters['feh']=-0.5054652098816972
+    parameters['age']=10.957202490925933
 
-    parameters['primary_mass']= 1.1922266117013909
-    parameters['secondary_mass']=1.1422059207253767
-    parameters['feh']= -0.13998517587686793
-    parameters['age']= 1.0813742164483169
-    parameters['Wdisk']= 2.8172517168671987
+    parameters['phase_lag_max']=2.034701463188306e-07
+    parameters['tidal_frequency_breaks']=numpy.array([0.12566371,0.6512592])
+    parameters['tidal_frequency_powers']=numpy.array([0.0,1.18840619, 0.0])
 
-    parameters['orbital_period']= 4.044934779104382
+    parameters['orbital_period']=15.233962642170873
     parameters['eccentricity']=0.7
-
-    parameters['phase_lag_max']=  5.0425039180994065e-08
-    parameters['tidal_frequency_breaks']=numpy.array([5.08889636])
-    parameters['tidal_frequency_powers']=numpy.array([ 0.0, -2.17268687])
-  
 
     print(parameters)
     parameters=Struct(**parameters)
