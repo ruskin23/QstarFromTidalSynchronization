@@ -188,7 +188,7 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
                 'secondary_mass',
                 'feh',
                 'age',
-                'Wdisk'
+                'Wdisk',
                 'phase_lag_max',
                 'tidal_frequency_breaks',
                 'tidal_frequency_powers']
