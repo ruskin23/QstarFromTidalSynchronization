@@ -114,7 +114,7 @@ class InitialConditionSolver:
                     _logger.warning('Reducing time step by {!r}'.format(dt/10))
 
             if final_state.age!=self.target_age:
-                _logger.warning('\nEvolution did not reach target age, crashed at age = {!r} Gyr.'.format(final_state.age))
+                _logger.warning('\nEvolution crashed at age = {!r} Gyr.'.format(final_state.age))
                 assert(final_state.age == self.target_age)
 
             
