@@ -263,28 +263,27 @@ if __name__=='__main__':
     parameters['wind_saturation_frequency']=2.54
     parameters['diff_rot_coupling_timescale']=5e-3
     parameters['wind_strength']=0.17
-    parameters['evolution_max_time_step']=1e-3
+    parameters['evolution_max_time_step']=1e-2
     parameters['evolution_precision']=1e-6
     parameters['inclination']=0.0
     parameters['spin_frequency_breaks']=None
     parameters['spin_frequency_powers']=numpy.array([0.0])
 
-    parameters['Wdisk']=3.198953282185807
-    parameters['primary_mass']=0.8220187083597497
-    parameters['secondary_mass']=0.5384657839157082
-    parameters['feh']=-0.5054652098816972
-    parameters['age']=10.957202490925933
+    parameters["primary_mass"]=0.9241915970492054
+    parameters["secondary_mass"]=0.8593663624245791
+    parameters["feh"]=0.46458608151644215
+    parameters["age"]=6.289791713929844
+    parameters["Wdisk"]=1.1954168402393623
+    parameters["phase_lag_max"]=6.251364607650211e-09
+    parameters["tidal_frequency_breaks"]=numpy.array([0.12566371,7.02469755])
+    parameters["tidal_frequency_powers"]=numpy.array([0.0,1.51411758, 0.0])
 
-    parameters['phase_lag_max']=2.034701463188306e-07
-    parameters['tidal_frequency_breaks']=numpy.array([0.12566371,0.6512592])
-    parameters['tidal_frequency_powers']=numpy.array([0.0,1.18840619, 0.0])
-
-    parameters['orbital_period']=15.233962642170873
-    parameters['eccentricity']=0.7
+    parameters['orbital_period']= 11.653641112734459
+    parameters['eccentricity']= 0.4406876762698404
 
     print(parameters)
     parameters=Struct(**parameters)
-    
+
     serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
