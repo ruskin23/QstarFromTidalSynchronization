@@ -249,8 +249,8 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
              'secondary_mass',
              'feh',
              'age',
-             'Wdisk',
              'eccentricity',
+             'Wdisk',
              'phase_lag_max']
     parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref,spin)
 
@@ -294,21 +294,23 @@ if __name__ == '__main__':
                 break
 
     #Initialising the state from 8-parameter set
-    h5_filename = path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5'
+    h5_filename = path.scratch_directory+'/sampling_output/h5_files/8Dfiles/system_'+system_number+'.h5'
     reader = emcee.backends.HDFBackend(h5_filename, read_only=True)
     last_state = reader.get_last_sample().coords
     wdisk_initial_state = numpy.random.rand(64,1)
     initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
+    _logger.info('\nInitial State generated: ')
+    _logger.info(initial_state)
 
     backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
-    parameters=['m_sum','mass_ratio', 'metallicity','age','Wdisk','eccentricity','phase_lag_max','alpha','break_period','spin']
+    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period','spin']
     blobs_dtype = [(name, float) for name in parameters]
     blobs_dtype = numpy.dtype(blobs_dtype)
 
     nwalkers = 64
     ndim = 9
-    
+
     with Pool(
             config.num_parallel_processes,
             initializer=setup_process,
