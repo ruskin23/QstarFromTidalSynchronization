@@ -139,7 +139,13 @@ class sampler:
         self.params['spin_frequency_breaks']=None
         self.params['spin_frequency_powers']=numpy.array([0.0])
 
-        self.params['Wdisk'] = numpy.random.uniform(2*numpy.pi/14,2*numpy.pi/1.4)
+        self.params['Wdisk'] = 2*numpy.pi * [
+                                             (1.0/14.0 - 1.0/1.4) 
+                                             *
+                                             self.uniform_variable[8] 
+                                             + 
+                                             1.0/14.0
+                                            ]
 
         return alpha,omegaref
 
@@ -243,9 +249,10 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
              'secondary_mass',
              'feh',
              'age',
+             'Wdisk',
              'eccentricity',
              'phase_lag_max']
-    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref)
+    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref,spin)
 
     return ((log_likelihood,) + parameters)
 
@@ -274,12 +281,6 @@ if __name__ == '__main__':
 
     print('Interpolator initialized')
 
-    initial_state=numpy.random.rand(64,8)
-
-    print('Random state generated')
-
-    _logger.info(initial_state)
-
     
     system_number=config.system
     observed_spin=dict()
@@ -292,17 +293,22 @@ if __name__ == '__main__':
                 observed_spin['sigma']=abs(float(x[5])-float(x[6]))
                 break
 
+    #Initialising the state from 8-parameter set
+    h5_filename = path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5'
+    reader = emcee.backends.HDFBackend(h5_filename, read_only=True)
+    last_state = reader.get_last_sample().coords
+    wdisk_initial_state = numpy.random.rand(64,1)
+    initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
 
-    nwalkers=64
-    ndim=8
-    
     backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
-    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','phase_lag_max','alpha','break_period']
+    parameters=['m_sum','mass_ratio', 'metallicity','age','Wdisk','eccentricity','phase_lag_max','alpha','break_period','spin']
     blobs_dtype = [(name, float) for name in parameters]
     blobs_dtype = numpy.dtype(blobs_dtype)
 
-
+    nwalkers = 64
+    ndim = 9
+    
     with Pool(
             config.num_parallel_processes,
             initializer=setup_process,
