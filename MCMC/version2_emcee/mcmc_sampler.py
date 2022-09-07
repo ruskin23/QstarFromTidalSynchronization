@@ -118,34 +118,30 @@ class sampler:
 
     def uniformly_sampled(self):
 
-        phase_lag_sampled=phase_lag(7*self.uniform_variable[5]+5)
-        alpha=10*self.uniform_variable[6]-5
-        lnP=(numpy.log(50)-numpy.log(0.5))*self.uniform_variable[7] + numpy.log(0.5)
+        phase_lag_sampled = phase_lag( ( 7*self.uniform_variable[5] ) + 5 )
+        alpha = ( 10*self.uniform_variable[6] ) - 5
+        lnP = ( numpy.log(50)-numpy.log(0.5) )*self.uniform_variable[7] + numpy.log(0.5)
 
-        omegaref= numpy.exp(numpy.log(2*numpy.pi) - lnP) 
-        omegamin=(2*numpy.pi)/50
+        omegaref = numpy.exp(numpy.log(2*numpy.pi) - lnP) 
+        omegamin =(2*numpy.pi)/50
 
         if alpha<0:
-            tidal_power=numpy.array([0,alpha])
-            self.params['tidal_frequency_breaks']=numpy.array([omegaref])
+            tidal_power = numpy.array([0,alpha])
+            self.params['tidal_frequency_breaks'] = numpy.array([omegaref])
             phase_lag_max=phase_lag_sampled
         else:
-            tidal_power=numpy.array([0,alpha,0])
-            self.params['tidal_frequency_breaks']=numpy.array([omegamin,omegaref])
-            phase_lag_max=phase_lag_sampled*((omegamin/omegaref)**alpha)
+            tidal_power = numpy.array([0,alpha,0])
+            self.params['tidal_frequency_breaks'] = numpy.array([omegamin,omegaref])
+            phase_lag_max = phase_lag_sampled*((omegamin/omegaref)**alpha)
 
         self.params['phase_lag_max']=phase_lag_max
         self.params['tidal_frequency_powers']=tidal_power
         self.params['spin_frequency_breaks']=None
         self.params['spin_frequency_powers']=numpy.array([0.0])
 
-        self.params['Wdisk'] = 2*numpy.pi * [
-                                             (1.0/14.0 - 1.0/1.4) 
-                                             *
-                                             self.uniform_variable[8] 
-                                             + 
-                                             1.0/14.0
-                                            ]
+        disk_N = (1.0/1.4) - (1.0/14)
+        self.params['Wdisk'] = 2 * numpy.pi * ( ( disk_N  * self.uniform_variable[8] )  +  1.0/14.0 )
+        _logger.info('Wdisk = {!r}'.format(self.params['Wdisk']))
 
         return alpha,omegaref
 
