@@ -248,10 +248,10 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
              'eccentricity',
              'Wdisk',
              'phase_lag_max']
-    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref,spin)
+    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref)
     _logger.info(parameters)
 
-    return ((log_likelihood,) + parameters)
+    return ((log_likelihood,) + parameters,spin)
 
 
 
@@ -305,7 +305,7 @@ if __name__ == '__main__':
     blobs_dtype = [(name, float) for name in parameters]
     blobs_dtype = numpy.dtype(blobs_dtype)
 
-    nwalkers = 64
+    nwalkers = 16
     ndim = 9
 
     with Pool(
