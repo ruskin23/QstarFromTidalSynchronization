@@ -297,12 +297,14 @@ if __name__ == '__main__':
     wdisk_initial_state = numpy.random.rand(64,1)
     initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
 
-    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/debug_system_'+system_number+'.h5')
+    #h5 file to save and continue sampling
+    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
     _logger.info('\nInitial State generated: ')
     _logger.info(initial_state)
 
-    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period']
+    #Initiate blobs
+    parameters=['primary_mass','secondary_mass', 'feh','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period']
     blobs_dtype = [(name, float) for name in parameters]
     blobs_dtype = numpy.dtype(blobs_dtype)
 
