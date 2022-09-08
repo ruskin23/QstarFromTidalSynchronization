@@ -248,9 +248,9 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
              'eccentricity',
              'Wdisk',
              'phase_lag_max']
-    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref,spin)
+    parameters=tuple(parameter_set[param_name] for param_name in p_names) + (alpha,omegaref)
 
-    return ((log_likelihood,) + parameters)
+    return ((log_likelihood,) + parameters, spin)
 
 
 
@@ -300,8 +300,9 @@ if __name__ == '__main__':
 
     backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
-    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period','spin']
+    parameters=['m_sum','mass_ratio', 'metallicity','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period']
     blobs_dtype = [(name, float) for name in parameters]
+    blobs_dtype.append(("spin",float))
     blobs_dtype = numpy.dtype(blobs_dtype)
 
     nwalkers = 64
