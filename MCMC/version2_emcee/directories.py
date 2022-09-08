@@ -8,6 +8,7 @@ class directories:
         if home_dir=='/home/ruskin':
             self.poet_path=home_dir+'/projects/poet'
             self.current_directory=home_dir+'/projects'+self.git_dir
+            self.binary_directory=home_dir+'/projects'+self.binary_dir
             self.scratch_directory=self.current_directory+'/output/kartof'
 
         if home_dir=='/home/rxp163130':
