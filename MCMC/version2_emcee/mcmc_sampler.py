@@ -327,6 +327,6 @@ if __name__ == '__main__':
                                             pool=UnchunkedPool(workers)
                                             )
 
-        sampler_emcee.run_mcmc(initial_state,nsteps=1000,progress=False)
+        sampler_emcee.run_mcmc(None,nsteps=1000,progress=False)
 
 
