@@ -1,11 +1,7 @@
-# from distutils.command.config import config
-from cmath import isfinite
-from distutils.command.config import config
 import multiprocessing
 from configargparse import ArgumentParser
 import logging
 import sys
-import os
 import functools
 import numpy
 import scipy
@@ -45,6 +41,7 @@ def cmdline_parser():
 
     p = ArgumentParser(default_config_files=['config.txt'])
     p.add_argument('--system')
+    p.add_argument('--initialize', action='store_true', default=False)
     p.add_argument('--num_parallel_processes',type=int,default=16,help='number of parallel processes')
     p.add_argument('--nwalkers',type=int,default=64)
     p.add_argument('--num_params',type=int,default=9)
@@ -383,9 +380,12 @@ if __name__ == '__main__':
     # last_state = reader.get_last_sample().coords
     # wdisk_initial_state = numpy.random.rand(64,1)
     # initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
-    #initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
-    #_logger.info('\nInitial State generated: ')
-    #_logger.info(initial_state)
+    if config.initialize:
+        initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
+        _logger.info('\nInitial State generated: ')
+        _logger.info(initial_state)
+    else:
+        initial_state = None
 
 
     #h5 file to save and continue sampling
@@ -407,6 +407,6 @@ if __name__ == '__main__':
                                             pool=UnchunkedPool(workers)
                                             )
 
-        sampler_emcee.run_mcmc(None,nsteps=1000,progress=False)
+        sampler_emcee.run_mcmc(initial_state, nsteps=1000, progress=False)
 
 
