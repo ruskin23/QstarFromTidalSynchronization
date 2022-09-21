@@ -1,11 +1,12 @@
 # from distutils.command.config import config
+from cmath import isfinite
 from distutils.command.config import config
+import multiprocessing
 from configargparse import ArgumentParser
-from gettext import Catalog
 import logging
 import sys
 import os
-import random
+import functools
 import numpy
 import scipy
 
@@ -45,6 +46,9 @@ def cmdline_parser():
     p = ArgumentParser(default_config_files=['config.txt'])
     p.add_argument('--system')
     p.add_argument('--num_parallel_processes',type=int,default=16,help='number of parallel processes')
+    p.add_argument('--nwalkers',type=int,default=64)
+    p.add_argument('--num_params',type=int,default=9)
+
     # p.add_argument('--fname_datetime_format',default='%Y%m%d%H%M%S')
     p.add_argument('--fname_datetime_format',default='%Y%m%d%H%M%S')
     p.add_argument('--logging_datetime_format',default=None)
@@ -166,7 +170,10 @@ class sampler:
         return self.params,alpha,omegaref
 
 
-def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
+def log_probablity(unit_cube_values,
+                  interpolator,
+                  system_number,
+                  observed_spin):
 
     invalid_values = tuple( -numpy.inf if i == 0 else numpy.nan
                         for i in range(len(unit_cube_values)+1)
@@ -252,6 +259,78 @@ def log_probablity(unit_cube_values,interpolator,system_number,observed_spin):
 
     return ((log_likelihood,) + parameters)
 
+def evaluate_walker_positions(position_queue, 
+                              result_queue, 
+                              log_porb_fn, 
+                              config):
+
+    setup_process(config)
+    _logger.info('Evaluating starting positions.')
+    for position in iter(position_queue.get, 'STOP'):
+        log_prob_result = log_porb_fn(position)
+        result_queue.put((position, log_prob_result))
+
+
+def initial_guess(interpolator,
+                  system_number,
+                  observed_spin, 
+                  config,
+                  blobs_dtype):
+
+    starting_positions = numpy.empty((config.nwalkers, config.num_params),dtype=float)
+    starting_log_prob = numpy.empty(config.nwalkers, dtype=float)
+    starting_blobs = numpy.empty(config.nwalkers, dtype=blobs_dtype)
+
+    result_queue = multiprocessing.Queue()
+    position_queue = multiprocessing.Queue()
+
+    
+
+    for _ in range(config.nwalkers):
+        position_queue.put(numpy.random.rand(config.num_params))
+
+    log_prob_kwargs = dict(
+        interpolator=interpolator,
+        system_number=system_number,
+        observed_spin=observed_spin
+    )
+
+    log_porb_fn = functools.partial(
+        log_probablity,
+        **log_prob_kwargs
+    )
+
+    workers = [
+        multiprocessing.Process(
+            target=evaluate_walker_positions,
+            args=(position_queue, result_queue, log_porb_fn, config)
+        )
+        for _ in range(config.num_parallel_processes)
+    
+    ]
+
+    positions_found = 0
+
+    for process in workers:
+        process.start()
+
+    while positions_found < config.nwalkers:
+        position, log_prob_result = result_queue.get()
+        if numpy.isfinite(log_prob_result[0]):
+            starting_positions[positions_found, :] = position
+            starting_log_prob[positions_found] = log_prob_result[0]
+            starting_blobs[positions_found] = log_prob_result[1:]
+            positions_found += 1
+            _logger.debug('%d/%d starting positions found',
+                          positions_found,
+                          config.nwalkers)
+        position_queue.put(numpy.random.rand(config.num_params))
+
+    for process in workers:
+        process.terminate()
+
+    return emcee.State(starting_positions, starting_log_prob, starting_blobs)
+
 
 
 if __name__ == '__main__':
@@ -260,6 +339,9 @@ if __name__ == '__main__':
 
     config=cmdline_parser()
     setup_process(config)
+
+    nwalkers = 64
+    ndim = 9
 
     print('Initializing interpolator')
     serialized_dir =  path.poet_path+"/stellar_evolution_interpolators"
@@ -289,27 +371,25 @@ if __name__ == '__main__':
                 observed_spin['value']=float(x[5])
                 observed_spin['sigma']=abs(float(x[5])-float(x[6]))
                 break
-
-    #Initialising the state from 8-parameter set
-    h5_filename = path.scratch_directory+'/sampling_output/h5_files/8Dfiles/system_'+system_number+'.h5'
-    reader = emcee.backends.HDFBackend(h5_filename, read_only=True)
-    last_state = reader.get_last_sample().coords
-    wdisk_initial_state = numpy.random.rand(64,1)
-    initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
-
-    #h5 file to save and continue sampling
-    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
-
-    _logger.info('\nInitial State generated: ')
-    _logger.info(initial_state)
-
+    
     #Initiate blobs
     parameters=['primary_mass','secondary_mass', 'feh','age','eccentricity','Wdisk','phase_lag_max','alpha','break_period']
     blobs_dtype = [(name, float) for name in parameters]
     blobs_dtype = numpy.dtype(blobs_dtype)
 
-    nwalkers = 64
-    ndim = 9
+    #Initialising the state from 8-parameter set
+    # h5_filename = path.scratch_directory+'/sampling_output/h5_files/8Dfiles/system_'+system_number+'.h5'
+    # reader = emcee.backends.HDFBackend(h5_filename, read_only=True)
+    # last_state = reader.get_last_sample().coords
+    # wdisk_initial_state = numpy.random.rand(64,1)
+    # initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
+    initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
+    _logger.info('\nInitial State generated: ')
+    _logger.info(initial_state)
+
+
+    #h5 file to save and continue sampling
+    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
 
     with Pool(
             config.num_parallel_processes,
