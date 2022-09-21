@@ -383,9 +383,9 @@ if __name__ == '__main__':
     # last_state = reader.get_last_sample().coords
     # wdisk_initial_state = numpy.random.rand(64,1)
     # initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
-    initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
-    _logger.info('\nInitial State generated: ')
-    _logger.info(initial_state)
+    #initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
+    #_logger.info('\nInitial State generated: ')
+    #_logger.info(initial_state)
 
 
     #h5 file to save and continue sampling
