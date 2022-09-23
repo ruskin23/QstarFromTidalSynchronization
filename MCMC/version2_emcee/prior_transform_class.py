@@ -1,3 +1,5 @@
+from os import system
+from statistics import quantiles
 import numpy
 from utils import erf_fun
 import logging
@@ -128,3 +130,6 @@ class prior_transform:
     #     e_value=self.e_prior[numpy.argmin(abs(F_e-uniform_values[4]))]
 
     #     return [Z_value,M_value,Q_value,t_value,e_value] 
+
+
+

@@ -1,4 +1,5 @@
 import os
+import os.path
 import multiprocessing
 from configargparse import ArgumentParser
 import logging
@@ -381,16 +382,27 @@ if __name__ == '__main__':
     # last_state = reader.get_last_sample().coords
     # wdisk_initial_state = numpy.random.rand(64,1)
     # initial_state = numpy.array([numpy.append(last_state[i],wdisk_initial_state[i]) for i in range(64)])
-    if config.initialize:
+    
+    backend_filename = path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5'
+    if os.path.isfile(backend_filename):
+        reader = emcee.backends.HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5', read_only=True)
+        log_prob = reader.get_log_prob()
+        previous_steps_taken = len(log_prob)
+    else:
+        previous_steps_taken = 0
+    _logger('Previously taken steps = {!r}'.format(previous_steps_taken))
+
+    if previous_steps_taken > 1:
+        initial_state = None
+    else:
+        _logger.info('Couldnt find any steps, initiating steps')
         initial_state = initial_guess(interpolator, system_number, observed_spin, config, blobs_dtype)
         _logger.info('\nInitial State generated: ')
         _logger.info(initial_state)
-    else:
-        initial_state = None
 
 
     #h5 file to save and continue sampling
-    backend_reader = HDFBackend(path.scratch_directory+'/sampling_output/h5_files'+'/system_'+system_number+'.h5')
+    backend_reader = HDFBackend(backend_filename)
 
     with Pool(
             config.num_parallel_processes,
