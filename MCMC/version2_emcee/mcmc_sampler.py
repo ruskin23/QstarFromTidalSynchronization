@@ -390,7 +390,7 @@ if __name__ == '__main__':
         previous_steps_taken = len(log_prob)
     else:
         previous_steps_taken = 0
-    _logger('Previously taken steps = {!r}'.format(previous_steps_taken))
+    _logger.info('Previously taken steps = {!r}'.format(previous_steps_taken))
 
     if previous_steps_taken > 1:
         initial_state = None
