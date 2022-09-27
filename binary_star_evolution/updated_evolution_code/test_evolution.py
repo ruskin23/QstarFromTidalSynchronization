@@ -45,16 +45,6 @@ def create_star(mass,
                         diff_rot_coupling_timescale=parameters.diff_rot_coupling_timescale,
                         interpolator=interpolator)
 
-    print('\ncreated star with: \nmass = {} \nmetalliciy = {} \nwind_srength = {} \nwind_saturation_frequency = {} \ndiff_rot_coupling_timescale = {}'.format(
-            repr(mass),
-            repr(parameters.feh),
-            repr(parameters.wind_strength),
-            repr(parameters.wind_saturation_frequency),
-            repr(parameters.diff_rot_coupling_timescale))
-            )
-
-    # star.select_interpolation_region(star.core_formation_age())
-
     star.set_dissipation(zone_index=0,
                          tidal_frequency_breaks=parameters.tidal_frequency_breaks,
                          spin_frequency_breaks=parameters.spin_frequency_breaks,
@@ -62,12 +52,6 @@ def create_star(mass,
                          spin_frequency_powers=parameters.spin_frequency_powers,
                          reference_phase_lag=parameters.phase_lag_max)
         
-    print('\nset dissipation with \ntidal_frequency_breaks = {} \nspin_frequency_breaks = {} \ntidal_frequency_powers = {} \nspin_frequency_powers = {} \nreference_phase_lag = {}'.format(
-            repr(parameters.tidal_frequency_breaks),
-            repr(parameters.spin_frequency_breaks),
-            repr(parameters.tidal_frequency_powers),
-            repr(parameters.spin_frequency_powers),
-            repr(parameters.phase_lag_max)))
 
     return star
 
@@ -89,18 +73,11 @@ def create_binary_system(primary,
     else:
         secondary.select_interpolation_region(disk_dissipation_age)
         spin_angmom = secondary_angmom
-        print('secondary angmom {}'.format(secondary_angmom))
         inclination = numpy.array([0.0])
         periapsis = numpy.array([0.0])
 
     primary.select_interpolation_region(primary.core_formation_age())
 
-    print('\nCreating binary with:')
-    print('\ninitial_orbital_period = {}'.format(repr(initial_orbital_period)))
-    print('\ninitial_eccentricity = {}'.format(repr(initial_eccentricity)))
-    print('\ndisk_lock_frequency = {}'.format(repr(disk_lock_frequency)))
-    print('\ndisk_dissipation_age = {}'.format(repr(disk_dissipation_age)))
-    print('\nseconday_formation_age = {}'.format(repr(disk_dissipation_age)))
     binary = Binary(primary=primary,
                     secondary=secondary,
                     initial_orbital_period=initial_orbital_period,
@@ -109,9 +86,6 @@ def create_binary_system(primary,
                     disk_lock_frequency=disk_lock_frequency,
                     disk_dissipation_age=disk_dissipation_age,
                     secondary_formation_age=disk_dissipation_age)
-
-    print('\nconfiguring binary with:')
-    print('age = {}'.format(repr(primary.core_formation_age())))
     binary.configure(age=primary.core_formation_age(),
                         semimajor=float('nan'),
                         eccentricity=float('nan'),
@@ -120,11 +94,6 @@ def create_binary_system(primary,
                         periapsis=None,
                         evolution_mode='LOCKED_SURFACE_SPIN')
 
-    print('\nconfiguring secondary with:')
-    print('\nage = {}'.format(repr(disk_dissipation_age)))
-    print('\ncompanion_mass = {}'.format(repr(primary.mass)))
-    print('\nsemimajor = {}'.format(repr(binary.semimajor(initial_orbital_period))))
-    print('\spin_angmom = {}'.format(repr(spin_angmom)))
 
     secondary.configure(age=disk_dissipation_age,
                         companion_mass=primary.mass,
@@ -148,33 +117,13 @@ def get_binary_system(interpolator,
                       parameters,
                       secondary_angmom=None):
 
-    print('\nCreating Primary Star')
     primary=create_star(parameters.primary_mass,
                         parameters,
                         interpolator)
-    print('\nCreating Secondary Star')
     secondary=create_star(parameters.secondary_mass,
                           parameters,
                           interpolator)
     
-    print('\nevolving binary with \ndisk_dissipation_age = {} \ndisk_lock_frequency = {} \ninitial_orbital_period = {} \neccentricity = {}'.format(
-           repr(parameters.disk_dissipation_age),
-           repr(parameters.Wdisk),
-           repr(parameters.orbital_period),
-           repr(parameters.eccentricity)
-    ))
-
-    print('\nprimary_mass = {} \nprimary_feh = {} \nsecondary_mass = {} \nsecondary_feh = {}'.format(
-        repr(primary.mass),
-        repr(primary.metallicity),
-        repr(secondary.mass),
-        repr(secondary.metallicity)
-    ))
-
-    print('\nprimary_core_formation_age = {} \nsecondary_core_formation_age = {}'.format(
-        repr(primary.core_formation_age()),
-        repr(secondary.core_formation_age())
-    ))
     
     binary_system=create_binary_system(primary,
                                        secondary,
@@ -188,27 +137,11 @@ def get_binary_system(interpolator,
 
 
 
-def evolve_binary(interp,
+def evolve_binary(interpolator,
                   parameters):
 
 
-    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
-
-    orbital_evolution_library.prepare_eccentricity_expansion(
-        eccentricity_path,
-        1e-4,
-        True,
-        True
-    )
-
-    serialized_dir = path.poet_path +  "/stellar_evolution_interpolators"
-    manager = StellarEvolutionManager(serialized_dir)
-    interpolator = manager.get_interpolator_by_name('default')
-
-
     if type(parameters) is dict:
-        print('\n Converting Parameters Dictionary to Struct')
-        print(parameters)
         parameters=Struct(**parameters)
 
 
@@ -287,6 +220,7 @@ if __name__=='__main__':
     parameters['orbital_period']= 11.653641112734459
     parameters['eccentricity']= 0.4406876762698404
 
+    print('\nParameters = ')
     print(parameters)
     parameters=Struct(**parameters)
 
@@ -294,62 +228,15 @@ if __name__=='__main__':
     manager = StellarEvolutionManager(serialized_dir)
     interpolator = manager.get_interpolator_by_name('default')
 
-    # eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
+    eccentricity_path=os.path.join(path.poet_path,'eccentricity_expansion_coef_O400.sqlite').encode('ascii')
 
-    # orbital_evolution_library.prepare_eccentricity_expansion(
-    #     eccentricity_path,
-    #     1e-4,
-    #     True,
-    #     True
-    # )
+    orbital_evolution_library.prepare_eccentricity_expansion(
+        eccentricity_path,
+        1e-4,
+        True,
+        True
+    )
 
     evolved_binary=evolve_binary(interpolator,parameters)
 
 
-
-    
-    # if args.logfile is not None:
-    #     _simple_quantities=['primary_mass',
-    #                 'secondary_mass',
-    #                 'feh',
-    #                 'age',
-    #                 'Wdisk',
-    #                 'orbital_period',
-    #                 'eccentricity',
-    #                 'phase_lag_max']
-
-
-    #     with open('logfile/files/'+args.logfile,'r') as f:
-    #         for i,lines in enumerate(f):
-
-    #             if i>6 and i<42 and i%2==1:
-
-    #                 x=lines.split()
-
-    #                 if x[0] in _simple_quantities:
-    #                     parameters[x[0]]=float(x[1])
-
-    #                 if x[0]=='tidal_frequency_breaks':
-    #                     x=lines.split()
-    #                     if len(x)==2:
-    #                         parameters[x[0]]=numpy.atleast_1d(float(x[1][1:-1]))
-    #                     elif len(x)==3:
-    #                         a=float(x[1][1:])
-    #                         b=float(x[-1][:-1])
-    #                         parameters[x[0]]=numpy.array([a,b])
-    #                     elif len(x)==4:
-    #                         a=float(x[1][1:])
-    #                         b=float(x[-2])
-    #                         parameters[x[0]]=numpy.array([a,b])
-
-    #                 if x[0]=='tidal_frequency_powers':
-    #                     if len(x)==4:
-    #                         a=float(x[2])
-    #                         b=float(x[3][0:-1])
-    #                         value=numpy.array([a,b])
-    #                     elif len(x)==5:
-    #                         a=float(x[1][1:])
-    #                         b=float(x[2])
-    #                         c=float(x[3])
-    #                         value=numpy.array([a,b,c])
-    #                     parameters[x[0]]=numpy.array(value)
