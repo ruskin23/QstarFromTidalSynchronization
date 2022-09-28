@@ -6,6 +6,7 @@ import corner
 
 from utils import erf_fun
 from utils import kernel_gauss
+from KDEpy import FFTKDE
 
 from pathlib import Path
 from directories import directories
@@ -151,6 +152,31 @@ def get_system_params(systemKIC):
 
     return _quantities,_samples,_bandwidths
 
+
+def get_bandwidth(param,data,plot=True,get_value=True,method=None):
+
+    print('\nParam: {}'.format(param))
+
+    x,y = FFTKDE(kernel='gaussian', bw='silverman').fit(data).evaluate()
+    y = FFTKDE(kernel='gaussian', bw='ISJ').fit(data).evaluate(x)
+
+    if method == 'silverman':
+        bwdth=FFTKDE(kernel='gaussian', bw='silverman').fit(data).bw
+        print('bw_silverman = {}'.format(bwdth))
+        # plt.plot(x, y, label='KDE /w silverman')
+
+    if method == 'ISJ':
+        bwdth=FFTKDE(kernel='gaussian', bw='ISJ').fit(data).bw
+        print('ISJ = {}'.format(bwdth))
+        # plt.plot(x, y, label='KDE /w ISJ')
+    
+    if plot==True:
+        plt.grid(True, ls='--', zorder=-15); plt.legend()
+        plt.show()
+    if get_value:
+        return bwdth
+
+
 if __name__=='__main__':
 
     # systemKIC='9892471'
@@ -177,6 +203,6 @@ if __name__=='__main__':
             sampled_values=numpy.reshape(sampled_values,(len(sampled_values)//5,5))
 
             figure=corner.corner(sampled_values)
-            plt.savefig('compare_plots_bandwidths/system_{}/corner_ISJ_{}.png'.format(systemKIC,systemKIC))
+            plt.savefig('catalog/compare_plots_bandwidths/system_{}/corner_ISJ_{}.png'.format(systemKIC,systemKIC))
 
 
