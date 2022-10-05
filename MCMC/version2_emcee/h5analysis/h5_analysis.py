@@ -16,19 +16,12 @@ path=directories(home_dir)
 sys.path.append(path.poet_path+'/PythonPackage')
 sys.path.append(path.poet_path+'/scripts')
 sys.path.append('/home/ruskin/projects/')
+sys.path.append('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/')
 
 from orbital_evolution.transformations import phase_lag, lgQ
 from general_purpose_python_modules.emcee_quantile_convergence import *
+from utils import *
 import scipy
-
-_quantities=['primary_mass',
-             'secondary_mass',
-             'feh',
-             'age',
-             'eccentricity',
-             'phase_lag_max',
-             'alpha',
-             'omegeref']
 
 
 def save_systems():
@@ -137,32 +130,6 @@ def get_possible_last_step_from_oldfiles():
                         repr(step) + '\t' +
                         repr(total_steps) + '\n')
 
-def cmdline_args():
-
-    p = ArgumentParser()
-    p.add_argument('-s',
-                    dest = 'chains_file')
-
-    p.add_argument('-p',
-                   dest = 'parameter')
-
-    p.add_argument('-c',
-                    dest='convergence_filename',
-                    default=None)
-
-    p.add_argument('--all',
-                    action='store_true',
-                    default=False)
-    
-    p.add_argument('--expand',
-                    action='store_true',
-                    default=False)
-
-    p.add_argument('--steps',
-                   action='store_true',
-                   default=False)
-
-    return p.parse_args()
 
 
 
@@ -189,108 +156,10 @@ def corner_plot(system_KIC,
     plt.savefig('corner_plots/{}.png'.format(system_KIC))
 
 
-def emcee_convergence_test(lgQ_samples,
-                           save_filename=None):
-
-    total_steps = numpy.shape(lgQ_samples)[0]
-    _quantities=[scipy.stats.norm.cdf(c) for c in [-2,-1,1,2]]
-    st_list = []
-    for qunatile in _quantities:
-        print('Calculating for quantile {}'.format(qunatile))
-        a = find_emcee_quantiles(lgQ_samples,qunatile,0.001,1000)
-    
-        qunatile_val = a[0]
-        r = a[2]
-        thin = a[3]
-        burnin = a[4]
-        if save_filename is not None:
-            with open(save_filename,'a') as f:
-                f.write('\t' + 
-                        repr(qunatile) + '\t' +
-                        repr(r) + '\t' +
-                        repr(qunatile_val) + '\t' +
-                        repr(burnin) + '\t' +
-                        repr(total_steps) + '\t' +
-                        repr(thin)+'\n')
-        else: 
-            print(a)
-            st_list.append(a)
-
-
-    return st_list
-
-def get_dissipation_samples(samples, tidal_period=10):
-
-    q_samples = []
-    for s in samples:
-        delta0 = s[5]
-        alpha = s[6]
-        omega_br = s[7]
-        omega_min = 2*numpy.pi/50
-        omega = 2*numpy.pi/tidal_period
-        
-        if alpha > 0:
-            if omega <= omega_min:
-                delta = (omega_min/omega_br)**alpha
-            elif omega > omega_min and omega <= omega_br:
-                delta = (omega/omega_br)**alpha
-            else:
-                delta = 1
-        else:
-            if omega <= omega_br:
-                delta = 1
-            else:
-                delta = (omega/omega_br)**alpha
-        
-        q_samples.append(lgQ(delta0*delta))
-
-    if numpy.nan in q_samples:        
-        print('NaN found in Q_SAMPLES!!!!!!!!!')
-    q_samples = numpy.reshape(q_samples,(len(q_samples)//64,64))
-
-    return q_samples
-
-def tidal_period_dependence(system_kic, prior_samples, expand=False):
-
-    if expand:
-        period_limts = [50,100,50]
-        file_action = 'a'
-    else:
-        period_limts = [0.5,50,50]
-        file_action = 'w'
-
-    tidal_period = numpy.linspace(float(period_limts[0]), float(period_limts[1]), int(period_limts[2]))
-    quantiles = [scipy.stats.norm.cdf(c) for c in [-2,-1,1,2]]
-    f = open('period_dependence/'+system_kic+'.txt', file_action, buffering=1)
-
-    if not expand:
-        f.write('period'+'\t'+
-                '-2sigma({})'.format(repr(quantiles[0]))+'\t'+
-                'r'+'\t'+
-                'burnin/total_steps'+'\t'+
-                '-1sigma({})'.format(repr(quantiles[0]))+'\t'+
-                'r'+'\t'+
-                'burnin/total_steps'+'\t'+
-                '1sigma({})'.format(repr(quantiles[0]))+'\t'+
-                'r'+'\t'+
-                'burnin/total_steps'+'\t'+
-                '2sigma({})'.format(repr(quantiles[0]))+'\t'+
-                'r'+'\t'+
-                'burnin/total_steps'+'\n')
-
-    for p in tidal_period:
-        lgQ_samples = get_dissipation_samples(prior_samples, tidal_period=p)
-        st = emcee_convergence_test(lgQ_samples)
-
-        l = '\t'.join(['\t'.join([repr(s[0]), repr(s[2]), '{}/{}'.format(repr(s[4]),repr(len(lgQ_samples)))]) for s in st])
-
-        f.write(repr(p)+'\t'+l+'\n')
-    f.close()
-
 def rearrange_prior_samples(samples,
                             truncate=True,
                             dimensions=9):
-    
+
     samples = samples.flatten()
     rearranged_samples = [[samples[k][i] for i in range(dimensions)] for k in range(len(samples))]
     if truncate: rearranged_samples = numpy.delete(rearranged_samples, 5, axis=1)
@@ -335,7 +204,166 @@ def corrected_samples(system_filename):
     else:
         samples = rearrange_prior_samples(prior_samples)
 
-    return samples
+    return samples    
+
+def cmdline_args():
+
+    p = ArgumentParser()
+    p.add_argument('-s',
+                    dest = 'chains_file',
+                    default=None)
+
+    p.add_argument('-p',
+                   dest = 'parameter')
+
+    p.add_argument('-c',
+                    dest='convergence_filename',
+                    default=None)
+
+    p.add_argument('--all',
+                    action='store_true',
+                    default=False)
+    
+    p.add_argument('--expand',
+                    action='store_true',
+                    default=False)
+
+    p.add_argument('--steps',
+                   action='store_true',
+                   default=False)
+
+    return p.parse_args()
+
+def get_dissipation_samples(samples, tidal_period=10):
+
+    q_samples = []
+    for s in samples:
+        delta0 = s[5]
+        alpha = s[6]
+        omega_br = s[7]
+        omega_min = 2*numpy.pi/50
+        omega = 2*numpy.pi/tidal_period
+        
+        if alpha > 0:
+            if omega <= omega_min:
+                delta = (omega_min/omega_br)**alpha
+            elif omega > omega_min and omega <= omega_br:
+                delta = (omega/omega_br)**alpha
+            else:
+                delta = 1
+        else:
+            if omega <= omega_br:
+                delta = 1
+            else:
+                delta = (omega/omega_br)**alpha
+        
+        q_samples.append(lgQ(delta0*delta))
+
+    if numpy.nan in q_samples:        
+        print('NaN found in Q_SAMPLES!!!!!!!!!')
+    q_samples = numpy.reshape(q_samples,(len(q_samples)//64,64))
+
+    return q_samples
+
+def emcee_convergence_test(lgQ_samples,
+                           save_filename=None):
+
+    total_steps = numpy.shape(lgQ_samples)[0]
+    _quantities=[scipy.stats.norm.cdf(c) for c in [-2,-1,1,2]]
+    rl_stat_list = []
+    for qunatile in _quantities:
+        print('Calculating for quantile {}'.format(qunatile))
+        rl_stats = find_emcee_quantiles(lgQ_samples,qunatile,0.001,1000)
+    
+        qunatile_val = rl_stats[0]
+        r = rl_stats[2]
+        thin = rl_stats[3]
+        burnin = rl_stats[4]
+        if save_filename is not None:
+            with open(save_filename,'a') as f:
+                f.write('\t' + 
+                        repr(qunatile) + '\t' +
+                        repr(r) + '\t' +
+                        repr(qunatile_val) + '\t' +
+                        repr(burnin) + '\t' +
+                        repr(total_steps) + '\t' +
+                        repr(thin)+'\n')
+        else: 
+            print(rl_stats)
+            rl_stat_list.append(rl_stats)
+
+    return rl_stat_list
+
+def tidal_period_dependence(system_kic, prior_samples):    
+    
+    quantiles = [scipy.stats.norm.cdf(c) for c in [-2,-1,1,2]]
+    f = open('period_dependence/'+system_kic+'.txt', 'w', buffering=1)
+    f.write('period'+'\t'+
+            '-2sigma({})'.format(repr(quantiles[0]))+'\t'+
+            'r'+'\t'+
+            'burnin/total_steps'+'\t'+
+            '-1sigma({})'.format(repr(quantiles[1]))+'\t'+
+            'r'+'\t'+
+            'burnin/total_steps'+'\t'+
+            '1sigma({})'.format(repr(quantiles[2]))+'\t'+
+            'r'+'\t'+
+            'burnin/total_steps'+'\t'+
+            '2sigma({})'.format(repr(quantiles[3]))+'\t'+
+            'r'+'\t'+
+            'burnin/total_steps'+'\n')
+
+    period_limts = [numpy.log10(0.5),numpy.log10(50),50]
+    tidal_period = numpy.linspace(float(period_limts[0]), float(period_limts[1]), int(period_limts[2]))
+    data = numpy.empty((50,5), float)
+    data_std = numpy.empty((50,4), float)
+    for i, p in enumerate(tidal_period):
+        lgQ_samples = get_dissipation_samples(prior_samples, tidal_period=10**p)
+        rl_stats = emcee_convergence_test(lgQ_samples)
+
+        line = '\t'.join(['\t'.join([repr(s[0]), repr(s[2]), '{}/{}'.format(repr(s[4]),repr(len(lgQ_samples)))]) for s in rl_stats])
+        f.write(repr(p) + '\t' + line + '\n')
+
+        data[i] = numpy.array([p] + [rl_stats[i][0] for i in range(4)])
+        data_std[i] = numpy.array([rl_stats[i][2] for i in range(4)])
+        
+    f.close()
+
+    #Plot converged systems
+    if numpy.isnan(numpy.sum(data_std)):
+        print('System Not Converged Yet')
+        return
+    else:
+        with open('period_dependence/stop_systems.txt','a') as f:
+            f.write('{}\n'.format(system_kic))
+    data = numpy.transpose(data)
+    for k in range(4):
+        plt.plot(data[0,:i],data[k+1,:i])
+    plt.savefig('period_dependence/plot_'+system_kic+'.png')
+
+
+def plot_converged(system_kic=None):
+    #Plot quantiles of Q vs Period all the converged systems or a specific system
+
+    if system_kic is None:
+        with open('period_dependence/stop_systems.txt','r') as f:
+            system_kic = f.read().split('\n')
+        if '' in system_kic:
+            system_kic.remove('')
+
+    for S in system_kic:
+        data = numpy.empty((50,5), float)
+        with open(f'period_dependence/{S}.txt','r') as f:
+            next(f)
+            for i,lines in enumerate(f):
+                x = lines.split()
+                data[i] = numpy.array([float(x[k]) for k in [0,1,4,7,10]])
+    
+        data = numpy.transpose(data)
+        for k in range(4):
+            plt.plot(data[0,:i],data[k+1,:i])
+        plt.savefig('period_dependence/plot_'+S+'.png')
+        plt.close()
+
 
 if __name__=='__main__':
 
@@ -343,35 +371,45 @@ if __name__=='__main__':
 
     system_filename = args.chains_file
     print('\nTesting for {}'.format(system_filename))
-
-    save_filename = args.convergence_filename
-    system_kic = system_filename.split('.')[0].split('_')[1]
-    if save_filename is not None:
-        with open(save_filename,'a') as f:
-            f.write(system_kic+'\n')
-
+    if system_filename is not None:
+        system_kic = system_filename.split('.')[0].split('_')[1]
 
     prior_samples = corrected_samples(system_filename)
-
-    # lgQ_samples = get_dissipation_samples(prior_samples)
-    # print(emcee_convergence_test(lgQ_samples, save_filename=save_filename))
-    # print('\n\n\n')
-
-    print('\nCalculating Tidal Period Dependence')
+    
+    # SAVE CONVERGENCE TEST FOR PERIOD [0.5,...,50]
     tidal_period_dependence(system_kic, prior_samples)
 
 
-    data = numpy.empty((50,5), float)
-    with open('period_dependence/'+system_kic+'.txt','r') as f:
-        next(f)
-        for i,lines in enumerate(f):
-            x=lines.split()
-            data[i] = numpy.array([numpy.log10(float(x[k])) if k == 0 else float(x[k]) for k in [0,1,4,7,10]])
-    
-    data = numpy.transpose(data)
-    for k in range(4):
-        plt.plot(data[0,:i],data[k+1,:i])
-    plt.savefig('period_dependence/plot_'+system_kic+'.png')
 
-#4773155 5652260 10330495 12004679
-#10031409 10215422 10330495 10992733 11147276 11200773 11232745 11704044 12004679 4285087 4352168 4678171 4773155 4839180 5652260 5802470 5871918 6029130 6927629 7987749 8356054 8543278 8984706 9353182 9532123 9971475
+
+#-------------------------------------------------------------------------------
+    #random codes might be useful at some point
+#--------------------------------------------------------------------------------
+    # Basically print the systems which still hasnt converged
+    # with open('period_dependence/stop_systems.txt','r') as f:
+    #     converged_systems = f.read().split('\n')
+    # if '' in converged_systems:
+    #     converged_systems.remove('')
+    # all_systems = glob.glob('*.h5')
+    # remaining_systems = []
+    # for system_filename in all_systems:
+    #     system_kic = system_filename.split('.')[0].split('_')[1]
+    #     if system_kic not in converged_systems:
+    #         remaining_systems.append(system_kic)
+    # print(len(remaining_systems))
+    # print(' '.join(remaining_systems))
+#---------------------------------------------------------------------------------
+    # Calculate convergence parameters at tidal period = 10days
+    # save_filename = args.convergence_filename
+    # if save_filename is not None:
+    #     with open(save_filename,'a') as f:
+    #         f.write(system_kic+'\n')
+    # txt_file = open('period_dependence/stop_systems.txt')
+    # stopped_systems = txt_file.read().split('\n')
+    # if '' in stopped_systems:
+    #     stopped_systems.remove('')
+    # if system_kic not in stopped_systems:
+    #     lgQ_samples = get_dissipation_samples(prior_samples)
+    #     print(emcee_convergence_test(lgQ_samples, save_filename=save_filename))
+    #     print('\n\n\n')
+#---------------------------------------------------------------------------------
