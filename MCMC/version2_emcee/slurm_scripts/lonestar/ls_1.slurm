@@ -41,6 +41,7 @@ run_system() {
         python3 \
             ${SOURCE_DIR}/mcmc_sampler.py \
             --system ${sysid}\
+            --reseed\
             --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
             --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
             >\

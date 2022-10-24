@@ -1,3 +1,4 @@
+from turtle import numinput
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -31,13 +32,22 @@ def scatter_hist(x, y, ax, ax_histy):
 
 
 # Start with a square Figure.
-fig = plt.figure(figsize=(6, 6))
+# fig = plt.figure(figsize=(6, 6))
 # Add a gridspec with two rows and two columns and a ratio of 1 to 4 between
 # the size of the marginal axes and the main axes in both directions.
 # Also adjust the subplot parameters for a square plot.
-gs = fig.add_gridspec(1, 2,  width_ratios=(4, 1), wspace=0.05)
+# gs = fig.add_gridspec(1, 2,  width_ratios=(4, 1), wspace=0.05)
 # Create the Axes.
-ax = fig.add_subplot(gs[0, 0])
-ax_histy = fig.add_subplot(gs[0, 1], sharey=ax)
+# ax = fig.add_subplot(gs[0, 0])
+# ax_histy = fig.add_subplot(gs[0, 1], sharey=ax)
 # Draw the scatter plot and marginals.
-scatter_hist(x, y, ax, ax_histy)
+# scatter_hist(x, y, ax, ax_histy)
+
+
+state = np.random.get_state()
+random_state = np.random.RandomState()
+random_state.set_state(state)
+print(random_state.get_state())
+random_state.seed()
+print(random_state.get_state())
+
