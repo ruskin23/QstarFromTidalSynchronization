@@ -11,6 +11,8 @@
 *.sqlite
 *.outerr
 *.tar.gz
+*.pdf
+*.npy
 #vim swap files
 .*.swp
 /home/ruskin/projects/QstarFromTidalSynchronization/binary_star_evolution/output_data/
