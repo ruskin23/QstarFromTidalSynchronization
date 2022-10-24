@@ -1,3 +1,4 @@
+from KDEpy import FFTKDE
 import emcee
 import sys
 from configargparse import ArgumentParser
@@ -22,6 +23,7 @@ from orbital_evolution.transformations import phase_lag, lgQ
 from general_purpose_python_modules.emcee_quantile_convergence import *
 from utils import *
 import scipy
+import scipy.stats
 
 
 def save_systems():
@@ -251,13 +253,15 @@ def get_dissipation_samples(samples, tidal_period=10):
                 delta = (omega/omega_br)**alpha
             else:
                 delta = 1
+            delta *= delta0/((omega_min/omega_br)**alpha)
         else:
             if omega <= omega_br:
                 delta = 1
             else:
                 delta = (omega/omega_br)**alpha
+            delta *= delta0
         
-        q_samples.append(lgQ(delta0*delta))
+        q_samples.append(lgQ(delta))
 
     if numpy.nan in q_samples:        
         print('NaN found in Q_SAMPLES!!!!!!!!!')
@@ -333,7 +337,7 @@ def tidal_period_dependence(system_kic, prior_samples):
         print('System Not Converged Yet')
         return
     else:
-        with open('period_dependence/stop_systems.txt','a') as f:
+        with open('period_dependence/new_stop_systems.txt','a') as f:
             f.write('{}\n'.format(system_kic))
     data = numpy.transpose(data)
     for k in range(4):
@@ -345,7 +349,7 @@ def plot_converged(system_kic=None):
     #Plot quantiles of Q vs Period all the converged systems or a specific system
 
     if system_kic is None:
-        with open('period_dependence/stop_systems.txt','r') as f:
+        with open('period_dependence/new_stop_systems.txt','r') as f:
             system_kic = f.read().split('\n')
         if '' in system_kic:
             system_kic.remove('')
@@ -364,6 +368,83 @@ def plot_converged(system_kic=None):
         plt.savefig('period_dependence/plot_'+S+'.png')
         plt.close()
 
+def plot_max_quantile_difference():
+    
+    with open('period_dependence/new_stop_systems.txt','r') as f:
+        converged_systems = f.read().split('\n')
+    converged_systems = [sk for sk in converged_systems if sk != '']
+    period_limts = numpy.linspace(numpy.log10(0.5),numpy.log10(50),50)
+    
+    q_diff_dict = dict()
+    for system_kic in converged_systems:
+        Q_diff = []
+        with open(f'period_dependence/{system_kic}.txt', 'r') as f:
+            next(f)
+            for lines in f:
+                x = lines.split()
+                Q_diff.append(float(x[10]) - float(x[1]))
+        q_diff_dict[system_kic] = Q_diff
+
+
+def get_pdf(kic):
+
+    burnins = []
+    with open('period_dependence/{}.txt'.format(kic),'r') as f:
+        next(f)
+        for lines in f:
+            x = lines.split()
+            for i in [3,6,9,12]:
+                burnins.append(int(x[i].split('/')[0]))
+                max_step = int(x[i].split('/')[1])
+
+    max_burnins = max(burnins)
+
+
+    prior_samples = corrected_samples(f'system_{kic}.h5')
+    periods = numpy.linspace(numpy.log10(0.5), numpy.log10(50), 50)
+    lgQ_array = numpy.linspace(5,20,250)
+
+    Q_diff = 0.2
+    lgQ_sigma_grid = numpy.empty((50,5),float)
+    with open('period_dependence/{}.txt'.format(kic),'r') as f:
+        next(f)
+        for i,lines in enumerate(f):
+            x = lines.split()
+            lgQ_sigma_grid[i] = numpy.array([[float(x[k]) for k in [0,1,4,7,10]]])
+    lgQ_sigma_grid = numpy.transpose(lgQ_sigma_grid)
+    lgQ_2sigma_upper = lgQ_sigma_grid[-1]
+    lgQ_2sigma_lower = lgQ_sigma_grid[1]
+    minQ = lgQ_2sigma_upper[numpy.argmin(lgQ_2sigma_upper - lgQ_2sigma_lower)]
+    
+    reduced_periods = lgQ_sigma_grid[0][lgQ_2sigma_upper < (minQ + Q_diff)]
+
+    ptide = reduced_periods[0]
+    lgQ_samples = get_dissipation_samples(prior_samples, tidal_period=10**ptide)
+
+    q = scipy.stats.norm.cdf(1  )
+    rl_stats = find_emcee_quantiles(lgQ_samples,q,0.001,1000)
+
+    qunatile_val = rl_stats[0]
+
+    
+
+    lgQ_samples = lgQ_samples[max_burnins:].flatten()
+
+
+    x,y = FFTKDE(kernel='gaussian', bw='silverman').fit(lgQ_samples).evaluate()
+
+    b1=FFTKDE(kernel='gaussian', bw='silverman').fit(lgQ_samples).bw
+    print('bw_silverman = {}'.format(b1))
+
+    b2=FFTKDE(kernel='gaussian', bw='ISJ').fit(lgQ_samples).bw
+    print('ISJ = {}'.format(b2))
+
+
+
+    _dist = DiscreteSampling(lgQ_samples, b1)
+
+    print(f'{ptide}\t{qunatile_val}\t{_dist.ppf(q)}')
+
 
 if __name__=='__main__':
 
@@ -374,22 +455,15 @@ if __name__=='__main__':
     if system_filename is not None:
         system_kic = system_filename.split('.')[0].split('_')[1]
 
-    prior_samples = corrected_samples(system_filename)
-    
+        prior_samples = corrected_samples(system_filename)
+        
     # SAVE CONVERGENCE TEST FOR PERIOD [0.5,...,50]
     tidal_period_dependence(system_kic, prior_samples)
-
-
-
-
+    
 #-------------------------------------------------------------------------------
     #random codes might be useful at some point
 #--------------------------------------------------------------------------------
     # Basically print the systems which still hasnt converged
-    # with open('period_dependence/stop_systems.txt','r') as f:
-    #     converged_systems = f.read().split('\n')
-    # if '' in converged_systems:
-    #     converged_systems.remove('')
     # all_systems = glob.glob('*.h5')
     # remaining_systems = []
     # for system_filename in all_systems:
@@ -404,7 +478,7 @@ if __name__=='__main__':
     # if save_filename is not None:
     #     with open(save_filename,'a') as f:
     #         f.write(system_kic+'\n')
-    # txt_file = open('period_dependence/stop_systems.txt')
+    # txt_file = open('period_dependence/new_stop_systems.txt')
     # stopped_systems = txt_file.read().split('\n')
     # if '' in stopped_systems:
     #     stopped_systems.remove('')

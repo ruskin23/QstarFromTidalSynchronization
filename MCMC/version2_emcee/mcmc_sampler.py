@@ -1,6 +1,7 @@
 import os
 import os.path
 import multiprocessing
+from random import sample
 from configargparse import ArgumentParser
 import logging
 import sys
@@ -44,6 +45,8 @@ def cmdline_parser():
     p = ArgumentParser(default_config_files=['config.txt'])
     p.add_argument('--system')
     p.add_argument('--initialize', action='store_true', default=False)
+    p.add_argument('--reseed', action='store_true', default=False)
+
     p.add_argument('--num_parallel_processes',type=int,default=16,help='number of parallel processes')
     p.add_argument('--nwalkers',type=int,default=64)
     p.add_argument('--num_params',type=int,default=9)
@@ -359,7 +362,6 @@ if __name__ == '__main__':
 
     print('Interpolator initialized')
 
-
     system_number=config.system
     observed_spin=dict()
     with open(path.current_directory+'/catalog/filtering/Lurie_binaries_with_p1.txt','r') as f:
@@ -419,7 +421,10 @@ if __name__ == '__main__':
                                             backend=backend_reader,
                                             pool=UnchunkedPool(workers)
                                             )
-
+        if config.reseed:
+            _logger.info('Changing Random Seed')
+            sampler_emcee._random_seed()
+        
         sampler_emcee.run_mcmc(initial_state, nsteps=1000, progress=False)
 
 

@@ -5,6 +5,9 @@ from scipy.stats import rv_continuous
 def erf_fun(x):
     return 0.5*(1+special.erf(x/numpy.sqrt(2)))
 
+def _normalization_constant(x, y, a, b):
+    return interpolate.InterpolatedUnivariateSpline(x, y).integral(a, b)
+
 
 class kernel_gauss():
     """Class to convolve points with a gaussian kernel"""
@@ -81,7 +84,8 @@ class DiscreteSampling(rv_continuous):
 
 
 
-class DiscreteDistributions(rv_continuous):
+class DiscreteDistributions():        
+
 
     def _pdf(self,x):
 
@@ -90,25 +94,36 @@ class DiscreteDistributions(rv_continuous):
     
     def _cdf(self,x):
 
-        cdf_vals = []
+        # cdf_vals = []
 
-        num = 0
-        for p in self.pdf_vals:
-            num+=p
-            cdf_vals.append(num)
+        # num = 0
+        # for p in self.pdf_vals:
+        #     num+=p
+        #     cdf_vals.append(num)
 
-        interp_cdf = interpolate.interp1d(self.variables, cdf_vals)
+        # interpolate.interp1d(self.variables, cdf_vals)
 
-        return interp_cdf(x)
+        # interp_x = interp_cdf(x)
+        # interp_x[self.variables <= self.bounds[0]] = 0
+        # interp_x[self.variables >= self.bounds[1]] = 1
+        # return interp_x
+
+        interp_cdf = []
+        for val in x:
+            interp_cdf.append(interpolate.InterpolatedUnivariateSpline(self.variables, self.pdf_vals).integral(self.bounds[0], val))
+        return numpy.array(interp_cdf)
+
     
     def _ppf(self, x):
-                
+
         inv_interp_cdf = interpolate.interp1d(self._cdf(self.variables), self.variables)
         return inv_interp_cdf(x)
 
     def __init__(self,
                  pdf_vals,
-                 variables):
+                 variables, 
+                 bounds = None):
 
         self.pdf_vals = pdf_vals
         self.variables = variables
+        self.bounds = bounds

@@ -33,15 +33,17 @@ interpolator = manager.get_interpolator_by_name('default')
 
 def stellar_parameter_check(interpolator,feh,t,m1,m2):
 
-
+    
     if numpy.logical_and(numpy.logical_and(feh>-1.014,feh<0.537)
                         ,
                         numpy.logical_and(numpy.logical_and(m1>0.4,m1<1.2),
                                             numpy.logical_and(m2>0.4,m2<1.2))
                     ):
                     age_max_m1=interpolator('radius', m1, feh).max_age
-                    if numpy.logical_and(t>8,(10**t)/1e9<age_max_m1):
-                        return True
+                    return numpy.logical_and(t>8,(10**t)/1e9<age_max_m1)
+    else: return False
+                    # if numpy.logical_and(t>8,(10**t)/1e9<age_max_m1):
+                    #     return True
 
 
 
@@ -52,7 +54,7 @@ if __name__=='__main__':
         for lines in f:
             x=lines.split()
             spin_KIC.append(int(x[0]))
-            spin_dict[x[0]]=dict(value=float(x[5]),sigma=abs(float(6)-float(x[5])))
+            spin_dict[x[0]]=dict(value=float(x[5]),sigma=abs(float(x[6])-float(x[5])))
 
     # win_KIC=[]
     # with open('windemuth_orbital_raw.txt','r') as f:
@@ -157,6 +159,7 @@ if __name__=='__main__':
             'KIC'+'\t'+
             'Porb'+'\t'+
             'spin'+'\t'+
+            'spin_error'+'\t'+
             'eccentricity'+'\t'+
             'feh'+'\t'+
             'age (Gyr)'+'\t'+
@@ -171,8 +174,8 @@ if __name__=='__main__':
             x=lines.split()
             number=x[0]
             KIC=x[1]
-            porb=x[2]
-            PO.append(float(porb))
+            porb=round(float(x[2]), 3)
+            PO.append(porb)
             esinw=float(x[3])
             ecosw=float(x[6])
             eccentricity=numpy.sqrt(esinw**2 + ecosw**2)
@@ -180,9 +183,10 @@ if __name__=='__main__':
             age=(10**(float(x[12])))/1e9
             m1=x[15]
             m2=x[18]
-            spin=x[21]
-            PS.append(float(spin))
-            f_nominal.write(f'{number}\t{KIC}\t{porb}\t{spin}\t{eccentricity}\t{feh}\t{age}\t{m1}\t{m2}\n')
+            spin= round(float(x[21]), 3)
+            spin_error = round(float(x[22]), 3)
+            PS.append(spin)
+            f_nominal.write(f'{number}\t{KIC}\t{porb}\t{spin}\t{spin_error}\t{eccentricity}\t{feh}\t{age}\t{m1}\t{m2}\n')
     f_nominal.close()
 
     # Total Systems with morph<0.5
@@ -200,10 +204,10 @@ if __name__=='__main__':
             for lines in f:
                 x=lines.split()
                 if int(x[1]) in KIC:
-                    feh=float(x[5])
-                    age=float(x[6])
-                    m1=float(x[7])
-                    m2=float(x[8])
+                    feh=float(x[6])
+                    age=float(x[7])
+                    m1=float(x[8])
+                    m2=float(x[9])
                     quantity_radius=interpolator('radius',m1, feh)
                     quantity_lum=interpolator('lum',m1, feh)
                     t_age=numpy.linspace(5e-3,age,1000)
