@@ -423,7 +423,7 @@ if __name__ == '__main__':
                                             )
         if config.reseed:
             _logger.info('Changing Random Seed')
-            sampler_emcee._random_seed()
+            sampler_emcee._random.seed()
         
         sampler_emcee.run_mcmc(initial_state, nsteps=1000, progress=False)
 
