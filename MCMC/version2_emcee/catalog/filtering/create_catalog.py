@@ -153,6 +153,8 @@ if __name__=='__main__':
                                     line='\t'.join(params)
                                     fo.write(line)
                                     fo.write('\n')
+    fo.close()
+
 
     f_nominal=open('nominal_value_catalog.txt','w')
     f_nominal.write('Number'+'\t'+
@@ -166,15 +168,16 @@ if __name__=='__main__':
             'm1'+'\t'+
             'm2'+'\n')
 
-    with open('filtered_spin_catalog.txt','r') as f:
-        next(f)
+    with open('filtered_spin_catalog.txt','r') as f_filtered_spin_catalog:
+        next(f_filtered_spin_catalog)
         PO=[]
         PS=[]
-        for lines in f:
+        for lines in f_filtered_spin_catalog:
             x=lines.split()
             number=x[0]
             KIC=x[1]
-            porb=round(float(x[2]), 3)
+            porb = float(x[2])
+            # porb=round(float(x[2]), 3)
             PO.append(porb)
             esinw=float(x[3])
             ecosw=float(x[6])
@@ -183,8 +186,10 @@ if __name__=='__main__':
             age=(10**(float(x[12])))/1e9
             m1=x[15]
             m2=x[18]
-            spin= round(float(x[21]), 3)
-            spin_error = round(float(x[22]), 3)
+            spin = float(x[21])
+            spin_error = float(x[22])
+            # spin = round(float(x[21]), 3)
+            # spin_error = round(float(x[22]), 3)
             PS.append(spin)
             f_nominal.write(f'{number}\t{KIC}\t{porb}\t{spin}\t{spin_error}\t{eccentricity}\t{feh}\t{age}\t{m1}\t{m2}\n')
     f_nominal.close()
@@ -215,7 +220,7 @@ if __name__=='__main__':
                     T=TeffK(quantity_radius,quantity_lum)(age)
                     I=interpolator('iconv',m1,feh)
                     if min(I(t_age))>0:
-                        print(x[1])
+                        # print(x[1])
                         fnew.write(lines)
                         # print(f'System {x[0]} Temp = {T} M1 = {m1} feh = {feh} age = {age}')
                     # except:
@@ -223,7 +228,6 @@ if __name__=='__main__':
 
 
 
-# print(library.z_from_feh(-0.1309375573239616))
 
 # PO,PS=sorted(PO),sorted(PS)
 # print(max(PO))
