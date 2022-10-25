@@ -11,7 +11,7 @@
         "spin_period": "24.83",
         "spin_error": "2.224",
         "eccentricity": "0.2918038694956946",
-        "discard": "both"
+        "discard": "None"
     },
     "10330495": {
         "orbital_period": "18.06",
@@ -46,7 +46,7 @@
         "spin_period": "3.052",
         "spin_error": "0.054",
         "eccentricity": "0.02234790235270929",
-        "discard": "None"
+        "discard": "lower"
     },
     "11228612": {
         "orbital_period": "2.98",
@@ -130,14 +130,14 @@
         "spin_period": "20.287",
         "spin_error": "5.38",
         "eccentricity": "0.0038422015645451094",
-        "discard": "both"
+        "discard": "None"
     },
     "4815612": {
         "orbital_period": "3.857",
         "spin_period": "3.702",
         "spin_error": "0.083",
         "eccentricity": "2.1817146464545558e-06",
-        "discard": "None"
+        "discard": "lower"
     },
     "4839180": {
         "orbital_period": "8.853",
@@ -179,7 +179,7 @@
         "spin_period": "8.603",
         "spin_error": "0.505",
         "eccentricity": "0.025146347085159934",
-        "discard": "both"
+        "discard": "None"
     },
     "8580438": {
         "orbital_period": "6.496",
@@ -375,7 +375,7 @@
         "spin_period": "17.319",
         "spin_error": "0.332",
         "eccentricity": "0.016255915382467494",
-        "discard": "upper"
+        "discard": "None"
     },
     "6312521": {
         "orbital_period": "3.016",
@@ -508,6 +508,13 @@
         "spin_period": "9.411",
         "spin_error": "0.287",
         "eccentricity": "0.027474800561759074",
+        "discard": "None"
+    },
+    "9971475": {
+        "orbital_period": "5.357",
+        "spin": "1.98",
+        "spin_error": "0.012",
+        "eccentricity": "0.00046424641835245346",
         "discard": "None"
     }
 }

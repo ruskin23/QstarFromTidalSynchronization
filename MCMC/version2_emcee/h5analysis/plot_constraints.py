@@ -157,7 +157,6 @@ def figure_1():
         system_kic = f.read().split('\n')
     if '' in system_kic:
         system_kic.remove('')
-        system_kic.remove('9971475')
     print(system_kic)
     # system_chunks = [system_kic[i:i+4] for i in range(0, len(system_kic), 4)]
     # print(system_chunks)
@@ -177,7 +176,7 @@ def figure_1():
         q.plot_quantile(fig, ax, xlabel = True, ylabel = True)
         q.shade_region(fig, ax)
     # plt.savefig('/home/ruskin/projects/PhDDissertation2022/individual_constraints.pdf', bbox_inches='tight')
-        plt.savefig(f'constraint_{kic}.pdf')
+        plt.savefig(f'plots/individual_constraint_{kic}.pdf')
         plt.close()
 
 def figure_2():
@@ -185,14 +184,7 @@ def figure_2():
     with open('period_dependence/new_stop_systems.txt','r') as f:
         system_kic = f.read().split('\n')
     if '' in system_kic:
-        system_kic.remove('9971475')
-        # system_kic.remove('6029130')
-        # system_kic.remove('11233911')
-        # system_kic.remove('4285087')
-        # system_kic.remove('10385682')
-
         system_kic.remove('')
-    # system_kic=['10936427']
     print(system_kic)
     with open('distributions_dict.json','r') as f:
         dist_dict = json.load(f)
@@ -275,7 +267,7 @@ def figure_2():
         numpy.save(f, pdf_combined_distribution)
         numpy.save(f, combined_percentile_values)
 
-    fig.savefig('combiend_constraints.pdf')
+    fig.savefig('plots/combined_constraints.pdf')
     # plt.savefig('/home/ruskin/projects/PhDDissertation2022/combined_constraints.pdf', bbox_inches='tight')
     plt.close()
 
@@ -311,7 +303,7 @@ def figure_2():
     ax2.set_xlim((5,12))
     
 
-    plt.savefig('comparison_common.pdf', bbox_inches='tight')
+    plt.savefig('plots/comparison.pdf', bbox_inches='tight')
     plt.close()
     print(percentiles_bestQ, median_Q)
 
@@ -422,7 +414,9 @@ def figure_3():
 
 if __name__ == '__main__':
 
+    figure_1()
     figure_2()
+    figure_3()
     # with open('combined.npy', 'rb') as f:
     #     pdf_combined_distribution = numpy.load(f)
     #     combined_percentile_values = numpy.load(f)
