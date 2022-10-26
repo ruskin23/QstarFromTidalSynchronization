@@ -37,6 +37,7 @@ run_system() {
         python3 \
             ${SOURCE_DIR}/mcmc_sampler.py \
             --system ${sysid}\
+            --reseed\
             --std_out_err_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.outerr'\
             --logging_fname ${OUTPUT_DIR}'/%(system)s_%(now)s_%(pid)d.log'\
             >\
@@ -46,7 +47,7 @@ run_system() {
 }
 
 
-for SYSID in ; do 
+for SYSID in 5022440 4815612 10031409 11233911 9971475 10385682 8364119 9353182; do 
     run_system $SYSID & 
 done
 
