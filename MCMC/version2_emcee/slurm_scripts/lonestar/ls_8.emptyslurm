@@ -47,7 +47,7 @@ run_system() {
 }
 
 
-for SYSID in 8580438; do 
+for SYSID in; do 
     run_system $SYSID & 
 done
 
