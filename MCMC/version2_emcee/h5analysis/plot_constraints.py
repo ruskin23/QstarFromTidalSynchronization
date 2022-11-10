@@ -138,12 +138,10 @@ class plot_distributions:
         ax.plot(periods, self.QuantilePeriodGrid[2], color='k', linewidth=3)
         ax.plot(periods, self.QuantilePeriodGrid[3], color='k', linewidth=3)
 
-        ax.set_title(r'KIC{} $Porb = {}$ $Pstar = {}\pm{}$'.format(self.system_kic, self.spin_dict['porb'], self.spin_dict['pspin'], self.spin_dict['error']))
+        ax.set_title(r'KIC{}'.format(self.system_kic))
         if xlabel: ax.set_xlabel(r'$\log_{10}{P_{tide}}$')
         if ylabel: ax.set_ylabel(r'$\log_{10}{Q_{\ast}^{\prime}}$')
         ax.set_ylim(5,16)
-        # ax.set_xscale('log')
-        # fig.savefig(f'test.png')
     
     def shade_region(self, fig, ax):
         
@@ -151,23 +149,8 @@ class plot_distributions:
         ax.vlines(self.period_RightBound, 5, 16, colors='k', linestyles='--' )
         ax.fill_between(self.period_BestRange, self.QuantilePeriodGrid[-1][self.QuantilePeriodGrid[-1] < (self.minQ + self.Q_diff)], self.QuantilePeriodGrid[1][self.QuantilePeriodGrid[-1] < (self.minQ + self.Q_diff)])
 
-def figure_1():
+def figure_1(system_kic):
 
-    with open('period_dependence/new_stop_systems.txt','r') as f:
-        system_kic = f.read().split('\n')
-    if '' in system_kic:
-        system_kic.remove('')
-    print(system_kic)
-    # system_chunks = [system_kic[i:i+4] for i in range(0, len(system_kic), 4)]
-    # print(system_chunks)
-
-    # for k,chunk in enumerate(system_chunks):
-
-    # fig = plt.figure(figsize=(15,15))
-    # fig.subplots_adjust(hspace=0.5)
-    # print(f'\nchunk = {k}')
-
-    
     for i, kic in enumerate(system_kic):
         fig, ax = plt.subplots(1,1)
         print(f'system = {kic}')
@@ -175,16 +158,14 @@ def figure_1():
         # ax = plt.subplots(1,1)
         q.plot_quantile(fig, ax, xlabel = True, ylabel = True)
         q.shade_region(fig, ax)
-    # plt.savefig('/home/ruskin/projects/PhDDissertation2022/individual_constraints.pdf', bbox_inches='tight')
+        # plt.savefig('/home/ruskin/projects/PhDDissertation2022/individual_constraints.pdf', bbox_inches='tight')
+        plt.savefig(f'plots/individual_constraint_{kic}.png')
         plt.savefig(f'plots/individual_constraint_{kic}.pdf')
         plt.close()
 
-def figure_2():
+def figure_2(system_kic):
 
-    with open('period_dependence/new_stop_systems.txt','r') as f:
-        system_kic = f.read().split('\n')
-    if '' in system_kic:
-        system_kic.remove('')
+    
     print(system_kic)
     with open('distributions_dict.json','r') as f:
         dist_dict = json.load(f)
@@ -267,6 +248,7 @@ def figure_2():
         numpy.save(f, pdf_combined_distribution)
         numpy.save(f, combined_percentile_values)
 
+    fig.savefig('plots/combined_constraints.png')
     fig.savefig('plots/combined_constraints.pdf')
     # plt.savefig('/home/ruskin/projects/PhDDissertation2022/combined_constraints.pdf', bbox_inches='tight')
     plt.close()
@@ -303,6 +285,7 @@ def figure_2():
     ax2.set_xlim((5,12))
     
 
+    plt.savefig('plots/comparison.png', bbox_inches='tight')
     plt.savefig('plots/comparison.pdf', bbox_inches='tight')
     plt.close()
     print(percentiles_bestQ, median_Q)
@@ -352,7 +335,9 @@ def figure_3():
 
     
 
-    plt.savefig('/home/ruskin/projects/PhDDissertation2022/comparison_common.pdf', bbox_inches='tight')
+    # plt.savefig('/home/ruskin/projects/PhDDissertation2022/comparison_common.pdf', bbox_inches='tight')
+    plt.savefig('plot/comparison_common.png')
+    plt.savefig('plot/comparison_common.pdf')
     plt.close()
     print(percentiles_bestQ, median_Q)
 
@@ -414,50 +399,13 @@ def figure_3():
 
 if __name__ == '__main__':
 
-    figure_1()
-    figure_2()
+    with open('convergence.json') as jsonfile:
+        system_info = json.load(jsonfile)
+    converged_system = []
+    for keys, values in system_info.items():
+        if values['converged'] == 'True':
+            converged_system.append(keys)
+
+    figure_1(converged_system)
+    figure_2(converged_system)
     figure_3()
-    # with open('combined.npy', 'rb') as f:
-    #     pdf_combined_distribution = numpy.load(f)
-    #     combined_percentile_values = numpy.load(f)
-    
-    # upper_two_sigma = combined_percentile_values[3]
-    # print(upper_two_sigma)
-    # periods = numpy.linspace(numpy.log10(0.5), numpy.log10(50), 50)
-    # for cpv in combined_percentile_values:
-    #     plt.plot(periods[upper_two_sigma < 17], cpv[upper_two_sigma < 17])
-    # plt.savefig('test.png')
-
-    # with open('all_pdf_data.pickle','rb') as f:
-    #     D=pickle.load(f)
-    
-    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version1_metropolis_hasting/SpinlogQCatalog_el0.4.txt', 'r') as f:
-    #     next(f)
-    #     for lines in f:
-    #         x = lines.split()
-    #         if kic == x[1]:
-    #             system_number = x[0]
-    # x = numpy.linspace(5, 12, 100000)
-    # f_Z = interpolate.InterpolatedUnivariateSpline(x, D[system_number]).integral(5,12)
-    # f = D[system_number]/f_Z
-    # f /= max(f)
-
-    
-    #dump dictionaries to json. 
-    # data_dict = {}
-    # with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt') as f:
-    #     next(f)
-    #     for line in f:
-    #         x=line.split()
-            
-    #         kic_dict = {}
-    #         kic_dict['orbital_period'] = x[2]
-    #         kic_dict['spin_period'] = x[3]
-    #         kic_dict['spin_error'] = x[4]
-    #         kic_dict['eccentricity'] = x[5]
-    #         kic_dict['discard'] = 'None'
-
-    #         data_dict[x[1]] = kic_dict
-
-    # with open('distributions_dict.json','w') as f:
-    #     json.dump(data_dict, f, indent=4)

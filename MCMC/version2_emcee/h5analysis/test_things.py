@@ -1,4 +1,3 @@
-from turtle import numinput
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -31,6 +30,9 @@ def scatter_hist(x, y, ax, ax_histy):
     plt.savefig('test.png')
 
 
+def test_dict(dict_a):
+
+    dict_a['2'] = dict_a['2'][5:]
 # Start with a square Figure.
 # fig = plt.figure(figsize=(6, 6))
 # Add a gridspec with two rows and two columns and a ratio of 1 to 4 between
@@ -44,10 +46,40 @@ def scatter_hist(x, y, ax, ax_histy):
 # scatter_hist(x, y, ax, ax_histy)
 
 
-state = np.random.get_state()
-random_state = np.random.RandomState()
-random_state.set_state(state)
-print(random_state.get_state())
-random_state.seed()
-print(random_state.get_state())
+# state = np.random.get_state()
+# random_state = np.random.RandomState()
+# random_state.set_state(state)
+# print(random_state.get_state())
+# random_state.seed()
+# print(random_state.get_state())
 
+
+
+# a = dict()
+# a['1'] = 4
+# a['2'] = np.array([1,2,3,4,5,6,7,8,9,10])
+
+# print(a)
+# test_dict(a)
+# print(a)
+
+
+# a = np.random.rand(4,4)
+# print(a)
+# b = np.random.rand(4,4) - 0.5
+# print(b)
+
+# c = np.empty(np.shape(a))
+
+# c[b<0] = a[b<0]*10
+# c[b>0] = a[b>0]*0.1
+
+# print(c)
+
+# print(b<0)
+
+a = np.random.rand(4,4)
+print(a)
+for i,b in enumerate(a):
+    for j in range(len(b)):
+        print(a[i,j])
