@@ -1,6 +1,8 @@
 import numpy
 from scipy import special, interpolate
 from scipy.stats import rv_continuous
+from KDEpy import FFTKDE
+
 
 def erf_fun(x):
     return 0.5*(1+special.erf(x/numpy.sqrt(2)))
@@ -35,7 +37,12 @@ class kernel_gauss():
 
         K_c = erf_fun(u/self.bandwidth)
 
-        return K_c         
+        return K_c
+
+def _get_kernel_bandwidth(samples):
+
+    return FFTKDE(kernel='gaussian', bw='silverman').fit(samples).bw
+
 
 class DiscreteSampling(rv_continuous):
 
@@ -51,7 +58,6 @@ class DiscreteSampling(rv_continuous):
                             )
 
     def _pdf(self,x):
-
         return numpy.average(self.kernel.point_pdf(self._kernel_arg(x)),
                             axis=-1,
                             weights=self.weights
@@ -93,21 +99,7 @@ class DiscreteDistributions():
         return interp_pdf(x)
     
     def _cdf(self,x):
-
-        # cdf_vals = []
-
-        # num = 0
-        # for p in self.pdf_vals:
-        #     num+=p
-        #     cdf_vals.append(num)
-
-        # interpolate.interp1d(self.variables, cdf_vals)
-
-        # interp_x = interp_cdf(x)
-        # interp_x[self.variables <= self.bounds[0]] = 0
-        # interp_x[self.variables >= self.bounds[1]] = 1
-        # return interp_x
-
+        
         interp_cdf = []
         for val in x:
             interp_cdf.append(interpolate.InterpolatedUnivariateSpline(self.variables, self.pdf_vals).integral(self.bounds[0], val))
@@ -126,4 +118,5 @@ class DiscreteDistributions():
 
         self.pdf_vals = pdf_vals
         self.variables = variables
-        self.bounds = bounds
+        if bounds is None:
+            self.bounds = (min(variables), max(variables))
