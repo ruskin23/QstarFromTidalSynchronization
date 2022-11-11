@@ -2,11 +2,11 @@ import numpy
 import sys
 import pickle
 import json
+import os
 
 from multiprocessing import Pool
 
 import argparse
-import logging
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -24,7 +24,6 @@ _working_directory = path.mcmc_directory + '/h5analysis'
 
 from orbital_evolution.transformations import phase_lag, lgQ
 import utils
-from Logger import setup_process 
 import common_h5_utils
 
 
@@ -53,12 +52,6 @@ def cmd_parser():
                         type=int,
                         default=256,
                         help='number of samples')
-
-    parser.add_argument('--fname_datetime_format', default='%Y%m%d%H%M%S')
-    parser.add_argument('--logging_datetime_format', default=None)
-    parser.add_argument('--std_out_err_fname', default='%(system)s_%(now)s_%(pid)d.err')
-    parser.add_argument('--logging_message_format', default=None)
-    parser.add_argument('--logging_fname', default='%(system)s_%(now)s_%(pid)d.log')
 
     return parser.parse_args()
 
@@ -118,8 +111,6 @@ class joint_distribution():
 
     def get_sample(self, unit_vector):
 
-        _logger = logging.getLogger(__name__)
-
         unit_vector_iter = iter(unit_vector)
         sampled_set = []
 
@@ -128,10 +119,10 @@ class joint_distribution():
             weights[kic] = numpy.ones(self.posterior_dataset[kic]['n_samples'])
 
         for param in _joint_params:
-            _logger.info(f'\nCalculating for param = {param}')
-
+            
+            print(f'\n{os.getpid()}: Calculating for {param}')
             for kic, sample_set in self.posterior_dataset.items():
-                _logger.info(f'\nfor kic = {kic}')
+                print(f'\n{os.getpid()}: Calculating for {kic}')
                 #1 create a joint pdf at some prior value array for each parameter
                 distribution_func = utils.DiscreteSampling(sample_set[param]['samples'], sample_set[param]['bandwidth'])
                 distribution_func.set_weights(weights[kic])
@@ -154,7 +145,6 @@ class joint_distribution():
 
 def create_posterior_dataset(nsamples):
 
-    _logger = logging.getLogger(__name__)
     with open(_working_directory + '/convergence.json', 'r') as f:
         convergence_dict = json.load(f)
 
@@ -163,11 +153,8 @@ def create_posterior_dataset(nsamples):
 
     distribution_dict = {}
 
-    _logger.info('Creating Dataset')
     for kic in convergence_dict.keys():
         if convergence_dict[kic]['converged'] == 'True':
-            
-            _logger.info(f'\n\n{kic}')
 
             distribution_dict[kic] = dict()
 
@@ -190,7 +177,6 @@ def create_posterior_dataset(nsamples):
 
 def sample_params(parse_args):
 
-    setup_process(parse_args)
 
     posterior_dataset = create_posterior_dataset(parse_args.nsamples)
 
@@ -199,8 +185,6 @@ def sample_params(parse_args):
     joint = joint_distribution(posterior_dataset, n_prior=parse_args.nsamples)
 
     with Pool(processes=parse_args.nprocs,
-              initializer=setup_process,
-              initargs=[parse_args],
               maxtasksperchild=1
               ) as pool:
               
