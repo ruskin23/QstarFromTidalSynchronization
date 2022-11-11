@@ -52,6 +52,11 @@ def cmd_parser():
                         type=int,
                         default=256,
                         help='number of samples')
+    
+    parser.add_argument('--pickle',
+                         action='store_true',
+                         default = False,
+                         help='use this if there is a pickle for posterior available')
 
     return parser.parse_args()
 
@@ -143,7 +148,11 @@ class joint_distribution():
 
         return sampled_set
 
-def create_posterior_dataset(nsamples):
+def create_posterior_dataset(parse_args):
+
+    if parse_args.pickle:
+        with open(_working_directory + '/posterior_dataset.pickle', 'rb') as f:
+            return pickle.load(f)
 
     with open(_working_directory + '/convergence.json', 'r') as f:
         convergence_dict = json.load(f)
@@ -170,15 +179,16 @@ def create_posterior_dataset(nsamples):
                 distribution_dict[kic][names]['samples'] = posterior_samples[names].flatten()
                 distribution_dict[kic][names]['prior'] = numpy.linspace(prior_limits[names]['min'], 
                                                                          prior_limits[names]['max'],
-                                                                         nsamples)
+                                                                         parse_args.nsamples)
                 distribution_dict[kic][names]['bandwidth'] = utils._get_kernel_bandwidth(posterior_samples[names].flatten())
 
+    with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
+        pickle.dump(distribution_dict, f)
     return distribution_dict
 
 def sample_params(parse_args):
 
-
-    posterior_dataset = create_posterior_dataset(parse_args.nsamples)
+    posterior_dataset = create_posterior_dataset(parse_args)
 
     unit_vector = [numpy.random.rand(2) for i in range(parse_args.nsamples)]
 
@@ -197,4 +207,4 @@ def sample_params(parse_args):
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
-    sample_params(parse_args)
+    create_posterior_dataset(parse_args)

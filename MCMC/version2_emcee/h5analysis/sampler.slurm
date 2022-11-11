@@ -29,6 +29,7 @@ OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/sampler
 python3 ${SOURCE_DIR}/samples_analysis.py \
         --nprocs 16\
         --nsamples 32 \
+        --pickle \
         > \ 
         ${OUTPUT_DIR}/sampler.outerr \ 
         2>&1 \ 
