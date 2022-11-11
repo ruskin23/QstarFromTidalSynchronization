@@ -7,13 +7,14 @@ converged_list_kalo_plots = ['11147276', '10091257', '5022440', '5802470', '4815
 all_systems = glob.glob('*.h5')
 all_systems = [k.split('.')[0].split('_')[1] for k in all_systems]
 
+low_standard_deviation = ['5022440', '4678171', '8957954', '7838639', '4815612', '7987749', '7362852', '5393558', '10936427', '4839180']
 
 def kalo_converged_list():
 
     not_converged = []
     converged = []
     for kic in all_systems:
-        if kic not in converged_list_kalo_plots:
+        if kic not in converged_list_kalo_plots or kic in low_standard_deviation:
             not_converged.append(kic)
         else: converged.append(kic)
 
@@ -25,7 +26,7 @@ def kalo_converged_list():
     for i in range(0, len(converged), 8):
         print(' '.join(converged[i:i+8]))
 
-
+    return (converged, not_converged)
 
 def local_converged_list():
 
@@ -65,7 +66,15 @@ def local_converged_list():
 
 if __name__ == '__main__':
 
-    kalo_converged_list()
+    # kalo_converged, kalo_not_converged = kalo_converged_list()
 
+    local_converged_list()
+
+#not
 # 5022440 4678171 8957954 7838639 4815612 7987749 7362852 5393558
 # 10936427 4839180
+
+#done from kalo plots
+# 12004679 4285087 9971475 10091257 10215422 4773155 5802470 11147276
+# 3348093 5652260 11232745 10031409 10385682 8984706 8364119 9353182
+# 3241344 6949550 6927629 10330495 8543278 10711913

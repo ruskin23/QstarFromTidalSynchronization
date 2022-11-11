@@ -21,6 +21,9 @@ _blob_names = ['primary_mass',
                'alpha',
                'break_period']
 
+_period_limts = [numpy.log10(0.5),numpy.log10(50),50]
+_tidal_periods = numpy.linspace(float(_period_limts[0]), float(_period_limts[1]), int(_period_limts[2]))
+
 def get_max_burn_in(kic):
 
     burnins = []
@@ -32,6 +35,22 @@ def get_max_burn_in(kic):
             for i in [3,6,9,12]:
                 burnins.append(int(x[i].split('/')[0]))
     return max(burnins)
+
+def best_constraint_period(kic):
+
+    min_diff = 1e5
+    with open(f'period_dependence/{kic}.txt','r') as f:
+        next(f)
+        for idx, lines in enumerate(f):
+            x = lines.split()
+            diff = float(x[10]) - float(x[1])
+            period = float(x[0])
+            if idx == 0 or diff < min_diff:
+                min_period = period
+                min_diff = diff
+    
+    return 10**min_period
+
 
 def finite_posterior_samples(kic):
 
@@ -127,5 +146,4 @@ def get_dissipation_samples(posterior_samples,
     
     return (dissipation_samples, lgQ_samples)
 
-    
 

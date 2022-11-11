@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
+
 
 # Fixing random state for reproducibility
 np.random.seed(19680801)
@@ -78,8 +80,20 @@ def test_dict(dict_a):
 
 # print(b<0)
 
-a = np.random.rand(4,4)
-print(a)
-for i,b in enumerate(a):
-    for j in range(len(b)):
-        print(a[i,j])
+# a = np.random.rand(4,4)
+# print(a)
+# for i,b in enumerate(a):
+#     for j in range(len(b)):
+#         print(a[i,j])
+
+
+test_tup = [(1,2), (3,4), (5,6), (7,8), (9,10)]
+f = open('test.pickle', 'wb')
+pickle.dump(test_tup, f)
+f.close()
+
+
+f = open('test.pickle', 'rb')
+test_tup = pickle.load(f)
+print(test_tup)
+f.close()
