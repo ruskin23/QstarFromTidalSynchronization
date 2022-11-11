@@ -207,4 +207,4 @@ def sample_params(parse_args):
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
-    create_posterior_dataset(parse_args)
+    sample_params(parse_args)
