@@ -87,13 +87,31 @@ def test_dict(dict_a):
 #         print(a[i,j])
 
 
-test_tup = [(1,2), (3,4), (5,6), (7,8), (9,10)]
-f = open('test.pickle', 'wb')
-pickle.dump(test_tup, f)
-f.close()
+# test_tup = [(1,2), (3,4), (5,6), (7,8), (9,10)]
+# f = open('test.pickle', 'wb')
+# pickle.dump(test_tup, f)
+# f.close()
 
 
-f = open('test.pickle', 'rb')
-test_tup = pickle.load(f)
-print(test_tup)
-f.close()
+# f = open('test.pickle', 'rb')
+# test_tup = pickle.load(f)
+# print(test_tup)
+# f.close()
+
+# f = open('sampled_params.pickle', 'rb')
+# tup_array = pickle.load(f)
+# print(tup_array)
+
+
+x = np.arange(4)
+y = np.arange(4)
+
+xx, yy = np.meshgrid(x, y)
+print(xx)
+print(yy)
+
+diff = np.squeeze(xx - yy )
+print(diff)
+
+avg = np.average(diff, axis = -1)
+print(avg)

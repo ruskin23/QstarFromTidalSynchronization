@@ -6,7 +6,7 @@
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/sampler/sampler.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
-#SBATCH -t 04:00:00
+#SBATCH -t 2*00:00:00
 #SBATCH -p normal
 
 module load intel/19.1.1

@@ -131,12 +131,6 @@
         "step_diff": "173",
         "converged": "True"
     },
-    "6029130": {
-        "max_burn_in": "4759",
-        "max_step": "13138",
-        "step_diff": "8379",
-        "converged": "True"
-    },
     "11252617": {
         "max_burn_in": "717",
         "max_step": "156",

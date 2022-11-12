@@ -208,3 +208,11 @@ if __name__ == '__main__':
 
     parse_args = cmd_parser()
     sample_params(parse_args)
+
+
+    #     "6029130": {
+    #     "max_burn_in": "4759",
+    #     "max_step": "13138",
+    #     "step_diff": "8379",
+    #     "converged": "True"
+    # },
