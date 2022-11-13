@@ -3,6 +3,7 @@ import sys
 import pickle
 import json
 import os
+import logging
 
 from multiprocessing import Pool
 
@@ -13,7 +14,7 @@ import matplotlib.pyplot as plt
 import corner
 
 from pathlib import Path
-from directories import directories
+from result_analysis_directories import directories
 
 home_dir=str(Path.home())
 path=directories(home_dir)
@@ -59,6 +60,13 @@ def cmd_parser():
                     default=256,
                     help='dimensinon of prior grid')
     
+    parser.add_argument('--logging_path',
+                    default=path.scratch_directory + '/sampling_output/sampler',
+                    help='output directory')
+
+    parser.add_argument('--std_out_err_path',
+                    default=path.scratch_directory + '/sampling_output/sampler',
+                    help='output directory')
 
     
     parser.add_argument('--pickle',
@@ -112,6 +120,7 @@ class joint_distribution():
                  posterior_dataset,
                  n_prior = 1000):
 
+        self._logger = logging.getLogger(__name__)
         self.posterior_dataset = posterior_dataset.copy()
         # del posterior_dataset['6029130']
         self.n_prior = n_prior
@@ -134,11 +143,12 @@ class joint_distribution():
 
         for param in _joint_params:
             
-            print(f'\n{os.getpid()}: Calculating for {param}')
+            self._logger.info(f'Calculating for {param}')
             for kic, sample_set in self.posterior_dataset.items():
-                print(f'\n{os.getpid()}: Calculating for {kic}')
+                self._logger.info(f'Calculating for {kic}')
                 #1 create a joint pdf at some prior value array for each parameter
                 distribution_func = utils.DiscreteSampling(sample_set[param]['samples'], sample_set[param]['bandwidth'])
+                self._logger.info('Assignging weights')
                 distribution_func.set_weights(weights[kic])
                 self.posterior_dataset[kic]['updated_weight_func'] = distribution_func
                 self.param_pdf *= distribution_func._pdf(sample_set[param]['prior'])
@@ -205,6 +215,7 @@ def sample_params(parse_args):
 
     with Pool(processes=parse_args.nprocs,
               initializer=setup_logging,
+              initargs=parse_args,
               maxtasksperchild=1
               ) as pool:
               

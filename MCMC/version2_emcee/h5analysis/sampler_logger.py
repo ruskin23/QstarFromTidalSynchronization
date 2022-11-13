@@ -1,11 +1,12 @@
 import logging
 import os
 
-def setup_logging():
+
+def setup_logging(parse_args):
 
     pid = os.getpid()
 
-    std_out_err_fname = f'{pid}.outerr'
+    std_out_err_fname = parse_args.std_out_err_path + f'/{pid}.err'
 
     io_destination = os.open(
         std_out_err_fname,
@@ -16,7 +17,7 @@ def setup_logging():
     os.dup2(io_destination, 2)
 
 
-    logging_fname = f'{pid}.log'
+    logging_fname = parse_args.logging_path + f'/{pid}.log'
 
     for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
