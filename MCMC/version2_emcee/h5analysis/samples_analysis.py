@@ -134,8 +134,9 @@ class joint_distribution():
 
     def get_sample(self, unit_vector):
 
+        self._logger.info(f'\n\nSAMPLING RANDOM VALUE AT UNIT VECTOR: {unit_vector}')
         unit_vector_iter = iter(unit_vector)
-        sampled_set = []
+        sampled_tup = []
 
         weights = {}
         for kic in self.posterior_dataset.keys():
@@ -143,29 +144,42 @@ class joint_distribution():
 
         for param in _joint_params:
             
-            self._logger.info(f'Calculating for {param}')
+            self._logger.info(f'\nCalculating for {param}')
             for kic, sample_set in self.posterior_dataset.items():
-                self._logger.info(f'Calculating for {kic}')
+
+                self._logger.info(f'\nCalculating for {kic}')
                 #1 create a joint pdf at some prior value array for each parameter
                 distribution_func = utils.DiscreteSampling(sample_set[param]['samples'], sample_set[param]['bandwidth'])
+
                 self._logger.info('Assignging weights')
                 distribution_func.set_weights(weights[kic])
                 self.posterior_dataset[kic]['updated_weight_func'] = distribution_func
-                self.param_pdf *= distribution_func._pdf(sample_set[param]['prior'])
+
+                self._logger.info('Updating pdf grid')
+                for i, prior_val in enumerate(sample_set[param]['prior']):
+                    self.param_pdf[i] *= distribution_func._pdf(prior_val)
+                # self.param_pdf *= distribution_func._pdf(sample_set[param]['prior'])
 
             #2 normalize pdf
+            self._logger.info('Normalizing join pdf')
             normalization = utils._normalization_constant(sample_set[param]['prior'], self.param_pdf, min(sample_set[param]['prior']), max(sample_set[param]['prior']))
+
+            self._logger.info(f'Normalization Constant = {normalization}')
             self.param_pdf /= normalization
 
             #3 sample a value corresponding to unit cube from the discrete joint pdf
+            self._logger.info('Sampling at random unit value')
             discrete_distribution = utils.DiscreteDistributions(self.param_pdf, sample_set[param]['prior'])
             param_sampled = discrete_distribution._ppf(next(unit_vector_iter))
-            sampled_set.append(param_sampled)
+
+            self._logger.info(f'Sampled {param_sampled} for {param}')
+            sampled_tup.append(param_sampled)
 
             #4Update weigths for individual kic given the sampled parameter for the next param
+            self._logger.info('Updating Weights')
             self.update_weights(weights, param_sampled)
 
-        return sampled_set
+        return sampled_tup
 
 def create_posterior_dataset(parse_args):
 
@@ -215,7 +229,7 @@ def sample_params(parse_args):
 
     with Pool(processes=parse_args.nprocs,
               initializer=setup_logging,
-              initargs=parse_args,
+              initargs=[parse_args],
               maxtasksperchild=1
               ) as pool:
               

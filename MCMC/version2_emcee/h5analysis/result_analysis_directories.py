@@ -12,5 +12,4 @@ class directories:
         if home_dir=='/home1/06850/rpatel23':
             self.poet_path=home_dir+'/poet'
             self.mcmc_directory=home_dir+self.git_dir
-            self.binary_directory=home_dir+self.binary_dir
             self.scratch_directory='/work/06850/rpatel23/ls6/scratch'

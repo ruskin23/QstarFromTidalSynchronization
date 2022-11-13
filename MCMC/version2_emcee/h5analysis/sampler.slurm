@@ -6,8 +6,8 @@
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/sampler/sampler.out
 #SBATCH --mail-user=rxp163130@utdallas.edu
 #SBATCH --mail-type=all
-#SBATCH -t 01:00:00
-#SBATCH -p development
+#SBATCH -t 2-00:00:00
+#SBATCH -p normal
 
 module load intel/19.1.1
 module load boost
@@ -26,4 +26,4 @@ SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emc
 OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
 OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/sampler
 
-python3 ${SOURCE_DIR}/samples_analysis.py --nprocs 64 --nsamples 10000 --npriors 1000 --pickle >${OUTPUT_DIR}/sampler.outerr 2>&1
+python3 ${SOURCE_DIR}/samples_analysis.py --nprocs 96 --nsamples 10000 --npriors 1000 --pickle >${OUTPUT_DIR}/sampler.outerr 2>&1
