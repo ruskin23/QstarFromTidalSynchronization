@@ -105,6 +105,7 @@ class joint_distribution():
                  n_prior = 1000):
 
         self.posterior_dataset = posterior_dataset
+        del posterior_dataset['6029130']
         self.n_prior = n_prior
         self.param_pdf = numpy.ones(n_prior, dtype=float)
         

@@ -98,9 +98,9 @@ def test_dict(dict_a):
 # print(test_tup)
 # f.close()
 
-# f = open('sampled_params.pickle', 'rb')
-# tup_array = pickle.load(f)
-# print(tup_array)
+f = open('sampled_params.pickle', 'rb')
+tup_array = pickle.load(f)
+print(tup_array)
 
 
 x = np.arange(4)
