@@ -27,19 +27,19 @@ class kernel_gauss():
 
         y = u/self.bandwidth
 
-        kernel_grid = numpy.zeros(y.shape, dtype=float)
+        # kernel_grid = numpy.zeros(y.shape, dtype=float)
 
-        for i, y_vector in enumerate(y):
+        # for i, y_vector in enumerate(y):
             
-            kernel_grid[i] = ( 1
-                               /
-                               (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
-                            ) * numpy.exp(-0.5*y_vector*y_vector)
+        #     kernel_grid[i] = ( 1
+        #                        /
+        #                        (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
+        #                     ) * numpy.exp(-0.5*y_vector*y_vector)
 
-        # K_h = ( 1
-        #         /
-        #         (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
-        #         ) * numpy.exp(-0.5*y*y)
+        kernel_grid = ( 1
+                /
+                (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
+                ) * numpy.exp(-0.5*y*y)
 
         return kernel_grid
     
@@ -75,14 +75,22 @@ class DiscreteSampling(rv_continuous):
     def get_norm(self,x):
 
         y = self._kernel_arg(x)/self._width
+    
+        Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
 
-        norm_grid = numpy.zeros(y.shape, dtype=float)
+        return Z*numpy.exp(-0.5*y*y)
 
-        for i, y_vector in enumerate(y):
-            Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
-            norm_grid[i] = Z*numpy.exp(-0.5*y_vector*y_vector)
 
-        return norm_grid
+
+        # y = self._kernel_arg(x)/self._width
+
+        # norm_grid = numpy.zeros(y.shape, dtype=float)
+
+        # for i, y_vector in enumerate(y):
+        #     Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
+        #     norm_grid[i] = Z*numpy.exp(-0.5*y_vector*y_vector)
+
+        # return norm_grid
 
 
 
