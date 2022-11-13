@@ -25,6 +25,7 @@ _working_directory = path.mcmc_directory + '/h5analysis'
 from orbital_evolution.transformations import phase_lag, lgQ
 import utils
 import common_h5_utils
+from sampler_logger import setup_logging
 
 
 _joint_params = ['alpha', 'break_period']
@@ -203,6 +204,7 @@ def sample_params(parse_args):
     joint = joint_distribution(posterior_dataset, n_prior=parse_args.npriors)
 
     with Pool(processes=parse_args.nprocs,
+              initializer=setup_logging,
               maxtasksperchild=1
               ) as pool:
               
