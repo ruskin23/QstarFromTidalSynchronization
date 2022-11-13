@@ -55,6 +55,15 @@ if __name__=='__main__':
             x=lines.split()
             spin_KIC.append(int(x[0]))
             spin_dict[x[0]]=dict(value=float(x[5]),sigma=abs(float(x[6])-float(x[5])))
+    n = 0
+    with open('windemuth_orbital_raw.txt', 'r') as f:
+        next(f)
+        next(f)
+        for lines in f:
+            x = lines.split()
+            print(x[0])
+            if x[0] in spin_KIC:n+=1
+    print(n)
 
     # win_KIC=[]
     # with open('windemuth_orbital_raw.txt','r') as f:

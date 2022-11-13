@@ -1,7 +1,4 @@
-from os import system
-from statistics import quantiles
 import numpy
-from utils import erf_fun
 import logging
 import pickle
 
@@ -86,50 +83,6 @@ class prior_transform:
             sampled_value.append(sampled)
         
         return sampled_value
-
-
-    # def paramter_evaluate(self,uniform_values):
-
-    #     Z_cdf=0.0
-    #     for s in self.Z_samples:
-    #         z=(self.Z_prior-s)/self.h_Z
-    #         Z_cdf+=erf_fun(z)
-    #     Z_cdf/=len(self.Z_samples)
-    #     Z_cdf_interp = interp1d(Z_cdf,self.Z_prior)
-
-    #     if uniform_values[0]<min(Z_cdf):Z_value=min(self.Z_samples)
-    #     elif uniform_values[0]>max(Z_cdf):Z_value=max(self.Z_samples)
-    #     else:Z_value=Z_cdf_interp(uniform_values[0])
-    #     Z_p=numpy.exp(-0.5*(((Z_value-self.Z_samples)/self.h_Z)**2))
-
-    #     q=(self.Q_prior[None,:]-self.Q_samples[:,None])/self.h_Q
-    #     erfq=erf_fun(q)
-    #     F_Q=numpy.dot(Z_p,erfq)
-    #     F_Q/=F_Q.max()
-    #     Q_value=self.Q_prior[numpy.argmin(abs(F_Q-uniform_values[1]))]
-    #     Q_p=numpy.exp(-0.5*(((Q_value-self.Q_samples)/self.h_Q)**2))
-
-    #     m=(self.M_prior[None,:]-self.M_samples[:,None])/self.h_M
-    #     erfm=erf_fun(m)
-    #     F_M=numpy.dot(Z_p*Q_p,erfm)
-    #     F_M/=F_M.max()
-    #     M_value=self.M_prior[numpy.argmin(abs(F_M-uniform_values[2]))]
-    #     M_p=numpy.exp(-0.5*(((M_value-self.M_samples)/self.h_M)**2))
-
-    #     t=(self.t_prior[None,:]-self.t_samples[:,None])/self.h_t
-    #     erft=erf_fun(t)
-    #     F_t=numpy.dot(Z_p*Q_p*M_p,erft)
-    #     F_t/=F_t.max()
-    #     t_value=self.t_prior[numpy.argmin(abs(F_t-uniform_values[3]))]
-    #     t_p=numpy.exp(-0.5*(((t_value-self.t_samples)/self.h_t)**2))
-
-    #     e=(self.e_prior[None,:]-self.e_samples[:,None])/self.h_e
-    #     erfe=erf_fun(e)
-    #     F_e=numpy.dot(Z_p*Q_p*M_p*t_p,erfe)
-    #     F_e/=F_e.max()
-    #     e_value=self.e_prior[numpy.argmin(abs(F_e-uniform_values[4]))]
-
-    #     return [Z_value,M_value,Q_value,t_value,e_value] 
 
 
 

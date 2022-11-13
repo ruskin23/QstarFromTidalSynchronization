@@ -3,21 +3,35 @@ import numpy
 
 
 
-spin_grid = numpy.empty((73,3))
-with open('nominal_value_catalog_Iconv_cutoff.txt', 'r') as f:
-    next(f)
-    for i, lines in enumerate(f):
-        x = lines.split()
-        spin_grid[i] = numpy.array([k for k in [x[2],x[3],x[4]]])
+# spin_grid = numpy.empty((73,3))
+# with open('nominal_value_catalog_Iconv_cutoff.txt', 'r') as f:
+#     next(f)
+#     for i, lines in enumerate(f):
+#         x = lines.split()
+#         spin_grid[i] = numpy.array([k for k in [x[2],x[3],x[4]]])
 
-spin_grid = numpy.transpose(spin_grid)
+# spin_grid = numpy.transpose(spin_grid)
 
-spin_error_upper = spin_grid[1] + spin_grid[2]
-spin_error_lower = spin_grid[1] - spin_grid[2]
+# spin_error_upper = spin_grid[1] + spin_grid[2]
+# spin_error_lower = spin_grid[1] - spin_grid[2]
 
-plt.scatter(spin_grid[0], numpy.log10(spin_grid[1]/spin_grid[0]), color = 'r')
-plt.plot(spin_grid[0], numpy.zeros(73), color = 'k', linestyle = '--')
-plt.xscale('log')
-plt.savefig('lurie_2017.png')
+# plt.scatter(spin_grid[0], numpy.log10(spin_grid[1]/spin_grid[0]), color = 'r')
+# plt.plot(spin_grid[0], numpy.zeros(73), color = 'k', linestyle = '--')
+# plt.xscale('log')
+# plt.savefig('lurie_2017.png')
         
+
+spin_KIC = []
+with open('/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/catalog/Lurie_data/raw_data.txt','r') as f:
+    for lines in f:
+        x=lines.split()
+        spin_KIC.append(x[0])
+n = 0
+with open('windemuth_orbital_raw.txt', 'r') as f:
+    next(f)
+    next(f)
+    for lines in f:
+        x = lines.split()
+        if x[0] in spin_KIC:n+=1
+print(n)
 

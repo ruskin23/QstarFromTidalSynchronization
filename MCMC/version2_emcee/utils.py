@@ -11,6 +11,9 @@ def _normalization_constant(x, y, a, b):
     return interpolate.InterpolatedUnivariateSpline(x, y).integral(a, b)
 
 
+def _get_kernel_bandwidth(samples):
+    return FFTKDE(kernel='gaussian', bw='silverman').fit(samples).bw
+
 class kernel_gauss():
     """Class to convolve points with a gaussian kernel"""
 
@@ -24,12 +27,21 @@ class kernel_gauss():
 
         y = u/self.bandwidth
 
-        K_h = ( 1
-                /
-                (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
-                ) * numpy.exp(-0.5*y*y)
+        kernel_grid = numpy.zeros(y.shape, dtype=float)
 
-        return K_h
+        for i, y_vector in enumerate(y):
+            
+            kernel_grid[i] = ( 1
+                               /
+                               (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
+                            ) * numpy.exp(-0.5*y_vector*y_vector)
+
+        # K_h = ( 1
+        #         /
+        #         (numpy.sqrt(2*numpy.pi) * self.bandwidth) 
+        #         ) * numpy.exp(-0.5*y*y)
+
+        return kernel_grid
     
 
     def point_cdf(self,u):
@@ -38,10 +50,6 @@ class kernel_gauss():
         K_c = erf_fun(u/self.bandwidth)
 
         return K_c
-
-def _get_kernel_bandwidth(samples):
-
-    return FFTKDE(kernel='gaussian', bw='silverman').fit(samples).bw
 
 
 class DiscreteSampling(rv_continuous):
@@ -88,6 +96,50 @@ class DiscreteSampling(rv_continuous):
         super().__init__(a=(self._samples.min()),
                         b=(self._samples.max()))
 
+
+class DiscreteSamplingTest(rv_continuous):
+
+    def _kernel_arg(self,x):
+        rhs, lhs = numpy.meshgrid(self._samples, x)
+        return numpy.squeeze(lhs - rhs)
+
+    def _cdf(self,x):
+        
+        return numpy.average(self.kernel.point_cdf(self._kernel_arg(x)),
+                            axis=-1,
+                            weights=self.weights
+                            )
+
+    def _pdf(self,x):
+        return numpy.average(self.kernel.point_pdf(self._kernel_arg(x)),
+                            axis=-1,
+                            weights=self.weights
+                            )
+
+
+    def get_norm(self,x):
+
+        y = self._kernel_arg(x)/self._width
+
+        Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
+
+        return Z*numpy.exp(-0.5*y*y)
+
+
+    def set_weights(self,weights):
+        self.weights=weights
+
+    def __init__(self,
+                 samples,
+                 width,
+                 weights=None):
+    
+        self._samples=samples
+        self._width=width
+        self.weights=weights
+        self.kernel=kernel_gauss(width)
+        super().__init__(a=(self._samples.min()),
+                        b=(self._samples.max()))
 
 
 class DiscreteDistributions():        
