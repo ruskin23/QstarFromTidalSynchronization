@@ -26,4 +26,4 @@ SOURCE_DIR=/home1/06850/rpatel23/QstarFromTidalSynchronization/MCMC/version2_emc
 OUTPUT_ROOT=/work/06850/rpatel23/ls6/scratch
 OUTPUT_DIR=${OUTPUT_ROOT}/sampling_output/sampler
 
-python3 ${SOURCE_DIR}/samples_analysis.py --nprocs 128 --nsamples 10000 --npriors 1000 --pickle >${OUTPUT_DIR}/sampler.outerr 2>&1
+python3 ${SOURCE_DIR}/samples_analysis.py --nprocs 64 --nsamples 10000 --npriors 1000 --pickle >${OUTPUT_DIR}/sampler.outerr 2>&1
