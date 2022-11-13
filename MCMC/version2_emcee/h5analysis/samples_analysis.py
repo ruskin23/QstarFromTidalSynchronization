@@ -40,6 +40,8 @@ _blob_names = ['primary_mass',
                'alpha',
                'break_period']
 
+_logger=logging.getLogger(__name__)
+
 
 def cmd_parser():
 
@@ -57,7 +59,7 @@ def cmd_parser():
 
     parser.add_argument('--npriors',
                     type=int,
-                    default=256,
+                    default=1000,
                     help='dimensinon of prior grid')
     
     parser.add_argument('--logging_path',
@@ -122,10 +124,8 @@ class joint_distribution():
 
         self._logger = logging.getLogger(__name__)
         self.posterior_dataset = posterior_dataset.copy()
-        # del posterior_dataset['6029130']
         self.n_prior = n_prior
-        self.param_pdf = numpy.ones(n_prior, dtype=float)
-        
+
     def update_weights(self, weights, sampled):
 
         for kic in self.posterior_dataset.keys():
@@ -134,49 +134,47 @@ class joint_distribution():
 
     def get_sample(self, unit_vector):
 
-        self._logger.info(f'\n\nSAMPLING RANDOM VALUE AT UNIT VECTOR: {unit_vector}')
+        _logger.info(f'\n\nSAMPLING RANDOM VALUE AT UNIT VECTOR: {unit_vector}')
         unit_vector_iter = iter(unit_vector)
         sampled_tup = []
 
         weights = {}
         for kic in self.posterior_dataset.keys():
             weights[kic] = numpy.ones(self.posterior_dataset[kic]['n_samples'])
-
         for param in _joint_params:
-            
-            self._logger.info(f'\nCalculating for {param}')
+
+            self.param_pdf = numpy.ones(self.n_prior, dtype=float)
+
+            _logger.info(f'\nCalculating for {param}')
             for kic, sample_set in self.posterior_dataset.items():
 
-                self._logger.info(f'\nCalculating for {kic}')
+                _logger.info(f'\nCalculating for {kic}')
                 #1 create a joint pdf at some prior value array for each parameter
-                distribution_func = utils.DiscreteSampling(sample_set[param]['samples'], sample_set[param]['bandwidth'])
+                distribution_func = utils.DiscreteSampling(sample_set[param]['samples'], sample_set[param]['bandwidth'])                
 
-                self._logger.info('Assignging weights')
+                _logger.info('Assignging weights')
                 distribution_func.set_weights(weights[kic])
                 self.posterior_dataset[kic]['updated_weight_func'] = distribution_func
 
-                self._logger.info('Updating pdf grid')
+                _logger.info('Updating pdf grid')
                 for i, prior_val in enumerate(sample_set[param]['prior']):
                     self.param_pdf[i] *= distribution_func._pdf(prior_val)
-                # self.param_pdf *= distribution_func._pdf(sample_set[param]['prior'])
 
             #2 normalize pdf
-            self._logger.info('Normalizing join pdf')
+            _logger.info('Normalizing join pdf')
             normalization = utils._normalization_constant(sample_set[param]['prior'], self.param_pdf, min(sample_set[param]['prior']), max(sample_set[param]['prior']))
 
-            self._logger.info(f'Normalization Constant = {normalization}')
+            _logger.info(f'Normalization Constant = {normalization}')
             self.param_pdf /= normalization
 
             #3 sample a value corresponding to unit cube from the discrete joint pdf
-            self._logger.info('Sampling at random unit value')
+            _logger.info('Sampling at random unit value')
             discrete_distribution = utils.DiscreteDistributions(self.param_pdf, sample_set[param]['prior'])
             param_sampled = discrete_distribution._ppf(next(unit_vector_iter))
-
-            self._logger.info(f'Sampled {param_sampled} for {param}')
             sampled_tup.append(param_sampled)
 
             #4Update weigths for individual kic given the sampled parameter for the next param
-            self._logger.info('Updating Weights')
+            _logger.info('Updating Weights')
             self.update_weights(weights, param_sampled)
 
         return sampled_tup
@@ -212,7 +210,7 @@ def create_posterior_dataset(parse_args):
                 distribution_dict[kic][names]['samples'] = posterior_samples[names].flatten()
                 distribution_dict[kic][names]['prior'] = numpy.linspace(prior_limits[names]['min'], 
                                                                          prior_limits[names]['max'],
-                                                                         parse_args.nsamples)
+                                                                         parse_args.npriors)
                 distribution_dict[kic][names]['bandwidth'] = utils._get_kernel_bandwidth(posterior_samples[names].flatten())
 
     with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
@@ -235,10 +233,8 @@ def sample_params(parse_args):
               
               sampled = pool.map(joint.get_sample, unit_vector)
 
-    with open(_working_directory + '/sampled_params.pickle', 'wb') as f:
+    with open(_working_directory + '/sampled_params_test.pickle', 'wb') as f:
         pickle.dump(sampled, f)
-
-
 
 
 if __name__ == '__main__':    
@@ -246,7 +242,7 @@ if __name__ == '__main__':
     parse_args = cmd_parser()
     sample_params(parse_args)
 
-    # with open('sampled_params.pickle', 'rb') as f:
+    # with open('sampled_params_test.pickle', 'rb') as f:
     #     sampled = pickle.load(f)
 
     # print(numpy.shape(sampled))

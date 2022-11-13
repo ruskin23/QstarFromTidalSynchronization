@@ -7,7 +7,7 @@ class directories:
         if home_dir=='/home/ruskin':
             self.poet_path=home_dir+'/projects/poet'
             self.mcmc_directory=home_dir+'/projects'+self.git_dir
-            self.scratch_directory=home_dir+'/projects'+self.git_dir+'err_output'
+            self.scratch_directory=home_dir+'/projects'+self.git_dir+'/h5analysis/err_output'
 
         if home_dir=='/home1/06850/rpatel23':
             self.poet_path=home_dir+'/poet'

@@ -6,7 +6,7 @@ import h5py
 import glob
 
 from pathlib import Path
-from directories import directories
+from result_analysis_directories import directories
 
 
 home_dir=str(Path.home())

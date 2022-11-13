@@ -104,18 +104,12 @@ def test_dict(dict_a):
 
 
 x = np.arange(4)
-y = np.arange(4)
+y = 4
 
 xx, yy = np.meshgrid(x, y)
 print(xx)
 print(yy)
 
-test = np.zeros(xx.shape, dtype=float)
-print('lol')
-for i, val in enumerate(xx):
-    print(val)
-
-print(xx*yy)
 diff = np.squeeze(xx - yy )
 print(diff)
 
