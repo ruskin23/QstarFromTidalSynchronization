@@ -52,6 +52,13 @@ def cmd_parser():
                         type=int,
                         default=256,
                         help='number of samples')
+
+    parser.add_argument('--npriors',
+                    type=int,
+                    default=256,
+                    help='dimensinon of prior grid')
+    
+
     
     parser.add_argument('--pickle',
                          action='store_true',
@@ -193,7 +200,7 @@ def sample_params(parse_args):
 
     unit_vector = [numpy.random.rand(2) for i in range(parse_args.nsamples)]
 
-    joint = joint_distribution(posterior_dataset, n_prior=parse_args.nsamples)
+    joint = joint_distribution(posterior_dataset, n_prior=parse_args.npriors)
 
     with Pool(processes=parse_args.nprocs,
               maxtasksperchild=1
@@ -205,11 +212,21 @@ def sample_params(parse_args):
         pickle.dump(sampled, f)
 
 
+
+
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
     sample_params(parse_args)
 
+    # with open('sampled_params.pickle', 'rb') as f:
+    #     sampled = pickle.load(f)
+
+    # print(numpy.shape(sampled))
+
+    # figure = corner.corner(sampled)
+
+    # plt.savefig('temp.png')
 
     #     "6029130": {
     #     "max_burn_in": "4759",
