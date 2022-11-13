@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J emcee_1
+#SBATCH -J sampler_param
 #SBATCH -n 128  #Total number of tasks to run at one time
 #SBATCH -N 1 #Number of nodes on which to distribute the tasks evenly
 #SBATCH -o /work/06850/rpatel23/ls6/scratch/sampling_output/sampler/sampler.out
