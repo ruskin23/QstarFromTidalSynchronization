@@ -76,9 +76,14 @@ class DiscreteSampling(rv_continuous):
 
         y = self._kernel_arg(x)/self._width
 
-        Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
+        norm_grid = numpy.zeros(y.shape, dtype=float)
 
-        return Z*numpy.exp(-0.5*y*y)
+        for i, y_vector in enumerate(y):
+            Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
+            norm_grid[i] = Z*numpy.exp(-0.5*y_vector*y_vector)
+
+        return norm_grid
+
 
 
     def set_weights(self,weights):
@@ -120,7 +125,7 @@ class DiscreteSamplingTest(rv_continuous):
     def get_norm(self,x):
 
         y = self._kernel_arg(x)/self._width
-
+    
         Z = 1 / (self._width*numpy.sqrt(2*(numpy.pi)))
 
         return Z*numpy.exp(-0.5*y*y)
