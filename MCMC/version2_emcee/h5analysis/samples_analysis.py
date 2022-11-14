@@ -29,9 +29,9 @@ import common_h5_utils
 from sampler_logger import setup_logging
 
 
-_joint_params = ['alpha', 'break_period', 'reference_lag']
+_joint_params = ['alpha', 'omega_break', 'reference_lgQ']
 
-_blob_names = ['primary_mass',
+_quantitites = ['primary_mass',
                'secondary_mass', 
                'feh',
                'age',
@@ -86,7 +86,7 @@ def corner_plot(kic, posterior_samples):
                                                 (
                                                     numpy.array([lgQ(lag) for lag in posterior_samples['reference_lag'].flatten()]),
                                                     posterior_samples['alpha'].flatten(), 
-                                                    numpy.log10(2*numpy.pi/posterior_samples['break_period'].flatten())
+                                                    numpy.log10(2*numpy.pi/posterior_samples['omega_break'].flatten())
                                                 )
                                             )
                                         )
@@ -111,7 +111,7 @@ def corner_plot(kic, posterior_samples):
         plt.savefig(_working_directory + f'/plots/2D_alphaQ_{kic}.png')
         plt.close()
 
-        sns.jointplot(x=posterior_samples["break_period"], y=posterior_samples["logQ_best"], kind='hex')
+        sns.jointplot(x=posterior_samples["omega_break"], y=posterior_samples["logQ_best"], kind='hex')
         plt.savefig(_working_directory + f'/plots/2D_breakQ_{kic}.png')
         plt.close()
 
@@ -141,6 +141,7 @@ class joint_distribution():
         weights = {}
         for kic in self.posterior_dataset.keys():
             weights[kic] = numpy.ones(self.posterior_dataset[kic]['n_samples'])
+
         for param in _joint_params:
 
             self.param_pdf = numpy.ones(self.n_prior, dtype=float)
@@ -175,6 +176,7 @@ class joint_distribution():
             _logger.info('Updating Weights')
             self.update_weights(weights, param_sampled)
 
+        _logger.info('Sampling Complete')
         return sampled_tup
 
 def create_posterior_dataset(parse_args):
@@ -186,10 +188,11 @@ def create_posterior_dataset(parse_args):
     with open(_working_directory + '/convergence.json', 'r') as f:
         convergence_dict = json.load(f)
 
-    with open(_working_directory + '/priors.json', 'r') as f:
-        prior_limits = json.load(f)
+    prior_limits = common_h5_utils._priors
 
     distribution_dict = {}
+
+    _quantitites[_quantitites.index('break_period')] = 'omega_break'
 
     for kic in convergence_dict.keys():
         if convergence_dict[kic]['converged'] == 'True':
@@ -200,19 +203,25 @@ def create_posterior_dataset(parse_args):
             common_h5_utils.converged_samples(kic, posterior_samples)
 
             posterior_samples['reference_lag'] = posterior_samples['phase_lag_max']
+            posterior_samples['omega_break'] = posterior_samples['break_period']
             del posterior_samples['phase_lag_max']
+            del posterior_samples['break_period']
+
+
             distribution_dict[kic]['n_samples'] = len(posterior_samples['reference_lag'].flatten())
 
-            for names in _blob_names:
+            for names in _quantitites:
                 distribution_dict[kic][names] = dict()
                 distribution_dict[kic][names]['samples'] = posterior_samples[names].flatten()
                 distribution_dict[kic][names]['prior'] = numpy.linspace(prior_limits[names]['min'], 
                                                                          prior_limits[names]['max'],
                                                                          parse_args.npriors)
+                if names == 'omega_break':
+                    distribution_dict[kic][names]['prior'] = numpy.exp(distribution_dict[kic][names]['prior'])
                 distribution_dict[kic][names]['bandwidth'] = utils._get_kernel_bandwidth(posterior_samples[names].flatten())
 
-    # with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
-    #     pickle.dump(distribution_dict, f)
+    with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
+        pickle.dump(distribution_dict, f)
     return distribution_dict
 
 def sample_params(parse_args):
@@ -239,13 +248,12 @@ def plot_parameter_corner(posterior_samples):
     with open(_working_directory + '/convergence.json', 'r') as f:
         convergence_dict = json.load(f)
 
-    systems = []
     for kic in convergence_dict.keys():
         if convergence_dict[kic]['converged'] == 'True': 
 
             alpha = posterior_samples[kic]['alpha']['samples'].flatten()
-            break_period = 2*numpy.pi/posterior_samples[kic]['break_period']['samples'].flatten()
-            break_period = numpy.log10(break_period)
+            omega_break = 2*numpy.pi/posterior_samples[kic]['omega_break']['samples'].flatten()
+            omega_break = numpy.log10(omega_break)
             reference_lag = posterior_samples[kic]['reference_lag']['samples'].flatten()
             lgQ_reference = numpy.array([lgQ(lag) for lag in reference_lag])
             data = numpy.transpose(
@@ -254,15 +262,26 @@ def plot_parameter_corner(posterior_samples):
                                                         (
                                                             lgQ_reference,
                                                             alpha, 
-                                                            break_period
+                                                            omega_break
                                                         )
                                                     )
                                                 )
                                     )
-            # data = numpy.transpose(numpy.vstack((alpha, break_period)))
-            figure = corner.corner(data, axes_scale='log, linear, log')
+            figure = corner.corner(
+                                    data, 
+                                    axes_scale='log, linear, log',
+                                    labels=[
+                                        r"$\log_{10}{Q_{\ast}^{\prime}}$",
+                                        r"$\alpha$",
+                                        r"$\log_{10}{P_{br}}$"
+                                        ],
+                                        quantiles=[0.16, 0.5, 0.84],
+                                        show_titles=True,
+                                        title_kwargs={'fontsize': 12},
+                                        )
 
             plt.savefig(f'plots/alpha_break_{kic}.png')
+            plt.savefig(f'plots/alpha_break_{kic}.pdf')
             plt.close()
 
 
@@ -274,17 +293,28 @@ def plot_parameter_corner(posterior_samples):
     for val in sampled:
         data.append((val[0],numpy.log10(2*numpy.pi/val[1])))
 
-    figure = corner.corner(data, axes_scale='linear, log')
+    figure = corner.corner(
+                            data, 
+                            axes_scale='linear, log',
+                            labels=[
+                                r"$\alpha$",
+                                r"$\log_{10}{P_{br}}$"
+                                ],
+                            quantiles=[0.16, 0.5, 0.84],
+                            show_titles=True,
+                            title_kwargs={'fontsize': 12},
+                            )
 
     plt.savefig(f'plots/alpha_break_combined.png')
+    plt.savefig(f'plots/alpha_break_combined.pdf')
     plt.close()
 
 
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
-    sample_params(parse_args)
-    # posterior = create_posterior_dataset(parse_args)
+    # sample_params(parse_args)
+    posterior = create_posterior_dataset(parse_args)
     # plot_parameter_corner(posterior)
 
 

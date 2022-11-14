@@ -21,7 +21,47 @@ _blob_names = ['primary_mass',
                'alpha',
                'break_period']
 
+_priors = {
+    "primary_mass": {
+        "min": 0.4,
+        "max": 1.2
+    },
+    "secondary_mass": {
+        "min": 0.4,
+        "max": 1.2
+    },
+    "feh": {
+        "min": 0.4,
+        "max": 1.2
+    },
+    "age": {
+        "min": 1e-2,
+        "max": 10
+    },
+    "eccentricity": {
+        "min": 0.0,
+        "max": 0.8
+    },
+    "reference_lag": {
+        "min": 2.984155182973038e-13,
+        "max": 2.984155182973038e-06
+    },
+    "reference_lgQ": {
+        "min": 5,
+        "max": 12
+    },
+    "alpha": {
+        "min": -5,
+        "max": 5
+    },
+    "omega_break": {
+        "min": numpy.log(2*numpy.pi/50),
+        "max": numpy.log(2*numpy.pi/0.5)
+    }
+}
+
 _period_limts = [numpy.log10(0.5),numpy.log10(50),50]
+
 _tidal_periods = numpy.linspace(float(_period_limts[0]), float(_period_limts[1]), int(_period_limts[2]))
 
 def get_max_burn_in(kic):
