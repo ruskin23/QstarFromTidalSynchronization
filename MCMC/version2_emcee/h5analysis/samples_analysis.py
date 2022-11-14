@@ -29,7 +29,7 @@ import common_h5_utils
 from sampler_logger import setup_logging
 
 
-_joint_params = ['alpha', 'break_period']
+_joint_params = ['alpha', 'break_period', 'reference_lag']
 
 _blob_names = ['primary_mass',
                'secondary_mass', 
@@ -163,8 +163,6 @@ class joint_distribution():
             #2 normalize pdf
             _logger.info('Normalizing join pdf')
             normalization = utils._normalization_constant(sample_set[param]['prior'], self.param_pdf, min(sample_set[param]['prior']), max(sample_set[param]['prior']))
-
-            _logger.info(f'Normalization Constant = {normalization}')
             self.param_pdf /= normalization
 
             #3 sample a value corresponding to unit cube from the discrete joint pdf
@@ -213,8 +211,8 @@ def create_posterior_dataset(parse_args):
                                                                          parse_args.npriors)
                 distribution_dict[kic][names]['bandwidth'] = utils._get_kernel_bandwidth(posterior_samples[names].flatten())
 
-    with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
-        pickle.dump(distribution_dict, f)
+    # with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
+    #     pickle.dump(distribution_dict, f)
     return distribution_dict
 
 def sample_params(parse_args):
@@ -233,27 +231,60 @@ def sample_params(parse_args):
               
               sampled = pool.map(joint.get_sample, unit_vector)
 
-    with open(_working_directory + '/sampled_params_test.pickle', 'wb') as f:
+    with open(_working_directory + '/sampled_params.pickle', 'wb') as f:
         pickle.dump(sampled, f)
+
+def plot_parameter_corner(posterior_samples):
+
+    with open(_working_directory + '/convergence.json', 'r') as f:
+        convergence_dict = json.load(f)
+
+    systems = []
+    for kic in convergence_dict.keys():
+        if convergence_dict[kic]['converged'] == 'True': 
+
+            alpha = posterior_samples[kic]['alpha']['samples'].flatten()
+            break_period = 2*numpy.pi/posterior_samples[kic]['break_period']['samples'].flatten()
+            break_period = numpy.log10(break_period)
+            reference_lag = posterior_samples[kic]['reference_lag']['samples'].flatten()
+            lgQ_reference = numpy.array([lgQ(lag) for lag in reference_lag])
+            data = numpy.transpose(
+                                    numpy.vstack(
+                                                    (
+                                                        (
+                                                            lgQ_reference,
+                                                            alpha, 
+                                                            break_period
+                                                        )
+                                                    )
+                                                )
+                                    )
+            # data = numpy.transpose(numpy.vstack((alpha, break_period)))
+            figure = corner.corner(data, axes_scale='log, linear, log')
+
+            plt.savefig(f'plots/alpha_break_{kic}.png')
+            plt.close()
+
+
+    with open('sampled_params_test.pickle', 'rb') as f:
+        sampled = pickle.load(f)
+
+
+    data = []
+    for val in sampled:
+        data.append((val[0],numpy.log10(2*numpy.pi/val[1])))
+
+    figure = corner.corner(data, axes_scale='linear, log')
+
+    plt.savefig(f'plots/alpha_break_combined.png')
+    plt.close()
 
 
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
     sample_params(parse_args)
+    # posterior = create_posterior_dataset(parse_args)
+    # plot_parameter_corner(posterior)
 
-    # with open('sampled_params_test.pickle', 'rb') as f:
-    #     sampled = pickle.load(f)
 
-    # print(numpy.shape(sampled))
-
-    # figure = corner.corner(sampled)
-
-    # plt.savefig('temp.png')
-
-    #     "6029130": {
-    #     "max_burn_in": "4759",
-    #     "max_step": "13138",
-    #     "step_diff": "8379",
-    #     "converged": "True"
-    # },
