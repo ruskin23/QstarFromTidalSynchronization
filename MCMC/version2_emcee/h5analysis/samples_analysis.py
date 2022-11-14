@@ -313,8 +313,8 @@ def plot_parameter_corner(posterior_samples):
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
-    # sample_params(parse_args)
-    posterior = create_posterior_dataset(parse_args)
+    sample_params(parse_args)
+    # posterior = create_posterior_dataset(parse_args)
     # plot_parameter_corner(posterior)
 
 
