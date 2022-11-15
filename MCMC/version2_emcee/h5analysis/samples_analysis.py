@@ -259,53 +259,53 @@ def sample_params(parse_args):
               
               sampled = pool.map(joint.get_sample, unit_vector)
 
-    with open(_working_directory + '/sampled_params.pickle', 'wb') as f:
+    with open(_working_directory + f'/sampled_params{parse_args.nsamples}.pickle', 'wb') as f:
         pickle.dump(sampled, f)
 
-def plot_parameter_corner(posterior_samples):
+def plot_parameter_corner(posterior_samples, pasrse_args):
 
     with open(_working_directory + '/convergence.json', 'r') as f:
         convergence_dict = json.load(f)
 
-    for kic in convergence_dict.keys():
-        if convergence_dict[kic]['converged'] == 'True' and kic != '5393558': 
+    # for kic in convergence_dict.keys():
+    #     if convergence_dict[kic]['converged'] == 'True' and kic != '5393558': 
             
-            print(f'Plotting for kic {kic}')
-            alpha = posterior_samples[kic]['alpha']['samples'].flatten()
-            omega_break = 2*numpy.pi/posterior_samples[kic]['omega_break']['samples'].flatten()
-            omega_break = numpy.log10(omega_break)
-            reference_lag = posterior_samples[kic]['reference_lag']['samples'].flatten()
-            lgQ_reference = numpy.array([lgQ(lag) for lag in reference_lag])
-            data = numpy.transpose(
-                                    numpy.vstack(
-                                                    (
-                                                        (
-                                                            lgQ_reference,
-                                                            alpha, 
-                                                            omega_break
-                                                        )
-                                                    )
-                                                )
-                                    )
-            figure = corner.corner(
-                                    data, 
-                                    axes_scale='log, linear, log',
-                                    labels=[
-                                        r"$\log_{10}{Q_{\ast}^{\prime}}$",
-                                        r"$\alpha$",
-                                        r"$\log_{10}{P_{br}}$"
-                                        ],
-                                        quantiles=[0.16, 0.5, 0.84],
-                                        show_titles=True,
-                                        title_kwargs={'fontsize': 12},
-                                        )
+    #         print(f'Plotting for kic {kic}')
+    #         alpha = posterior_samples[kic]['alpha']['samples'].flatten()
+    #         omega_break = 2*numpy.pi/posterior_samples[kic]['omega_break']['samples'].flatten()
+    #         omega_break = numpy.log10(omega_break)
+    #         reference_lag = posterior_samples[kic]['reference_lag']['samples'].flatten()
+    #         lgQ_reference = numpy.array([lgQ(lag) for lag in reference_lag])
+    #         data = numpy.transpose(
+    #                                 numpy.vstack(
+    #                                                 (
+    #                                                     (
+    #                                                         lgQ_reference,
+    #                                                         alpha, 
+    #                                                         omega_break
+    #                                                     )
+    #                                                 )
+    #                                             )
+    #                                 )
+    #         figure = corner.corner(
+    #                                 data, 
+    #                                 axes_scale='log, linear, log',
+    #                                 labels=[
+    #                                     r"$\log_{10}{Q_{\ast}^{\prime}}$",
+    #                                     r"$\alpha$",
+    #                                     r"$\log_{10}{P_{br}}$"
+    #                                     ],
+    #                                     quantiles=[0.16, 0.5, 0.84],
+    #                                     show_titles=True,
+    #                                     title_kwargs={'fontsize': 12},
+    #                                     )
 
-            plt.savefig(f'plots/alpha_break_{kic}.png')
-            plt.savefig(f'plots/alpha_break_{kic}.pdf')
-            plt.close()
+    #         plt.savefig(f'plots/alpha_break_{kic}.png')
+    #         plt.savefig(f'plots/alpha_break_{kic}.pdf')
+    #         plt.close()
 
 
-    with open('sampled_params_test.pickle', 'rb') as f:
+    with open(f'sampled_params{parse_args.nsamples}.pickle', 'rb') as f:
         sampled = pickle.load(f)
 
 
@@ -337,7 +337,7 @@ if __name__ == '__main__':
     posterior = create_posterior_dataset(parse_args)
 
     if parse_args.sampler: sample_params(parse_args)
-    plot_parameter_corner(posterior)
+    plot_parameter_corner(posterior, parse_args)
     
     
 
