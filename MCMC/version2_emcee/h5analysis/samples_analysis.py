@@ -29,7 +29,7 @@ import common_h5_utils
 from sampler_logger import setup_logging
 
 
-_joint_params = ['alpha', 'omega_break']
+_joint_params = ['omega_break', 'alpha']
 
 _quantitites = ['primary_mass',
                'secondary_mass', 
