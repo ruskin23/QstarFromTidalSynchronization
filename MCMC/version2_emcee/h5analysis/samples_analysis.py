@@ -39,6 +39,18 @@ _quantitites = ['primary_mass',
                'reference_lag',
                'alpha',
                'break_period']
+tex_fonts = {
+    # Use LaTeX to write all text
+    "text.usetex": True,
+    "font.family": "serif",
+    # Use 10pt font in plots, to match 10pt font in document
+    "axes.labelsize": 14,
+    "font.size": 10,
+    # Make the legend/label fonts a little smaller
+    "legend.fontsize": 8,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12
+}
 
 _logger=logging.getLogger(__name__)
 
@@ -69,6 +81,11 @@ def cmd_parser():
     parser.add_argument('--std_out_err_path',
                     default=path.scratch_directory + '/sampling_output/sampler',
                     help='output directory')
+    
+    parser.add_argument('--sampler',
+                        action='store_true',
+                        default = False,
+                        help='get samples or nah')
 
     
     parser.add_argument('--pickle',
@@ -249,7 +266,7 @@ def plot_parameter_corner(posterior_samples):
         convergence_dict = json.load(f)
 
     for kic in convergence_dict.keys():
-        if convergence_dict[kic]['converged'] == 'True': 
+        if convergence_dict[kic]['converged'] == 'True' and kic != '5393558': 
 
             alpha = posterior_samples[kic]['alpha']['samples'].flatten()
             omega_break = 2*numpy.pi/posterior_samples[kic]['omega_break']['samples'].flatten()
@@ -313,8 +330,11 @@ def plot_parameter_corner(posterior_samples):
 if __name__ == '__main__':    
 
     parse_args = cmd_parser()
-    sample_params(parse_args)
-    # posterior = create_posterior_dataset(parse_args)
-    # plot_parameter_corner(posterior)
+    posterior = create_posterior_dataset(parse_args)
+
+    if parse_args.sampler: sample_params(parse_args)
+
+    
+    
 
 

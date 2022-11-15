@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy
 
 from pathlib import Path
-from directories import directories
+from result_analysis_directories import directories
 
 home_dir=str(Path.home())
 path=directories(home_dir)
@@ -23,6 +23,7 @@ import scipy
 from KDEpy import FFTKDE
 import json
 from scipy import  interpolate
+import common_h5_utils
 
 
 tex_fonts = {
@@ -395,6 +396,60 @@ def figure_3():
     #     fig.savefig(f'comparison_{kic}.png')
     #     plt.close()
 
+def model_plot():
+
+    period_limts = [numpy.log10(1),numpy.log10(100),1000]
+    tidal_periods = numpy.linspace(float(period_limts[0]), float(period_limts[1]), int(period_limts[2]))
+
+    omega = 2*numpy.pi/10**(tidal_periods)
+    delta0 = 5.0
+    alpha =  -2.0
+    omega_br = 2*numpy.pi/10
+    omega_min = 2*numpy.pi/50
+
+    print(2*numpy.pi/10**period_limts[1], 2*numpy.pi/10**period_limts[0])
+    print(omega_min, omega_br)
+    print(numpy.log10(omega_min), numpy.log10(omega_br))
+
+
+    delta = []
+    for w in omega:
+        d = common_h5_utils._power_law_funcion(delta0, alpha, omega_br, omega=w, omega_min=omega_min)
+        if alpha < 0: delta.append(d)
+        else:
+            Z = (omega_min/omega_br)**alpha
+            delta.append(d*Z)
+    
+    delta = numpy.log10(delta)
+    omega = numpy.log10(omega)
+    
+    fig, ax = plt.subplots(1, 1)
+
+    ax.plot(omega, delta, color='g', linewidth=2.5)
+
+    ax.set_ylim( [min(delta) - 0.1, max(delta) + 0.1])
+    if alpha>0: 
+        ax.text(-0.35, -0.6, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
+        ax.text(-0.80, -0.25, r'$\alpha = 2.0$', size=15, rotation = 62., color='k')
+    else: 
+        ax.text(-0.35, -0.6, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
+        ax.text(0.30, -0.5, r'$\alpha = -2.0$', size=15, rotation = -56., color='k')
+    ax.set_ylabel(r'$\log_{10}{\Delta_{mm^{\prime}}}$')
+    ax.set_xlabel(r'$\log_{10}{\Omega_{mm^{\prime}}}$')
+    # ax.set_title(r'$\alpha > 0$')
+
+    ax.vlines(x = numpy.log10(omega_br), 
+              ymin = min(delta) - 0.1, 
+              ymax = max(delta), 
+              colors='k', 
+              linestyles='--',
+              label = r'\Omega_{break}')
+    
+
+    # ax.vlines(x = omega_min, ymin=0, ymax=5, colors='k', linestyles='--')
+    plt.savefig('neg_alpha.pdf')
+    plt.close()
+
 
 
 if __name__ == '__main__':
@@ -406,6 +461,8 @@ if __name__ == '__main__':
         if values['converged'] == 'True':
             converged_system.append(keys)
 
-    figure_1(converged_system)
-    figure_2(converged_system)
-    figure_3()
+    # figure_1(converged_system)
+    # figure_2(converged_system)
+    # figure_3()
+    print(len(converged_system))
+    model_plot()
