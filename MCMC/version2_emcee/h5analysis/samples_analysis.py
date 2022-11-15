@@ -29,7 +29,7 @@ import common_h5_utils
 from sampler_logger import setup_logging
 
 
-_joint_params = ['omega_break', 'alpha']
+_joint_params = ['alpha', 'omega_break', 'reference_lag']
 
 _quantitites = ['primary_mass',
                'secondary_mass', 
@@ -37,6 +37,7 @@ _quantitites = ['primary_mass',
                'age',
                'eccentricity',
                'reference_lag',
+               'reference_lgQ',
                'alpha',
                'break_period']
 tex_fonts = {
@@ -221,8 +222,15 @@ def create_posterior_dataset(parse_args):
 
             posterior_samples['reference_lag'] = posterior_samples['phase_lag_max']
             posterior_samples['omega_break'] = posterior_samples['break_period']
+
+            lgQ_list = []
+            for val in posterior_samples['reference_lag'].flatten():
+                lgQ_list.append(lgQ(val))
+            
+            posterior_samples['reference_lgQ'] = numpy.array(lgQ_list).reshape((numpy.shape(posterior_samples['reference_lag'])))
             del posterior_samples['phase_lag_max']
             del posterior_samples['break_period']
+            
 
 
             distribution_dict[kic]['n_samples'] = len(posterior_samples['reference_lag'].flatten())
@@ -236,6 +244,7 @@ def create_posterior_dataset(parse_args):
                 if names == 'omega_break':
                     distribution_dict[kic][names]['prior'] = numpy.exp(distribution_dict[kic][names]['prior'])
                 distribution_dict[kic][names]['bandwidth'] = utils._get_kernel_bandwidth(posterior_samples[names].flatten())
+            
 
     with open(_working_directory + '/posterior_dataset.pickle', 'wb') as f:
         pickle.dump(distribution_dict, f)
