@@ -29,7 +29,7 @@ import common_h5_utils
 from sampler_logger import setup_logging
 
 
-_joint_params = ['alpha', 'omega_break', 'reference_lag']
+_joint_params = ['alpha', 'omega_break', 'reference_lgQ']
 
 _quantitites = ['primary_mass',
                'secondary_mass', 
@@ -259,6 +259,7 @@ def sample_params(parse_args):
               
               sampled = pool.map(joint.get_sample, unit_vector)
 
+    print(sampled)
     with open(_working_directory + f'/sampled_params{parse_args.nsamples}.pickle', 'wb') as f:
         pickle.dump(sampled, f)
 
@@ -309,6 +310,7 @@ def plot_parameter_corner(posterior_samples, pasrse_args):
         sampled = pickle.load(f)
 
 
+    print(sampled)
     data = []
     for val in sampled:
         data.append((val[2], val[0],numpy.log10(2*numpy.pi/val[1])))
@@ -335,9 +337,9 @@ if __name__ == '__main__':
 
     parse_args = cmd_parser()
     posterior = create_posterior_dataset(parse_args)
-
+    # print(posterior['5393558']['reference_lgQ'])
     if parse_args.sampler: sample_params(parse_args)
-    plot_parameter_corner(posterior, parse_args)
+    # plot_parameter_corner(posterior, parse_args)
     
     
 
