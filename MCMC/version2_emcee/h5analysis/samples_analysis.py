@@ -221,17 +221,10 @@ def create_posterior_dataset(parse_args):
             common_h5_utils.converged_samples(kic, posterior_samples)
 
             posterior_samples['reference_lag'] = posterior_samples['phase_lag_max']
-            posterior_samples['omega_break'] = posterior_samples['break_period']
-
-            lgQ_list = []
-            for val in posterior_samples['reference_lag'].flatten():
-                lgQ_list.append(lgQ(val))
-            
-            posterior_samples['reference_lgQ'] = numpy.array(lgQ_list).reshape((numpy.shape(posterior_samples['reference_lag'])))
+            posterior_samples['omega_break'] = posterior_samples['break_period']            
+            posterior_samples['reference_lgQ'] = numpy.array([lgQ(lag) for lag in posterior_samples['reference_lag'].flatten()]).reshape((numpy.shape(posterior_samples['reference_lag'])))
             del posterior_samples['phase_lag_max']
             del posterior_samples['break_period']
-            
-
 
             distribution_dict[kic]['n_samples'] = len(posterior_samples['reference_lag'].flatten())
 
@@ -254,7 +247,7 @@ def sample_params(parse_args):
 
     posterior_dataset = create_posterior_dataset(parse_args)
 
-    unit_vector = [numpy.random.rand(2) for i in range(parse_args.nsamples)]
+    unit_vector = [numpy.random.rand(len(_joint_params)) for i in range(parse_args.nsamples)]
 
     joint = joint_distribution(posterior_dataset, n_prior=parse_args.npriors)
 
@@ -276,7 +269,8 @@ def plot_parameter_corner(posterior_samples):
 
     for kic in convergence_dict.keys():
         if convergence_dict[kic]['converged'] == 'True' and kic != '5393558': 
-
+            
+            print(f'Plotting for kic {kic}')
             alpha = posterior_samples[kic]['alpha']['samples'].flatten()
             omega_break = 2*numpy.pi/posterior_samples[kic]['omega_break']['samples'].flatten()
             omega_break = numpy.log10(omega_break)
@@ -317,19 +311,20 @@ def plot_parameter_corner(posterior_samples):
 
     data = []
     for val in sampled:
-        data.append((val[0],numpy.log10(2*numpy.pi/val[1])))
+        data.append((val[2], val[0],numpy.log10(2*numpy.pi/val[1])))
 
     figure = corner.corner(
                             data, 
-                            axes_scale='linear, log',
+                            axes_scale='log, linear, log',
                             labels=[
+                                r"$\log_{10}{Q_{\ast}^{\prime}}$",
                                 r"$\alpha$",
                                 r"$\log_{10}{P_{br}}$"
                                 ],
-                            quantiles=[0.16, 0.5, 0.84],
-                            show_titles=True,
-                            title_kwargs={'fontsize': 12},
-                            )
+                                quantiles=[0.16, 0.5, 0.84],
+                                show_titles=True,
+                                title_kwargs={'fontsize': 12},
+                                )
 
     plt.savefig(f'plots/alpha_break_combined.png')
     plt.savefig(f'plots/alpha_break_combined.pdf')
@@ -342,7 +337,7 @@ if __name__ == '__main__':
     posterior = create_posterior_dataset(parse_args)
 
     if parse_args.sampler: sample_params(parse_args)
-
+    plot_parameter_corner(posterior)
     
     
 
