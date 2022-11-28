@@ -6,27 +6,27 @@
         "converged": "True"
     },
     "4285087": {
-        "max_burn_in": "1949",
-        "max_step": "397",
-        "step_diff": "-1552",
-        "converged": "False"
+        "max_burn_in": "482",
+        "max_step": "584",
+        "step_diff": "102",
+        "converged": "True"
     },
     "5022440": {
-        "max_burn_in": "702",
-        "max_step": "593",
-        "step_diff": "-109",
+        "max_burn_in": "1329",
+        "max_step": "779",
+        "step_diff": "-550",
         "converged": "False"
     },
     "4352168": {
-        "max_burn_in": "630",
-        "max_step": "655",
-        "step_diff": "25",
+        "max_burn_in": "806",
+        "max_step": "829",
+        "step_diff": "23",
         "converged": "False"
     },
     "10992733": {
-        "max_burn_in": "2721",
-        "max_step": "1205",
-        "step_diff": "-1516",
+        "max_burn_in": "3875",
+        "max_step": "1488",
+        "step_diff": "-2387",
         "converged": "False"
     },
     "4678171": {
@@ -36,15 +36,15 @@
         "converged": "True"
     },
     "9971475": {
-        "max_burn_in": "3541",
-        "max_step": "635",
-        "step_diff": "-2906",
+        "max_burn_in": "774",
+        "max_step": "832",
+        "step_diff": "58",
         "converged": "False"
     },
     "11616200": {
-        "max_burn_in": "979",
-        "max_step": "273",
-        "step_diff": "-706",
+        "max_burn_in": "410",
+        "max_step": "422",
+        "step_diff": "12",
         "converged": "False"
     },
     "10091257": {
@@ -60,10 +60,10 @@
         "converged": "True"
     },
     "5871918": {
-        "max_burn_in": "1702",
-        "max_step": "607",
-        "step_diff": "-1095",
-        "converged": "False"
+        "max_burn_in": "516",
+        "max_step": "928",
+        "step_diff": "412",
+        "converged": "True"
     },
     "10215422": {
         "max_burn_in": "655",
@@ -72,57 +72,57 @@
         "converged": "True"
     },
     "11233911": {
-        "max_burn_in": "444",
-        "max_step": "454",
-        "step_diff": "10",
-        "converged": "False"
+        "max_burn_in": "416",
+        "max_step": "561",
+        "step_diff": "145",
+        "converged": "True"
     },
     "8618226": {
-        "max_burn_in": "237",
-        "max_step": "245",
-        "step_diff": "8",
+        "max_burn_in": "412",
+        "max_step": "407",
+        "step_diff": "-5",
         "converged": "False"
     },
     "9656543": {
-        "max_burn_in": "2312",
-        "max_step": "444",
-        "step_diff": "-1868",
+        "max_burn_in": "2269",
+        "max_step": "549",
+        "step_diff": "-1720",
         "converged": "False"
     },
     "11403216": {
-        "max_burn_in": "813",
-        "max_step": "630",
-        "step_diff": "-183",
+        "max_burn_in": "778",
+        "max_step": "788",
+        "step_diff": "10",
         "converged": "False"
     },
     "2860788": {
-        "max_burn_in": "556",
-        "max_step": "411",
-        "step_diff": "-145",
+        "max_burn_in": "597",
+        "max_step": "515",
+        "step_diff": "-82",
         "converged": "False"
     },
     "8957954": {
-        "max_burn_in": "2404",
-        "max_step": "509",
-        "step_diff": "-1895",
+        "max_burn_in": "611",
+        "max_step": "626",
+        "step_diff": "15",
         "converged": "False"
     },
     "7838639": {
-        "max_burn_in": "948",
-        "max_step": "950",
-        "step_diff": "2",
+        "max_burn_in": "1074",
+        "max_step": "1158",
+        "step_diff": "84",
         "converged": "False"
     },
     "6962018": {
-        "max_burn_in": "1007",
-        "max_step": "278",
-        "step_diff": "-729",
+        "max_burn_in": "677",
+        "max_step": "390",
+        "step_diff": "-287",
         "converged": "False"
     },
     "9532123": {
-        "max_burn_in": "1589",
-        "max_step": "379",
-        "step_diff": "-1210",
+        "max_burn_in": "5297",
+        "max_step": "466",
+        "step_diff": "-4831",
         "converged": "False"
     },
     "4815612": {
@@ -138,21 +138,21 @@
         "converged": "True"
     },
     "11252617": {
-        "max_burn_in": "903",
-        "max_step": "179",
-        "step_diff": "-724",
+        "max_burn_in": "1730",
+        "max_step": "266",
+        "step_diff": "-1464",
         "converged": "False"
     },
     "10935310": {
-        "max_burn_in": "499",
-        "max_step": "167",
-        "step_diff": "-332",
+        "max_burn_in": "1268",
+        "max_step": "237",
+        "step_diff": "-1031",
         "converged": "False"
     },
     "7798259": {
-        "max_burn_in": "827",
-        "max_step": "165",
-        "step_diff": "-662",
+        "max_burn_in": "2854",
+        "max_step": "256",
+        "step_diff": "-2598",
         "converged": "False"
     },
     "4773155": {
@@ -162,15 +162,15 @@
         "converged": "True"
     },
     "5802470": {
-        "max_burn_in": "3871",
-        "max_step": "743",
-        "step_diff": "-3128",
-        "converged": "False"
+        "max_burn_in": "614",
+        "max_step": "874",
+        "step_diff": "260",
+        "converged": "True"
     },
     "5181455": {
-        "max_burn_in": "1854",
-        "max_step": "450",
-        "step_diff": "-1404",
+        "max_burn_in": "4051",
+        "max_step": "630",
+        "step_diff": "-3421",
         "converged": "False"
     },
     "11147276": {
@@ -180,9 +180,9 @@
         "converged": "True"
     },
     "5730394": {
-        "max_burn_in": "1070",
-        "max_step": "457",
-        "step_diff": "-613",
+        "max_burn_in": "550",
+        "max_step": "557",
+        "step_diff": "7",
         "converged": "False"
     },
     "8356054": {
@@ -192,15 +192,15 @@
         "converged": "True"
     },
     "8381592": {
-        "max_burn_in": "1602",
-        "max_step": "1085",
-        "step_diff": "-517",
+        "max_burn_in": "1416",
+        "max_step": "1296",
+        "step_diff": "-120",
         "converged": "False"
     },
     "4252226": {
-        "max_burn_in": "239",
-        "max_step": "113",
-        "step_diff": "-126",
+        "max_burn_in": "244",
+        "max_step": "163",
+        "step_diff": "-81",
         "converged": "False"
     },
     "3348093": {
@@ -216,9 +216,9 @@
         "converged": "True"
     },
     "10960995": {
-        "max_burn_in": "3076",
-        "max_step": "673",
-        "step_diff": "-2403",
+        "max_burn_in": "2290",
+        "max_step": "835",
+        "step_diff": "-1455",
         "converged": "False"
     },
     "11232745": {
@@ -234,21 +234,21 @@
         "converged": "True"
     },
     "7336754": {
-        "max_burn_in": "430",
-        "max_step": "333",
-        "step_diff": "-97",
-        "converged": "False"
+        "max_burn_in": "247",
+        "max_step": "396",
+        "step_diff": "149",
+        "converged": "True"
     },
     "7732791": {
-        "max_burn_in": "730",
-        "max_step": "162",
-        "step_diff": "-568",
+        "max_burn_in": "719",
+        "max_step": "214",
+        "step_diff": "-505",
         "converged": "False"
     },
     "7816680": {
-        "max_burn_in": "2867",
-        "max_step": "2322",
-        "step_diff": "-545",
+        "max_burn_in": "3913",
+        "max_step": "3597",
+        "step_diff": "-316",
         "converged": "False"
     },
     "10031409": {
@@ -258,21 +258,21 @@
         "converged": "True"
     },
     "10385682": {
-        "max_burn_in": "516",
-        "max_step": "569",
-        "step_diff": "53",
-        "converged": "False"
+        "max_burn_in": "483",
+        "max_step": "617",
+        "step_diff": "134",
+        "converged": "True"
     },
     "9892471": {
-        "max_burn_in": "989",
-        "max_step": "1060",
-        "step_diff": "71",
-        "converged": "False"
+        "max_burn_in": "1173",
+        "max_step": "1536",
+        "step_diff": "363",
+        "converged": "True"
     },
     "4380283": {
-        "max_burn_in": "486",
-        "max_step": "488",
-        "step_diff": "2",
+        "max_burn_in": "2738",
+        "max_step": "616",
+        "step_diff": "-2122",
         "converged": "False"
     },
     "7362852": {
@@ -282,9 +282,9 @@
         "converged": "True"
     },
     "4346875": {
-        "max_burn_in": "785",
-        "max_step": "195",
-        "step_diff": "-590",
+        "max_burn_in": "287",
+        "max_step": "299",
+        "step_diff": "12",
         "converged": "False"
     },
     "8984706": {
@@ -294,15 +294,15 @@
         "converged": "True"
     },
     "11228612": {
-        "max_burn_in": "332",
-        "max_step": "306",
-        "step_diff": "-26",
+        "max_burn_in": "429",
+        "max_step": "476",
+        "step_diff": "47",
         "converged": "False"
     },
     "11391181": {
-        "max_burn_in": "2302",
-        "max_step": "456",
-        "step_diff": "-1846",
+        "max_burn_in": "1934",
+        "max_step": "548",
+        "step_diff": "-1386",
         "converged": "False"
     },
     "8364119": {
@@ -312,51 +312,51 @@
         "converged": "True"
     },
     "6312521": {
-        "max_burn_in": "1471",
-        "max_step": "435",
-        "step_diff": "-1036",
+        "max_burn_in": "1551",
+        "max_step": "598",
+        "step_diff": "-953",
         "converged": "False"
     },
     "6359798": {
-        "max_burn_in": "6866",
-        "max_step": "173",
-        "step_diff": "-6693",
+        "max_burn_in": "6212",
+        "max_step": "206",
+        "step_diff": "-6006",
         "converged": "False"
     },
     "9353182": {
-        "max_burn_in": "463",
-        "max_step": "476",
-        "step_diff": "13",
+        "max_burn_in": "2637",
+        "max_step": "591",
+        "step_diff": "-2046",
         "converged": "False"
     },
     "8746310": {
-        "max_burn_in": "589",
-        "max_step": "400",
-        "step_diff": "-189",
+        "max_burn_in": "2997",
+        "max_step": "659",
+        "step_diff": "-2338",
         "converged": "False"
     },
     "4947726": {
-        "max_burn_in": "1216",
-        "max_step": "161",
-        "step_diff": "-1055",
+        "max_burn_in": "1642",
+        "max_step": "235",
+        "step_diff": "-1407",
         "converged": "False"
     },
     "3241344": {
-        "max_burn_in": "666",
-        "max_step": "438",
-        "step_diff": "-228",
-        "converged": "False"
+        "max_burn_in": "476",
+        "max_step": "671",
+        "step_diff": "195",
+        "converged": "True"
     },
     "3973504": {
-        "max_burn_in": "1013",
-        "max_step": "211",
-        "step_diff": "-802",
+        "max_burn_in": "358",
+        "max_step": "344",
+        "step_diff": "-14",
         "converged": "False"
     },
     "6525196": {
-        "max_burn_in": "319",
-        "max_step": "379",
-        "step_diff": "60",
+        "max_burn_in": "443",
+        "max_step": "498",
+        "step_diff": "55",
         "converged": "False"
     },
     "5393558": {
@@ -366,21 +366,21 @@
         "converged": "True"
     },
     "11200773": {
-        "max_burn_in": "2332",
-        "max_step": "198",
-        "step_diff": "-2134",
+        "max_burn_in": "581",
+        "max_step": "301",
+        "step_diff": "-280",
         "converged": "False"
     },
     "4579321": {
-        "max_burn_in": "795",
-        "max_step": "367",
-        "step_diff": "-428",
+        "max_burn_in": "457",
+        "max_step": "473",
+        "step_diff": "16",
         "converged": "False"
     },
     "6949550": {
-        "max_burn_in": "906",
-        "max_step": "530",
-        "step_diff": "-376",
+        "max_burn_in": "640",
+        "max_step": "672",
+        "step_diff": "32",
         "converged": "False"
     },
     "6927629": {
@@ -408,9 +408,9 @@
         "converged": "True"
     },
     "3838496": {
-        "max_burn_in": "575",
-        "max_step": "542",
-        "step_diff": "-33",
+        "max_burn_in": "685",
+        "max_step": "687",
+        "step_diff": "2",
         "converged": "False"
     },
     "10936427": {
@@ -426,21 +426,21 @@
         "converged": "True"
     },
     "10965963": {
-        "max_burn_in": "309",
-        "max_step": "315",
-        "step_diff": "6",
+        "max_burn_in": "373",
+        "max_step": "375",
+        "step_diff": "2",
         "converged": "False"
     },
     "3834364": {
-        "max_burn_in": "402",
-        "max_step": "285",
-        "step_diff": "-117",
+        "max_burn_in": "2243",
+        "max_step": "437",
+        "step_diff": "-1806",
         "converged": "False"
     },
     "8580438": {
-        "max_burn_in": "863",
-        "max_step": "490",
-        "step_diff": "-373",
+        "max_burn_in": "746",
+        "max_step": "753",
+        "step_diff": "7",
         "converged": "False"
     }
 }

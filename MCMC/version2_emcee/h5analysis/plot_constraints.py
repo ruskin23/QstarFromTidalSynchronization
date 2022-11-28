@@ -24,7 +24,7 @@ from KDEpy import FFTKDE
 import json
 from scipy import  interpolate
 import common_h5_utils
-
+from fpdf import FPDF
 
 tex_fonts = {
     # Use LaTeX to write all text
@@ -32,11 +32,11 @@ tex_fonts = {
     "font.family": "serif",
     # Use 10pt font in plots, to match 10pt font in document
     "axes.labelsize": 14,
-    "font.size": 10,
+    "font.size": 20,
     # Make the legend/label fonts a little smaller
     "legend.fontsize": 8,
     "xtick.labelsize": 12,
-    "ytick.labelsize": 12
+    "ytick.labelsize": 12,
 }
 
 plt.rcParams.update(tex_fonts)
@@ -398,19 +398,24 @@ def figure_3():
 
 def model_plot():
 
-    period_limts = [numpy.log10(1),numpy.log10(100),1000]
+    period_limts = [numpy.log10(0.001),numpy.log10(100),1000]
     tidal_periods = numpy.linspace(float(period_limts[0]), float(period_limts[1]), int(period_limts[2]))
 
     omega = 2*numpy.pi/10**(tidal_periods)
-    delta0 = 5.0
-    alpha =  -2.0
-    omega_br = 2*numpy.pi/10
-    omega_min = 2*numpy.pi/50
 
-    print(2*numpy.pi/10**period_limts[1], 2*numpy.pi/10**period_limts[0])
-    print(omega_min, omega_br)
-    print(numpy.log10(omega_min), numpy.log10(omega_br))
+    alpha =  2.0
 
+    if alpha>0:
+        delta0 = phase_lag(5.5)
+        omega_br = 2*numpy.pi/0.5
+        omega_min = 2*numpy.pi/50
+    else:
+        delta0 = phase_lag(5.5)
+        omega_br = 2*numpy.pi/0.5
+        omega_min = 2*numpy.pi/50
+
+
+    print(numpy.log10(delta0))
 
     delta = []
     for w in omega:
@@ -419,7 +424,8 @@ def model_plot():
         else:
             Z = (omega_min/omega_br)**alpha
             delta.append(d*Z)
-    
+
+    print(numpy.log10(min(delta)), numpy.log10(delta0))
     delta = numpy.log10(delta)
     omega = numpy.log10(omega)
     
@@ -427,13 +433,19 @@ def model_plot():
 
     ax.plot(omega, delta, color='g', linewidth=2.5)
 
-    ax.set_ylim( [min(delta) - 0.1, max(delta) + 0.1])
+
     if alpha>0: 
-        ax.text(-0.35, -0.6, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
-        ax.text(-0.80, -0.25, r'$\alpha = 2.0$', size=15, rotation = 62., color='k')
+        ax.set_yticks([-10, -9, -8, -7, -6])
+        ax.set_yticklabels([-10, -9, -8, -7, -6])
+        ax.set_ylim( [min(delta) - 0.2, max(delta) + 0.2])
+        ax.text(0.8, -9.6, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
+        ax.text(-0.85, -9.4, r'$\alpha = 2.0$', size=15, rotation = 62., color='k')
     else: 
-        ax.text(-0.35, -0.6, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
-        ax.text(0.30, -0.5, r'$\alpha = -2.0$', size=15, rotation = -56., color='k')
+        ax.set_yticks([-11, -10, -9, -8, -7, -6])
+        ax.set_yticklabels([-11, -10, -9, -8, -7, -6])
+        ax.set_ylim( [min(delta) - 0.5, max(delta) + 0.5])
+        ax.text(0.8, -10, r'$\Omega_{br} = 0.69$', size=15, rotation = 90., color='k')
+        ax.text(2.7, -10, r'$\alpha = -2.0$', size=15, rotation = -50, color='k')
     ax.set_ylabel(r'$\log_{10}{\Delta_{mm^{\prime}}}$')
     ax.set_xlabel(r'$\log_{10}{\Omega_{mm^{\prime}}}$')
     # ax.set_title(r'$\alpha > 0$')
@@ -447,8 +459,172 @@ def model_plot():
     
 
     # ax.vlines(x = omega_min, ymin=0, ymax=5, colors='k', linestyles='--')
-    plt.savefig('neg_alpha.pdf')
+    if alpha>0: plt.savefig('pos_alpha.pdf')
+    else: plt.savefig('neg_alpha.pdf')
     plt.close()
+
+
+
+def combined_model_plot():
+
+    with open('sampled_params10.pickle', 'rb') as f:
+        sampled = pickle.load(f)
+    
+    tidal_periods = common_h5_utils._tidal_periods
+    tidal_freqs = 2*numpy.pi/tidal_periods
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    
+
+    lgQ_grid = numpy.zeros((len(sampled), 50), dtype=float)
+
+    for i, val in enumerate(sampled):
+        
+        alpha, omega_br, lgQ0 = val
+        print(val)
+        delta0 = phase_lag(lgQ0)
+
+        delta = [common_h5_utils._power_law_funcion(delta0, alpha, omega_br, omega=w) for w in tidal_freqs]
+        lgQ_grid[i] = numpy.array([lgQ(lag) for lag in delta])
+        
+        ax[0].plot(tidal_periods, lgQ_grid[i], linestyle = '--')
+    
+
+    lgQT = numpy.transpose(lgQ_grid)
+    
+    min_lgQT = []
+    max_lgQT = []
+    for arrs in lgQT:
+        min_lgQT.append(min(arrs))
+        max_lgQT.append(max(arrs))
+
+    ax[1].plot(tidal_periods, min_lgQT, color='k', linewidth = 2.0)
+    ax[1].plot(tidal_periods, max_lgQT, color='k', linewidth = 2.0)
+    ax[1].fill_between(tidal_periods, min_lgQT, max_lgQT, color='g', alpha=0.5)
+    
+    ax[0].set_ylim(5, 12)
+    ax[1].set_ylim(5, 12)
+
+    ax[0].set_xlabel(r'$\log_{10}{P_{tide}}$')
+    ax[1].set_xlabel(r'$\log_{10}{P_{tide}}$')
+    ax[0].set_ylabel(r'$\log_{10}{Q_{\ast}^{\prime}}$')
+
+    ax[0].set
+
+    plt.savefig('temp.png')    
+    plt.savefig('/home/ruskin/projects/PhDDissertation2022/samples.pdf', bbox_inches='tight')
+    plt.close()
+
+
+def eccentricity_corrections():
+
+
+    fnames = glob.glob('*.h5')
+    all_systems = [fname.split('.')[0].split('_')[1] for fname in fnames]
+    
+    catalog_fname = path.mcmc_directory+f'/catalog/samples/chains/'
+
+    for kic in all_systems:
+        print(kic)
+
+        all_samples_fname = catalog_fname + f'/{kic}.npz'
+        all_samples = numpy.transpose(numpy.load(all_samples_fname)['thinned_chain'])
+
+        esinw_samples = all_samples[8]
+        ecosw_samples = all_samples[9]
+        print(len(esinw_samples), len(ecosw_samples))
+
+        if min(esinw_samples)*max(esinw_samples)>0:
+            de = abs(min(esinw_samples) - max(esinw_samples))/len(esinw_samples)
+            if min(esinw_samples)<0:  plt.ylim([min(esinw_samples) - 2*de, 2*de])
+            else: plt.ylim([-2*de, max(esinw_samples) + 2*de])
+        
+        if min(ecosw_samples)*max(ecosw_samples)>0:
+            de = abs(min(ecosw_samples) - max(ecosw_samples))/len(ecosw_samples)
+            if min(ecosw_samples)<0:  plt.xlim([min(ecosw_samples) - 10*de, 10*de])
+            else: plt.xlim([-10*de, max(ecosw_samples) + 10*de])
+
+        plt.plot(0, 0, marker="o", markersize=10, markerfacecolor="black")
+
+        plt.scatter (ecosw_samples, esinw_samples)
+        plt.title(f'{kic}')
+        plt.xlabel('ecosw')
+        plt.ylabel('esinw')
+        plt.savefig(f'plots/{kic}_esin_ecos_samples.png')
+        plt.close()
+    
+
+
+def get_lower_limit(kic):
+
+    neg_2_sigma = []
+    periods = []
+    with open(f'period_dependence/{kic}.txt', 'r') as f:
+        next(f)
+        for lines in f:
+            x = lines.split()
+            periods.append(float(x[0]))
+            neg_2_sigma.append(float(x[1]))
+
+    neg_2_sigma = numpy.array(neg_2_sigma)
+    periods = numpy.array(periods)
+
+    if kic == '11147276':
+        print(max(neg_2_sigma), numpy.argmax(neg_2_sigma))
+    return periods[numpy.argmax(neg_2_sigma)]
+
+def eccentricity_likelihood_analysis(systems_kic):
+
+    converged_kalo = []
+    with open('converged_w19_spin.txt', 'r') as f:
+        for lines in f:
+            x = lines.split()
+            converged_kalo.append(x[0])
+    
+    kic_analysis = list(set(trouble_systems) & set(converged_kalo))
+    print(kic_analysis)
+
+    kic_analysis = glob.glob('*.h5')
+    kic_analysis = [fname.split('.')[0].split('_')[1] for fname in kic_analysis]
+    for kic in kic_analysis:
+        print(kic)
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+        lowest_period = 10**get_lower_limit(kic)
+        lowest_omega = 2*numpy.pi/lowest_period
+
+        posterior_samples = common_h5_utils.finite_posterior_samples(kic)
+        common_h5_utils.converged_samples(kic, posterior_samples)
+        
+        posterior_samples['reference_lag'] = posterior_samples['phase_lag_max']
+        del posterior_samples['phase_lag_max']
+
+        log_prob = posterior_samples['log_prob'].flatten()
+        delta_samples, lgQ_samples = common_h5_utils.get_dissipation_samples(posterior_samples, omega=lowest_omega)
+        lgQ_samples = lgQ_samples.flatten()
+        e_samples = posterior_samples['eccentricity'].flatten()
+
+
+
+        ax[0].scatter(lgQ_samples, e_samples)
+        ax[0].set_yscale('log')
+        ax[0].set_xlim((5,14))
+        ax[1].scatter(lgQ_samples, log_prob)
+        ax[1].set_xlim((5,14))
+
+        if min(log_prob)<0:lower_lim = max(min(log_prob), -5)
+        else: lower_lim = min(5, min(log_prob))
+
+        if max(log_prob)<0: upper_lim = max(max(log_prob), -5)
+        else: upper_lim = max(max(log_prob), 5)
+
+        ax[1].set_ylim((lower_lim, upper_lim))
+
+        
+        plt.title(f'{kic} at {lowest_period}')
+        plt.savefig(f'plots/eccentricity_analysis/{kic}_lgQ_analysis_all.png')
+        plt.close()
+
+        
+
 
 
 
@@ -464,5 +640,11 @@ if __name__ == '__main__':
     # figure_1(converged_system)
     # figure_2(converged_system)
     # figure_3()
-    print(len(converged_system))
     model_plot()
+    # combined_model_plot()
+    # eccentricity_corrections()
+
+    # trouble_systems = ['10031409', '10960995', '11147276', '11228612', '11232745', '11403216', '11704044', '2860788', '4285087', '4346875', '4380283', '4815612', '5022440', '5181455', '5802470', '6525196', '6927629', '7816680', '7838639', '8746310', '8957954', '9656543', '9892471', '9971475']
+
+    # print(len(trouble_systems))
+    # eccentricity_likelihood_analysis(trouble_systems)

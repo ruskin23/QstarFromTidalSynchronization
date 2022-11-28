@@ -32,6 +32,8 @@ def scatter_hist(x, y, ax, ax_histy):
     plt.savefig('test.png')
 
 
+
+
 def test_dict(dict_a):
 
     dict_a['2'] = dict_a['2'][5:]
@@ -103,15 +105,20 @@ def test_dict(dict_a):
 # print(tup_array)
 
 
-x = np.arange(4)
-y = 4
+# x = np.arange(4)
+# y = 4
 
-xx, yy = np.meshgrid(x, y)
-print(xx)
-print(yy)
+# xx, yy = np.meshgrid(x, y)
+# print(xx)
+# print(yy)
 
-diff = np.squeeze(xx - yy )
-print(diff)
+# diff = np.squeeze(xx - yy )
+# print(diff)
 
-avg = np.average(diff, axis = -1)
-print(avg)
+# avg = np.average(diff, axis = -1)
+# print(avg)
+
+a = np.ones((2,4,4), dtype = float)
+b = np.arange(16).reshape(4,4)
+a[0] = b
+print(a[1])

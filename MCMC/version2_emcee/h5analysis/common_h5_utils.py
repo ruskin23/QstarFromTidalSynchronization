@@ -1,6 +1,7 @@
 import numpy
 import emcee
 import sys
+import scipy
 
 from pathlib import Path
 from directories import directories
@@ -60,21 +61,37 @@ _priors = {
     }
 }
 
-_period_limts = [numpy.log10(0.5),numpy.log10(50),50]
 
-_tidal_periods = numpy.linspace(float(_period_limts[0]), float(_period_limts[1]), int(_period_limts[2]))
+_tidal_periods = 10**numpy.linspace(numpy.log10(0.5), numpy.log10(50), 50)
+
+_quantiles = [scipy.stats.norm.cdf(c) for c in [-2,-1,0,1,2]]
+
+# def get_max_burn_in(kic):
+
+#     burnins = []
+
+#     with open(f'period_dependence/{kic}.txt','r') as f:
+#         next(f)
+#         for idx, lines in enumerate(f):
+#             x = lines.split()
+#             for i in [3,6,9,12]:
+#                 burnins.append(int(x[i].split('/')[0]))
+#     return max(burnins)
 
 def get_max_burn_in(kic):
 
-    burnins = []
+    burnins = numpy.empty((50,4), dtype=int)
+    r_grid = numpy.empty((50,4), dtype=float)
 
     with open(f'period_dependence/{kic}.txt','r') as f:
         next(f)
         for idx, lines in enumerate(f):
             x = lines.split()
-            for i in [3,6,9,12]:
-                burnins.append(int(x[i].split('/')[0]))
-    return max(burnins)
+            burnins[idx] = numpy.array([int(x[i].split('/')[0]) for i in [3, 6, 9, 12]])
+            r_grid[idx] = numpy.array([float(x[k]) for k in [2, 5, 8, 11]])
+
+    max_burnin = max(burnins.flatten()[numpy.isfinite(r_grid.flatten())])
+    return max_burnin
 
 def best_constraint_period(kic):
 
@@ -105,6 +122,7 @@ def finite_posterior_samples(kic):
     blobs = reader.get_blobs()
     for name in _blob_names:
         posterior_samples[name] = blobs[name][mask]
+    posterior_samples['log_prob'] = log_prob[mask]
 
     if numpy.all(mask):
 
@@ -132,6 +150,7 @@ def finite_posterior_samples(kic):
                     blobs_val = blobs[name]
                 
                 posterior_samples[name] = numpy.concatenate((posterior_samples[name], blobs_val[mask_idx:]), axis=0)
+            posterior_samples['log_prob'] = numpy.concatenate((posterior_samples['log_prob'], log_prob[mask_idx:]), axis=0)
 
     return posterior_samples
 
@@ -140,12 +159,14 @@ def converged_samples(kic, sample_dict):
     max_burn_in = get_max_burn_in(kic)
     for name in _blob_names:
         sample_dict[name] = sample_dict[name][max_burn_in:]
+    sample_dict['log_prob'] = sample_dict['log_prob'][max_burn_in:]
 
 def _power_law_funcion(delta0, 
                        alpha, 
                        omega_br, 
                        omega = 2*numpy.pi/20,
-                       omega_min = 2*numpy.pi/50):
+                       omega_min = 2*numpy.pi/50,
+                       modify = False):
 
     if alpha > 0:
         if omega <= omega_min:
