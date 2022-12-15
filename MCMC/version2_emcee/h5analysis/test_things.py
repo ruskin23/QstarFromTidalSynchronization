@@ -118,7 +118,36 @@ def test_dict(dict_a):
 # avg = np.average(diff, axis = -1)
 # print(avg)
 
-a = np.ones((2,4,4), dtype = float)
-b = np.arange(16).reshape(4,4)
-a[0] = b
-print(a[1])
+# a = np.ones((2,4,4), dtype = float)
+# b = np.arange(16).reshape(4,4)
+# a[0] = b
+# print(a[1])
+
+# def equal_vowels(arr):
+
+#     vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
+
+#     upper = arr[:int(len(arr)/2)]
+#     upper_count = 0
+
+#     lower = arr[int(len(arr)/2):]
+#     lower_count = 0
+
+#     for i in range(int(len(arr)/2)):
+
+#         if upper[i] in vowels: upper_count += 1
+#         if lower[i] in vowels: lower_count += 1
+    
+#     return upper_count == lower_count
+
+# def call_equal_vowel():
+#     import sys
+#     import random
+#     import string
+
+#     len_random = int(sys.argv[1])
+
+#     word = ''.join(random.choices(string.ascii_uppercase + string.digits, k=len_random))
+#     print(word)
+#     # word =sys.argv[1]
+#     print(equal_vowels(word))
