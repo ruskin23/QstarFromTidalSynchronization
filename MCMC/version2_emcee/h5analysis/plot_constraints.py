@@ -58,7 +58,7 @@ class plot_distributions:
     def get_file_params(self):
 
         burnins = []
-        
+
         with open(self.period_quantile_file,'r') as f:
             next(f)
             for idx, lines in enumerate(f):
@@ -80,7 +80,7 @@ class plot_distributions:
         
         self.period_BestRange = self.QuantilePeriodGrid[0][lgQ_2sigma_upper < (self.minQ + self.Q_diff)]
         self.period_LeftBound, self.period_RightBound = self.period_BestRange[0], self.period_BestRange[-1]
-        
+
         spin_filename = '/home/ruskin/projects/QstarFromTidalSynchronization/MCMC/version2_emcee/catalog/filtering/nominal_value_catalog_Iconv_cutoff.txt'
         with open(spin_filename,'r') as f:
             next(f)
@@ -580,8 +580,8 @@ def eccentricity_likelihood_analysis(systems_kic):
             x = lines.split()
             converged_kalo.append(x[0])
     
-    kic_analysis = list(set(trouble_systems) & set(converged_kalo))
-    print(kic_analysis)
+    # kic_analysis = list(set(trouble_systems) & set(converged_kalo))
+    # print(kic_analysis)
 
     kic_analysis = glob.glob('*.h5')
     kic_analysis = [fname.split('.')[0].split('_')[1] for fname in kic_analysis]

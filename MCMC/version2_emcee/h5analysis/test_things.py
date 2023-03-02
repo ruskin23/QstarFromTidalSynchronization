@@ -151,3 +151,9 @@ def test_dict(dict_a):
 #     print(word)
 #     # word =sys.argv[1]
 #     print(equal_vowels(word))
+
+x = np.linspace(0,1,100)
+y = 0.125 * np.exp(- ((x/0.5)**2))
+
+plt.plot(x,y)
+plt.savefig('temp.png')

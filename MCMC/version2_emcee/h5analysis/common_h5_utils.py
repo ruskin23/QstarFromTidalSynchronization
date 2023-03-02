@@ -191,7 +191,10 @@ def get_dissipation_samples(posterior_samples,
 
     sample_reference_lag = posterior_samples['reference_lag']
     samples_alpha = posterior_samples['alpha']
-    samples_omega_br = posterior_samples['break_period']
+
+    if 'break_period' in posterior_samples: samples_omega_br = posterior_samples['break_period']  
+    elif 'omega_break' in posterior_samples: samples_omega_br = posterior_samples['omega_break']
+    else: raise ValueError('Break Frequency is missing in posterior samples')
 
     dissipation_samples = numpy.empty(numpy.shape(sample_reference_lag))
     lgQ_samples = numpy.empty(numpy.shape(sample_reference_lag))
